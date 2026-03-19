@@ -1,0 +1,69 @@
+{% extends 'mainlyt.html' %}
+{% block content %}
+<div class="uk-section uk-padding-remove-vertical">
+  <div class="uk-container uk-container-expand">
+      <div class="uk-grid" data-uk-height-viewport="expand: true" style="min-height: 730px;">
+          <div class="uk-width-3-5@m uk-background-cover uk-background-center-right uk-visible@m uk-box-shadow-xlarge" style="display: flex;">
+            <div>
+              <img src="/media/gsp.jpg">
+            </div>        
+                  
+              
+          </div>
+          <div class="uk-width-expand@m uk-flex uk-flex-middle">
+              <div class="uk-grid uk-flex-center">
+                  <div >
+                      <div class="uk-text-center in-padding-horizontal@s" style="border: 5px solid;padding: 10px;border-radius: 10px;width: 72%;margin: auto; border-color: #354873">
+                          <a class="uk-logo" href="index.html">
+                              <img src="/media/logos/headerlogo.jpg" data-src="/media/logos/headerlogo.jpg" alt="logo" width="100"  data-uk-img="">
+                          </a>
+                          <p class="uk-text-lead uk-margin-small-top uk-margin-medium-bottom">CONNECTEZ-VOUS</p>
+                          <!-- login form begin -->
+                          <form class="uk-grid uk-form" action="/loginuser" method="post">
+                            {% csrf_token %}
+                              <div class="uk-margin-small uk-width-1-1 uk-inline">
+                                  <span class="uk-form-icon uk-form-icon-flip fas fa-user fa-sm"></span>
+                                  <input class="uk-input uk-border-rounded" name="username" value="" type="text" placeholder="Username" style="border: 3px solid #eb642d;color: #354873;font-size: 20px;font-weight: bold">
+                              </div>
+                              <div class="uk-margin-small uk-width-1-1 uk-inline">
+                                  <span class="uk-form-icon uk-form-icon-flip fas fa-lock fa-sm"></span>
+                                  <input class="uk-input uk-border-rounded" name="password" value="" type="password" placeholder="Password" style="border: 3px solid #eb642d;color: #354873;font-size: 20px;font-weight: bold">
+                              </div>
+                              <div class="uk-margin-small uk-width-1-1">
+                                <button class="uk-button uk-width-1-1 uk-border-rounded uk-float-left" type="submit" name="submit" style="background: #354873;color: white;">Sign in</button>
+                            </div>
+                          </form>
+                          <!-- login form end -->
+                          <!-- <p class="uk-heading-line"><span>Or sign in with</span></p>
+                          <div class="uk-margin-medium-bottom">
+                              <a class="uk-button uk-button-primary uk-button-small uk-border-rounded color-google" href="#"><i class="fab fa-google uk-margin-small-right"></i>Google</a>
+                              <a class="uk-button uk-button-primary uk-button-small uk-border-rounded uk-margin-small-left color-facebook" href="#"><i class="fab fa-facebook-f uk-margin-small-right"></i>Facebook</a>
+                          </div>                        
+                          <span class="uk-text-small">Don't have an account? <a href="#">Register here</a></span> -->
+                      </div>
+                  </div>
+              </div>                
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+<script>
+  $.post('/login', {username: $('[name="username"]').val(), password: $('[name="password"]').val(), csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()}, function(data, status) {
+    console.log(data);
+  });
+// Use fingerprintjs2 in your JavaScript code
+  new Fingerprint2().get(function(result, components) {
+    // Send the fingerprint to the server using an HTTP request (e.g., AJAX)
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/save_fingerprint/", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    // Send the fingerprint data as JSON
+    xhr.send(JSON.stringify({ fingerprint: result }));
+  });
+</script>
+{% endblock %}

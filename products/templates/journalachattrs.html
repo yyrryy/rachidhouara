@@ -1,0 +1,43 @@
+{% for i in bons %}
+<tr>
+    <td>
+        {{i.nbon.date|date:"d/m/Y"}}
+    </td>
+    <td>
+        {{i.nbon.nbon}}
+    </td>
+    <td>
+        {{i.product.ref.upper}}
+    </td>
+    <td>
+        {{i.product.name.upper}}
+    </td>
+    <td>
+        {{i.quantity}}
+    </td>
+    <td>
+        {{i.price}}
+    </td>
+    <td>
+        {{i.remise1}}
+    </td>
+    <td>
+        {{i.remise2}}
+    </td>
+    <td>
+        {{i.remise3}}
+    </td>
+    <td>
+        {{i.remise4}}
+    </td>
+    <td>
+        {{i.total}}
+    </td>
+    <td>
+        {{i.nbon.supplier.name}}
+    </td>
+    <!-- <td>
+        {{i.nbon.client.code}}
+    </td> -->
+</tr>
+{% endfor %}

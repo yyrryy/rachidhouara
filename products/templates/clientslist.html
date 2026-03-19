@@ -1,0 +1,27 @@
+{% for i in clients %}
+<tr {% if i.diver %} style="background: #a8dfc5" {% endif %}>
+    <td>
+        <button class="btn editsuppbtn border" id="{{i.id}}" data-toggle="modal" data-target="#editclientmodal" onclick="populateclientfields('{{i.id}}')">
+            ✐
+        </button>
+    </td>
+    <!-- <a href="onclick="ajaxpage('client{{i.id}}', 'client: {{i.name}}', '/products/clientlier/{{i.id}}')""></a> -->
+    <td onclick="ajaxpage('client{{i.id}}', 'Client: {{i.name}}', '/products/client/{{i.id}}')">{{i.name}}</td>
+    <td >{{i.code}}</td>
+    <td>{{i.phone}}</td>
+    <td>{{i.city}}</td>
+    <td>{{i.region}}</td>
+    <td>
+        {% if i.represent %}
+        {{i.represent.name}}
+
+        {% endif %}
+    </td>
+    {% if not facturesection %}
+    <!-- <td>{{i.soldtotal|floatformat:2}}</td> -->
+    <td style="background: yellowgreen;">{{i.mehtodsoldbl|floatformat:2}}</td>
+    {% endif %}
+    <td style="background: aliceblue;">{{i.methodsoldfc|floatformat:2}}</td>
+    <td>{{i.ice}}</td>
+</tr>
+{% endfor %}

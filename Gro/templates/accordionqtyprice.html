@@ -1,0 +1,108 @@
+<div class="accordion w-100" id="accordionreglbl">
+    <div class="">
+
+        <button class="btn btn-success border" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
+        >
+            Historique
+        </button>
+
+        <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
+            <div class="card-body border shadow rounded producthistory" style="
+            height: 10em;
+            overflow: scroll;
+            ">
+       
+
+            </div>
+        </div>
+        </div>
+</div>
+<script>
+    function getbonstovalidate(){
+        console.log('err')
+        currentPageblregl=1
+        loadingblregl = false;
+        console.log('err2')
+
+        datefrom=$('.datefrom').val()
+        dateend=$('.dateend').val()
+        //$('.listaddreglblholder').on('scroll', handleScrollreglblcl)
+        if (datefrom=="" || dateend==""){
+            console.log('err3')
+            console.log('err3')
+            $('.reglementbonsholder').addClass('d-none')
+            alertify.error('Champs vide')
+            // disable the divholder of the multiselects
+            // disable the button
+            $('.submitaddreglemntclientbtn').addClass('disabled')
+            return
+        }
+        console.log('rafter')
+        $('.submitaddreglemntclientbtn').removeClass('disabled')
+        $('.reglementbonsholder').removeClass('d-none')
+        clientid=$('[name="addreglementclientsbl"]').val()
+        mode=$('.mode').val()
+        $('.loadingscreen').removeClass('d-none')
+        $.get('/products/getbonstovalidate', {
+
+            datefrom:datefrom,
+            dateend:dateend,
+            target:'{{target}}',
+
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.reglementclientbonholder').html(data.bons)
+
+                $('.totalbonsbl').text(data.total)
+                $('.totalbons').text(data.totalbons)
+
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+        // enable the divholder of the multiselects
+        // get client bons
+        //populate bons multiselect
+        // get client facture
+        // populate facture multiselect
+    }
+
+    $('.submitaddreglemntclientbtn').on('click', function(event){
+        event.preventDefault()
+        let parentdiv=$(this).parent().parent()
+        // if ((selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
+            //     return this.value;
+        // }).get()).length == 0){
+            //     alertify.error('Veuillez selectionner au moins un bon')
+        //     return
+        // }
+        selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        
+        
+        // $(this).addClass('disabled')
+        
+        bons=parentdiv.find('[name="addreglementbons"]').map(function() {
+            return this.value;
+        }).get();
+        console.log('>>', selectedValues.length)
+        if (selectedValues.length==0){
+            alertify.error('Choisir au mois un bon')
+            return
+        }
+        $(event.target).addClass('disabled')
+        $.get('/products/validatebons', {
+            target:'{{target}}',
+            bons:JSON.stringify(selectedValues),
+        }, function(data){
+            if (data.success){
+                ajaxpage('addlistbonlivraison', 'tt', '/products/listbonlivraison?target={{target}}')
+                alertify.success('Bon validé')
+            }
+        })
+    })
+
+
+
+</script>

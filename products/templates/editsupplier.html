@@ -1,0 +1,95 @@
+<form class="mt-3 row" id="updatesuppform" method="post" enctype="multipart/form-data" >
+    <input type="text" name="updatesuppid" value="{{supplier.id}}" hidden>
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-3">
+            <small>Logo:</small>
+            {% if supplier.image %}
+            <img src="{{supplier.image.url}}" alt="" style="width:50%;">
+            {% endif %}
+            
+        </div>
+        <div class="col-4">
+            <input type="file" name="updatesuppimage" class="form-control mb-2">
+        </div>
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesuppname" class="form-control mb-2" placeholder="Fournisseur" value="{{supplier.name}}">
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesupppersonalname" class="form-control mb-2" placeholder="Nom contact" value="{{supplier.personalname}}">
+    </div>
+    <div class="col-4">
+        <input type="number" name="updatesuppphone" class="form-control mb-2" placeholder="phone" value="{{supplier.phone}}">
+    </div>
+    <div class="col-4">
+        <input type="number" name="updatesuppphone2" class="form-control mb-2" placeholder="phone2" value="{{supplier.phone2}}">
+    </div>
+    <div class="col-4">
+        <input type="text" name="updateplafon" class="form-control mb-2" placeholder="Plafon" value="{{supplier.plafon}}">
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesuppice" class="form-control mb-2" placeholder="ICE" value="{{supplier.ice}}">
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesupprc" class="form-control mb-2" placeholder="RC" value="{{supplier.rc}}">
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesuppif" class="form-control mb-2" placeholder="IF" value="{{supplier.suppif}}">
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesuppcity" class="form-control mb-2" placeholder="Ville" value="{{supplier.city}}">
+        
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesuppemail" class="form-control mb-2" placeholder="Email" value="{{supplier.email}}">
+        
+    </div>
+    <div class="col-4">
+        <input type="text" name="updatesuppaddress" class="form-control mb-2" placeholder="Addresse" value="{{supplier.address}}">
+        
+    </div>
+    <div class="col-4">
+        <small>Mode reglement:</small>
+      <select name="updatesuppmodereglement" class="updatesuppmodereglement form-control mb-2">
+        <option value="{{supplier.modereglement}}">{{supplier.modereglement}}</option>
+        <option value="compte">En compte</option>
+        <option value="espece">Contre espece</option>
+        <option value="cheque">Contre cheque</option>
+        <option value="effet">Contre effet</option>
+        <option value="verement">Contre verement</option>
+      </select>
+    </div>
+    <div class="col-4">
+        <small>Observation</small>
+        <textarea name="updatesuppnote" class="form-control" style="height: 5em;">{{supplier.note}}</textarea>
+    </div>
+    <button class="btn btn-outline-success w-100 submitupdatesuppbtn">
+        Envoyer
+    </button>
+</form>
+<script>
+    $('.submitupdatesuppbtn').on('click', function(event){
+        event.preventDefault()
+        if ($('[name="updatesuppname"]').val()==""){
+            $('[name="updatesuppname"]').css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($('#updatesuppform')[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updatesupplier" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                if (data.success){
+                    ajaxpage('ee', 'rr', '/products/supplierspage?target={{target}}')
+                    $('.overlaydata').addClass('d-none')
+                }else{
+                    alertify.error('Erreur')
+                }
+            })
+        })
+    })
+</script>

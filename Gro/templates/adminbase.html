@@ -1,0 +1,3207 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <meta content="telephone=no" name="format-detection" />
+    <!-- favicon -->
+    <link href="/media/facturebody.jpg" rel="icon" />
+    {% block meta %}
+    {% endblock %}
+    {% if title %}
+    <title>{{title}} - system</title>
+    {% endif %}
+    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet" /> -->
+    <!-- css -->
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="{% static 'js/jquerySpellingNumber.js'%}"></script>
+    <link href="{% static 'css/minified.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/tabulator.min.css'%}" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/datepicker.css">
+    <style>
+      .btnselect.active{
+    background:white;
+    border-bottom: 2px solid white;
+    color: black;
+  }
+  .blink {
+  animation: blinker .6s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+@keyframes blinker {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+    button{
+      border-bottom:5px solid black;
+    }
+    .sectionbtn.active{
+      border-bottom: 2px solid;
+    }
+    /* .sectionbtn.active::after{
+      content: '';
+      position: absolute;
+      width: 10px;
+      transform: rotate(45deg);
+      height: 10px;
+      background: white;
+      bottom: -7px;
+      left: 16px;
+    } */
+    button:active {
+      box-shadow: 1px 1px 3px gray;
+      transform: translateY(3px);
+    }
+    .blurred{
+    	filter:blur(4px);
+    }
+    :root{--darkblue:#2b3e50;--orange:#df691a}
+    .matrix:hover{
+    cursor: pointer;
+    color: red;
+    transform: translate(0px, -4px);
+  }
+  .nav-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px; /* Adjust as needed */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    background: orange;
+    font-weight: bold;
+    color: white;
+}
+
+.prev-btn {
+    left: 0;
+}
+
+.next-btn {
+    right: 0;
+}
+  .matrix{
+    color: white;
+  }
+    .nav-item a span:hover{
+      background: var(--darkblue);
+    }
+    .sec-center {
+  position: relative;
+  max-width: 100%;
+  text-align: center;
+}
+[name="checkboxsidebar"]:checked,
+[name="checkboxsidebar"]:not(:checked){
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+.dark-light:checked + label,
+.dark-light:not(:checked) + label{
+  position: fixed;
+  top: 50px;
+  right: 40px;
+  z-index: 20000;
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  transition: all 200ms linear;
+  box-shadow: 0 0 25px rgba(255,235,167,.45);
+}
+.dark-light:checked + label{
+  transform: rotate(360deg);
+}
+.dark-light:checked + label:after,
+.dark-light:not(:checked) + label:after{
+  position: absolute;
+  content: '';
+  top: 1px;
+  left: 1px;
+  overflow: hidden;
+  z-index: 2;
+  display: block;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background-color: #102770;
+  background-image: url('https://assets.codepen.io/1462889/moon.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 200ms linear;
+  opacity: 0;
+}
+.dark-light:checked + label:after {
+  opacity: 1;
+}
+.dark-light:checked + label:before,
+.dark-light:not(:checked) + label:before{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  background-color: #48dbfb;
+  background-image: url('https://assets.codepen.io/1462889/sun.svg');
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 200ms linear;
+}
+.dark-light:checked + label:before{
+  background-color: #000;
+}
+.light-back{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background-color: #fff;
+  overflow: hidden;
+  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg');
+  background-position: center;
+  background-repeat: repeat;
+  background-size: 4%;
+  height: 100%;
+  width: 100%;
+  transition: all 200ms linear;
+  opacity: 0;
+}
+.dark-light:checked ~ .light-back{
+  opacity: 1;
+}
+.dropdown:checked + label,
+.dropdown:not(:checked) + label{
+  position: relative;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 2;
+  height: 50px;
+  transition: all 200ms linear;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  color:white;
+}
+.dark-light:checked ~ .sec-center .for-dropdown{
+  background-color: #102770;
+  color: #ffeba7;
+  box-shadow: 0 12px 35px 0 rgba(16,39,112,.25);
+}
+.dropdown:checked + label:before,
+.dropdown:not(:checked) + label:before{
+  position: fixed;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  cursor: auto;
+  pointer-events: none;
+}
+.dropdown:checked + label:before{
+  pointer-events: auto;
+}
+.dropdown:not(:checked) + label .uil {
+  font-size: 24px;
+  margin-left: 10px;
+  transition: transform 200ms linear;
+}
+.dropdown:checked + label .uil {
+  transform: rotate(180deg);
+  font-size: 24px;
+  margin-left: 10px;
+  transition: transform 200ms linear;
+}
+.section-dropdown {
+  position: absolute;
+  padding: 5px;
+  background-color: #111;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.4);
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .sec-center .section-dropdown {
+  background-color: #fff;
+  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.15);
+}
+.dropdown:checked ~ .section-dropdown{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.section-dropdown:before {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  content: '';
+  display: block;
+  z-index: 1;
+}
+.section-dropdown:after {
+  position: absolute;
+  top: -7px;
+  left: 30px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #111;
+  content: '';
+  display: block;
+  z-index: 2;
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .sec-center .section-dropdown:after {
+  border-bottom: 8px solid #fff;
+}
+
+.section-dropdown a {
+  position: relative;
+  color: #fff;
+  transition: all 200ms linear;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 2px;
+  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 15px;
+  margin: 2px 0;
+  text-align: left;
+  text-decoration: none;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+    -ms-flex-pack: distribute;
+}
+.dark-light:checked ~ .sec-center .section-dropdown a {
+  color: #102770;
+}
+.section-dropdown a:hover {
+  color: #102770;
+  background-color: #ffeba7;
+}
+.dark-light:checked ~ .sec-center .section-dropdown a:hover {
+  color: #ffeba7;
+  background-color: #102770;
+}
+a .uil {
+  font-size: 22px;
+}
+.dropdown-sub:checked + label,
+.dropdown-sub:not(:checked) + label{
+  position: relative;
+  color: #fff;
+  transition: all 200ms linear;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 2px;
+  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 15px;
+  text-align: left;
+  text-decoration: none;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+    -ms-flex-pack: distribute;
+    cursor: pointer;
+}
+.dropdown-sub:checked + label .uil,
+.dropdown-sub:not(:checked) + label .uil{
+  font-size: 22px;
+}
+.dropdown-sub:not(:checked) + label .uil {
+  transition: transform 200ms linear;
+}
+.dropdown-sub:checked + label .uil {
+  transform: rotate(135deg);
+  transition: transform 200ms linear;
+}
+.dropdown-sub:checked + label:hover,
+.dropdown-sub:not(:checked) + label:hover{
+  color: #102770;
+  background-color: #ffeba7;
+}
+.dark-light:checked ~ .sec-center .section-dropdown .for-dropdown-sub{
+  color: #102770;
+}
+.dark-light:checked ~ .sec-center .section-dropdown .for-dropdown-sub:hover{
+  color: #ffeba7;
+  background-color: #102770;
+}
+
+.section-dropdown-sub {
+  position: relative;
+  display: block;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0;
+  max-height: 0;
+  padding-left: 10px;
+  padding-right: 3px;
+  overflow: hidden;
+  transition: all 200ms linear;
+}
+.dropdown-sub:checked ~ .section-dropdown-sub{
+  pointer-events: auto;
+  opacity: 1;
+  max-height: 999px;
+}
+.section-dropdown-sub a {
+  font-size: 14px;
+}
+.section-dropdown-sub a .uil {
+  font-size: 20px;
+}
+.logo {
+	position: fixed;
+	top: 50px;
+	left: 40px;
+	display: block;
+	z-index: 11000000;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+	transition: all 250ms linear;
+}
+.logo:hover {
+  background-color: transparent;
+}
+.logo img {
+	height: 26px;
+	width: auto;
+	display: block;
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .logo img{
+  filter: brightness(10%);
+}
+
+@media screen and (max-width: 991px) {
+.logo {
+	top: 30px;
+	left: 20px;
+}
+.dark-light:checked + label,
+.dark-light:not(:checked) + label{
+  top: 20px;
+  right: 20px;
+}
+}
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+      .dashboard-nav-list {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-item {
+    color: white;
+    min-height: 56px;
+    padding: 0 30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    letter-spacing: 0.02em;
+    transition: ease-out 0.5s;
+}
+.dashboard-nav-dropdown-toggle>a:hover{
+  color:#f06623;
+}
+.dashboard-nav-item i {
+    width: 36px;
+    font-size: 19px;
+    margin-left: -40px;
+}
+
+.dashboard-nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
+
+.dashboard-nav-dropdown {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown.show {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle {
+    font-weight: bold;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle:after {
+    -webkit-transform: none;
+    -o-transform: none;
+    transform: none;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-menu {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.dashboard-nav-dropdown-toggle:after {
+    content: "";
+    margin-left: auto;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(81, 81, 81, 0.8);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.dashboard-nav .dashboard-nav-dropdown-toggle:after {
+    border-top-color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-nav-dropdown-menu {
+    display: none;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background: aliceblue;
+}
+
+.dashboard-nav-dropdown-item {
+    min-height: 40px;
+    padding: 8px 20px 8px 70px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    transition: ease-out 0.5s;
+}
+
+.dashboard-nav-dropdown-item:hover {
+    background: rgba(226, 226, 226, 0.873);
+}
+
+.menu-toggle {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #443ea2;
+}
+
+.menu-toggle:hover, .menu-toggle:active, .menu-toggle:focus {
+    text-decoration: none;
+    color: #875de5;
+}
+
+.menu-toggle i {
+    font-size: 20px;
+}
+
+.dashboard-toolbar {
+    min-height: 84px;
+    background-color: #dfdfdf;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 8px 27px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.nav-item-divider {
+    height: 1px;
+    margin: 1rem 0;
+    overflow: hidden;
+    background-color: rgba(236, 238, 239, 0.3);
+}
+
+@media (min-width: 992px) {
+    .dashboard-app {
+        margin-left: 238px;
+    }
+
+    .dashboard-compact .dashboard-app {
+        margin-left: 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 15px 0px;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1070;
+    }
+
+    .dashboard-nav.mobile-show {
+        display: block;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav header .menu-toggle {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboard-toolbar {
+        left: 238px;
+    }
+
+    .dashboard-compact .dashboard-toolbar {
+        left: 0;
+    }
+}
+      .closetab {
+        float: none;
+        margin-left: 10px;
+      }
+        .fixedheader{
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+        .fitscreen{
+            height: 80vh;
+            overflow-y: scroll;
+
+
+        }
+
+        .cartholder{
+            top: 0;
+            z-index: 9999;
+            background: aliceblue;
+            box-shadow: -11px 2px 7px 0px grey;
+            width: 99%;
+            right: -500rem;
+            height: 100%;
+            transition: all .5s ease-in-out;
+        }
+        /* width */
+        ::-webkit-scrollbar {
+        width: 5px;
+        }
+
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+        }
+        #button {
+            display: inline-block;
+            background-color: #e82323;
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            border-radius: 8px;
+            position: fixed;
+            bottom: 136px;
+            right: 53px;
+            transition: background-color .3s, opacity .5s, visibility .5s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        #button::after {
+            content: "⬆";
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 2em;
+            line-height: 50px;
+            color: #fff;
+        }
+            #button:hover {
+            cursor: pointer;
+            background-color: #333;
+        }
+            #button:active {
+            background-color: #555;
+            }
+            #button.show {
+            opacity: 1;
+            visibility: visible;
+            }
+            /* .dataTables_scrollHeadInner{
+              width:100% !important;
+            }
+            .dataTables_scrollHeadInner table{
+              width:100% !important;
+            } */
+        .wrapper {
+  border-radius: 50%;
+  display: grid;
+  mask: repeating-conic-gradient(from 22.5deg, transparent 0deg 5deg, #000 5deg 40deg, transparent 40deg 45deg);
+}
+.wrapper .block {
+  --start: 100px;
+  --end: 130px;
+  width: 135px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  grid-area: 1/1;
+  clip-path: polygon(25% 0, 50% 50%, 75% 0);
+  animation: loading 2s steps(5) infinite;
+}
+.wrapper .block:nth-child(1) {
+  transform: rotate(0deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.2s;
+}
+.wrapper .block:nth-child(2) {
+  transform: rotate(45deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.4s;
+  background: var(--darkblue)
+}
+.wrapper .block:nth-child(3) {
+  transform: rotate(90deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.6s;
+}
+.wrapper .block:nth-child(4) {
+  transform: rotate(135deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.8s;
+}
+.wrapper .block:nth-child(5) {
+  transform: rotate(180deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1s;
+}
+.wrapper .block:nth-child(6) {
+  transform: rotate(225deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.2s;
+}
+.wrapper .block:nth-child(7) {
+  transform: rotate(270deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.4s;
+}
+.wrapper .block:nth-child(8) {
+  transform: rotate(315deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.6s;
+}
+
+@keyframes loading {
+  15% {
+    --start: 110px;
+    --end: 150px;
+    background: orange;
+  }
+  45% {
+    --start: 100px;
+    --end: 130px;
+    background: var(--bg);
+  }
+}
+    </style>
+    {% block css%}
+    {% endblock %}
+</head>
+
+<body style="font-family: sans-serif;">
+  <!-- overlay for data holder -->
+  <div class="d-flex overlaydata d-none" style="height: 100vh; overflow-y: scroll; position: fixed; background: #0000004c; width: 100vw; z-index: 99999;">
+    <div class="col-3" onclick="$('.overlaydata').addClass('d-none')"></div>
+    <div class="col-9 bg-white p-2 dataholder" style="height: 100vh; overflow-y: scroll;">
+      Test
+    </div>
+   </div>
+  <div class="w-70 shadow position-fixed bg-white border p-2 addscreen d-none" style="top: 0; right: 0; z-index: 99; height: 100vh; overflow-y: scroll;">
+    <button class="btn btn-danger" onclick="$('.addscreen').addClass('d-none')">X</button>
+    <div class="addscreenhtml">
+
+    </div>
+
+  </div>
+    <!-- mobile header -->
+
+    <!-- site -->
+    <a id="button"></a>
+    <div class="site">
+
+      <!-- <button class="bi bi-list text-white btn bg-darkblue" style="position: absolute; bottom: 0; z-index: 999;" onclick="extendtabs()"></button> -->
+        <!-- site__body -->
+
+        <!-- screen loader -->
+
+        <div class="d-flex flex-column align-items-center justify-content-center d-none position-fixed"
+        style="height: 100vh;background:#171717bc ; width: 100vw; z-index: 9999;"
+        >
+          <div class="spinner-border text-white" role="status">
+          </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+        <div class="site__body d-flex">
+
+
+
+
+        </div><!-- site__body / end -->
+        <!-- site__footer -->
+
+    </div><!-- site / end -->
+   
+    <!-- Modal -->
+  <div class="modal fade" id="addclientmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			<div class="accordion mb-2" id="accordionExample">
+				<div class="accordion-item">
+				  <h2 class="accordion-header" id="headingOne">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					  +Ajouter
+					</button>
+				  </h2>
+				  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<form id="addclientform">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="exampleInputEmail1">Nom ou Nom commercial</label>
+								<input name="name" type="text" required class="form-control">
+							</div>
+
+							<div class="form-group">
+								<label for="exampleInputPassword1">Phone</label>
+								<input name="phone" type="text" required class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Ville</label>
+								<input name="city" type="text" required class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Addresse</label>
+								<input name="address" type="text" required class="form-control">
+							</div>
+							<button  class="btn btn-primary addclientbtn w-100">Submit</button>
+					  </form>
+					</div>
+				  </div>
+				</div>
+			</div>
+
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <!-- image display modal -->
+<div class="modal fade" id="imagedisplaymodal" tabindex="-1" aria-labelledby="eimagedisplaymodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-body text-center">
+            <img src="" alt="" class="imgproductmodal" style="max-width: 100%;">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- <div>
+              <span class="connectednbr">0</span>
+              Connecté
+            </div> -->
+  <!-- connected useres -->
+  <!-- <button class="btn text-white" style="border:1px solid var(--orange);" onclick="getconnected(); getconnectedoutside()">
+    ↻
+  </button> -->
+  <!-- <div class="fixed-bottomright bg-darkblue col-5 d-flex connectedholder">
+    <button class="btn text-white" style="border:1px solid var(--orange);" onclick="getconnectedoutside()">
+      ↻
+    </button>
+    <div class="accordion w-100" id="accordionconnected" style="right: 0;">
+
+          <button class="btn w-100 text-white d-flex justify-content-between connectedusersbar" type="button" data-toggle="collapse" data-target="#collapsconnected" aria-expanded="true" aria-controls="collapsconnected">
+            
+            <div>
+              <span class="connectednbrserver">0</span>
+              Connecté (server)
+            </div>
+
+          </button>
+
+        <div id="collapsconnected" class="collapse" aria-labelledby="headingOne" data-parent="#accordionconnected" style="height: 50vh;overflow: scroll;">
+
+          <table class="table table-bordered text-white">
+            <thead>
+              <tr>
+                <td>USER</td>
+                <td>role</td>
+                <td>ACTIVITY</td>
+                <td>Date</td>
+              </tr>
+            </thead>
+            <tbody class="connectedtbody">
+
+            </tbody>
+          </table>
+
+          <table class="table table-bordered text-white">
+            <thead>
+              <tr>
+                <td>USER</td>
+                <td>role</td>
+                <td>ACTIVITY</td>
+                <td>Date</td>
+              </tr>
+            </thead>
+            <tbody class="connectedtbodyserver">
+
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div> 
+
+  <audio id="notificationSound" src="/media/notif.wav" style="display: none"></audio>-->
+  <!-- scripts -->
+    <script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'js/select2.min.js'%}"></script>
+    <script src="{% static 'js/type.min.js'%}"></script>
+    <script src="{% static 'js/number.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/alertify.min.js'%}"></script>
+    <script>
+      function openwindow(id, title, url){
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+url, '', 'width=900,height=900');
+
+        myWindow.focus();
+      }
+      function tvabonachat(){
+    $(".itemrow").each(function () {
+      let subtotal = parseFloat($(this).find(".total").text());
+      let tvatotal = subtotal * 1.20;
+      let price = parseFloat($(this).find(".price").val());
+      let tvaprice = price * 1.20;
+      $(this).find(".total").text(tvatotal.toFixed(2));
+      $(this).find(".price").val(tvaprice.toFixed(2));
+      // Replace or update the TVA value per row
+      
+    });
+    let total=parseFloat($('.totalbon').text())
+    let tvatotal=total*1.20
+    $('.totalbon').text(tvatotal)
+
+  }
+  
+      function updatebonsoffacture(target, factureid){
+        selectedValues = $("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        
+        
+        if (selectedValues.length==0){
+          alertify.error('Champs vide')
+          return
+        }
+        $(this).addClass('disabled')
+        $.get('/products/updatebonsoffacture?target='+target, {
+          'factureid':factureid,
+          'bons':JSON.stringify(selectedValues),
+        }, (data)=>{
+          if (data.success){
+            ajaxpage('add', '+ Article', '/products/facturedetails/'+factureid+'?target='+target)
+          }else{
+            alertify.error(data.error)
+            $(this).removeClass('disabled')
+            
+          }
+        })
+      }
+      
+      function updatebonsoffactureachat(target, factureid){
+        selectedValues = $("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        
+        
+        if (selectedValues.length==0){
+          alertify.error('Champs vide')
+          return
+        }
+        $(this).addClass('disabled')
+        $.get('/products/updatebonsoffactureachat?target='+target, {
+          'factureid':factureid,
+          'bons':JSON.stringify(selectedValues),
+        }, (data)=>{
+          if (data.success){
+            ajaxpage('add', '+ Article', '/products/supplierfacturedetails/'+factureid+'?target='+target)
+          }else{
+            alertify.error(data.error)
+            $(this).removeClass('disabled')
+            
+          }
+        })
+      }
+      
+
+      function getclientbonsforfacture(target, clientid){
+        $.post('/products/getclientbonsforfacture', {
+            clientid:clientid,
+            target:target,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.reglementclientbonholder').html(data.trs)
+                $('.totalbonsbl').text(data.total)
+                // $('.soldblregl').text((data.soldbl).toFixed(2))
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+      }
+      function getsupplierbonsforfacture(target, supplierid){
+        $.post('/products/getsupplierbonsforfacture', {
+            supplierid:supplierid,
+            target:target,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.reglementsupplierbonholder').html(data.trs)
+                $('.totalbonsbl').text(data.total)
+                // $('.soldblregl').text((data.soldbl).toFixed(2))
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+      }
+      function removebonfromfacture(event, factureid, bonid){
+        alertify.confirm('Confirmer', ()=>{
+
+          $.get('/products/removebonfromfacture', {
+            'factureid':factureid,
+            'bonid':bonid
+          }, (data)=>{
+            if (data.success){
+              $(event.target).parent().remove()
+            }
+          }
+          )
+        
+        }, ()=>{
+          console.log('>> not decrocher bon')
+        })
+      }
+      // remove bon from facture achat
+      function removebonfromfactureachat(event, factureid, bonid){
+        alertify.confirm('Confirmer', ()=>{
+
+          $.get('/products/removebonfromfactureachat', {
+            'factureid':factureid,
+            'bonid':bonid
+          }, (data)=>{
+            if (data.success){
+              $(event.target).parent().remove()
+            }
+          }
+          )
+        
+        }, ()=>{
+          console.log('>> not decrocher bon')
+        })
+      }
+
+      function updatereglclient(id){
+        mantant=$('[name="mantant"]').val()
+        npiece=$('[name="npiece"]').val()
+        mode=$('[name="mode"]').val()
+        echeance=$('[name="echeance"]').val()
+        bank=$('[name="bank"]').val()
+        date=$('.regldate').val()
+        if (date==''){
+          alertify.error('Date')
+          return
+        }
+        $.get('/products/updatereglebons', {
+          'reglementid':id,
+          'mantant':mantant,
+          'mode':mode,
+          'npiece':npiece,
+          'date':date,
+          'echeance':echeance,
+          'bank':bank
+        })
+      }
+
+      function updateavanceclient(event, id){
+        console.log('>>updateavance')
+        mantant=$('[name="mantant"]').val()
+        note=$('[name="note"]').val()
+        bonofavance=$('[name="bonofavance"]').val()
+        npiece=$('[name="npiece"]').val()
+        mode=$('[name="mode"]').val()
+        echeance=$('[name="echeance"]').val()
+        bank=$('[name="bank"]').val()
+        date=$('.regldate').val()
+        console.log('>>updateavance2')
+        if (date==''){
+          alertify.error('Date')
+          return
+        }
+        console.log('>>updateavance3', id)
+        
+        $.get('/products/updateavanceclient', {
+          'avanceid':id,
+          'mantant':mantant,
+          'mode':mode,
+          'npiece':npiece,
+          'date':date,
+          'echeance':echeance,
+          'bank':bank,
+          'note':note,
+          'bonofavance':bonofavance,
+        })
+        console.log('>>updateavance4')
+      }
+      
+      function updatereglsupp(id){
+        mantant=$('[name="mantant"]').val()
+        npiece=$('[name="npiece"]').val()
+        mode=$('[name="mode"]').val()
+        echeance=$('[name="echeance"]').val()
+        bank=$('[name="bank"]').val()
+        date=$('.regldate').val()
+        if (date==''){
+          alertify.error('Date')
+          error
+        }
+        $.get('/products/updatereglesupp', {
+          'reglementid':id,
+          'mantant':mantant,
+          'mode':mode,
+          'npiece':npiece,
+          'date':date,
+          'echeance':echeance,
+          'bank':bank
+        })
+      }
+      
+
+      function checkmax(event){
+        // v as value
+        v=parseFloat($(event.target).val())
+        max=parseFloat($(event.target).attr('max'))
+        if (v<0 || v>max){
+          alertify.error('Invalid quantité')
+          //$('.valider').addClass('disabled')
+        }else{
+          //$('.valider').removeClass('disabled')
+        }
+      }
+      function removelocalstorage(target){
+        localStorage.removeItem('pdctsin'+target)
+        localStorage.removeItem(target)
+        localStorage.removeItem('total'+target)
+      }
+      function annulerbon(target, url){
+      localStorage.removeItem(target)
+      localStorage.removeItem('total'+target)
+      localStorage.removeItem('pdctsin'+target)
+      ajaxpage(target, 'Bons Sortie', url)
+    }
+      function checksamefacture(event){
+        // Get the checkbox that triggered the event
+        const checkbox = event.target;
+
+    // Get the facture value of the clicked checkbox
+        const facture = checkbox.getAttribute('facture');
+
+        // If there is a facture attribute, toggle all checkboxes with the same facture
+        if (facture) {
+            // Find all checkboxes with the same facture attribute
+            const checkboxes = document.querySelectorAll(`input[type="checkbox"][facture="${facture}"]`);
+
+            // Set their checked state to match the clicked checkbox
+            checkboxes.forEach(cb => {
+                cb.checked = checkbox.checked;
+            });
+        }
+      }
+      function addscreen(url){
+        $('.addscreen').removeClass('d-none')
+        $.get(url, (data)=>{
+          $('.addscreenhtml').html(data)
+        })
+      }
+      // function filtersearch(event){
+      //   var $el = $('.productsbrand' + $(event.target).attr('id')).fadeIn(450);
+      //   $('.itemsforlistblresult > tr').not($el).hide();
+      //   //$btns.removeClass('active');
+      //   //$(this).addClass('active');
+      // }
+      function filtercategories(event){
+        console.log($('.productscategory' + $(event.target).attr('id')))
+        if ($(event.target).attr('id')=='cat0'){
+          $('.itemsforlistblresult > tr').show();
+          return
+        }
+        var $el = $('.productscategory' + $(event.target).attr('id')).fadeIn(450);
+        $('.itemsforlistblresult > tr').not($el).hide();
+        //$btns.removeClass('active');
+        //$(this).addClass('active');
+      }
+      function getitemsforlistbl(event, target){
+    let term=$('.searchitemsforlistbl').val()
+    if (term.length>=2){
+      $('.itemsforlistblresult').html('<tr><td>searching....</td></tr>')
+      $.get('/products/getitemsforlistbl?target='+target, {'term':term}, (data)=>{
+        console.log(data)
+        $('.brands').html('')
+        $('.categoriesfilter').html('')
+        for (i of data.brands){
+          $('.brands').append(`
+            <img class="tag-badge tag-badge--hot" id='${i.id}' onclick="filtersearch(event)" src='${i.image}'>
+          `)
+        }
+        $('.categoriesfilter').append(`
+            <button class="btn btn-dark w-100 mb-2" id='cat0' onclick="filtercategories(event)" style="font-size:15px;">Tous</button><br>
+          `)
+        for (i of data.categories){
+          $('.categoriesfilter').append(`
+            <button class="btn btn-dark w-100 mb-2" id='cat${i.id}' onclick="filtercategories(event)" style="font-size:15px;">${i.name}</button><br>
+          `)
+        }
+        $('.itemsforlistblresult').html(data.trs)
+      })
+    }else{
+      $('.itemsforlistblresult').html('<tr><td>....</td></tr>')
+    }
+
+
+  }
+  
+      function getsection(event, title, url){
+        $('.sectionbtn').removeClass('active')
+        $(event.target).closest('.sectionbtn').addClass('active');
+        $('.seystemsection').html(
+          `<div class="spinner-grow" role="status"></div>`
+        )
+        $.get(url, (data) => {
+          //$('.loadingscreen').removeClass('d-none')
+
+          $('.seystemsection').html(data)
+            
+            // $('.select2').select2();
+            // if ($('.productstable').length){
+
+            // }
+        })
+      }
+      function cancelthis(id, target, url){
+        console.log(id, target)
+        $.get('/products/cancel'+target, {'id':id, 'target':target}, (data)=>{
+          if (data.success){
+            ajaxpage('maintab', 'Produits', url)
+          }else{
+            alertify.error(data.message)
+          }
+        })
+      }
+      function ajaxpage(id, title, url){
+        //window.location=url
+        $(`#maintab`).html(
+          `<div class="spinner-grow" role="status"></div>`
+        )
+        $.get(url, (data) => {
+          //$('.loadingscreen').removeClass('d-none')
+
+            $(`#maintab`).html(data)
+            //title of the page
+            window.title=title
+            // $('.select2').select2();
+            // if ($('.productstable').length){
+
+            // }
+        })
+      }
+      function duplicate(event, productid){
+        var parent=$(event.target).parent();
+        ref=parent.find('.ref').val();
+        mark=parent.find('.mark').val();
+        minstock=parent.find('.minstock').val();
+        if (ref=='' || mark==''){
+          alertify.error('Veuillez remplir tous les champs');
+          return;
+        }
+        $.get('/products/duplicate', {'productid':productid, 'ref':ref, 'mark':mark, 'minstock':minstock}, function(data){
+          if(data.success){
+            alertify.success('Produit dupliqué');
+            parent.find('.ref').val('');
+            parent.find('.mark').val('');
+            parent.find('.minstock').val('');
+          }else{
+            alertify.error(data.message);
+          }
+        })
+      }
+      function refreshselectproducts(event, target){
+        selection=$(event.target).parent().find('.selection')
+        selection.remove()
+        $('#productsselect2').select2({
+          ajax: {
+            type:'get',
+            dataType: 'json',
+            url: '/products/searchproduct?target={{target}}',
+            data: function (params) {
+              var query = {
+                term: params.term,
+              }
+              // Query parameters will be ?search=[term]&type=public
+              return query;
+            },
+            proccessresults: function (data) {
+                return {
+                  results:data.results
+                }
+            },
+            cache:true
+          },
+          minimumInputLength: 1,
+          placeholder:'Chercher Produits',
+          templateResult: formatRepo,
+          templateSelection: formatRepoSelection,
+        });
+      }
+      function formatRepo (repo) {
+          if (repo.loading) {
+            return repo.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatRepoSelection (repo) {
+          return repo.text;
+        }
+        function populateavoir(event, price, remise, bonid){
+        console.log('>> ddd')
+        $('[name="addprice"]').val(price);
+        $('[name="addremise"]').val(remise);
+        $('[name="addbonid"]').val(bonid);
+      }
+      function populateavoirsupp(event, price, remise1, remise2, remise3, remise4, bonid){
+        console.log('>> ddd')
+        $('[name="addprice"]').val(price);
+        $('[name="addremise1"]').val(remise1);
+        $('[name="addremise2"]').val(remise2);
+        $('[name="addremise3"]').val(remise3);
+        $('[name="addremise4"]').val(remise4);
+        $('[name="addbonid"]').val(bonid);
+      }
+      function savetolocalstorage(item, total, target){
+        console.log('>>target', target)
+        // get the already existing
+        let items = JSON.parse(localStorage.getItem(target)) || [];
+        items.push(item);
+        localStorage.setItem(target, JSON.stringify(items));
+        localStorage.setItem(`total${target}`, total);
+      }
+      function getfromlocalstorage(target){
+        return JSON.parse(localStorage.getItem(target)) || [];
+      }
+      function updateinlocalstorage(event, target, productid){
+        // this is the tr 
+        //<tr class="itemrow ${stock<=0? "text-danger":"" }" id=${id}>: 2
+          // <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${ref}</td>
+          //       <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+          //       <td style="paddingpx 0; font-size: 13px;" class="db">${dp}</td>
+          //       <td style="padding: 2px 0; font-size: 13px;" class="stock">${stock}</td>
+          //       <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
+          //       <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonlivraison', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+          //       <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonlivraison', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+          //       <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonlivraison', ${id})" name="remise" style="height:23px; width:100%;"></td>
+          //       <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
+          //       <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+          //       <input type="hidden" name="productid" value="${id}">
+
+          //   </tr>
+        var tr=$(event.target).parent().parent()
+        var item={
+          id:productid,
+          qty:tr.find('.qty').val(),
+          price:tr.find('.price').val(),
+          remise:tr.find('.remise').val(),
+          total:tr.find('.total').text(),
+          netprice:tr.find('.netprice').text(),
+          stock:tr.find('.stock').text(),
+          name:tr.find('.name').text(),
+          ref:tr.find('.ref').text(),
+          clientprice:tr.find('.clientprice').text(),
+          dp:tr.find('.dp').text(),
+        }
+        let items = JSON.parse(localStorage.getItem(target)) || [];
+        let index = items.findIndex(i => i.id == productid);
+        items[index] = item;
+        localStorage.setItem(target, JSON.stringify(items));
+        localStorage.setItem(`total${target}`, $('.'+target+'parentdiv').find('.totalbon').text());
+      }
+      function removeinlocalstorage(target, productid){
+        let items = JSON.parse(localStorage.getItem(target)) || [];
+        let index = items.findIndex(i => i.id == productid);
+        items.splice(index, 1);
+        localStorage.setItem(target, JSON.stringify(items));
+        localStorage.setItem(`total${target}`, $('.'+target+'parentdiv').find('.totalbon').text());
+      }
+      function refreshselectclient(event, target){
+      selection=$(event.target).parent().find('.selection')
+      console.log($(event.target).parent().find('.select2client'))
+      selection.remove()
+      $(event.target).parent().find('.select2client').select2({
+          minimumInputLength: 1,
+          placeholder:'Chercher Client',
+          ajax: {
+            type:'get',
+            dataType: 'json',
+            url: '/products/searchclient?target'+target,
+            data: function (params) {
+              var query = {
+                term: params.term,
+              }
+              // Query parameters will be ?search=[term]&type=public
+              return query;
+            },
+            proccessresults: function (data) {
+                return {
+                  results:data.results
+                }
+            },
+            cache:true
+          }
+        });
+
+    }
+
+    function refreshselectsupp(event){
+      selection=$(event.target).parent().find('.selection')
+      selection.remove()
+      console.log($(event.target).parent().find('.suppslect2'))
+      $(event.target).parent().find('.suppslect2').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher Fournisseur',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchsupplier',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    }
+
+    function populateyears(){
+      console.log('>> populating years')
+      const $select = $('.populateyears');
+      $select.html('')
+      const currentYear = new Date().getFullYear();
+      const startYear = 2025;
+      console.log('startYear, currentYear', startYear, currentYear)
+
+      for (let year = startYear; year <= currentYear; year++) {
+          $select.prepend($('<option>', {
+              value: year,
+              text: year
+          }));
+      }
+      $select.val(currentYear);
+    }
+    function setdamagedqty(event, pdctid){
+      parentdiv=$(event.target).parent().parent()
+      qty=parentdiv.find('.qty').val()
+      password=parentdiv.find('.password').val()
+      console.log(pdctid, qty, password)
+      $.get('/products/damagedproducts', {
+        'pdctid':pdctid,
+        'qty':qty,
+        'password':password,
+      })
+    }
+    function showhiddenpartindamaged(event){
+      parentdiv=$(event.target).parent()
+      qty=parentdiv.find('.qty').val()
+      if (qty=='' || qty=='0'){
+        parentdiv.find('.qty').addClass('border-danger')
+      }else{
+        parentdiv.find('.qty').attr('readonly', 'true')
+        parentdiv.find('.qty').removeClass('border-danger')
+        parentdiv.find('.hiddenpart').removeClass('d-none')
+      }
+    }
+    function searchsortipdct(event, pdctid) {
+  	    const query = $(event.target).val().toLowerCase();
+  	    const terms = query.split('+');
+
+  	    $(`.pdctsoutbody${pdctid} tr`).each(function() {
+  	        const row = $(this);
+  	        let match = true;
+
+  	        terms.forEach(term => {
+  	            if (row.text().toLowerCase().indexOf(term.trim()) === -1) {
+  	                match = false;
+  	            }
+  	        });
+
+  	        if (match) {
+  	            row.removeClass('d-none');
+  	        } else {
+  	            row.addClass('d-none');
+  	        }
+  	    });
+  	}
+    function searchentrepdct(event, pdctid) {
+  	    const query = $(event.target).val().toLowerCase();
+  	    const terms = query.split('+');
+
+  	    $(`.pdctsinbody${pdctid} tr`).each(function() {
+  	        const row = $(this);
+  	        let match = true;
+
+  	        terms.forEach(term => {
+  	            if (row.text().toLowerCase().indexOf(term.trim()) === -1) {
+  	                match = false;
+  	            }
+  	        });
+
+  	        if (match) {
+  	            row.removeClass('d-none');
+  	        } else {
+  	            row.addClass('d-none');
+  	        }
+  	    });
+  	}
+    function datepdct(pdctid){
+      console.log($(`.pdctdatefrompdct${pdctid}`))
+        datefrom=$(`.pdctdatefrompdct${pdctid}`).val()
+        dateto=$(`.pdctdatetopdct${pdctid}`).val()
+        console.log(datefrom=='', dateto=='')
+        if (datefrom=='' || dateto==''){
+            alertify.error('DATE')
+            return
+        }
+        $.get('/products/datepdct', {'datefrom':datefrom, 'dateto':dateto, 'pdctid':pdctid}, (data)=>{
+            console.log(data)
+            $(`.pdctsinbody${pdctid}`).html('')
+            $(`.pdctsinbody${pdctid}`).html(data.trin)
+            $(`.pdctsoutbody${pdctid}`).html('')
+            $(`.pdctsoutbody${pdctid}`).html(data.trout)
+        })
+
+    }
+    function getconnected() {
+      $('.connectednbr').text('...')
+      $('.connectedtbody').html('...')
+      $.get('/products/getconnectedusers',
+
+      (data)=>{
+        $('.connectednbr').text(data.length)
+        $('.connectedtbody').html(data.trs)
+
+      }
+      )
+    }
+    function getconnectedoutside() {
+      $('.connectednbrserver').text('...')
+      $('.connectedtbodyserver').html('...')
+      
+    }
+    $('.connectedholder').on('mouseover', ()=>{
+      $('.connectedusersbar').removeClass('collapsed'); $('#collapsconnected').addClass('show');
+
+    })
+    $('.connectedholder').on('mouseleave', ()=>{$('.connectedusersbar').addClass('collapsed'); $('#collapsconnected').removeClass('show')})
+    function printlivraison(bonid, target){
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonlivraisonprint/'+bonid+'?target='+target, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+  function printlivraisonht(bonid, target, category){
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonlivraisonprintht/'+bonid+'?target='+target+'&&category='+category, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+  function printdevi(bonid, target){
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/printdevi?deviid='+bonid+'&target='+target, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+  function printboncommand(bonid, target){
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/printboncommand?deviid='+bonid+'&target='+target, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+
+  function printsortie2(bonid){
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/sortieprint2/'+bonid, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+  function printsortieA6(bonid){
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/sortieprint2/'+bonid+'?a6=1', '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+  function printavoir(bonid){
+     /*var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+     document.body.innerHTML = printContents;
+     $('.blitems').css({'font-size': '15px','font-family':'serif'})
+     $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+     //  $('body').addClass('d-flex flex-column vh-100 p-3')
+     window.print();
+     document.body.innerHTML = originalContents;*/
+     url = window.location.pathname.split( '/' );[0]
+     var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonavoirprint/'+bonid, '', 'width=900,height=900');
+
+      myWindow.focus();
+
+      myWindow.addEventListener('load', function() {
+        console.log('New window loaded.');
+
+        // Wait for 5 seconds before printing
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000); // 1000 milliseconds = 1 seconds
+      }, false);
+    }
+
+  function printcomande(cmndid){
+       /*var printContents = document.getElementById(divName).innerHTML;
+       var originalContents = document.body.innerHTML;
+       document.body.innerHTML = printContents;
+       $('.blitems').css({'font-size': '15px','font-family':'serif'})
+       $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+       //  $('body').addClass('d-flex flex-column vh-100 p-3')
+       window.print();
+       document.body.innerHTML = originalContents;*/
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/boncmndprint/'+cmndid, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+  function printachat(bonid){
+     url = window.location.pathname.split( '/' );[0]
+     var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonachatprint/'+bonid, '', 'width=900,height=900');
+
+      myWindow.focus();
+
+      myWindow.addEventListener('load', function() {
+    console.log('New window loaded.');
+
+    // Wait for 5 seconds before printing
+    setTimeout(function() {
+      try {
+        myWindow.print();
+        console.log('Print command issued.');
+        myWindow.close();
+        console.log('New window closed.');
+      } catch (e) {
+        console.error('Failed to print and close the window:', e);
+      }
+    }, 1000); // 1000 milliseconds = 1 seconds
+  }, false);
+}
+    function printfacture(target, bonid){
+         /*var printContents = document.getElementById(divName).innerHTML;
+         var originalContents = document.body.innerHTML;
+         document.body.innerHTML = printContents;
+         $('.blitems').css({'font-size': '15px','font-family':'serif'})
+         $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+         //  $('body').addClass('d-flex flex-column vh-100 p-3')
+         window.print();
+         document.body.innerHTML = originalContents;*/
+         url = window.location.pathname.split( '/' );[0]
+         var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/factureprint/'+bonid+'?target='+target, '', 'width=900,height=900');
+
+          myWindow.focus();
+
+          myWindow.addEventListener('load', function() {
+        console.log('New window loaded.');
+
+        // Wait for 5 seconds before printing
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 300); // 1000 milliseconds = 1 seconds
+      }, false);
+    }
+    function printfactureproductname(target, bonid){
+         
+         url = window.location.pathname.split( '/' );[0]
+         var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/factureprint/'+bonid+'?names=1&target='+target, '', 'width=900,height=900');
+
+          myWindow.focus();
+
+          myWindow.addEventListener('load', function() {
+        console.log('New window loaded.');
+
+        // Wait for 5 seconds before printing
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 300); // 1000 milliseconds = 1 seconds
+      }, false);
+    }
+    
+    
+    function printbonachat(bonid){
+
+         url = window.location.pathname.split( '/' );[0]
+         var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonachatprint/'+bonid, '', 'width=900,height=900');
+
+          myWindow.focus();
+
+          myWindow.addEventListener('load', function() {
+        console.log('New window loaded.');
+
+        // Wait for 5 seconds before printing
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000); // 1000 milliseconds = 1 seconds
+      }, false);
+    }
+
+      /*document.addEventListener("DOMContentLoaded", function() {
+        const navTabs = document.querySelector(".nav-tabs");
+        const prevBtn = document.querySelector(".prev-btn");
+        const nextBtn = document.querySelector(".next-btn");
+        let scrollAmount = 0;
+
+        // Scroll left
+        prevBtn.addEventListener("click", function() {
+        const navItems = document.querySelectorAll(".nav-item");
+            scrollAmount += 100; // Adjust scroll amount as needed
+            scrollAmount = Math.min(scrollAmount, 0);
+            navItems.forEach(item => {
+              console.log(item)
+                item.style.transform = `translateX(${scrollAmount}px)`;
+            });
+
+        });
+
+        // Scroll right
+        nextBtn.addEventListener("click", function() {
+          const navItems = document.querySelectorAll(".nav-item");
+          scrollAmount -= 100; // Adjust scroll amount as needed
+            scrollAmount = Math.max(scrollAmount, -navTabs.offsetWidth);
+            navItems.forEach(item => {
+              console.log(item)
+                item.style.transform = `translateX(${scrollAmount}px)`;
+            });
+
+        });
+    });*/
+      function addrepnote(event, repid){
+        note=$(event.target).parent().find('textarea').val()
+        $.get('/products/addrepnote',{'note':note, 'repid':repid}, (data)=>{
+          console.log(data)
+        })
+
+      }
+      function printed(event, factureid){
+        $.get('/products/printed',{'factureid':factureid}, (data)=>{
+          updatetab(`facture${factureid}`, `/products/facturedetails/${factureid}`)
+        })
+      }
+      function updatetransportbl(event, blid){
+        let transport= $(event.target).parent().find('input').val()
+        if (transport!=''){
+          $.get('/products/updatetransportbl', {
+          'transport':transport,
+          'blid':blid
+          }, (data)=>{
+            updatetab(`bonl${blid}`, `/products/bonlivraisondetails/${blid}`)
+          })
+        }
+      }
+      function updatenotebl(event, blid){
+        let note= $(event.target).parent().find('input').val()
+        if (note!=''){
+          $.get('/products/updatenotebl', {
+          'note':note,
+          'blid':blid
+          }, (data)=>{
+            ajaxpage(`bonl${blid}`, 'r', `/products/bonlivraisondetails/${blid}`)
+          })
+        }
+      }
+      function updatenotebs(event, blid){
+        let note= $(event.target).parent().find('input').val()
+        if (note!=''){
+          $.get('/products/updatenotebs', {
+          'note':note,
+          'blid':blid
+          }, (data)=>{
+            console.log('here')
+            ajaxpage(`bonl${blid}`, 'rr', `/products/bonsortiedetails/${blid}`)
+          })
+        }
+      }
+      function updatecarbs(event, blid){
+        let car= $(event.target).parent().find('input').val()
+        if (car!=''){
+          $.get('/products/updatecarbs', {
+          'car':car,
+          'blid':blid
+          }, (data)=>{
+            console.log('here')
+            ajaxpage(`bonl${blid}`, 'rr', `/products/bonsortiedetails/${blid}`)
+          })
+        }
+      }
+      function validatebonsortie(event, blid){
+        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value', function(evt, value) { 
+          if (value=='ORGHAD'){
+            $.get('/products/validatebonsortie', {'bonid':blid}, (data)=>{
+              ajaxpage(`bonl${blid}`, 'rr', `/products/bonsortiedetails/${blid}`)
+            })
+          }else{
+            alertify.error('Mot de passe')
+          } }
+          , function() { alertify.error('Cancel') });
+      }
+      function validatebonsortieproductprice(event, blid){
+        $.get('/products/validatebonsortieproductprice', {'bonid':blid}, (data)=>{
+          ajaxpage(`bonl${blid}`, 'rr', `/products/bonsortiedetails/${blid}`)
+        })
+      }
+      function paybonsortie(event, blid){
+        console.log('ddf>>>')
+        $.get('/products/paybonsortie', {'bonid':blid}, (data)=>{
+          console.log('>> after get request')
+          ajaxpage(`bonl${blid}`, 'rr', `/products/bonsortiedetails/${blid}`)
+        })
+      }
+      function updaterepbl(event, blid){
+        let rep= $(event.target).parent().find('select').val()
+        if (rep!=''){
+          $.get('/products/updaterepbl', {
+          'rep':rep,
+          'blid':blid
+          }, (data)=>{
+            updatetab(`bonl${blid}`, `/products/bonlivraisondetails/${blid}`)
+          })
+        }
+      }
+      function updateproductstock(event, productid){
+        let stock= $(event.target).parent().find('input').val()
+        if (stock!=''){
+          $.get('/products/updateproductstock', {
+          'stock':stock,
+          'productid':productid
+          }, (data)=>{
+            forceupdatetab(`addpdct${productid}`, `/products/viewoneproduct/${productid}`)
+          })
+        }
+
+      }
+      function updateproductstockfc(event, productid){
+        let stock= $(event.target).parent().find('input').val()
+        if (stock!=''){
+          $.get('/products/updateproductstockfc', {
+          'stock':stock,
+          'productid':productid
+          }, (data)=>{
+            forceupdatetab(`pdct${productid}`, `/products/viewoneproduct/${productid}`)
+          })
+        }
+
+      }
+      const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+
+      const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+          v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+          )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+      // do the work...
+      const sorttable=(event) => {
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+      const datesorttable = (event) => {
+        const th = event.target;
+        const table = th.closest('table').querySelector('tbody');
+        const columnIndex = Array.from(th.parentNode.children).indexOf(th);
+
+        // Custom comparer function to handle date sorting
+        const dateComparer = (idx, asc) => (a, b) => {
+          // Helper function to parse date strings in the format "dd/mm/yyyy" into Date objects
+           const parseDateString = (dateString) => {
+              const [day, month, year] = dateString.split('/');
+              // Ensure that we provide the year, month, and day in the correct order to the Date constructor
+              return new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+          };
+
+          // Retrieve the textual content of the cells in the specified column for the two rows
+          const aValue = parseDateString(getCellValue(a, idx));
+          const bValue = parseDateString(getCellValue(b, idx));
+
+          // Check if both values are valid dates
+          if (!isNaN(aValue.getTime()) && !isNaN(bValue.getTime())) {
+              // Compare the dates
+              return asc ? aValue - bValue : bValue - aValue;
+          } else {
+              // If one or both values are not valid dates, return 0 to maintain the current order
+              return 0;
+          }
+      };
+
+        // Determine sorting order (ascending/descending)
+        const asc = th.asc = !th.asc;
+
+        // Perform sorting and update table
+        Array.from(table.querySelectorAll('tr'))
+            .sort(dateComparer(columnIndex, asc))
+            .forEach(tr => table.appendChild(tr));
+      };
+      const getintCellValue = (tr, idx) => parseFloat(tr.children[idx].innerText.replace(' ', '')) || parseFloat(tr.children[idx].textContent.replace(' ', ''));
+
+      const intcomparer = (idx, asc) => (a, b) => ((v1, v2) =>
+          v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+          )(getintCellValue(asc ? a : b, idx), getintCellValue(asc ? b : a, idx));
+
+      const intsorttable=(event) => {
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(intcomparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+      $(document).on('keydown', function (e) {
+
+        // Check if the key combination is Ctrl + Shift + A
+        if (e.shiftKey && e.key === 'b') {
+          ajaxpage('addlistbonlivraison', 'list bl', '/products/listbonlivraison')
+        }
+        if (e.altKey && e.key === 'B') {
+          console.log('Alt + b was pressed'); // Debugging line
+          ajaxpage('addbonlivraison', '+livraison', '/products/bonlivraison');
+        }
+
+        if (e.shiftKey && e.key === 'f') {
+          ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+        }
+        if (e.shiftKey && e.key === 'c') {
+          ajaxpage('addCommandestab', 'lict BC', 'products/listboncommnd')
+        }
+      });
+      let clicksinbl = 0;
+      let clicksinupdateachat = 0;
+      let clicksinavcl=0;
+      let clicksinfc = 0;
+      let clicksinba = 0;
+      let clicksingenbl = 0;
+
+      let clicksinupdatebl = 0;
+      let clicksinupdateavcl = 0;
+      let clicksinupdateavsupp = 0;
+      let clicksinupdatefc = 0;
+      let clicksinupdateba = 0;
+      const requiredClicks = 3;
+      const requiredClicksachat = 3;
+      // loading table variables
+      let currentPage = 1;
+      let loadingproducts = false;
+      let currentPagelistbl=1
+      let loadinglistbl = false;
+      let currentPagelistachat=1
+      let loadinglistachat = false;
+      let currentPagereglbl=1
+      let currentPagelistreglfc=1
+      let loadingreglbl = false;
+      let currentPagelistbc=1
+      let loadinglistbc = false;
+      let currentPageblregl=1
+      let loadingblregl = false;
+      let currentPagefcregl=1
+      let loadingfcregl = false;
+      let currentPagelistfc=1
+      let loadinglistfc = false;
+      let currentPageclients=1
+      let loadingclients = false;
+      let currentPagejournalacha=1
+      let loadingjournalacha = false;
+      let currentPagejournalachafc=1
+      let loadingjournalachafc = false;
+      let currentPagejournalventefc=1
+      let loadingjournalventefc = false
+      let currentPagejournalvente=1
+      let loadingjournalvente = false
+      let loadingupdateblregl=false
+      let currentPageupdateblregl=1
+      let loadingupdatefcregl=false
+      let currentPageupdatefcregl=1
+
+
+      function getNotifications() {
+        $.ajax({
+            url: '/products/notifyadmin',  // Replace with the actual URL of your API endpoint
+            method: 'GET',
+            success: function (data) {
+                // Handle the retrieved notifications and display them
+                if (data.length > 0){
+                  // var audio = document.getElementById('notificationSound');
+                  new Audio('/media/notif.mp3').play();
+                  alertify.confirm('Commande', 'Nouveau Commande', function(){
+                    // stop playing audio
+                    // audio.pause();
+                    // audio.currentTime = 0;
+                    // user clicked "ok"
+                    $.get('/products/disablenotif', (data)=>{
+                      console.log(data)
+                    })
+                    setTimeout(getNotifications, 20000);  // Poll every 5 seconds (adjust as needed)
+                    ajaxpage('addCommandestab', 'BON COMM', 'products/listboncommnd')
+
+                  }, function(){});
+
+                }
+                else{
+                  setTimeout(getNotifications, 20000);  // Poll every 20 seconds (adjust as needed)
+                }
+
+            },
+            complete: function () {
+                // Schedule the next AJAX request after a short delay
+            }
+        });
+
+    }
+    function checkempty(){
+        var isAnyEmpty = $('.reglnotempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+            if (isAnyEmpty){
+              console.log('empties found')
+                let emptyInputs = $('.reglnotempty').filter(function() {
+                    return !this.value.trim();
+                });
+
+                // Add a red border to all empty input elements
+                alertify.error('Veuillez remplir tous les champs obligatoires')
+                emptyInputs.css('border', '1px solid red');
+                $('notempty').not(emptyInputs).css('border', '');
+                $(this).attr('disabled', false)
+                return true
+            }
+    }
+      function genererrelveclfc(event){
+        parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        // check notempty
+        // var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        //     if (isAnyEmpty){
+        //         let emptyInputs = parentdiv.find('notempty').filter(function() {
+        //             return !this.value.trim();
+        //         });
+
+        //         // Add a red border to all empty input elements
+        //         alertify.error('Veuillez remplir tous les champs obligatoires')
+        //         emptyInputs.css('border', '1px solid red');
+        //         parentdiv.find('notempty').not(emptyInputs).css('border', '');
+        //         $(this).attr('disabled', false)
+        //         return
+        //     }
+        clientid=parentdiv.find('select[name="clientsituationfcselectfc"]').val()
+        datefrom=parentdiv.find('input[name="situationfccldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationfccldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclientfc',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+            },
+            success: function(data){
+                $('.loadingscreen').addClass('d-none')
+                $('.releveclfcholder').html(data.html)
+            }
+        })
+
+
+      }
+
+
+      $('.searchtablebon').on("keyup", function() {
+        let parentdiv=$(this).parent().parent()
+    // Get the values from all filter input fields
+        var filterValue = $(this).val().toLowerCase();
+
+        // Split the filter value into individual terms based on the '&' sign
+        var filterTerms = filterValue.split('+').map(function(term) {
+            return term.trim();
+        });
+
+        // Iterate through the table rows
+        parentdiv.find("tr").each(function() {
+            var rowText = $(this).text().toLowerCase();
+            var showRow = true;
+
+            // Check if all filter terms are present in the row text
+            $.each(filterTerms, function(index, term) {
+                if (term !== '' && rowText.indexOf(term) === -1) {
+                    showRow = false;
+                    return false; // Exit the loop early if a mismatch is found
+                }
+            });
+
+            // Toggle the visibility of the row based on the filter criteria
+            $(this).toggle(showRow);
+        });
+
+    });
+      function showimage(event){
+        let image=$(event.target).attr('src')
+        $('.imgproductmodal').attr('src', image)
+        $('#imagedisplaymodal').modal('show')
+      }
+      function extendtabs(){
+        let tabsholder=$('.tabsholder')
+        let sidebarholder=$('.sidebarholder')
+        // if already expended
+        if (tabsholder.hasClass('expended')){
+          tabsholder.removeClass('expended')
+          tabsholder.css('width', '87%')
+          sidebarholder.removeClass('d-none')
+      }
+      else{
+          tabsholder.addClass('expended')
+          tabsholder.css('width', '100%')
+          sidebarholder.addClass('d-none')
+      }
+      }
+
+      const refreshbonlivraison=(event)=>{
+        parentdiv=$(event.target).parent().parent().parent()
+        console.log(parentdiv)
+      }
+      const recevoirexcel = (event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        excelfile=parentdiv.find('.excelfile')
+        // send excel file data in a ajax request
+        let formData = new FormData();
+
+        // Append the Excel file to the FormData object
+        formData.append('excelFile', excelfile[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      // Make an AJAX request to send the file data
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+          url: '/products/recevoirexcel', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            // Handle the success response from the server
+            $('.bonachatbody').html(response.trs)
+            alertify.success('File uploaded successfully');
+            $('.loadingscreen').addClass('d-none')
+            $('.grandtotalbonachat').text((response.totalbon).toFixed(2))
+            for (let i of response.refnotexist){
+              $('.refnotexist').append(`<div>${i}</div>`)
+            }
+          },
+          error: function(xhr, status, error) {
+            $('.loadingscreen').addClass('d-none')
+            // Handle errors if the AJAX request fails
+            alertify.error('Error uploading file');
+          }
+        });
+      }
+      const checkmodereglement=(event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        if ($(event.target).val()=="cheque" || $(event.target).val()=="effet"){
+            // echeance n piece will be required
+            parentdiv.find('[name="npiece"]').addClass('notempty')
+            parentdiv.find('[name="echeance"]').addClass('notempty')
+        }else{
+            parentdiv.find('[name="npiece"]').removeClass('notempty')
+            parentdiv.find('[name="echeance"]').removeClass('notempty')
+        }
+    }
+    function addfieldsreglement(event){
+        let parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        // parentdiv.find('.mantantholder').append('<input type="number" name="mantantreglementclient" class="w-100 notempty mt-2">')
+        // parentdiv.find('.modeholder').append('<select name="modereglementclient" class="w-100 notempty"><option value="cheque">Cheque</option><option value="effet">effet</option></select>')
+        // parentdiv.find('.echeanceholder').append('<input type="date" name="echeancereglementclient" class="w-100 notempty">')
+        // parentdiv.find('.npieceholder').append('<input type="text" name="npiecereglementclient" class="w-100 notempty mt-2">')
+        //today's date in yyyy-mm-dd format
+        var today = new Date();
+
+        // Get the current date in the "yyyy-mm-dd" format
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Format the date as "yyyy-mm-dd"
+        var currentDate = yyyy + '-' + mm + '-' + dd;
+        parentdiv.find('.reglements').prepend(`<div class="d-flex justify-content-between align-items-center mt-2"><div class=""> <input type="number" name="mantantreglementclient" onkeyup="totalreglementbl(event)" class="w-100 reglnotempty" placeholder="Mantant"></div><div class=""> <input type="text" name="npiece" class="w-100 reglnotempty" placeholder="N° piece"></div><div class=""> <select name="modereglementclient" class="w-100" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="remise">remise</option><option value="verement">verement</option><option value="versement">versement</option><option value="carte">carte banquaire</option></select></div><div> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"></div><div class="d-flex"><div><input type="text" name="bank" class="w-100" placeholder="Nom bank"></div><div class="me-2"><select name="source"><option value="">Source</option><option value="societe">Societe</option><option value="client">client</option><option value="personel">personel</option></select></div><button class="btn btn-sm bg-danger" onclick="removereglrow(event)"></button></div></div>`)
+      }
+      
+      function removereglrow(event){
+        let parentdiv=$(event.target).parent().parent()
+        let amountinp=parentdiv.find('[name="mantantreglementclient"]').val()
+        if (amountinp.length==0){
+            parentdiv.remove()
+        }
+    }
+    function totalreglementbl(event){
+    let sum = 0;
+    $('input[name="mantantreglementclient"]').map(function() {
+        const value = parseFloat($(this).val()) || 0;
+        sum += value;
+    });
+    $('.totalreglblfields').text(sum.toFixed(2))
+  }
+    
+    function addfieldsreglementsupp(event){
+    let parentdiv=$(event.target).parent()
+    // parentdiv.find('.mantantholder').append('<input type="number" name="mantantreglementclient" class="w-100 notempty mt-2">')
+    // parentdiv.find('.modeholder').append('<select name="modereglementclient" class="w-100 notempty"><option value="cheque">Cheque</option><option value="effet">effet</option></select>')
+    // parentdiv.find('.echeanceholder').append('<input type="date" name="echeancereglementclient" class="w-100 notempty">')
+    // parentdiv.find('.npieceholder').append('<input type="text" name="npiecereglementclient" class="w-100 notempty mt-2">')
+    parentdiv.find('.reglements').prepend('<div class="d-flex justify-content-between align-items-center mt-2"><div class="me-2"> <input type="number" name="mantantreglementsupp" oninput="totalreglementsupp(event)" class="w-100 notempty" placeholder="Mantant"></div><div class="me-2"> <input type="text" name="npiecereglementsupp" class="w-100" placeholder="N° piece"></div><div class="me-2"> <select name="modereglementsupp" class="w-100" onchange="checkmodereglementsupp(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="verement">verement</option><option value="versement">versement</option><option value="cart">cart</option></select></div><div class="me-2 d-flex"> <input type="date" name="echeancereglementsupp" class="w-100"><div class="me-2"><input type="text" name="bank" class="w-100" placeholder="Nom du bank"></div><div class="me-2"><select name="source"><option value="">Source</option><option value="societe">Societe</option><option value="client">client</option><option value="personel">personel</option></select></div><button class="btn btn-sm bg-danger" onclick="removereglrowsupp(event)"></button></div></div>')
+  }
+  
+    const checkmodereglementsupp=(event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        if ($(event.target).val()=="cheque" || $(event.target).val()=="effet"){
+            // echeance n piece will be required
+            parentdiv.find('[name="npiecereglementsupp"]').addClass('notempty')
+            parentdiv.find('[name="echeancereglementsupp"]').addClass('notempty')
+        }else{
+            parentdiv.find('[name="npiecereglementsupp"]').removeClass('notempty')
+            parentdiv.find('[name="echeancereglementsupp"]').removeClass('notempty')
+        }
+    }
+      const checkreglementbox=(event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        selectedValues = $("input[name='bonstopay']:checked").map(function() {
+            return parseFloat($(this).attr('total')); // Convert to float for proper numerical addition
+        })
+        .get()
+        .reduce((sum, value) => sum + value, 0); // Calculate the sum
+        selectedavoirs = $("input[name='avoirstopay']:checked").map(function() {
+            return parseFloat($(this).attr('total')); // Convert to float for proper numerical addition
+        })
+        .get()
+        .reduce((sum, value) => sum + value, 0); // Calculate the sum
+        
+        selectedavances = $("input[name='avancestopay']:checked").map(function() {
+            return parseFloat($(this).attr('total')); // Convert to float for proper numerical addition
+        })
+        .get()
+        .reduce((sum, value) => sum + value, 0); // Calculate the sum*
+        pay=selectedValues-selectedavoirs-selectedavances
+        $('.whattopay').text(pay.toFixed(2))
+        if ($(event.target).is(':checked')){
+          parentdiv.css('background', '#ddfaed')
+          if($($(event.target).parent().parent().find('td')[1]).text().includes('BL')){
+            console.log('>> reg in bl')
+            bons=parseFloat($('.totalcheckedbl').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons+bontotal)
+            $('.totalcheckedbl').text((bons+bontotal).toFixed(2))
+          }else if($($(event.target).parent().parent().find('td')[1]).text().includes('FC')){
+            console.log('>> reg in fc')
+            bons=parseFloat($('.totalcheckedfc').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons+bontotal)
+            $('.totalcheckedfc').text((bons+bontotal).toFixed(2))
+          }else{
+            console.log('>> reg in supp')
+            bons=parseFloat($('.totalcheckedsupp').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons, bontotal)
+            $('.totalcheckedsupp').text((bons+bontotal).toFixed(2))
+          }
+        }else{
+          parentdiv.css('background', 'none')
+          if($($(event.target).parent().parent().find('td')[1]).text().includes('BL')){
+            bons=parseFloat($('.totalcheckedbl').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons-bontotal)
+            $('.totalcheckedbl').text((bons-bontotal).toFixed(2))
+          }else if($($(event.target).parent().parent().find('td')[1]).text().includes('FC')){
+            bons=parseFloat($('.totalcheckedfc').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons-bontotal)
+            $('.totalcheckedfc').text((bons-bontotal).toFixed(2))
+          }else{
+            bons=parseFloat($('.totalcheckedsupp').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons-bontotal)
+            $('.totalcheckedsupp').text((bons-bontotal).toFixed(2))
+          }
+        }
+      }
+
+      const degenerer=(event, id, idtab, url)=>{
+        let parentdiv=$(event.target).parent().parent()
+        let bonholder=parentdiv.find('.bonbody')
+        // ajax call to degenerer
+        alertify.confirm('Degenerer', 'Degenerer le bon?', function(){
+          console.log('degenerer bon')
+          $.ajax({
+            url: 'products/degenerer',
+            type: 'POST',
+            data: {
+              bonid:id,
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+              deletetab(idtab)
+              ajaxpage('addlistbonlivraison', 'list bl', '/products/listbonlivraison')
+              alertify.success('Bon dégénéré')
+              // bonholder.printThis({
+              //   importCSS: true,
+              //   loadCSS: "/static/css/bootstrap.min.css",
+              //   header: "<h1>Header</h1>",
+              //   footer: "<h1>Footer</h1>"
+              // });
+            }
+          })
+        }
+          , function(){ alertify.error('Cancel')});
+        // $.ajax({
+        //   url: 'products/degenerer',
+        //   type: 'POST',
+        //   data: {
+        //     bonid:id,
+        //     csrfmiddlewaretoken: '{{ csrf_token }}'
+        //   },
+        //   success: function (data) {
+        //     console.log(data)
+        //     // bonholder.html(data.html)
+        //     // bonholder.printThis({
+        //     //   importCSS: true,
+        //     //   loadCSS: "/static/css/bootstrap.min.css",
+        //     //   header: "<h1>Header</h1>",
+        //     //   footer: "<h1>Footer</h1>"
+        //     // });
+        //   }
+        // })
+      }
+      const calculate=(e)=>{
+        console.log('calculate')
+        let target = $(e.target)
+        parentdiv=target.parent().parent().parent().parent().parent()
+        console.log('parentdiv in calculate',parentdiv)
+        let tr = target.parent().parent()
+        let qty = tr.find('.qty').val()
+        let price = tr.find('.price').val()
+        let remise = tr.find('.remise').val()
+        // net price will be prix achat
+        let netprice=price-(price*remise/100)
+
+        let total = tr.find('.total')
+        // update also net in tr row if it's in row
+        let net = tr.find('.netprice')
+        if (net.length){
+          net.text(netprice.toFixed(2))
+        }
+        let totalvalue=(netprice*qty).toFixed(2)
+        total.html(totalvalue)
+
+        totals=parentdiv.find('.total')
+        // let totalbon = parseFloat($('.totalbon').text())
+        // totalbonvalue = totalbon+totalvalue
+        // console.log(totalbon, totalvalue )
+        // $('.totalbon').html(totalbonvalue)
+        var totalSum = 0;
+        totals.each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        grandtotal=parentdiv.find('.totalbon')
+        console.log('parentdiv', parentdiv)
+        grandtotal.text(totalSum.toFixed(2))
+        // let totalbonvalue = 0
+        // $('.total').each(function(){
+        //   totalbonvalue += parseFloat($(this).html())
+        // })
+        // totalbon.html(totalbonvalue)
+    }
+
+      const calculatelivraison=(e, id)=>{
+        let target = $(e.target)
+        let tr = target.closest('tr')
+        let qty = tr.find('.qty').val()
+        let price = tr.find('.price').val()
+        let netprice = tr.find('.netprice')
+        let remise = tr.find('.remise').val()
+        let total = tr.find('.total')
+        let totalbon = $(`.totalbonlivraison${id}`)
+        let net=(parseFloat(price)-(parseFloat(price)*parseFloat(remise)/100)).toFixed(2)
+        netprice.text(net)
+        let totalbonval = parseFloat(totalbon.text())
+        let totalrow = qty*price*(1-remise/100)
+        total.text(totalrow.toFixed(2))
+        totals=tr.parent().parent().find('.total')
+        //console.log('totals in modifier', totalbon, totals)
+        let totalrowsval = 0
+        totals.each(function(){
+          totalrowsval+=parseFloat($(this).text())
+        })
+        totalbon.text(totalrowsval.toFixed(2))
+      }
+      // delete bonlivraison products in localstorag
+
+
+
+
+      function checkConsecutiveClicksupdatelivraison(event, id) {
+          let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+          console.log('PDCTS', localStorage.getItem('pdctsinbonlivraison'+id))
+          consecutiveClicks++;
+
+          if (consecutiveClicks === requiredClicks) {
+              // User has clicked the element four times consecutively
+              // Add your code to run when there are four consecutive clicks here
+              alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+                console.log('delete'),
+                // remove element
+                $(event.target).parent().remove()
+                // remove id from localstorage
+                let pdctid=$(event.target).parent().attr('id')
+                pdcts=JSON.parse(localStorage.getItem('pdctsinbonlivraison'+id))
+                pdcts.splice(pdcts.indexOf(pdctid), 1)
+                localStorage.setItem('pdctsinbonlivraison'+id, JSON.stringify(pdcts))
+                // update total
+                let totalbon = parseFloat(parentdiv.find('.totalbon').text())
+                let totalrow = parseFloat($(event.target).parent().find('.total').text())
+                let totalbonvalue = totalbon-totalrow
+                $
+              parentdiv.find('.totalbon').html(totalbonvalue)
+                // Reset the count
+                consecutiveClicks = 0;
+
+              }
+                , function(){ alertify.error('Cancel')});
+              // Reset the count
+              consecutiveClicks = 0;
+          }
+
+      }
+
+      const activerproduct=(id)=>{
+        $.ajax({
+          url: '/products/activerproduct',
+          type: 'POST',
+          data: {
+            id:id,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (data) {
+            alertify.success('Produit activé')
+            $(`pdct${id}`).html(data.html)
+            $(`.status${id}`).removeClass('bg-danger').addClass('bg-success')
+          }
+        })
+      }
+      const desactiverproduct=(id)=>{
+        $.ajax({
+          url: '/products/desactiverproduct',
+          type: 'POST',
+          data: {
+            id:id,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (data) {
+            alertify.success('Produit Desactivé')
+            $(`pdct${id}`).html(data.html)
+            $(`.status${id}`).removeClass('bg-success').addClass('bg-danger')
+          }
+        })
+      }
+
+
+
+
+
+
+
+
+
+    const calculatebonachat=(e)=>{
+        console.log('ree from bon achat')
+        let target = $(e.target)
+        let tr = target.parent().parent()
+        let qty = tr.find('.qty').val()
+        let price = tr.find('.price').val()
+        let remise1 = tr.find('.remise1').val()
+        let remise2 = tr.find('.remise2').val()
+        let remise3 = tr.find('.remise3').val()
+        let remise4 = tr.find('.remise4').val()
+        console.log(qty, price, remise1, remise2, remise3, remise4)
+        let netp1=(price-(price*remise1/100))
+        netp2=netp1-(netp1*remise2/100).toFixed(4)
+        netp3=netp2-(netp2*remise3/100).toFixed(4)
+        netp4=netp3-(netp3*remise4/100).toFixed(4)
+        console.log('netp1', netp1, netp2, netp3, netp4)
+        let totalvalue=(qty*netp4).toFixed(2)
+        console.log(tr, qty, price)
+        // net price will be prix achat
+        //let netprice=price-(price*remise/100)
+        let total = tr.find('.total')
+        total.html(totalvalue)
+        // let totalbon = parseFloat($('.totalbon').text())
+        // totalbonvalue = totalbon+totalvalue
+        // console.log(totalbon, totalvalue )
+        // $('.totalbon').html(totalbonvalue)
+        var totalSum = 0;
+        $('.total').each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        $('.totalbon').text(totalSum.toFixed(2))
+        // let totalbonvalue = 0
+        // $('.total').each(function(){
+        //   totalbonvalue += parseFloat($(this).html())
+        // })
+        // totalbon.html(totalbonvalue)
+    }
+
+    const populatesuppfields=(id, target)=>{
+      $('.overlaydata').removeClass('d-none')
+          $.ajax({
+              url: "{% url 'products:getsupplierdata' %}",
+              type: "post",
+              data: {
+                  'id':id,
+                  'target':target,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function (data) {
+                $('.dataholder').html(data)
+                  // $('input[name="pname"]').val(data.name);
+                  // $('input[name="pphone"]').val(data.phone);
+                  // $('input[name="paddress"]').val(data.address);
+                  // $('input[name="pid"]').val(data.id);
+              },
+              error: function (data) {
+                  console.log(data);
+              }
+          });
+      }
+
+      const populateclientfields=(id, target)=>{
+          $.ajax({
+              url: "{% url 'products:getclientdata' %}",
+              type: "get",
+              data: {
+                  'id':id,
+                  'target':target,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function (data) {
+                console.log('client',data)
+                $('.clientmodaldata').html(data.html)
+                  // $('input[name="updateclientname"]').val(data.name);
+                  // $('input[name="updateclientphone"]').val(data.phone);
+                  // $('input[name="updateclientpersonalname"]').val(data.personalname);
+                  // $('input[name="updateclientphone2"]').val(data.phone2);
+                  // $('input[name="updateclientcity"]').val(data.city);
+                  // $('input[name="updateclientlocation"]').val(data.location);
+                  // $('input[name="updateclientregion"]').val(data.region);
+                  // $('input[name="updateclientaddress"]').val(data.address);
+                  // $('input[name="updateclientice"]').val(data.ice);
+                  // $('select[name="updateclientrep"]').val(data.rep);
+                  // $('input[name="updateclientid"]').val(data.id);
+                  // $('input[name="updateclientcode"]').val(data.code);
+                  // $('input[name="updateclientmoderegl"]').val(data.moderegl);
+              },
+              error: function (data) {
+                  console.log(data);
+              }
+          });
+      }
+
+      const populatecommercialfields=(id)=>{
+          $.ajax({
+              url: "{% url 'products:getscommercialdata' %}",
+              type: "post",
+              data: {
+                  'id':id,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function (data) {
+                  $('input[name="updaterepname"]').val(data.name);
+                  $('input[name="updaterepphone"]').val(data.phone);
+                  $('input[name="updaterepphone2"]').val(data.phone2);
+                  $('input[name="updaterepregion"]').val(data.region);
+                  $('input[name="updaterepinfo"]').val(data.info);
+                  $('input[name="updaterepid"]').val(data.id);
+              },
+              error: function (data) {
+                  console.log(data);
+              }
+          });
+      }
+
+      const addcarsinput = (e)=>{
+        e.preventDefault();
+        $(e.target).parent().parent().parent().parent().find('.carsholder').append('<div class="d-flex mb-3"><input type="text" class="form-control" name="cars" style="background: greenyellow;"><button class="btn btn-danger" onclick="deletecarinput(event)">-</button></div>');
+    }
+      const deletecarinput = (e)=>{
+        e.preventDefault();
+        var input = $(e.target).parent().find('input');
+        if (input.val().length > 0){
+            input.css('border', '1px solid red');
+        }
+        else{
+            $(e.target).parent().remove();
+        }
+    }
+    function updatetab(id, url){
+      currentPage = 1;
+      loadingproducts = false;
+      currentPagelistbl=1;
+      loadinglistbl = false;
+      currentPagereglbl=1;
+      currentPagelistreglfc=1
+      loadingreglbl = false;
+      currentPagelistbc=1;
+      loadinglistbc = false;
+      currentPagelistfc=1;
+      loadinglistfc = false;
+      currentPageclients=1;
+      loadingclients = false;
+      currentPagejournalacha=1
+      loadingjournalacha = false;
+      currentPagejournalachafc=1
+      loadingjournalachafc = false;
+      currentPagejournalvente=1
+      loadingjournalvente = false;
+      currentPagejournalventefc=1
+      loadingjournalventefc = false
+      currentPageblregl=1
+      loadingblregl = false;
+      currentPagefcregl=1
+      loadingfcregl = false;
+      document.title=id+' - system ADMIN'
+      if (id != 'recevoir' && !id.includes('modifierlivraison') && !id.includes('add')){
+        $('.loadingscreen').toggleClass('d-none')
+
+        console.log("update tab")
+        tab=$(`#${id}`)
+        tab.find('script').remove()
+        tab.html('')
+        $.get(url, (data) => {
+          $('.loadingscreen').toggleClass('d-none')
+
+            tab.html(data)
+            //$('.select2').select2();
+        })
+
+      }
+      // $('.resultsholderbonlivraison').select2({
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct?target={{target}}',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   }
+      // })
+      console.log($(`#${id}`).find('.productselect'))
+      // $(`#${id}`).find('.productselect').select2({
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct?target={{target}}',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   }
+      // })
+      // $(`#${id}`).find('#productsselect2').select2({
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct?target={{target}}',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   }
+      // });
+
+    }
+
+    function forceupdatetab(id, url){
+      currentPage = 1;
+      loadingproducts = false;
+      currentPagelistbl=1;
+      loadinglistbl = false;
+      currentPagelistfc=1;
+      loadinglistfc = false;
+      currentPageclients=1;
+      loadingclients = false;
+      currentPagejournalacha=1
+      loadingjournalacha = false;
+      currentPagejournalachafc=1
+      loadingjournalachafc = false;
+      currentPagejournalvente=1
+      loadingjournalvente = false;
+      currentPagejournalventefc=1
+      loadingjournalventefc = false
+      currentPageblregl=1
+      loadingblregl = false;
+      currentPagefcregl=1
+      loadingfcregl = false;
+      document.title=id+' - system ADMIN'
+      tab=$(`#${id}`)
+      tab.find('script').remove()
+      tab.html('')
+      $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+      $.get(url, (data) => {
+          tab.html(data)
+          $('.select2').select2();
+      })
+    }
+
+
+
+    function deletetab(id){
+      // $(event.target).parent().parent().remove()
+      tab=$(`#${id}`)
+      tab.find('script').remove()
+      tab.html('')
+      tab.remove()
+      $(`li.${id}`).remove()
+      $('.tab-pane').removeClass('active show')
+      $('.nav-link').removeClass('active')
+      $($('.nav-link')[0]).addClass('active')
+      $($('.tab-pane')[0]).addClass('active show')
+    }
+
+    function createtab(id, title, url) {
+      $('.deletetabholder').attr('onclick', `deletetab(${id})`)
+      $('.loadingscreen').toggleClass('d-none')
+        tab=$(`#${id}`)
+        // check if tab already created
+        if (tab.length){
+          tabbtn=$('a[href="#'+id+'"]')
+          $('.tab-pane').removeClass('active show')
+          $('.nav-link').removeClass('active')
+          tabbtn.addClass('active')
+          tab.addClass('active show')
+          $('.loadingscreen').toggleClass('d-none')
+          updatetab(id, url)
+          document.title=title+' - system ADMIN'
+          return
+        }
+        document.title=title+' - system ADMIN'
+        // Create tab link with close button
+        var tabLink = $(`
+        <a class="nav-link d-flex justify-content-between p-2" data-toggle="tab" href="#${id}" >
+          <div style="width: max-content;" onclick="updatetab('${id}', '${url}')">${title}</div>
+          <span aria-hidden="true" class="ms-3 rounded-pill" style="padding:0 5px;" onclick="deletetab('${id}')">&times;</span>
+        </a>
+        `);
+
+        // Append tab link to tabs list
+        var tabListItem = $(`<li class="nav-item d-flex justify-content-between ${id}" style="border-left:1px solid gray;"></li>`).append(tabLink);
+        $('#maintabbutton').after(tabListItem);
+
+        // Load content
+        var tabContent = $('<div class="tab-pane fade" id="' + id + '">Loading...</div>');
+        $('#myTabsContent').append(tabContent);
+        $.get(url, (data) => {
+          $('.loadingscreen').toggleClass('d-none')
+
+            $(`#${id}`).html(data)
+            // $('.select2').select2();
+            // if ($('.productstable').length){
+
+            // }
+        })
+
+        // Show the newly created tab
+        tabLink.tab('show');
+        // updatetab(id, url)
+        // Handle tab close button
+
+    }
+
+
+      $(".dashboard-nav-dropdown-toggle").click(function () {
+        $(this).closest(".dashboard-nav-dropdown")
+            .toggleClass("show")
+            .find(".dashboard-nav-dropdown")
+            .removeClass("show");
+        $(this).parent()
+            .siblings()
+            .removeClass("show");
+    });
+      $('.select2').select2();
+
+
+
+
+
+
+        var btn = $('#button');
+
+        $(window).scroll(function() {
+        if ($(window).scrollTop() > 300) {
+            btn.addClass('show');
+        } else {
+            btn.removeClass('show');
+        }
+        });
+
+        btn.on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({scrollTop:0}, '300');
+        });
+        $(window).on('click', (e)=>{
+            if (e.target.className=='imagedisplaybtn'){
+                img=$(e.target).attr('imgsrc')
+                $('.imgproductmodal').attr('src', img)
+            }
+        })
+        const loading=()=>{
+		$('.loadingscreen').removeClass('d-none').addClass('d-flex');
+        }
+
+    const stoploading=()=>{
+        $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+    }
+    $('.searchbtn').on('change', function(){
+            ref=$(this).val()
+            if (ref!=''){
+              loading()
+              $.ajax({
+                  url: '/searchref',
+                  type: 'POST',
+                  data: {
+                      'ref': ref,
+                      'csrfmiddlewaretoken': '{{ csrf_token }}'
+                  },
+                  success: function (data) {
+                      stoploading()
+                      if (data){
+                          $('.searchref').focus()
+                          $('.searchresults').html(data.data)
+                      }
+                  }
+              });
+            }
+        })
+    $('#thisyear').text(new Date().getFullYear())
+
+
+
+    function desactivercompte(userid, tabid, urltab){
+        // ask why should use post when I can simply use get
+        $.get('/products/deactivateaccount', {
+          'userid':userid
+        },
+        (data)=>{
+          if (data.success){
+            alertify.success('Compte desactivé')
+            updatetab(tabid, urltab)
+          }
+        }
+        )
+      }
+      function activercompte(userid, tabid, urltab){
+        // ask why should use post when I can simply use get
+        $.get('/products/activateaccount', {
+          'userid':userid
+        },
+        (data)=>{
+          if (data.success){
+            alertify.success('Compte desactivé')
+            updatetab(tabid, urltab)
+          }
+        }
+        )
+      }
+      let consecutiveClicksbl = 0;
+      let consecutiveClicksfc = 0;
+      const click = 6;
+
+      // script.js
+
+
+    // Initial load
+
+
+      // window ready
+      $(document).ready(function () {
+
+        // Start the initial AJAX request and schedule subsequent requests
+        // getNotifications();
+        // //getoutsideNotifications();
+        // // get connected users
+        // //getconnected()
+        // getconnectedoutside()
+      });
+    </script>
+    {% block js %}
+
+    {% endblock %}
+</body>
+
+
+<!-- modals -->
+</html>

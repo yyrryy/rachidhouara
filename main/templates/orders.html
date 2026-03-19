@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-white shadow rounded">
+  <div class="d-flex justify-content-between">
+    <div class="col-5">
+      <input type="text" class="searchlistbonlivraison">
+    </div>
+    <div class="">
+      <div class="badge bg-danger text-white">Non confirmé: {{notdel}}</div>
+      <div class="badge bg-primary text-white">Confirmé: {{delivered}}</div>
+      <div class="badge bg-success text-white">Payé: {{paied}}</div>
+    </div>
+    
+  </div>
+  <div class="d-flex justify-content-between fixed-bottom p-2 bg-white">
+    
+    
+  </div>
+
+  <div style="height: 70vh; overflow-y: scroll;">
+    
+    <table class="table table-bordered table-hover table-striped table-borded tablecommande listbonlivraison" style="font-size: 12px;">
+      <thead>
+        <tr>
+          <th>N° bon</th>
+          <th>Date</th>
+          <th>Client</th>
+          <th>Code client</th>
+          <th>Total</th>
+          <th>Region</th>
+          <th>Ville</th>
+          <th>Solde cl.</th>
+          <th>Repr</th>
+          <th>Reglé</th>
+          <th>Facturé</th>
+          <th>Transport</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr class="ord {% if order.isdelivered%}bg-primary text-white{%endif%} {% if order.ispaied%}bg-success text-white{%endif%}" orderid="{{order.code}}">
+            <td>{{ order.order_no }}</td>
+            <td>{{ order.date|date:'d/m/Y' }}</td>
+            <td>{{ order.client.name }}</td>
+            <td>{{ order.client.code }}</td>
+            <td>{{ order.total}}</td>
+            <td>{{ order.client.region }}</td>
+            <td>{{ order.client.city }}</td>
+            <td>{{ order.client.rest|floatformat:2 }}</td>
+            <td>{{ order.salseman }}</td>
+            {% if order.ispaied %}
+            <td>
+              oui
+            </td>
+            {% else %}
+            <td>
+              Non
+            </td>
+            {% endif %}
+            <td>
+              test
+            </td>
+            <td>
+              {{order.modlvrsn}}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+  $('.searchlistbonlivraison').on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".listbonlivraison tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  // wrap the code bellow inside document ready function
+  $(document).ready(function() {
+    
+    // get how many rows in tablecommande table in jquery
+    var rows = $('.tablecommande tr').length;
+    // assign this value to nonvalider
+    $('.nonvalider').html(rows-1);
+  });
+
+
+
+
+    // $('.ord').each(function(){
+    //   $(this).click(function(){
+        
+    //     id=$(this).attr('orderid');
+    //     window.location.href='/salsemanorders/'+id
+    //         // $.ajax({
+    //         //     url: '/salsemanorders/'+id,
+    //         //     type: 'POST',
+    //         //     data:{
+    //         //       'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //         //     },
+    //         //     success: function(data){
+    //         //       $('.orderitems').html(data.data);
+    //         //       stoploading()
+    //         //       $('.closeorderitems').click(function(){
+    //         //         $('.orderitems').removeClass('openorder');
+    //         //       })
+    //         //     }
+    //         // });
+    //     });
+    // })
+
+</script>
+{% endblock %}

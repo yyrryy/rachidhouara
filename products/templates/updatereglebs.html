@@ -1,0 +1,340 @@
+<div class="d-flex justify-content-between">
+    <div>
+        <strong>
+            PAYMENT N° REGL#{{reglement.id}} 
+        </strong>
+        <button class="bi bi-download" onclick="printreglementclient('{{reglement.id}}')"></button>
+    </div>    
+        {% if not reglement.mode == 'espece' %}
+            {% if reglement.ispaid %}
+                <div>Reglement Payé</div>
+            {% else %}
+                <button class="btn btn-danger bi bi-trash" onclick="deletereglementclient('{{reglement.id}}')"></button>
+
+                
+                {% if reglement.echance == today %}
+                <div>
+                    <select class="banktarget">
+                        <option value="">Selectionner une banque</option>
+                        {% for i in banks %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-info" onclick="payreglementclient('{{reglement.id}}')">Payé</button>
+
+                </div>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <button class="btn btn-danger bi bi-trash" onclick="deletereglementclient('{{reglement.id}}')"></button>
+        {% endif %}
+    <button onclick="$(this).parent().parent().parent().addClass('d-none')" >X</button>
+</div>
+
+<div class="col-3">
+    
+    
+    <div class="">
+        <small>Date de reglement:</small> <br>
+        <input type="date" class="w-100 notempty mb-2 regldate" value="{{reglement.date|date:'Y-m-d'}}">
+    </div><br>
+    
+    <input name="reglementid" hidden>
+    <small>Client: <strong class="client">{{reglement.client.name.upper}}</strong></small><br>
+    <!-- <small>Sold Bl Client: <span class="soldblinupdatereglbl text-danger" style="margin-left: 10px;">{{reglement.client.soldbl}}</span></small><br> -->
+    <!-- <div class="mt-5">
+        <input type="password" class="passworddeletereglbl form-control">
+        <button class="btn btn-danger deletereglblbtn w-100" reglid="" onclick="deletereglbl(event)">Supprimer</button>
+    </div> -->
+
+</div>
+
+<div class="reglementbonsholderinupdate col-9 border position-relative">
+
+    <div class="inputsholder">
+
+        
+        <div class="row align-items-center">
+            <div class="col-4">
+                <small>Mantant:</small> <br>
+                <input type="number" name="mantant" class="w-100 notempty" placeholder="Mantant" value="{{reglement.amount}}">
+            </div>
+            <div class="col-4">
+                <small>N° piece:</small> <br>
+                <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece" value="{{reglement.npiece}}">
+            </div>
+            <div class="col-4">
+                <small>Mode Paiment:</small> <br>
+                <select name="mode" class="w-100 notempty" onchange="checkmodereglement(event)">
+                    <option value="{{reglement.mode}}">{{reglement.mode}}</option>
+                    <option value="cheque">Cheque</option>
+                    <option value="effet">effet</option>
+                    <option value="espece">espece</option>
+                    <option value="verement">verement</option>
+                    <option value="versement">versement</option>
+                    <option value="carte">carte banquaire</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <small>Echeance:</small> <br>
+                <input type="date" name="echeance" class="w-100 notempty" value="{{reglement.echance|date:'Y-m-d'}}">
+            </div>
+            <div class="col-4">
+                <small>Bank:</small> <br>
+                <input type="text" name="bank" class="w-100" value="{{reglement.bank}}">
+            </div>
+            <div class="col-4">
+                {% if reglement.ispaid %}
+                <div>Reglement Payé</div>
+                {% else %}
+                <button class="w-100 btn btn-primary" onclick="updatereglclient('{{reglement.id}}')">Modifier</button>
+                {% endif %}
+            </div>
+        </div>
+
+        {% for i in otherregl %}
+        <!-- <div class="row align-items-center">
+            <div class="col-4">
+                <small>Mantant:</small> <br>
+                <input type="number" name="mantant" class="w-100 notempty" placeholder="Mantant" value="{{i.amount}}">
+            </div>
+            <div class="col-4">
+                <small>N° piece:</small> <br>
+                <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece" value="{{i.npiece}}">
+            </div>
+            <div class="col-4">
+                <small>Mode Paiment:</small> <br>
+                <select name="mode" class="w-100 notempty" onchange="checkmodereglement(event)">
+                    <option value="{{i.mode}}">{{i.mode}}</option>
+                    <option value="cheque">Cheque</option>
+                    <option value="effet">effet</option>
+                    <option value="espece">espece</option>
+                    <option value="verement">verement</option>
+                    <option value="versement">versement</option>
+                    <option value="carte">carte banquaire</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <small>Echeance:</small> <br>
+                <input type="date" name="echeance" class="w-100 notempty" value="{{i.echance|date:'Y-m-d'}}">
+            </div>
+            <div class="col-4">
+                <small>Bank:</small> <br>
+                <input type="text" name="bank" class="w-100" value="{{i.bank}}">
+            </div>
+            <div class="col-4">
+                <button class="w-100 btn btn-primary" onclick="updatereglclient('{{i.id}}')">Modifier</button>
+            </div>
+        </div> -->
+        {% endfor %}
+
+    </div>
+
+
+
+    
+    <!-- <div class="mb-2">
+        <small>Facture</small>
+        <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+        </select>
+    </div>
+
+    <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+    </select> -->
+
+</div>
+<div class="mb-2 mt-2 row">
+    <div class="col-6">
+        <div class="d-flex justify-content-between">
+            <div>Bons </div>
+            <!-- <div>
+                <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglblupdate">
+            </div> -->
+        </div>
+        <div style="max-height: 220px; overflow-y: scroll;" class="listupdatereglblholder">
+            <table class="table table-bordered reglblupdate table-hover" style="font-size: 12px;">
+                <thead style="position: sticky; top: 0;" class="bg-white">
+                    <tr>
+                        <td>
+                            Date
+                        </td>
+                        <td>
+                            N° Bon
+                        </td>
+
+                        <td>
+                            total
+                        </td>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in bons %}
+                    <tr>
+                        <td>
+                            {{i.date|date:'d/m/Y'}}
+                        </td>
+                        <td>
+                            <strong class="text-primary">
+                                Facture N° {{i.facture.facture_no}} {% if i.rest > 0 %}(Total:{{i.total}}){% endif %} <br>
+
+                            </strong>
+                            <div class="mb-3">
+                                --{{i.bon_no}} 
+                                <button onclick="removebonfromregl(event, '{{reglement.id}}', '{{i.id}}')" class="btn btn-danger "></button>
+
+                            </div>
+                            <!-- --{{i.bon_no}} 
+                            <button onclick="removebonfromregl(event, '{{reglement.id}}', '{{i.id}}')" class="btn btn-danger mb-3"></button> -->
+                        </td>
+                        <td>
+                            {{i.total}}
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                    {% for i in factures %}
+                    <tr>
+                        <td>
+                            {{i.date|date:'d/m/Y'}}
+                        </td>
+                        <td>
+                            <strong class="text-primary">
+                                Facture N° {{i.facture_no}} {% if i.rest > 0 %}(Total:{{i.total}}){% endif %} <br>
+
+                            </strong>
+                            {% for b in i.bons.all %}
+                            <div class="mb-3">
+                                --{{b.bon_no}} 
+                                <!-- <button onclick="removebonfromregl(event, '{{reglement.id}}', '{{b.id}}')" class="btn btn-danger "></button> -->
+
+                            </div>
+                            {% endfor %}
+
+                        </td>
+                        <td>
+                            {% if i.rest > 0 %}
+                            
+                            {{i.total}}
+                            {% else %}
+                            {% endif %}
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <div>Avoirs </div>
+        <div style="max-height: 220px; overflow-y: scroll;" class="listupdatereglblholder">
+            <table class="table table-bordered reglblupdate table-hover" style="font-size: 12px;">
+                <thead style="position: sticky; top: 0;" class="bg-white">
+                    <tr>
+                        <td>
+                            Date
+                        </td>
+                        <td>
+                            N°
+                        </td>
+
+                        <td>
+                            total
+                        </td>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in avoirs %}
+                    <tr>
+                        <td>
+                            {{i.date|date:'d/m/Y'}}
+                        </td>
+                        <td>
+                            {{i.no}}
+                            <button onclick="removeavoirfromregl(event, '{{reglement.id}}', '{{i.id}}')" class="btn btn-danger"></button>
+                        </td>
+                        <td>
+                            {{i.total}}
+
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+
+            </table>
+        </div>
+    </div>
+    
+    
+    
+    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+    </select> -->
+</div>
+<div class="">
+    <div>Avances </div>
+    <div style="max-height: 220px; overflow-y: scroll;" class="listupdatereglblholder">
+        <table class="table table-bordered reglblupdate table-hover" style="font-size: 12px;">
+            <thead style="position: sticky; top: 0;" class="bg-white">
+                <tr>
+                    <td>
+                        N°
+                    </td>
+                    <td>
+                        Date
+                    </td>
+
+                    <td>
+                        mantant
+                    </td>
+                    <td>
+                        N° piece
+                    </td>
+                    <td>
+                        Mode
+                    </td>
+                    <td>
+                        Echeance
+                    </td>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in avances %}
+                <tr>
+                    <td>
+                        AVANCECL#{{i.id}} 
+                        <button onclick="removeavancefromregl(event, '{{reglement.id}}', '{{i.id}}')" class="btn btn-danger"></button>
+
+                    </td>
+                    <td>
+                        {{i.date|date:'d/m/Y'}}
+                    </td>
+                    <td>
+                        {{i.amount}}
+                    </td>
+                    <td>
+                        {{i.npiece}}
+                    </td>
+                    <td>
+                        {{i.mode}}
+                    </td>
+                    <td>
+                        {{i.echeance}}
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+    </div>
+</div>
+

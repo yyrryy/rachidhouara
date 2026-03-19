@@ -1,0 +1,235 @@
+{% load global_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Example</title>
+    <style>
+      @media print {
+         .livraison-holder {
+             height: 27.5cm; /* Slightly less than the maximum printable height */
+             width: 21cm; /* Full width of A4 */
+             border: 1px solid black; /* For debugging and visibility */
+             page-break-after: always; /* Ensures each div starts on a new page */
+             box-sizing: border-box; /* Include padding and border in the element's total width and height */
+         }
+
+         /* Reset margins and paddings for printing */
+         body {
+             margin: 0;
+             padding: 0;
+         }
+         td > div{
+           margin:4px;
+         }
+
+         /* Optional: If you need to adjust margins more precisely */
+         @page {
+             margin: 0; /* Remove any default margins */
+         }
+     }
+    </style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquerySpellingNumber.js"></script>
+    <link href="/static/css/minified.css" rel="stylesheet" />
+</head>
+<body>
+<div class="bg-white rounded p-2 shadow">
+    <div class="d-flex">
+        <h1>
+            List sold client
+        </h1>
+        <button class="btn bi bi-download" onclick="print(window)"></button>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <th>client</th>
+            <th>Total bons</th>
+            <th>Total avoirs</th>
+            <th>Total reglement</th>
+            <th>Total avances</th> 
+            <th>Total remise</th>
+            <th>Sold</th>
+        </thead>
+        <tbody>
+            {% for i in clients %}
+            <tr>
+                <td>
+                    {{i.name}}
+
+                </td>
+                <td>
+                    {% if target == 's'%}{{i.soldbs.bons}}{%else%}{{i.sold.bons}}{% endif %}
+                </td>
+                <td>
+                    {{i.sold.avoirs}}
+                </td>
+                <td>
+                    {{i.sold.reglements}}
+                </td>
+                <td>
+                    {{i.sold.avances}}
+                </td>
+                <td>
+                    {% if target == 's'%}{{i.soldbs.remise}}{%else%}{{i.sold.remise}}{% endif %}
+                </td>
+                <td>
+                    {% if target == 's'%}{{i.soldbs.sold}}{%else%}{{i.sold.sold}}{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>Total</td>
+                <td>{{totalbons}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'js/select2.min.js'%}"></script>
+    <script src="{% static 'js/type.min.js'%}"></script>
+    <script src="{% static 'js/number.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/alertify.min.js'%}"></script>
+    <script>
+    $('.select2').select2()
+    function addmark(event){
+        event.preventDefault()
+        var marque = $(event.target).prev().val()
+        if (marque==''){
+            alertify.error('Veuillez remplir le champ')
+            return
+        }
+        $.ajax({
+            url: '{% url "products:addmark" %}',
+            type: 'POST',
+            data: {
+                'marque': marque,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data){
+                if (data.success){
+                    alertify.success('Marque ajoutée avec success')
+                    //$('[name="marqueinadd"]').append(`<option value="${data.id}">${marque}</option>`)
+                    $('[name="marqueinadd"]').append(`<option value="${data.id}">${marque}</option>`)
+                    // Trigger Select2 to refresh and show the new option
+                    //$('[name="marqueinadd"]').trigger('change')
+                    $(event.target).prev().val('')
+                }else{
+                    alertify.error(data.error)
+                }
+            }
+        })
+    }
+    function addcategory(event){
+        event.preventDefault()
+        var category = $(event.target).prev().val()
+        if (category==''){
+            alertify.error('Veuillez remplir le champ')
+            return
+        }
+        $.ajax({
+            url: '{% url "products:addcategory" %}',
+            type: 'POST',
+            data: {
+                'category': category,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data){
+                console.log(data)
+                if (data.success){
+                    alertify.success('Categorie ajoutée avec success')
+                    $('[name="categoryinadd"]').append(`<option value="${data.id}">${category}</option>`)
+                    $(event.target).prev().val('')
+                }else{
+                    alertify.error(data.error)
+                }
+            }
+        })
+    }
+    $(document).on("keypress", ":input:not(textarea)", function(event) {
+        return event.keyCode != 13;
+    }); 
+    $('.submitbtn').on('click', function(e) {
+        e.preventDefault();
+        if ($('[name="refinadd"]').val()=='' || $('[name="nameinadd"]').val()=='' || $('[name="marqueinadd"]').val()=='' || $('[name="categoryinadd"]').val()==''){
+            alertify.error('Veuillez remplir les champs obligatoires');
+            return
+        }
+        $(e.target).addClass('disabled')
+        var formData = new FormData($('.addoneproductform')[0]);
+        formData.append('target', '{{target}}')
+        console.log($('[name="commercialsprixinadd"]').val())
+        $.ajax({
+            url: '{% url "products:addoneproduct" %}',
+            type: 'POST',
+            
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                console.log(data);
+                if (data.success) {
+                    
+                    alertify.success('Produit ajouté avec success');
+                    // resetform
+                    $('.addoneproductform').trigger('reset');
+
+                    //ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
+                    // we dont want to reload the page !important
+                    //ajaxpage('add', '+ Article', '/products/addproductspage?target={{target}}')
+                    
+                } else {
+                    alertify.error(data.error);
+                }
+            },
+            error: function(data){
+                console.log(data)
+            }
+        });
+    });
+    $('.checkref').on('change', function() {
+        $('.loadingscreen').toggleClass('d-none')
+        var ref = $(this).val();
+        var category = $('[name="categoryinadd"]').val();
+        $.ajax({
+            url: '{% url "products:checkref" %}',
+            type: 'POST',
+            data: {
+                'ref': ref,
+                'category': category,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data) {
+                console.log(data);
+                $('.loadingscreen').toggleClass('d-none')
+                if (data.exist) {
+                    $('.existerror').removeClass('d-none');
+                    $('.submitbtn').addClass('disabled');
+                } else {
+                    console.log(data)
+                    $('.existerror').addClass('d-none');
+                    $('.submitbtn').removeClass('disabled');
+                    $('[name=nameinadd]').val(data.name)
+                    $('[name=equivinadd]').val(data.equiv)
+                }
+            }
+        });
+    });
+    
+    $(document).ready(function() {
+        
+        
+    });
+
+</script>
+</body>
+</html>
+<!-- End Path: products/templates/addproduct.html -->

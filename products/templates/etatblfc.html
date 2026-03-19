@@ -1,0 +1,158 @@
+
+<html>
+<script src="/static/js/jquery.min.js"></script>
+<link href="/static/css/minified.css" rel="stylesheet" />
+<body>
+<div class=" d-flex justify-content-between">
+	<div>
+		Du <input type="date" class="start" style="border-radius:5px; border:1px solid; width: 165px" value="{{start}}">
+		Au <input type="date" class="end" style="border-radius:5px; border:1px solid; width: 165px" value="{{end}}">
+		<!-- <select class="rep" name="">
+			{% for i in reps %}
+			<option value="{{i.id}}">{{i.name}}</option>
+			{% endfor %}
+		</select>
+		<input type="text" class="region" placeholder="region"> -->
+		<button class="btn btn-dark" onclick="genereretatbl(event)">Generer</button>
+	</div>
+	<input class="col-4" placeholder="recherche" onkeyup="searchtableetat(event)">
+	<button class="btn btn-primary" onclick="tabletoexcel()">Excel</button>
+	<button class="btn btn-info bi bi-download" onclick="printetat()"></button>
+	<!-- <button class="btn btn-dark" onclick="hidezero()">Zero</button> -->
+</div>
+
+<div class="mt-5 printetat p-2 position-relative" id="printetat">
+	<div class="text-center border" {% if etatfacture %}style="background: orange;"{%endif%}>
+		{{title}}
+	</div>
+	<table class="table table-bordered table-hover" style="font-size: 12px; border-color: black;" id="etattable">
+		<thead class="bg-darkblue text-white" style="position:sticky; top:0;">
+			<td>Client</td>
+			<td>ICE</td>
+			<td>Total TTC</td>
+			<td>Total TVA</td>
+			<td>Total HT</td>
+			<td>Total Avoir TTC</td>
+			<td>Total Avoir TVA</td>
+			<td>Total Avoir HT</td>
+			<td onclick="intsorttable(event)">TOTAL NET TTC</td>
+			<td style="text-align: center; width: 2%">Impr.</td>
+		</thead>
+		<tbody class="etatblfctrs">
+			
+		</tbody>
+		<thead class="bg-darkblue text-white" style="position:sticky; top:0;">
+			<td></td>
+			<td></td>
+			<td class="totalttc"></td>
+			<td class="totaltva"></td>
+			<td class="totalht">Total HT</td>
+			<td class="totalavoirttc">Total Avoir TTC</td>
+			<td class="totalavoirtva">Total Avoir TVA</td>
+			<td class="totalavoirht">Total Avoir HT</td>
+			<td class="totalnetttc">TOTAL NET TTC</td>
+			<td style="text-align: center; width: 2%"></td>
+		</thead>
+	</table>
+</div>
+<script>
+	function hidezero(){
+		// Select all <tr> elements where the <td> with class .totalsituation contains '0.00'
+    $('tr').has('td.totalsituation').filter(function() {
+        return $(this).find('td.totalsituation').text().trim() === '0.00';
+    }).each(function() {
+        // Do something with each <tr> that meets the condition
+        $(this).toggleClass('d-none'); // This hides/displays the matching <tr> elements
+    });
+	}
+// event is needed to give the clicked button a background
+function popupwindow(event, url, clientname, clientid){
+	start=$('.start').val()
+	end=$('.end').val()
+	$('.bi-download').removeClass('bg-success')
+	$(event.target).addClass('bg-success')
+	//+clientid
+	var myWindow = window.open(`http://${window.location.href.split( '/' )[2]}${url}?clientname=${clientname}&clientid=${clientid}&start=${start}&end=${end}`, '', 'width=1300,height=900');
+	myWindow.focus();
+	myWindow.addEventListener('load', function() {
+	console.log('New window loaded.');
+
+	// Wait for 5 seconds before printing
+	// 1000 milliseconds = 1 seconds
+	}, false);
+}
+function printetat(){
+	var printContents = document.getElementById('printetat').innerHTML;
+	var originalContents = document.body.innerHTML;
+	document.body.innerHTML = printContents;
+	//
+	window.print();
+	document.body.innerHTML = originalContents;
+}
+	function searchtableetat(event) {
+	    const query = $(event.target).val().toLowerCase();
+	    const terms = query.split('+');
+		console.log('>>>>>>', query)
+
+	    $('#etattable tbody tr').each(function() {
+	        const row = $(this);
+	        let match = true;
+
+	        terms.forEach(term => {
+	            if (row.text().toLowerCase().indexOf(term.trim()) === -1) {
+	                match = false;
+	            }
+	        });
+
+	        if (match) {
+	            row.removeClass('d-none');
+	        } else {
+	            row.addClass('d-none');
+	        }
+	    });
+	}
+	function genereretatbl(event){
+	start=$('.start').val()
+	end=$('.end').val()
+	rep=$('.rep').val()
+	region=$('.region').val()
+	if (start==''||end==''){
+		start==''?$('.start').addClass('border-danger'):$('.end').addClass('border-danger')
+		end==''?$('.end').addClass('border-danger'):$('.start').addClass('border-danger')
+	}else{
+	$('#etattable tbody').html('Loading ....')
+	$.get('/products/getetatblfc', {
+		start: start,
+		end: end,
+		target: "{{target}}"
+	}, function(data){
+		console.log(data)
+		$('#etattable tbody').html(data.html)
+		$('.totalttc').html(data.totalttc)
+		$('.totaltva').html(data.totaltva)
+		$('.totalht').html(data.totalht)
+		$('.totalavoirttc').html(data.totalavoirttc)
+		$('.totalavoirtva').html(data.totalavoirtva)
+		$('.totalavoirht').html(data.totalavoirht)
+		$('.totalnetttc').html(data.totalnetttc)
+	})
+	}
+}
+
+function tabletoexcel(){
+	start=$('.start').val()
+	end=$('.end').val()
+	table = document.getElementById('etattable')
+	console.log(table)
+
+	console.log('>>excel')
+	var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  	var ctx = {worksheet:'Etat_Client_bl_moi'+start+'_'+end, table: table.innerHTML}
+    window.location.href = uri + base64(format(template, ctx))
+}
+</script>
+</body>
+</html>

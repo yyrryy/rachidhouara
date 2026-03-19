@@ -1,0 +1,1432 @@
+{% load global_tags %}
+<html>
+<head>
+	<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/alertify.min.js"></script>
+	<script src="/static/js/bootstrap.bundle.min.js"></script>
+	<link href="/static/css/minified.css" rel="stylesheet" />
+	<style>
+		table input {
+			font-weight: bold;
+			text-align: center;
+		}
+	</style>
+</head>
+
+
+<body style="overflow-x:hidden;background: #e3e3e3; font-family: monospace;" >
+
+	<div class="addclientholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
+	  <div class="ms-3">
+	    <label>Client</label> <br>
+	    <input type="text" class="addclientname">
+	  </div>
+	  <div class="ms-3">
+	    <label>CODE</label> <br>
+	    <input type="text" class="addclientcode">
+	  </div>
+	  <div class="ms-3">
+	    <label>Ville</label> <br>
+	    <input type="text" class="addclientville">
+	  </div>
+
+
+
+	  <button class="btn btn-sm btn-success" onclick="addclient(event)">
+	    Enregistrer
+	  </button>
+	  <button class="btn btn-danger" onclick="$('.addclientholder').css('top', '-10vh')"></button>
+
+	</div>
+
+<div class="container d-flex justify-content-between">
+	<div class="tvacalculholder bg-white shadow p-3 d-none" style="
+		position: absolute;
+		z-index: 999;
+		top: 0;
+    right: 0;
+    width: 80%;
+		height:100vh;
+		transition: all .5s ease">
+		<div class="d-flex justify-content-between">
+			<button class="col-10 btn btn-danger" onclick="$('.tvacalculholder').addClass('d-none')"></button>
+			<select class="tvayears populateyears disabled" hidden onchange="showtva()">
+			</select>
+		</div>
+		<table class="table table-hover table-bordered" style="border-color:black;font-weight:bold">
+			<thead>
+				<tr>
+					<td>Moi</td>
+					<td>Rest</td>
+					<td>TVA ventes</td>
+					<td>Rest+TVA</td>
+					<td>Total achat</td>
+					<td>TVA achat (-net)</td>
+					<td>Net</td>
+					<td>Rrp</td>
+					<td>Somme</td>
+				</tr>
+			</thead>
+			<tbody class="tvatrs">
+
+
+			</tbody>
+		</table>
+	</div>
+	<input class="col-6 searchech" placeholder="recherche" onchange="searchech(event)">
+	<button class="btn btn-primary" onclick="showtva()">TVA</button>
+	<button class="btn btn-info bi bi-download" onclick="getalldatagrouped()"></button>
+</div>
+
+<div class="mt-5 printetat p-2 position-relative" id="printetat">
+	<div class="text-center border" {% if etatfacture %}style="background: orange;"{%endif%}>
+		{{title}}
+	</div>
+	<div class="d-flex justify-content-between">
+		<div>
+			<button class="btn btn-primary btn-sm" name="button" onclick="remplacer()">Remplacer <strong class="rowstoreplace">0</strong></button>
+			<select class="years populateyears disabled" hidden name="">
+			</select>
+			<select class="months" name="">
+				<option value="">--</option>
+				<option value="01">01</option>
+				<option value="02">02</option>
+				<option value="03">03</option>
+				<option value="04">04</option>
+				<option value="05">05</option>
+				<option value="06">06</option>
+				<option value="07">07</option>
+				<option value="08">08</option>
+				<option value="09">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+			</select>
+			<button class="btn border btn-info" name="button" onclick="getmonthecheances(event)">+</button>
+			<button class="btn border btn-info bi bi-list" name="button" onclick="getduplicates(event)"></button>
+			<strong class="duplicated">
+
+			</strong>
+			<!-- <button class="btn border btn-info" name="button" onclick="$('input.pointage').prop('checked', false);">X</button> -->
+		</div>
+		<strong>Donnée de <strong class="monthdata"></strong> </strong>
+		<div >
+			<span class="">
+				Total: <strong class="onetotal">0.00</strong>
+			</span>
+			<button class="btn btn-primary" onclick="grouper()">
+				Grouper
+			</button>
+		</div>
+
+	</div>
+	<div class="tableholder d-none" style="height:80vh; overflow:scroll;">
+		<table class="table table-bordered table-hover" style="font-size: 16px; border-color: black;font-weight: bold;" id="etattable">
+			<thead class="bg-darkblue text-white" style="position:sticky; top:0;">
+				<td style=""></td>
+				<td></td>
+				<td style="">N°</td>
+				<td style="text-align: center;">Type</td>
+				<td style="text-align: center;">Echeace</td>
+				<td style="text-align: center; width:20%;">Client</td>
+				<td style="text-align: center; width:5%;">Mantant</td>
+				<td style="text-align: center">TVA</td>
+				<td style="text-align: center; width:15%;">Nom de</td>
+				<td style="text-align: center;">RE</td>
+				<td style="text-align: center;">IM</td>
+				<td style="text-align: center;">PF</td>
+				<td style="text-align: center;">Code</td>
+				<td style="text-align: center; width:28%;">Facture</td>
+				<td>CB</td>
+				<td style="text-align: center;">Total</td>
+
+			</thead>
+			<tbody class="excelectbody">
+				<!-- initial tr is moved to trs coming with getmonth data -->
+			</tbody>
+
+			<thead class="bg-darkblue text-white" style="position:sticky; bottom:0;">
+				<td style=""></td>
+				<td style=""></td>
+				<td style=""></td>
+				<td ></td>
+				<td ></td>
+				<td ></td>
+				<td class="total" ></td>
+				<td class="totaltva"></td>
+				<td ></td>
+				<td ></td>
+				<td ></td>
+				<td ></td>
+				<td ></td>
+				<td ></td>
+				<td ></td>
+
+			</thead>
+		</table>
+		</div>
+
+		<!-- reglement section -->
+		<div class="reglement p-3 border shadow vh-100 rounded" style="position: absolute;top: 0;right: 0;width: 53%;background: white;display:none;">
+
+					<button class="btn btn-danger w-100 mb-2" onclick="$('.reglement').fadeOut();">X</button>
+					<div class="d-flex justify-content-between">
+
+						<input name="addreglementclientsfc" placeholder="Client" id="" class="addreglementclientsfc" style="width:100%;" readonly>
+						<input hidden name="clientid"class="clientid" style="width:100%;" readonly>
+						<!-- <input name="soldclientsfc" id="" placeholder="Sold facture" class="select2 form-select soldclientsfc" style="width:50%;" readonly> -->
+
+							<!-- <div class="d-flex justify-content-between">
+								<div class="clientcode"></div>
+								<button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectreglfc(event)">↻</button>
+
+							</div> -->
+
+					</div>
+
+					<div class="">
+							<small>Date:</small> <br>
+							<input type="date" name="datereglementclientfc" class="w-100 notempty datereglementfc mb-2" onchange="checkyearreglfc(event)" value="{{today|date:'Y-m-d'}}">
+							<small class="errordatereglclfc text-danger d-none">
+								Date incorrect
+							</small>
+					</div>
+
+					<div class="reglementfcholder border p-2">
+							<div class="inputsholder">
+									<button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglementfc(event)">+</button>
+									<strong class="totalreglfcfields">0.00</strong>
+									<div class="row align-items-center">
+											<div class="col-3">
+													<small>Mantant:</small> <br>
+													<input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant">
+											</div>
+											<div class="col-3">
+													<small>N° piece:</small> <br>
+													<input type="text" name="npiece" class="w-100 notempty npiecereglementclient" placeholder="N° piece">
+											</div>
+											<div class="col-3">
+													<small>Mode Paiment:</small> <br>
+													<select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)">
+															<option value="cheque">Cheque</option>
+															<option value="effet">effet</option>
+															<option value="espece">espece</option>
+															<option value="avoir">avoir</option>
+													</select>
+											</div>
+											<div class="col-3">
+													<small>Echeance:</small> <br>
+													<input type="date" name="echeance" class="w-100 notempty echeancereglfc" value="{{today|date:'Y-m-d'}}">
+											</div>
+									</div>
+							</div>
+
+
+							<div class="d-flex justify-content-between mt-3">
+									<div>
+											<small>Bons: <strong class="totalcheckedfc">0.00</strong></small><br>
+									</div>
+									<!-- <div>
+											<button class="btn btn-sm btn-danger" onclick="filternonreglrfc()">NR</button>
+											<button class="btn btn-sm btn-info" onclick="getallfc()">TOUS</button>
+									</div> -->
+
+									<input style="width:10em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistaddreglfc">
+
+							</div>
+							<div class="mb-2 mt-2 listaddreglfcholder" style="max-height: 160px; overflow-y: scroll;">
+
+									<table class="table table-bordered listaddreglfc table-hover" style="font-size: 12px;">
+											<thead style="position: sticky; top: 0; background: white;">
+													<tr>
+															<td>
+																	Date
+															</td>
+															<td>
+																	N° Bon
+															</td>
+															<td>
+																	Client
+															</td>
+															<td>
+																	total
+															</td>
+															<td>
+																	Rest
+															</td>
+															<td></td>
+													</tr>
+											</thead>
+											<tbody class="reglementclientfcholder">
+											</tbody>
+											<tfoot style="position: sticky; bottom: 0;">
+													<td colspan="2"></td>
+													<td class="soldfactureregl" style="background: yellowgreen; color:red;"></td>
+													<td class="totalfactures" style="background: yellowgreen; color:red;"></td>
+											</tfoot>
+
+									</table>
+									<!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+									</select> -->
+							</div>
+							<button class="btn text-white w-100 submitaddreglemntclientbtnfc disabled" style="background: #00538c;">
+									Valider
+							</button>
+							<!-- <div class="mb-2">
+									<small>Facture</small>
+									<select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+									</select>
+							</div>
+
+							<select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+							</select> -->
+
+					</div>
+					<div class="mt-3">
+							{% csrf_token %}
+
+
+					</div>
+
+		</div>
+
+
+		<!-- update facture client section -->
+		<div class="updateclientfc p-3 border shadow vh-100 rounded" style="position: fixed;top: 0;right: 0;width: 53%;background: white;display:none;">
+
+					<button class="btn btn-danger w-100 mb-2" onclick="$('.updateclientfc').fadeOut();$('.clientselectfacture').val('').trigger('change')">X</button>
+					<!-- <table class="table table-bordered">
+						<tr>
+							<td>Date</td>
+							<td>Client</td>
+							<td>Note</td>
+							<td>Mantant</td>
+							<td>Reprent.</td>
+						</tr>
+						<tr>
+							<td class="datefacture"></td>
+							<td class="currentclient"></td>
+							<td class="notefacture"></td>
+							<td class="totalfacture"></td>
+							<td class="salsemanfacture"></td>
+						</tr>
+					</table> -->
+					<div class="d-flex justify-content-between">
+						<div class="p-2 border">
+							Client Facture: <br> <strong class="currentclient"></strong>
+						</div>
+						<div class="p-2 border">
+							Date Facture: <br> <strong class="datefacture"></strong>
+						</div>
+						<div class="p-2 border">
+							Mantant Facture: <br> <strong class="totalfacture text-danger"></strong>
+						</div>
+
+
+					</div>
+					<div class="d-flex justify-content-between">
+						<div class="p-2 border">
+							Note Facture: <br> <strong class="notefacture text-danger"></strong>
+						</div>
+						<div class="p-2 border">
+							Representant Facture: <br> <strong class="salsemanfacture"></strong>
+						</div>
+
+
+					</div>
+					<hr>
+					<div class="">
+						<strong>
+							Modifier Client
+						</strong>
+						<input hidden class="factureid">
+						<button class="btn btn-danger bi bi-plus" onclick="displayaddclient(event)"></button>
+						<select name="client" id="" style="width:100%;" class="select2 clientselectfacture form-select notemptylivraison">
+						</select>
+						<button class="btn btn-success" onclick="updatefactureclient(event)">Modifier</button>
+					</div>
+
+
+		</div>
+</div>
+<script src="/static/js/select2.min.js"></script>
+<script>
+// #uizyerz5
+function comptabilise(event, excelech_id){
+	console.log('>>', 'rerer')
+	parent=$(event.target).parent()
+	facture=parent.find('.factures').val()
+	$.get('/products/bulkcompta', {'facture':facture, 'excelech_id':excelech_id}, (data)=>{
+		$(event.target).remove()
+	})
+}
+	function addclient(event){
+		let clientname=$('.addclientname').val()
+		let clientcode=$('.addclientcode').val()
+		let clientville=$('.addclientville').val()
+		if (clientname==""||clientcode==""){
+			alertify.error('Remplir les champs')
+			return
+		}
+		$.post('{% url "products:checkcodeclient" %}', {
+			code: clientcode,
+			name:clientname,
+			'csrfmiddlewaretoken': '{{ csrf_token }}'
+			}, function(data){
+					if(data.exist){
+						alertify.error('Client deja existé')
+						return
+					}else{
+						$.get('/products/addclientdivers', {'name':clientname, 'code':clientcode, 'ville':clientville}, (data)=>{
+							$('.addclientholder').css('top', '-10vh')
+							alertify.success('OK')
+						})
+					}
+				})
+	}
+	function displayaddclient(event){
+		$.get('/products/getlastcodeclient', (data)=>{
+			$('.addclientcode').val(data.lastcode)
+			$('.addclientname').val('')
+			$('.addclientville').val('')
+		})
+		$('.addclientholder').css('top', '10vh')
+	}
+	// client select change
+	function updatefactureclient(event){
+		//$('.excelectbody tr').css('background', 'none')
+		clientid=$('.clientselectfacture').val()
+		if (clientid==null){
+			alertify.error('Client vide')
+			return
+		}
+		factureid=$(event.target).parent().find('.factureid').val()
+		console.log(clientid, factureid)
+		$.get('/products/updatefactureclient', {
+			'factureid':factureid,
+			'clientid':clientid,
+		}, (data)=>{
+			alertify.success('Client Modifié')
+			$('.updateclientfc').fadeOut()
+			//console.log(data)
+		})
+	}
+	// get facture data
+	function getfacturedata(event){
+		var selectedText = window.getSelection().toString().trim();
+		// console.log('>> ', selectedText)
+
+    // Populate select2 with new option
+
+		//$('.clientselectfacture').val('').trigger('change')
+		$('.excelectbody tr').css('background', 'none')
+		thistr=$(event.target).parent().parent()
+		facture_no=$(event.target).val()
+		$.get('/products/getfacturedata', {
+			'facture_no':selectedText,
+			'input':$(event.target).val()
+		}, (data)=>{
+			if (data.success){
+				let client_id = data.client_id;
+		    let clientName = data.client;
+		    let opt = new Option(clientName, client_id, true, true);
+				$('.clientselectfacture').append(opt).trigger('change');
+				thistr.css('background', 'yellowgreen')
+				$('.updateclientfc').fadeIn()
+				$('.currentclient').text(data.client)
+				$('.datefacture').text(data.date)
+				$('.notefacture').text(data.note)
+				$('.totalfacture').text((data.total).toFixed(2))
+				$('.salsemanfacture').text(data.salseman)
+				$('input.factureid').val(data.id)
+				console.log(data)
+			}else{
+				alertify.error(data.error);
+			}
+		})
+	}
+	// select2 clients
+	$(function(){
+
+    $('.clientselectfacture').select2({
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher client',
+        templateResult: formatclientfc,
+        templateSelection: formatclientSelectionfc,
+      });
+      function formatclientfc (client) {
+          if (client.loading) {
+            return client.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${client.diver>0?"red":""};">${client.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatclientSelectionfc (client) {
+          return client.text;
+        }
+
+	})
+	// checkbox checked/unchecked
+	const checkreglementbox=(event)=>{
+		let parentdiv=$(event.target).parent().parent()
+		if ($(event.target).is(':checked')){
+			parentdiv.css('background', '#ddfaed')
+			if($($(event.target).parent().parent().find('td')[1]).text().includes('BL')){
+				bons=parseFloat($('.totalcheckedbl').text())
+				bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+				console.log(bons+bontotal)
+				$('.totalcheckedbl').text((bons+bontotal).toFixed(2))
+			}else{
+				bons=parseFloat($('.totalcheckedfc').text())
+				bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+				console.log(bons+bontotal)
+				$('.totalcheckedfc').text((bons+bontotal).toFixed(2))
+			}
+		}else{
+			parentdiv.css('background', 'none')
+			if($($(event.target).parent().parent().find('td')[1]).text().includes('BL')){
+				bons=parseFloat($('.totalcheckedbl').text())
+				bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+				console.log(bons-bontotal)
+				$('.totalcheckedbl').text((bons-bontotal).toFixed(2))
+			}else{
+				bons=parseFloat($('.totalcheckedfc').text())
+				bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+				console.log(bons-bontotal)
+				$('.totalcheckedfc').text((bons-bontotal).toFixed(2))
+			}
+		}
+	}
+
+	// valider
+	$('.submitaddreglemntclientbtnfc').on('click', function(event){
+			event.preventDefault()
+			let parentdiv=$(this).parent().parent()
+			date=parentdiv.find('[name="datereglementclientfc"]').val()
+			if (date==""){
+				alertify.error('Date ERR')
+				return
+			}
+			var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+			if (isAnyEmpty){
+					let emptyInputs = parentdiv.find('input.notempty').filter(function() {
+							return !this.value.trim();
+					});
+
+					// Add a red border to all empty input elements
+					alertify.error('Veuillez remplir tous les champs obligatoires')
+					emptyInputs.css('border', '1px solid red');
+					parentdiv.find('input.notempty').not(emptyInputs).css('border', '');
+					$(this).attr('disabled', false)
+					return
+			}
+			if ((selectedValues = parentdiv.find("input[name='facturestopay']:checked").map(function() {
+					return this.value;
+			}).get()).length == 0){
+					alertify.error('Veuillez selectionner au moins une facture')
+					return
+			}
+			$(this).addClass('disabled')
+			clientid=parentdiv.find('[name="clientid"]').val()
+			mantant=parentdiv.find('[name="mantantreglementclientfc"]').map(function() {
+					return parseFloat(this.value);
+			}).get();
+			mode=parentdiv.find('[name="modereglementclient"]').map(function() {
+					return this.value;
+			}).get();
+			npiece=parentdiv.find('[name="npiece"]').map(function() {
+					return this.value;
+			}).get();
+
+
+			bons=parentdiv.find('[name="addreglementbons"]').map(function() {
+					return this.value;
+			}).get();
+			echeance=parentdiv.find('[name="echeance"]').map(function() {
+					return this.value;
+			}).get();
+
+			console.log(clientid)
+			$.post('/products/reglefactures', {
+					clientid:clientid,
+					mantant:JSON.stringify(mantant),
+					mode:JSON.stringify(mode),
+					npiece:JSON.stringify(npiece),
+					echeance:JSON.stringify(echeance),
+					date:date,
+					bons:JSON.stringify(selectedValues),
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+					}, function(data){
+							alertify.success('Reglement ajouté')
+							$('.reglement').fadeOut()
+							//$('tr').css('background', 'none')
+			})
+	})
+	// check for npiece existence
+	// $('.npiecereglementclient').on('change', function(){
+	// 		npiece=$(this).val()
+	// 		console.log('check npiece with get', npiece)
+	// 		$.get('/products/checknpiece', {
+	// 				npiece:npiece,
+	// 				csrfmiddlewaretoken: '{{ csrf_token }}'
+	// 				}, function(data){
+	// 						console.log(data)
+	// 						if (data.exist){
+	// 								alertify.error('N° piece existe deja')
+	// 								$('.submitaddreglemntclientbtnfc').addClass('disabled')
+	// 						}else{
+	// 								$('.submitaddreglemntclientbtnfc').removeClass('disabled')
+	// 						}
+	// 				})
+	// })
+
+	function totalreglementfc(event){
+		let sum = 0;
+		$('input[name="mantantreglementclientfc"]').map(function() {
+				const value = parseFloat($(this).val()) || 0;
+				sum += value;
+		});
+		$('.totalreglfcfields').text(sum.toFixed(2))
+	}
+	function removereglrowfc(event){
+			let parentdiv=$(event.target).parent().parent()
+			let amountinp=parentdiv.find('[name="mantantreglementclientfc"]').val()
+			console.log(amountinp)
+			if (amountinp.length==0){
+					parentdiv.remove()
+			}
+	}
+	function addfieldsreglementfc(event){
+			let parentdiv=$(event.target).parent()
+			console.log(parentdiv)
+			// parentdiv.find('.mantantholder').append('<input type="number" name="mantantreglementclientfc" class="w-100 notempty mt-2">')
+			// parentdiv.find('.modeholder').append('<select name="modereglementclient" class="w-100 notempty"><option value="cheque">Cheque</option><option value="effet">effet</option></select>')
+			// parentdiv.find('.echeanceholder').append('<input type="date" name="echeancereglementclient" class="w-100 notempty">')
+			// parentdiv.find('.npieceholder').append('<input type="text" name="npiecereglementclient" class="w-100 notempty mt-2">')
+			//today's date in yyyy-mm-dd format
+			var today = new Date();
+
+			// Get the current date in the "yyyy-mm-dd" format
+			var yyyy = today.getFullYear();
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+			var dd = String(today.getDate()).padStart(2, '0');
+
+			// Format the date as "yyyy-mm-dd"
+			var currentDate = yyyy + '-' + mm + '-' + dd;
+			parentdiv.append(`<div class="row align-items-center mt-2 addedreglrow"><div class="col-3"> <input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrowfc(event)"></button></div></div>`)
+	}
+	function reglementech(event){
+		thistr=$(event.target).parent().parent()
+		$('.addedreglrow').remove()
+		$('.addreglementclientsfc').val('')
+		$('.clientid').val('')
+		$('.soldclientsfc').val('')
+		$('input[name="mantantreglementclientfc"]').val('')
+		$('.npiecereglementclient').val('')
+		$('.totalcheckedfc').text(0.00)
+		$('.totalreglfcfields').text(0.00)
+		facture=$(event.target).parent().find('.factures').val().split(',')[0]
+		if (facture.length>1){
+			$('.reglementclientfcholder').html('')
+			$('.reglement').css('filter', 'blur(5px)')
+			$.get('/products/reglementech', {'facture':facture}, (data)=>{
+				if (data.success){
+					thistr.css('background', 'yellowgreen')
+					$('.reglement').fadeIn()
+					$('.addreglementclientsfc').val(data.client)
+					$('.clientid').val(data.clientid)
+					$('.soldclientsfc').val((data.soldfactureregl).toFixed(2))
+
+					$('.reglement').css('filter', 'none')
+					$('.reglementclientfcholder').html(data.trs)
+					//console.log(data)
+				}else{
+					$('.reglement').css('filter', 'none')
+					alertify.error(data.error)
+				}
+			})
+		}
+	}
+	$(document).ready(function() {
+		const $select = $('.populateyears');
+    const currentYear = new Date().getFullYear();
+    const startYear = 2025;
+
+    for (let year = startYear; year <= currentYear; year++) {
+        $select.prepend($('<option>', {
+            value: year,
+            text: year
+        }));
+    }
+		$select.val(currentYear);
+	})
+
+	function gettvayear(){
+		year=$('.tvayears').val()
+		$.get('/products/gettvayear', {'year':year}, (data)=>{
+			console.log(data)
+		})
+	}
+
+	function getduplicates(){
+		month=$('.months').val()
+		year=$('.years').val()
+		monthyear=`${month}/${year}`
+		$('.duplicated').html(`<div class="spinner-border" role="status"><span class="sr-only"></span>
+		</div>`)
+		$.get('/products/duplicatedech', {'monthyear':monthyear}, (data)=>{
+			$('.duplicated').html(data.duplicates)
+			console.log(data)
+		})
+	}
+	function newlinedown(event, monthId) {
+		event.preventDefault();
+		year=$('.tvayears').val()
+		// Convert monthId to an integer and increment it
+		let newMonthId = parseInt(monthId) + 1;
+
+		// If the new month ID is 13, don't add a new line
+		if (newMonthId == "13") {
+				console.log("Month ID exceeds 12, no new line added.");
+				return;
+		}
+
+		// Create the new month ID string with leading zero if needed
+		let newMonthIdStr = newMonthId < 10 ? '0' + newMonthId : newMonthId.toString();
+
+		// Check if a row with the new month ID already exists
+		if ($('tr[monthid="' + newMonthIdStr + '"]').length > 0) {
+				console.log("A row with month ID " + newMonthIdStr + " already exists.");
+				return;
+		}
+
+		// Create the new row HTML
+		$.get('/products/gettvamonthinfo', {
+			'month':newMonthIdStr+'/'+year,
+			'year':year
+		}, (data)=>{
+			console.log('data for newline', data)
+			let newRowHtml = `
+					<tr monthid="${newMonthIdStr}">
+						<td>
+							<button class="btn btn-dark" onclick="gettvamonthinfo(event, '${newMonthIdStr}')">
+								${newMonthIdStr}/${year}
+							</button>
+						</td>
+						<td class="rest">${data.rest}</td>
+						<td class="tvavente">${(data.totaltva).toFixed(2)}</td>
+						<td class="restandtva">${data.restandtva}</td>
+						<td>
+							<input style="width:8em;" type="number" class="tvaachatinput" readonly value="${(data.tvaachat).toFixed(2)}">
+						</td>
+						<td>
+							<input style="width:8em;" type="number" class="othertvaachatinput" readonly value="${(data.othertvaachat).toFixed(2)}">
+						</td>
+						<td class="net" style="background:${data.net<0?'#ffa6a6':''};">${(data.net).toFixed(2)}</td>
+						<td>
+							<input style="width:8em;" type="number" class="report" value="${data.report}">
+						</td>
+						<td>
+							<input style="width:8em;" type="number" class="somme" onchange="somme(event)">
+						</td>
+						<td>
+							<button class="btn btn-info bi bi-check" onclick="savetva(event, '${newMonthIdStr}')"></button>
+							<button class="btn btn-info bi bi-chevron-double-up" onclick="newlineup(event, '${newMonthIdStr}')"></button>
+							<button class="btn btn-info bi bi-chevron-double-down" onclick="newlinedown(event, '${newMonthIdStr}')"></button>
+						</td>
+					</tr>`;
+			console.log($(event.target).closest('tr'))
+			// Append the new row after the current row
+			$(event.target).closest('tr').after(newRowHtml);
+		})
+		// todo: get data of that month
+
+	}
+
+	function newlineup(event, monthId) {
+		event.preventDefault();
+		year=$('.tvayears').val()
+		// Convert monthId to an integer and increment it
+		let newMonthId = parseInt(monthId) - 1;
+
+		// If the new month ID is 13, don't add a new line
+		if (newMonthId == "0") {
+				console.log("Month ID exceeds 12, no new line added.");
+				return;
+		}
+
+		// Create the new month ID string with leading zero if needed
+		let newMonthIdStr = newMonthId < 10 ? '0' + newMonthId : newMonthId.toString();
+
+		// Check if a row with the new month ID already exists
+		if ($('tr[monthid="' + newMonthIdStr + '"]').length > 0) {
+				console.log("A row with month ID " + newMonthIdStr + " already exists.");
+				return;
+		}
+
+		// Create the new row HTML
+
+		// todo: get data of that month
+		$.get('/products/gettvamonthinfo', {
+			'month':newMonthIdStr+'/'+year,
+			'year':year
+		}, (data)=>{
+			console.log('data for newline', data)
+			let newRowHtml = `
+					<tr monthid="${newMonthIdStr}">
+						<td>
+							<button class="btn btn-dark" onclick="gettvamonthinfo(event, '${newMonthIdStr}')">
+								${newMonthIdStr}/${year}
+							</button>
+						</td>
+						<td class="tvavente">${data.totaltva}</td>
+						<td>
+							<input style="width:8em;" type="number" class="tvaachatinput" readonly value="${data.tvaachat}">
+							<input style="width:8em;" type="number" class="othertvaachatinput" readonly value="${data.othertvaachat}">
+						</td>
+						<td class="net">${data.net}</td>
+						<td>
+							<input style="width:8em;" type="number" class="somme" onchange="somme(event)">
+						</td>
+						<td>
+							<button class="btn btn-info bi bi-check" onclick="savetva(event, '${newMonthIdStr}')"></button>
+							<button class="btn btn-info bi bi-chevron-double-up" onclick="newlineup(event, '${newMonthIdStr}')"></button>
+							<button class="btn btn-info bi bi-chevron-double-down" onclick="newlinedown(event, '${newMonthIdStr}')"></button>
+						</td>
+					</tr>`;
+			console.log($(event.target).closest('tr'))
+			// Append the new row before the current row
+			$(event.target).closest('tr').before(newRowHtml);
+		})
+	}
+
+
+
+	function showtva(){
+		$('.tvacalculholder').removeClass('d-none')
+		// get data
+		$.get('/products/gettva', {'year':$('.tvayears').val()}, (data)=>{
+			// populate the tva table
+			$('.tvatrs').html(data.tvatrs)
+		})
+	}
+
+	function savetva(event, month){
+		thistr=$(event.target).parent().parent()
+		var year=$('.tvayears').val()
+		monthyear=`${month}/${year}`
+		tvaachatval=parseFloat(thistr.find('.tvaachatinput').val())
+		othertvaachatval=parseFloat(thistr.find('.othertvaachatinput').val())
+		report=parseFloat(thistr.find('.report').val())
+		netval=parseFloat(thistr.find('.net').text())
+		netval=parseFloat(thistr.find('.net').text())
+		rest=parseFloat(thistr.find('.rest').text())
+		restandtva=parseFloat(thistr.find('.restandtva').text())
+		tvavente=parseFloat(thistr.find('.tvavente').text())
+		$.get('/products/savetva', {
+			'tvaachatval':tvaachatval,
+			'othertvaachatval':othertvaachatval,
+			'netval':netval,
+			'tvavente':tvavente,
+			'report':report,
+			'monthyear':monthyear,
+			'rest':rest,
+			'restandtva':restandtva,
+		})
+	}
+
+	function gettvamonthinfo(event, month){
+		thistr=$(event.target).parent().parent()
+		var year=$('.tvayears').val()
+		monthyear=`${month}/${year}`
+		$.get('/products/gettvamonthinfo', {"month":monthyear}, (data)=>{
+			console.log('data from click, tvainp', data, thistr.find('.tvavente'))
+			thistr.find('.tvavente').text((data.totaltva).toFixed(2))
+			thistr.find('.tvaachatinput').val((data.tvaachat).toFixed(2))
+			thistr.find('.othertvaachatinput').val((data.othertvaachat).toFixed(2))
+			thistr.find('.net').text((data.net).toFixed(2))
+			if (data.net<0){
+				thistr.find('.net').css('background', '#ffa6a6')
+			}
+			thistr.find('.rest').text((data.rest).toFixed(2))
+			thistr.find('.restandtva').text((data.restandtva).toFixed(2))
+		})
+	}
+
+	// this for calculation the somme of tva achat
+	function somme(event){
+		thistr=$(event.target).parent().parent()
+		tvaachat=thistr.find('.tvaachatinput')
+		othertvaachat=thistr.find('.othertvaachatinput')
+		tvaachatval=parseFloat(thistr.find('.tvaachatinput').val())
+		othertvaachatval=parseFloat(thistr.find('.othertvaachatinput').val())
+		netval=parseFloat(thistr.find('.net').text())
+		restandtvaval=parseFloat(thistr.find('.restandtva').text())
+		tvavente=parseFloat(thistr.find('.tvavente').text())
+		//net=thistr.find('.net').text()
+		thisval=parseFloat($(event.target).val())
+		newtvaachat=(tvaachatval+thisval).toFixed(2)
+		othernewtvaachat=(othertvaachatval+thisval).toFixed(2)
+		tvaachat.val((tvaachatval+thisval).toFixed(2))
+		//othertvaachat.val((othertvaachatval+thisval).toFixed(2))
+		//console.log(tvavente, newtvaachat, Math.abs(netval))
+		if (othertvaachatval == 0){
+			net=(restandtvaval-newtvaachat).toFixed(2)
+
+		}else if (othertvaachatval > 0){
+			net=(othertvaachatval-newtvaachat).toFixed(2)
+		}
+		else{
+			net=(-newtvaachat-Math.abs(othertvaachatval)).toFixed(2)
+		}
+		thistr.find('.net').text(net)
+		if (net<0){
+			thistr.find('.net').css('background', '#ffa6a6')
+		}
+		// check if net is negative, if so, place it in the nexttva achat input
+		nexttr=thistr.next('tr')
+		nexttvavent=parseFloat(nexttr.find('.tvavente').text())
+		// if (net < 0){
+		// 	nexttr.find('.othertvaachatinput').val((nexttvavent-Math.abs(net)).toFixed(2))
+		// }else{
+		// 	//nexttr.find('.othertvaachatinput').val(nexttvavent)
+		// }
+		// reset the somme input
+		$(event.target).val('')
+	}
+	function getalldatagrouped(){
+		$.get('/products/getalldatagrouped', (data)=>{
+			$('.months').val('')
+			$('.tableholder').removeClass('d-none')
+			$('.excelectbody').html(data.data)
+		})
+	}
+
+	function getmonthecheances(event){
+		$('.excelectbody').html('loading....')
+		$('.duplicated').text('')
+		month=$('.months').val()
+		year=$('.years').val()
+		console.log(month == '')
+		monthyear=`${month}/${year}`
+		if (month == ''){
+			$('.tableholder').addClass('d-none')
+		}else{
+			$('.tableholder').removeClass('d-none')
+			// get data
+			$.get('/products/getmonthecheances', {"month":monthyear}, (data)=>{
+				console.log(data)
+				$('.excelectbody').html(data.trs)
+				$('.total').text(data.total)
+				$('.totaltva').text(data.totaltva)
+				$('.onetotal').text(0)
+				$('.rowstoreplace').text(0)
+				$('.monthdata').text(data.month)
+			})
+		}
+
+	}
+	function calculatetva(event){
+		thistr=$(event.target).parent().parent()
+		amountval=$(event.target).val()
+		tva=(amountval-(amountval/1.2)).toFixed(2)
+		thistr.find('.tva').text(tva)
+	}
+
+	function remplacer(){
+		month=$('.months').val()
+		year=$('.years').val()
+		monthyear=`${month}/${year}`
+		selectedids =$(".checkboxmovetodate:checked").map(function() {
+        return this.id;
+    }).get()
+		console.log('>>> ids', selectedids)
+		if (selectedids.length > 0){
+			$.get('/products/remplacer', {'ids':JSON.stringify(selectedids), 'month':monthyear}, (data)=>{
+				//location.reload()
+				getmonthecheances(event)
+			})
+		}
+	}
+
+	function searchech(event){
+		term=$(event.target).val()
+		$.get('/products/searchech', {'term':term}, (data)=>{
+
+			$('.months').val('') //init month val
+			$('.tableholder').removeClass('d-none')
+			$('.excelectbody').html(data.data)
+		})
+	}
+	document.addEventListener('keyup', function(event) {
+		if (event.key === 'Enter') {
+			if ( $('.somme:focus').length > 0 || $('input.searchech:focus').length > 0 ){
+				console.log('somme onchange, returning')
+				return
+			}
+				// Find the currently focused input with class 'npieceinput'
+				month=$('.months').val()
+				year=$('.years').val()
+				if (month=='' || year==''){
+					alertify.error('Error Date')
+					return
+				}
+				monthyear=`${month}/${year}`
+				var focusedInput = $('.npieceinput:focus');
+				var focusedfcInput = $('.factures:focus');
+				thistr=$(event.target).parent().parent()
+				code=thistr.attr('code')
+				facturesval=thistr.find('.factures').val()
+				isempty=thistr.find('.factures').attr('isempty')
+				impye=thistr.find('.impye').prop('checked')
+				nomde=thistr.find('.nomde').val()
+				regle=thistr.find('.regle').prop('checked')
+				npieceval=thistr.find('.npieceinput').val()
+				mode=thistr.find('.mode').text()
+				client=thistr.find('.client').text()
+				tva=thistr.find('.tva').text()
+				codeclient=thistr.find('.codeclient').text()
+				amount=thistr.find('.amount').val()
+				echeance=thistr.find('.echeance').text()
+				iscontable=thistr.find('.factures').hasClass('bg-warning')
+				console.log(tva)
+				if (facturesval !== '' && npieceval !== '' && month !== '') {
+					//console.log($('.somme:focus'))
+
+					// save the current row
+					$.get('/products/saverowech', {
+						'id':code,
+						'iscontable':iscontable,
+						'facturesval':facturesval,
+						'impye':impye,
+						'nomde':nomde,
+						'tva':tva,
+						'regle':regle,
+						'npieceval':npieceval,
+						'mode':mode,
+						'client':client,
+						'codeclient':codeclient,
+						'amount':amount,
+						'echeance':echeance,
+						'monthyear':monthyear,
+						'isempty':isempty,
+						'code':code
+					},
+					(data)=>{
+						if (data.success){
+							// arki4 dyochka 3ad aystgt lcode
+							//thistr.attr('code', data.thisid)
+								console.log(data)
+								// Add new row to the table body with class 'excelectbody'
+								npieceisempty=$('.npieceinput').toArray().some(input => $(input).val().trim() === '');
+
+
+								if (!npieceisempty){
+									$('.excelectbody').append(`
+											<tr code=${data.nextid}>
+													<td>
+												    <input onclick="onetotal(event, '${data.nextid}')" type="checkbox">
+												  </td>
+													<td style="background:blue;">
+								              <input onclick="movetodate(event, '${data.nextid}')" type="checkbox" class="checkboxmovetodate" id=${data.nextid}>
+								          </td>
+													<td>
+															<input onchange="getnpiecedata(event)" class="npieceinput" style="width:7em;">
+													</td>
+													<td class="mode"></td>
+													<td class="echeance"></td>
+													<td class="client"></td>
+													<td>
+													<input class="amount" style="width:7em;" onchange="calculatetva(event)">
+													</td>
+													<td class="tva"></td>
+													<td> <input class="nomde w-100  text-danger"> </td>
+													<td>
+													<input type="checkbox" class="regle" onclick="makethisregle(event, '${data.nextid}')">
+													</td>
+													<td>
+													<input type="checkbox" class="impye" onclick="makethisimpye(event)">
+													</td>
+													<td>
+												      <input type="checkbox" class="pointage" onclick="makethipointage(event, '${data.nextid}')">
+												  </td>
+													<td class="codeclient"></td>
+
+													<td class="d-flex justify-content-between"><input class="factures w-100" isempty='False' style="font-size:20px;"> </td>
+													<td>
+													<input type="checkbox" class="comptable" onclick="makethicomptacle(event, '${data.nextid}')">
+													</td>
+													<td></td>
+
+											</tr>
+									`);
+									// <td onclick="deleterow(event)">
+									// <button class="btn btn-sm bg-danger">X</button>
+									// </td>
+								}
+								$('.npieceinput').last().focus();
+								// scroll to bottom
+								$('.tableholder').scrollTop($('.tableholder').prop("scrollHeight"));
+								// Focus the new input with class 'npieceinput'
+						}else{
+							alertify.error(data.message)
+						}
+					}
+				)
+
+			} // endif
+		}
+	});
+
+	function makethisprint(event, id, factureval){
+
+		thistr=$(event.target).parent().parent()
+		//factureval=thistr.find('.factures').val()
+		// download fc first
+		$.get('/products/downloadfcfromech', {'facture':factureval}, (data)=>{
+			console.log(data)
+			//window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/factureprint/'+data.factureid, '', 'width=900,height=900');
+			if (data.success){
+				url = window.location.pathname.split( '/' );[0]
+				var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/factureprint/'+data.factureid, '', 'width=900,height=900');
+				 myWindow.focus();
+				 myWindow.addEventListener('load', function() {
+					 console.log('New window loaded.');
+					 // Wait for 5 seconds before printing
+					 setTimeout(function() {
+						 try {
+							 myWindow.print();
+							 console.log('Print command issued.');
+							 myWindow.close();
+							 console.log('New window closed.');
+							 $.get('/products/makethisprint', {'id':id, 'facture':factureval}, ()=>{
+								 //getmonthecheances(event)
+							 })
+						 } catch (e) {
+							 console.error('Failed to print and close the window:', e);
+						 }
+					 }, 300); // 1000 milliseconds = 1 seconds
+				 }, false);
+				// then make it printed
+
+			}
+		})
+
+	}
+
+	function grouper(){
+		// get ids of rows selected
+		selectedids =$(".checkboxgroup:checked").map(function() {
+        return this.id;
+    }).get()
+		console.log('>>> ids', selectedids)
+		if (selectedids.length > 1){
+			$.get('/products/grouper', {'ids':JSON.stringify(selectedids)}, (data)=>{
+				//location.reload()
+				getmonthecheances(event)
+			})
+		}
+	}
+
+	function onetotal(event, id){
+		thischeckbox=$(event.target)
+		thistr=$(event.target).parent().parent()
+		npieceval=thistr.find('.npieceinput').val()
+		console.log('N° piece value:', npieceval);
+		if (npieceval === '') {
+        console.log('N° piece is empty, unchecking checkbox');
+        thischeckbox.prop('checked', false);
+				return
+    }
+		amount=parseFloat(thistr.find('.amount').val()) || 0
+		oldtotal=parseFloat($('.onetotal').text())
+		if (thischeckbox.prop('checked')){
+			newtotal=(amount+oldtotal).toFixed(2)
+		}else{
+			newtotal=(oldtotal-amount).toFixed(2)
+		}
+		console.log(newtotal)
+		$('.onetotal').text(newtotal)
+	}
+
+	function movetodate(event, id){
+		thischeckbox=$(event.target)
+		thistr=$(event.target).parent().parent()
+		npieceval=thistr.find('.npieceinput').val()
+		rowstoreplace=parseInt($('.rowstoreplace').text())
+		console.log('N° piece value:', npieceval);
+		if (npieceval === '') {
+        console.log('N° piece is empty, unchecking checkbox');
+        thischeckbox.prop('checked', false);
+				return
+    }
+		if (thischeckbox.prop('checked')){
+			rowstoreplace++
+		}else{
+			rowstoreplace--
+		}
+		$('.rowstoreplace').text(rowstoreplace)
+	}
+
+	function deleterow(event, id){
+		tr=$(event.target).parent().parent()
+		//console.log(tr.find('.npieceinput').val() !== '')
+		if (tr.find('.npieceinput').val() == ''){
+			// selete row in db
+			$.get('/products/deleterowech', {'id':id}, (data)=>{
+				tr.remove()
+			})
+		}
+	}
+
+	function makethipointage(event, id){
+		console.log('makethisrterfdf')
+		thistr=$(event.target).parent().parent()
+		npieceval=thistr.find('.npieceinput').val()
+		if (npieceval == ''){
+			return
+		}
+		month=$('.months').val()
+		year=$('.years').val()
+		if (month=='' || year==''){
+			alertify.error('Error Date')
+			return
+		}
+		monthyear=`${month}/${year}`
+		var focusedInput = $('.npieceinput:focus');
+		var focusedfcInput = $('.factures:focus');
+		code=thistr.attr('code')
+		facturesval=thistr.find('.factures').val()
+		isempty=thistr.find('.factures').attr('isempty')
+		impye=thistr.find('.impye').prop('checked')
+		nomde=thistr.find('.nomde').val()
+		regle=thistr.find('.regle').prop('checked')
+		pointage=thistr.find('.pointage').prop('checked')
+		mode=thistr.find('.mode').text()
+		tva=thistr.find('.tva').text()
+		client=thistr.find('.client').text()
+		codeclient=thistr.find('.codeclient').text()
+		amount=thistr.find('.amount').val()
+		echeance=thistr.find('.echeance').text()
+		if (pointage){
+			thistr.find('.codeclient').css('background', 'skyblue')
+		}else{
+			thistr.find('.codeclient').css('background', 'none')
+		}
+		console.log('>>>>>>>>>>>', pointage)
+		$.get('/products/saverowech', {
+			'id':code,
+			'facturesval':facturesval,
+			'impye':impye,
+			'nomde':nomde,
+			'regle':regle,
+			'npieceval':npieceval,
+			'mode':mode,
+			'pointage':pointage,
+			'tva':tva,
+			'client':client,
+			'codeclient':codeclient,
+			'amount':amount,
+			'echeance':echeance,
+			'monthyear':monthyear,
+			'isempty':isempty,
+			'code':code
+		})
+	}//end func makepointage
+
+	function makethisregle(event, id){
+		console.log('makethisrterfdf')
+		thistr=$(event.target).parent().parent()
+		npieceval=thistr.find('.npieceinput').val()
+		if (npieceval == ''){
+			return
+		}
+		month=$('.months').val()
+		year=$('.years').val()
+		if (month=='' || year==''){
+			alertify.error('Error Date')
+			return
+		}
+		monthyear=`${month}/${year}`
+		var focusedInput = $('.npieceinput:focus');
+		var focusedfcInput = $('.factures:focus');
+		code=thistr.attr('code')
+		facturesval=thistr.find('.factures').val()
+		isempty=thistr.find('.factures').attr('isempty')
+		impye=thistr.find('.impye').prop('checked')
+		nomde=thistr.find('.nomde').val()
+		regle=thistr.find('.regle').prop('checked')
+		pointage=thistr.find('.pointage').prop('checked')
+		mode=thistr.find('.mode').text()
+		tva=thistr.find('.tva').text()
+		client=thistr.find('.client').text()
+		codeclient=thistr.find('.codeclient').text()
+		amount=thistr.find('.amount').val()
+		echeance=thistr.find('.echeance').text()
+		if (regle){
+			console.log('regl')
+			thistr.find('.amount').css('background', 'skyblue')
+		}else{
+			console.log('regl eeee')
+			thistr.find('.amount').css('background', 'none')
+		}
+		$.get('/products/saverowech', {
+			'id':code,
+			'facturesval':facturesval,
+			'impye':impye,
+			'nomde':nomde,
+			'pointage':pointage,
+			'regle':regle,
+			'npieceval':npieceval,
+			'mode':mode,
+			'tva':tva,
+			'client':client,
+			'codeclient':codeclient,
+			'amount':amount,
+			'echeance':echeance,
+			'monthyear':monthyear,
+			'isempty':isempty,
+			'code':code
+		})
+	}//end func makeimpye
+
+	function makethicomptacle(event, id){
+		thistr=$(event.target).parent().parent()
+		month=$('.months').val()
+		year=$('.years').val()
+		if (month=='' || year==''){
+			alertify.error('Error Date')
+			return
+		}
+		factures=thistr.find('.factures')
+		npieceval=thistr.find('.npieceinput').val()
+		if (npieceval == ''){
+			return
+		}
+
+		$.get('/products/makethicomptacle', {
+			'id':id
+		}, ()=>{
+			factures.toggleClass('bg-warning')
+		})
+	}//end func makecomptable
+
+	function makethisimpye(event, id){
+		thistr=$(event.target).parent().parent()
+
+		$(event.target).parent().toggleClass('bg-danger')
+		npieceval=thistr.find('.npieceinput').val()
+		if (npieceval == ''){
+			return
+		}
+		month=$('.months').val()
+		year=$('.years').val()
+		if (month=='' || year==''){
+			alertify.error('Error Date')
+			return
+		}
+		monthyear=`${month}/${year}`
+		var focusedInput = $('.npieceinput:focus');
+		var focusedfcInput = $('.factures:focus');
+		code=thistr.attr('code')
+		facturesval=thistr.find('.factures').val()
+		isempty=thistr.find('.factures').attr('isempty')
+		impye=thistr.find('.impye').prop('checked')
+		nomde=thistr.find('.nomde').val()
+		regle=thistr.find('.regle').prop('checked')
+		pointage=thistr.find('.pointage').prop('checked')
+		mode=thistr.find('.mode').text()
+		tva=thistr.find('.tva').text()
+		client=thistr.find('.client').text()
+		codeclient=thistr.find('.codeclient').text()
+		amount=thistr.find('.amount').val()
+		echeance=thistr.find('.echeance').text()
+		$.get('/products/saverowech', {
+			'id':code,
+			'facturesval':facturesval,
+			'impye':impye,
+			'nomde':nomde,
+			'regle':regle,
+			'npieceval':npieceval,
+			'mode':mode,
+			'pointage':pointage,
+			'tva':tva,
+			'client':client,
+			'codeclient':codeclient,
+			'amount':amount,
+			'echeance':echeance,
+			'monthyear':monthyear,
+			'isempty':isempty,
+			'code':code
+		})
+	}//end func makeimpye
+
+
+
+
+	function getnpiecedata(event){
+		npiece=$(event.target).val()
+		if (npiece!==''){
+			parent=$(event.target).parent().parent()
+			$.get('/products/getnpiecedata', {'npiece':$(event.target).val()}, (data)=>{
+
+				console.log(data)
+				parent.find('.echeance').text(data.echance)
+				parent.find('.client').text(data.client)
+				parent.find('.codeclient').text(data.codeclient)
+				parent.find('.mode').text(data.mode)
+				parent.find('.factures').val(data.factures)
+				parent.find('.amount').val(data.amount)
+				parent.find('.tva').text(data.tva)
+				if (data.factures.length==1){
+					parent.find('.factures').css('background', 'yellowgreen')
+					parent.find('.factures').attr('isempty', 'true')
+				}else{
+					parent.find('.factures').css('background', 'none')
+					parent.find('.factures').attr('isempty', 'False')
+				}
+				if (data.facturealreadyexist){
+					console.log('already exist')
+					parent.find('.comptable').attr('checked', true)
+					parent.find('.factures').addClass('bg-warning')
+				}else{
+					console.log('not already exist')
+					parent.find('.comptable').attr('checked', false)
+					parent.find('.factures').removeClass('bg-warning')
+				}
+			})
+		}
+	}
+
+</script>
+</body>
+</html>

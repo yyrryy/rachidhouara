@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+<div class="block">
+    <div class="container">
+      <div class="cart">
+        <div class="cart__totals">
+          <div class="card">
+            <div class="card-body card-body--padding--2">
+              <table class="cart__totals-table">
+                
+                <tfoot>
+                  <tr hidden>
+                    <th>Total NET</th>
+                    <td class="total text-success"></td>
+                  </tr>
+                  
+                  <!-- <tr>
+                    <td>
+                      <p class="text-cennter">
+                        {{ request.user.client.name }}
+                      </p>
+                  </tr> -->
+                  {% if user.groups.all.0.name == 'salsemen' %}
+                  <tr>
+                    
+                    <td class="text-center">
+                      <strong>
+                        Client:
+                      </strong>
+                      <select name="client" class="clientid modes clientscartselect" style="width: 100%;">
+                        <!-- <option value="0">---</option>
+                        {% for client in clients %}
+                        <option value="{{client.id}}">{{client.code}} | {{client.name}} | {{client.city}}</option>
+                        {% endfor %} -->
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="accordion" id="accordionExample">
+                        <div class="">
+                            
+                            <button class="btn w-100 bg-darkblue text-white" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              + Nouveau client
+                            </button>
+                      
+                          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div class="card-body border shadow rounded">
+                                <input type="text" class="form-control mb-2  notempty clientname" placeholder="Client">
+                                <input type="text" class="form-control mb-2  notempty clientcity" placeholder="Ville">
+                                <input type="text" class="form-control mb-2  notempty clientaddress" placeholder="Addresse">
+                                <input id="onlynumbers" type="tel" class="form-control mb-2  notempty clientphone" placeholder="telephone">
+                                <button class="btn btn-secondary w-100 createclient">
+                                  Creer
+                                </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <!-- <td>
+                      <input type="text" class="form-control notempty clientname" placeholder="Client">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control notempty clientaddress" placeholder="Addresse">
+                    </td>
+                    <td>
+                      <input id="onlynumbers" type="tel" class="form-control notempty clientphone" placeholder="telephone">
+                    </td> -->
+                    <td>
+                      <!-- <input type="text" class="form-control notempty" placeholder=""> -->
+                    </td>
+                  </tr>
+                  {% endif %}
+                  {% if user.groups.all.0.name == 'clients' %}
+                  <tr class="text-center">
+                    <td>
+                      <input type="hidden" class="clientid" name="clientid" value="{{user.client.id}}">
+                      <input type="hidden" class="cmndfromclient" name="clientid" value="true">
+                      <div class="text-center">{{ request.user.client.name }}</div>
+                    </td>
+                  </tr>
+                  
+                  {% endif %}
+                  <tr>
+                    <td>
+                      <input type="hidden" class="cmndfromclient" name="clientid" value="false">
+                    <div class="d-flex justify-content-between border flex-column">
+                      <!-- add a list od mod pyem -->
+                      <select class="form-control mb-2 modes" aria-label="Default select example" name="modpymnt">
+                          <option selected value="0">Mode de payement</option>
+                          <option value="espece">Espece</option>
+                          <option value="cheque">Cheque</option>
+                          <option value="effet">Effet</option>
+                        </select>
+                  
+                  
+                      <!-- add a list od mod lvrs -->
+                  
+                      <select class="form-control mb-2 modes" aria-label="Default select example" name="modlvrsn">
+                          <option selected value="0">Mode de livraison</option>
+                          <option value="LUX">LUX</option>
+                          <option value="SDTM">SDTM</option>
+                          <option value="GHAZALA">GHAZALA</option>
+                          <option value="BAHA">BAHA express</option>
+                          <option value="BG">BG</option>
+                          <option value="VOIE EXPRESS">VOIE EXPRESS</option>
+                        </select>
+                    </div>
+                    <hr>
+                    </td>
+                  </tr>
+                  
+                  
+
+                  
+                  
+                  
+                </tfoot>
+              </table>
+              <!-- <input type="hidden" class="clientid" value="{{request.user.client.id}}"> -->
+              <button class="btn btn-primary valider w-100" disabled>
+                valider le panier
+                </button>
+            </div>
+          </div>
+        </div>
+        <div class="cart__table cart-table position-relative">
+          <div class="loadingcartitems flex-column align-items-center justify-content-center w-100 h-100 top-0 bg-dark200" style="z-index:1199; position: absolute;">
+            <div class="spinner-border text-light"></div>
+        </div>
+        
+        
+          <table class="table table-bordered table-responsive" style="overflow: scroll;">
+            <thead class="">
+              <tr class="">
+                <th class="">Ref</th>
+                <th class="" style="width: 50%;">Article</th>
+                <th class="">Prix</th>
+                <th class="">Remise</th>
+                <th class="">Quantité</th>
+                <th class=""></th>
+              </tr>
+            </thead>
+            <tbody class="">
+              
+            </tbody>
+            
+          </table>
+        </div>
+        
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+  
+  // get the input element
+  const input = document.getElementById('onlynumbers');
+
+  // add an event listener to validate input
+  input.addEventListener('input', (event) => {
+      // get the current value of the input
+      const value = event.target.value;
+
+      // replace any non-numeric characters with an empty string
+      const cleanValue = value.replace(/[^0-9]/g, '');
+
+      // set the cleaned value as the input value
+      event.target.value = cleanValue;
+  });
+</script>
+<script src="{% static 'js/cart.js'%}"></script>
+{% endblock %}

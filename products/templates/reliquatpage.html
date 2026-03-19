@@ -1,0 +1,159 @@
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('reliquatab')">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('reliquatab', '/products/reliquatpage')">↻</button>
+  </div>
+<div class="row">
+	<div class="col-4" style="max-height: 76vh;
+    overflow: scroll;">
+		<!-- <div style="height: 50%; overflow: scroll;">
+			<table class="table table-bordered">
+			<thead class="bg-darkblue text-white">
+				<tr>
+					<td>User</td>
+
+					 <td>Total</td>
+
+
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in carts %}
+				<tr onclick="getwishdetail('{{i.user.id}}', event)">
+					<td>{{i.user.client.name}} </td>
+
+
+					 <td>{{i.total}}</td>
+
+
+				</tr>
+				{% endfor %}
+			</tbody>
+
+		</table>
+		</div> -->
+
+		<div style="height: 50%; overflow: scroll;">
+			<table class="table table-bordered">
+				<thead class="bg-darkblue text-white">
+					<tr>
+						<td>User</td>
+						<!--
+						 <td>Total</td>
+
+						 -->
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in wishserver%}
+					<tr onclick="getwishdetailserver('{{i.0}}', event)">
+						<td>{{i.3}}</td>
+						<!--
+
+						 <td>{{i.total}}</td>
+
+						 -->
+					</tr>
+					{% endfor %}
+				</tbody>
+
+			</table>
+		</div>
+	</div>
+	<div class="col-8">
+		<div class="bg-white border rounded p-2">
+			<table class="table table-bordered">
+				<thead class="bg-darkblue text-white">
+					<tr>
+						<th>Image</th>
+						<th>Article</th>
+						<th>Prix</th>
+						<th>Remise</th>
+						<th>Quantité</th>
+					</tr>
+				</thead>
+				<tbody class="wishitemsholder">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+	function getwishdetail(userid){
+		$('.loadingscreen').removeClass('d-none')
+
+		$(event.target).parent().parent().parent().parent().find('tr').removeClass('bg-success text-white')
+		$(event.target).parent().addClass('bg-success text-white')
+		$.get('/getitemsinwishlist', {'userid': userid}, (data)=>{
+        	$('.wishitemsholder').html('')
+        		$('.loadingscreen').addClass('d-none')
+            console.log(data)
+            for (i of data.items){
+          $('.wishitemsholder').append(`
+
+            <tr>
+
+            <td class="">
+              <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
+            </td>
+            <td class="">
+              ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
+            </td>
+            <td class="" data-title="Price">
+            <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
+            </td>
+            <td>${i.remise}%</td>
+            <td class=" qtyholder" data-title="Quantity">
+              ${i.qty}
+
+            </td>
+
+
+
+            </tr>
+            `)
+        }
+
+        })
+	}
+	function getwishdetailserver(userid){
+		$('.loadingscreen').removeClass('d-none')
+		$(event.target).parent().parent().find('tr').removeClass('bg-success text-white')
+		$(event.target).parent().addClass('bg-success text-white')
+		$.get('/products/getitemsinwishlist', {'userid': userid}, (data)=>{
+			$('.loadingscreen').addClass('d-none')
+        	$('.wishitemsholder').html('')
+
+            console.log(data)
+            for (i of data.items){
+          $('.wishitemsholder').append(`
+
+            <tr>
+
+            <td class="">
+              <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
+            </td>
+            <td class="">
+              ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
+            </td>
+            <td class="" data-title="Price">
+            <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
+            </td>
+            <td>${i.remise}%</td>
+            <td class=" qtyholder" data-title="Quantity">
+              ${i.qty}
+
+            </td>
+
+
+
+            </tr>
+            `)
+        }
+
+        })
+	}
+</script>

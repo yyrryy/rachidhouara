@@ -1,0 +1,298 @@
+<div class="row">
+    
+    <div class="col-3 shadow rounded p-2">
+      <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectsupp(event)">↻</button>
+
+        <select name="suppliersituationselect" id="" class="suppliersituationselect form-select notempty suppslect2" style="width: 100%;">
+
+        </select>
+
+        <div class="mt-2">
+            <div>
+                <small>Du</small>
+                <input type="date" name="situationsuppdatefrom" class="situationsuppdatefrom form-control notempty">
+            </div>
+            <div>
+                <small>Au</small>
+                <input type="date" name="situationsuppdateto" class="situationsuppdateto form-control notempty">
+            </div>
+        </div>
+
+        <button class="btn btn-success w-100 mt-2 genererrelvesupplier">Generer BL</button>
+        <button class="btn btn-success w-100 mt-2 genererrelvefcsupplier">Generer FC</button>
+        <button class="btn btn-success w-100 mt-2" onclick="printsituationsupp()">Imprimer</button>
+        
+    </div>
+
+    <div>
+      <button class="btn btn-success w-100 mt-2 genererrelvesuppliernonregle">Generer BL non reglé</button>
+      <button class="btn btn-success w-100 mt-2 genererrelvefcsuppliernonregle">Generer FC non reglé</button>
+    </div>
+
+    <div class="col-9 relevesuppholder" id="relevesuppholder">
+        <div class="d-flex flex-column align-items-center justify-content-center loader position-fixed d-none"
+        style="height: 100%;background:#171717bc ; width: 100%; z-index: 9999;"
+        >
+        <div class="spinner-border text-white" role="status">
+        </div>
+        </div>
+    </div>
+</div>
+<script>
+  function printsituationsupp(id){
+      /*var printContents = document.getElementById(id).innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+
+      parentdiv.find('table').css('font-size', '13px')
+      parentdiv.find('body').css('font-family', 'serif')
+      parentdiv.find("table > tbody > tr > td").css('padding', '0px');
+      parentdiv.find("table > thead > tr").css('background','gray');
+      // $('body').addClass('d-flex flex-column vh-100 p-3')
+      window.print();
+      document.body.innerHTML = originalContents;
+      forceupdatetab('addsituationcl', 'products/situationcl')
+      */
+      parentdiv=$(event.target).parent()
+
+      suppid=parentdiv.find('select[name="suppliersituationselect"]').val()
+      datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
+      dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
+      if (suppid==null || datefrom=='' || dateto==''){
+        alertify.error('ERRO')
+        return
+      }
+      var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevsuppprint?target={{target}}&supplierid='+suppid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+
+        myWindow.focus();
+        setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000);
+
+  }
+
+  function printsituationfcsupp(id){
+
+      parentdiv=$(event.target).parent()
+
+      suppid=parentdiv.find('select[name="suppliersituationselect"]').val()
+      datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
+      dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
+      if (suppid==null || datefrom=='' || dateto==''){
+        alertify.error('ERRO')
+        return
+      }
+      var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevsupppfcprint?supplierid='+suppid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+
+        myWindow.focus();
+        setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000);
+
+  }
+
+
+    $('.printrelvesupp').on('click', function(){
+        parentdiv=$(this).parent().parent()
+        var printContents = document.getElementById('relevesuppholder').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+    //  $('.bgfacture').css({
+    //   "position": "absolute !important",
+    //   "right": "26em",
+    //   "opacity": "0.18",
+    //   "top": "23em",
+    //  })
+        //parentdiv.find('table').css('font-size', '13px')
+        parentdiv.find("table > tbody > tr > td").css('padding', '0px');
+        //parentdiv.find("table > thead > tr").css('background','gray');
+        window.print();
+        document.body.innerHTML = originalContents;
+
+        //$('body').removeClass('d-flex flex-column vh-100 p-3')
+        //$('body').css('font-size', '')
+    })
+    var dateInput = document.querySelector('.situationsuppdatefrom');
+    var datetoInput = document.querySelector('.situationsuppdateto');
+
+// Create a new Date object for today
+        var today = new Date();
+
+        // Get the current date in the "yyyy-mm-dd" format
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Format the date as "yyyy-mm-dd"
+        var currentDate = yyyy + '-' + mm + '-' + dd;
+
+        // Set the value of the date input to today's date
+        dateInput.value = currentDate;
+        datetoInput.value = currentDate;
+    $(function(){
+      $('.suppliersituationselect').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchsupplier',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+    $('.genererrelvesupplier').on('click', function(){
+        parentdiv=$(this).parent()
+        console.log(parentdiv)
+        // check notempty
+        supplierid=parentdiv.find('select[name="suppliersituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        if (supplierid==null || datefrom=='' || dateto==''){
+            alertify.error('Remplir les champs')
+            return
+        }
+        $.ajax({
+            url: '/products/relevsupplier',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'supplierid': supplierid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+                "target": "{{target}}"
+            },
+            success: function(data){
+                $('.loader').addClass('d-none')
+                $('.relevesuppholder').html(data.html)
+                // this used to reset date to today
+                //dateInput.value = currentDate;
+                //datetoInput.value = currentDate;
+            }
+        })
+    })
+    $('.genererrelvefcsupplier').on('click', function(){
+        parentdiv=$(this).parent()
+        console.log(parentdiv)
+        // check notempty
+        supplierid=parentdiv.find('select[name="suppliersituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        if (supplierid==null || datefrom=='' || dateto==''){
+            alertify.error('Remplir les champs')
+            return
+        }
+        $.ajax({
+            url: '/products/relevsupplier',
+            type: 'POST',
+            data: {
+              'target':'{{target}}',
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              'supplierid': supplierid,
+              'facture': '1',
+              'datefrom': datefrom,
+              'dateto': dateto,
+            },
+            success: function(data){
+                $('.loader').addClass('d-none')
+                $('.relevesuppholder').html(data.html)
+                // this used to reset date to today
+                //dateInput.value = currentDate;
+                //datetoInput.value = currentDate;
+            }
+        })
+    })
+    $('.genererrelvesuppliernonregle').on('click', function(){
+        parentdiv=$(this).parent()
+        console.log(parentdiv)
+        // check notempty
+        supplierid=parentdiv.find('select[name="suppliersituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        if (supplierid==null || datefrom=='' || dateto==''){
+            alertify.error('Remplir les champs')
+            return
+        }
+        $.ajax({
+            url: '/products/relevsuppliernonregle',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'supplierid': supplierid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+                "target": "{{target}}"
+            },
+            success: function(data){
+                $('.loader').addClass('d-none')
+                $('.relevesuppholder').html(data.html)
+                // this used to reset date to today
+                //dateInput.value = currentDate;
+                //datetoInput.value = currentDate;
+            }
+        })
+    })
+    $('.genererrelvefcsuppliernonregle').on('click', function(){
+        parentdiv=$(this).parent()
+        console.log(parentdiv)
+        // check notempty
+        supplierid=parentdiv.find('select[name="suppliersituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        if (supplierid==null || datefrom=='' || dateto==''){
+            alertify.error('Remplir les champs')
+            return
+        }
+        $.ajax({
+            url: '/products/relevsuppliernonregle',
+            type: 'POST',
+            data: {
+              'target':'{{target}}',
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              'supplierid': supplierid,
+              'facture': '1',
+              'datefrom': datefrom,
+              'dateto': dateto,
+            },
+            success: function(data){
+                $('.loader').addClass('d-none')
+                $('.relevesuppholder').html(data.html)
+                // this used to reset date to today
+                //dateInput.value = currentDate;
+                //datetoInput.value = currentDate;
+            }
+        })
+    })
+
+</script>

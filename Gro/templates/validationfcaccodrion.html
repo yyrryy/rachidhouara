@@ -1,0 +1,198 @@
+<div class="accordion" id="accordionreglvfc">
+    <div class="">
+
+        <button class="btn w-100 collapsed border" type="button" data-toggle="collapse" data-target="#collapsevfc" aria-expanded="false" aria-controls="collapsevfc">
+            Validation Factures {{target}}
+        </button>
+
+        <div id="collapsevfc" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglvfc">
+        <div class="card-body border shadow rounded">
+            <div class="row">
+                <small class="errordatereglclbl text-danger d-none">
+                    Date incorrect
+                    </small>
+                <div class="col-3">
+                    <div class="">
+                        <small>Du:</small> <br>
+                        <input type="date" name="datereglementclientbl" class="w-100 notempty datefrom mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
+                        
+                    </div>
+                    <div class="">
+                        <small>Au:</small> <br>
+                        <input type="date" name="dateend" class="w-100 notempty mb-2 dateend" value="{{today|date:'Y-m-d'}}">
+                    </div>
+                    <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+                    
+                    
+                    <button class="btn btn-success w-100" onclick="getbonstovalidate()">Afficher</button>
+                </div>
+
+                <div class="reglementbonsholder col-9 border position-relative">
+
+                    <div class="mb-2 mt-2 listaddreglblholder" style="max-height: 250px; overflow-y: scroll;">
+                        <div>
+                            <!-- <small>Bons:</small> <strong class="totalcheckedbl">0.00</strong><br> -->
+                            <small>Bons:</small> <strong class="totalbons">0.00</strong><br>
+                        </div>
+                        <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
+                            <thead style="position: sticky; top: 0; background: white;">
+                                <tr>
+                                    <td>
+                                        Date
+                                    </td>
+                                    <td>
+                                        N° Bon
+                                    </td>
+                                    <td>
+                                        total
+                                    </td>
+                                    <td>
+                                        Rest
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody class="fcbody">
+                            </tbody>
+                            <tfoot style="position: sticky; bottom: 0; background: white;">
+                                <tr>
+                                    <td colspan="2">
+
+                                    </td>
+                                    <td class="text-danger" style="background: yellowgreen;"></td>
+                                    <td class="totalbonsbl text-danger" style="background: yellowgreen;">
+                                    </td>
+                                </tr>
+                            </tfoot>
+
+                        </table>
+                        <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                        </select> -->
+                    </div>
+                </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        
+                        
+                        <!-- <div>
+                            <button class="btn btn-sm btn-danger" onclick="filternonreglr()" style="border-radius: 10px;">NR</button>
+                            <button class="btn btn-sm btn-info" onclick="getallbl()" style="border-radius: 10px;">TOUS</button>
+                        </div>
+                        <input style="width:10em;background: #8080802b;
+                        border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistaddreglbl"> -->
+
+                    </div>
+
+                    
+                    
+                    <button class="btn text-white w-100 submitaddreglemntclientbtn disabled" style="background: #00538c;">
+                        Valider
+                    </button>
+                    <!-- <div class="mb-2">
+                        <small>Facture</small>
+                        <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                        </select>
+                    </div>
+
+                    <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                    </select> -->
+
+                </div>
+                
+            </div>
+        </div>
+        </div>
+</div>
+<script>
+    function getbonstovalidate(){
+        console.log('err')
+        currentPageblregl=1
+        loadingblregl = false;
+        console.log('err2')
+        
+        datefrom=$('.datefrom').val()
+        dateend=$('.dateend').val()
+        $('.listaddreglblholder').on('scroll', handleScrollreglblcl)
+        if (datefrom=="" || dateend==""){
+            console.log('err3')
+            console.log('err3')
+            $('.reglementbonsholder').addClass('d-none')
+            alertify.error('Champs vide')
+            // disable the divholder of the multiselects
+            // disable the button
+            $('.submitaddreglemntclientbtn').addClass('disabled')
+            return
+        }
+        console.log('rafter')
+        $('.submitaddreglemntclientbtn').removeClass('disabled')
+        $('.reglementbonsholder').removeClass('d-none')
+        clientid=$('[name="addreglementclientsbl"]').val()
+        mode=$('.mode').val()
+        $('.loadingscreen').removeClass('d-none')
+        $.get('/products/getbonstovalidate', {
+            "mode":'facture',
+            datefrom:datefrom,
+            dateend:dateend,
+            target:'{{target}}',
+            
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.fcbody').html(data.bons)
+                
+                $('.totalbonsbl').text(data.total)
+                $('.totalbons').text(data.totalbons)
+                
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+        // enable the divholder of the multiselects
+        // get client bons
+        //populate bons multiselect
+        // get client facture
+        // populate facture multiselect
+    }
+
+    $('.submitaddreglemntclientbtn').on('click', function(event){
+        event.preventDefault()
+        let parentdiv=$(this).parent().parent()
+        // if ((selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
+            //     return this.value;
+        // }).get()).length == 0){
+            //     alertify.error('Veuillez selectionner au moins un bon')
+            //     return
+            // }
+        selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        
+        
+        
+        bons=parentdiv.find('[name="addreglementbons"]').map(function() {
+            return this.value;
+        }).get();
+        console.log('>>', selectedValues.length)
+        if (selectedValues.length==0){
+            alertify.error('Choisir au mois un bon')
+            return
+        }
+        $(event.target).addClass('disabled')
+        // $(this).addClass('disabled')
+        $.get('/products/validatebons', {
+            'mode':'facture',
+            target:'{{target}}',
+            bons:JSON.stringify(selectedValues),
+            }, function(data){
+                if (data.success){
+                    ajaxpage('addlistbonlivraison', 'tt', '/products/listfactures?target={{target}}')
+                    alertify.success('Bon validé')
+                }
+        })
+    })
+
+
+
+</script>

@@ -1,0 +1,13 @@
+{% for i in avances %}
+<tr>
+    <td>
+        {{i.date|date:"d/m/Y"}}
+    </td>
+    <td>
+        {{i.amount}}
+    </td>
+    <td>
+        <input type="checkbox" total="{{i.amount}}" value="{{i.id}}" name="avancestopay" onchange="checkreglementbox(event)">
+    </td>
+</tr>
+{% endfor %}

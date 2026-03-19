@@ -1,0 +1,171 @@
+
+<style>
+  .listactive {
+    border-left: 4px solid blue;
+    color: blue;
+}
+</style>
+<div class="text-white p-2 rounded h3 text-center d-flex justify-content-between" style="background: black;">
+  <div>
+    {{title}}
+  </div>
+  <!-- <div class="col-3">
+    
+    <select name="supplier" id="" class="select2 form-control">
+      <option value="">Fournisseur</option>
+      {% for i in suppliers %}
+      <option value="{{i.id}}">{{i.name}}</option>
+      {% endfor %}
+    </select>
+  </div> -->
+</div>
+<div class="row">
+    <div class="col-3">
+      <select name="supplier" id="" class="select2 form-control">
+        <option value="">Fournisseur</option>
+        {% for i in suppliers %}
+        <option value="{{i.id}}">{{i.name}}</option>
+        {% endfor %}
+      </select>
+       <div class="bg-white rounded shadow p-2">
+        <!-- <input type="text" class="form-control searchref mb-5" placeholder="Chercher REF stock"> -->
+        <!-- <div class="accordion" id="accordionExample">
+            <div class="card">
+              <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                  <button class="btn btn-link btn-block d-flex justify-content-between w-100" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <div>
+                        Liste des Categories
+                    </div>
+                    <div class="">+</div>
+                  </button>
+                </h2>
+              </div>
+          
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body border">
+                  <form action="createcategory" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input name="name" type="text" class="form-control" placeholder="Categorie" required>
+                    <strong>Image</strong>
+                    <input name="image" type="file" class="form-control" required>
+                    <button class="btn btn-success mt-2">Ajouter</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div> -->
+        <hr>
+        <ul class="list-group">
+          
+            {% for i in categories %}
+            <li class="list-group-item cat{{i.id}}" onclick="getlowbycategory({{i.id}}, '{{i.name}}', 'cat{{i.id}}')">
+                <b type="button" class="categoriesbtn" data-catgoryid="{{i.id}}">
+                   
+                        {{i.name}} ({{i.total_products}})
+                    
+                </b>
+            </li>
+            {% endfor %}
+            
+          </ul>
+       </div> 
+    </div>
+
+    <div class="col-9">
+        <div class="bg-white rounded shadow p-2">
+          <h2 class="categorynameholder">
+          </h2>
+          <!-- <span>
+            Chercher dans
+          </span>
+            <input type="search" class="form-control searchtableinput mb-2 w-50" placeholder=""> -->
+            <div class="product-table-body"></div>
+            <!-- <table class="mb-5 table table-bordered table-advance tablesearch item-table">
+                    
+              <thead>
+                <td>Ref</td>
+                <td>Category</td>
+                <td>Marque</td>
+                <td>Stock</td>
+                <td>Quantité</td>
+              </thead>
+              <tbody class="product-table-body"></tbody>
+            </table> -->
+        </div>    
+    </div>
+</div>
+
+
+<script>
+    
+    function commandsupplier(productid, classname, tdclassname){
+      console.log('commandsupplier')
+      var qty = $(`.${classname}`).val()
+      var supplierid = $('select[name="supplier"]').val()
+      var suppliername = $('select[name="supplier"] option:selected').text()
+      if (supplierid == ''){
+        $('select[name="supplier"]').addClass('is-invalid')
+        alertify.alert('Alert', 'Veuillez choisir un fournisseur')
+        return
+      }
+      if (qty == ''){
+        alertify.alert('Alert', 'Veuillez entrer une quantité')
+        $(`.${classname}`).addClass('is-invalid')
+      }else{
+        $(`.${classname}`).removeClass('is-invalid')
+        console.log('sending')
+
+        $.ajax({
+          url: "{% url 'products:commandsupplier' %}",
+          type: "POST",
+          data: {
+              'productid': productid,
+              'qty': qty,
+              'supplierid': supplierid,
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          success: function (data) {
+            if (data.success){
+              $(`.${tdclassname}`).html(`<span class="text-success">${qty} Commandé à ${suppliername}</span>`)
+            }else{
+              
+            }
+          }
+        })
+      }
+    }
+
+    function getlowbycategory(categoryid, categoryname, classname){
+      if ($('[name="supplier"]').val()==0){
+          alertify.error('Veuillez choisir un fournisseur')
+          return
+      }
+      $(`.${classname}`).addClass('listactive').siblings().removeClass('listactive')
+      $('.loadingscreen').addClass('d-block').removeClass('d-none')
+      $('.categorynameholder').text(categoryname)
+      $('.product_search_result').html('')
+      $.ajax({
+        url: "{% url 'products:getlowbycategory' %}",
+        type: "GET",
+        data: {
+          'target':"{{target}}",
+            'category': categoryid,
+            'supplierid': $('[name="supplier"]').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (data) {
+          console.log(data)
+            $('.loadingscreen').addClass('d-none').removeClass('d-block')
+            $('.product-table-body').html(data.data)
+            // editproduct()
+            // displayimage()
+        }
+      })
+    }
+
+$(document).ready(function(){
+
+// end of ready function
+})
+</script>

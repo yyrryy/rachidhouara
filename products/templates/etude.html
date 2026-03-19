@@ -1,0 +1,414 @@
+<html>
+<head>
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/jquerySpellingNumber.js"></script>
+  <link href="/static/css/minified.css" rel="stylesheet" />
+  <script src="/static/js/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="/static/js/xlsx.full.min.js"></script>
+
+</head>
+<style media="screen">
+  .blurred{
+    filter:blur(8px);
+  }
+  table input{
+    width:65px;
+  }
+  table {
+    border-color: black;
+  }
+</style>
+<body style="background: #e3e3e3; font-family: monospace;">
+  <div class="p-2">
+      <div class="text-white rounded h3 bg-darkblue text-center">
+            {{title}}
+        </div>
+      <div class="container">
+
+        <div class="row bg-white rounded shadow p-2">
+          <!-- <input type="text" name="" placeholder="Refernce" class="inputref">
+          <select class="select2" name="">
+
+          </select> -->
+
+        </div>
+
+
+        <!-- I want to add something new here -->
+
+        <div class="row mt-5 pdctdaterepport position-relative">
+
+
+        </div>
+
+
+
+
+
+      </div>
+
+  </div>
+  <script src="/static/js/select2.min.js"></script>
+  <script>
+    document.getElementById('upload').addEventListener('change', handleFile, false);
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    // do the work...
+    const sorttable=(event) => {
+      th=event.target
+        const table = th.closest('table').querySelector('tbody');
+        Array.from(table.querySelectorAll('tr'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr) );
+    };
+    function handleFile(e) {
+        var files = e.target.files;
+        var i, f;
+        for (i = 0, f = files[i]; i !== files.length; ++i) {
+            var reader = new FileReader();
+            var name = f.name;
+            reader.onload = function(e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {type: 'binary'});
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                matchData(excelData);
+            };
+            reader.readAsBinaryString(f);
+        }
+    }
+
+    function matchData(excelData) {
+        $('table#pdctcategorytable tbody tr').each(function() {
+            var ref = $(this).find('td').eq(0).text().trim();
+            var excelRow = excelData.find(row => row[0] == ref);
+            if (excelRow) {
+                var devise = excelRow[5]; // assuming devise is in the 5th column (index 4) of the excel row
+                diff=$(this).find('.difffob')
+                var fobNvInput = $(this).find('.fobnv');
+                var fobanInputval = parseFloat($(this).find('.foban').val());
+                diff.text((parseFloat(devise)-fobanInputval).toFixed(2))
+                // the devise need to be after
+                //var fobNvValue = parseFloat(fobNvInput.val()) || 0;
+                fobNvInput.val(parseFloat(devise));
+            }
+        });
+    }
+    function intcomparer(idx, asc) {
+  	  return function(a, b) {
+  	    function getintCellValue(row, idx) {
+  	      const value = row.cells[idx].innerText || row.cells[idx].textContent;
+  	      return value.trim().replace(' ', '');
+  	    }
+
+  	    const v1 = getintCellValue(asc ? a : b, idx);
+  	    const v2 = getintCellValue(asc ? b : a, idx);
+
+  	    if (v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)) {
+  	      return v1 - v2;
+  	    } else {
+  	      return v1.toString().localeCompare(v2);
+  	    }
+  	  }
+  	}
+    function intsorttable(event){
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(intcomparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+    function searchpdctcategory(event) {
+      // Get the values from all filter input fields
+          var filterValue = $(event.target).val().toLowerCase();
+
+          // Split the filter value into individual terms based on the '&' sign
+          var filterTerms = filterValue.split('+').map(function(term) {
+              return term.trim();
+          });
+
+          // Iterate through the table rows
+          $(".pdctcategorybody tr").each(function() {
+              var rowText = $(this).text().toLowerCase();
+              var showRow = true;
+
+              // Check if all filter terms are present in the row text
+              $.each(filterTerms, function(index, term) {
+                  if (term !== '' && rowText.indexOf(term) === -1) {
+                      showRow = false;
+                      return false; // Exit the loop early if a mismatch is found
+                  }
+              });
+
+              // Toggle the visibility of the row based on the filter criteria
+              $(this).toggle(showRow);
+          });
+      }
+    function exportcommand(){
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      //removing the
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable').find('input').remove()
+      table = document.getElementById('pdctcategorytable')
+    	var uri = 'data:application/vnd.ms-excel;base64,'
+        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+      	var ctx = {worksheet:'commande_category', table: table.innerHTML}
+        window.location.href = uri + base64(format(template, ctx))
+        setTimeout(()=>location.reload(), 2500)
+    }
+    // this here needs to be removed, cause he etude page will have different functions, but some functions will stay as we will need them
+    function getpdctins(pdctref){
+      $.get('/products/getpdctins', {'ref':pdctref}, (data)=>{
+        $('.tbodyinsrepport').html('')
+        $('.totalqtyin').html(data.totalqtyin)
+        if (data.success){
+          for (let i of data.pdctins){
+            $('.tbodyinsrepport').append(`
+            <tr>
+              <td>${i.date}</td>
+              <td>${i.supplier}</td>
+              <td style="background:yellowgreen;">${i.quantity}</td>
+              <td>${i.price}</td>
+              <td>${parseFloat(i.devise).toFixed(2)}</td>
+              <td>${(i.total).toFixed(2)}</td>
+            </tr>
+            `)
+          }
+        }
+
+      })
+    }
+    function getpdctouts(pdctref){
+      $.get('/products/getpdctouts', {'ref':pdctref}, (data)=>{
+        $('.totalqtyout').html('data.totalqtyout')
+        $('.totalqtyout').html(data.totalqtyout)
+        $('.pdctstock').html('')
+        $('.pdctstock').html(data.pdctstock)
+        $('.pdctimg').attr('src', '')
+        $('.pdctimg').attr('src', data.pdctimg)
+        $('.pdctname').html('')
+        $('.pdctname').html(data.pdctname)
+        $('.totalqtyavoirs').html('')
+        $('.totalqtyavoirs').html(data.totalqtyavoirs)
+        $('.tbodyoutsrepport').html('')
+        if (data.success){
+          //<td>${i.no}</td>
+          for (let i of data.pdctouts){
+            $('.tbodyoutsrepport').append(`
+            <tr>
+              <td>${i.date}</td>
+
+              <td style="text-align:center;">${i.quantity}</td>
+              <td>${i.price}</td>
+              <td style="text-align:center;">${i.remise}%</td>
+              <td>${i.client}</td>
+              <td>${(i.total).toFixed(2)}</td>
+            </tr>
+            `)
+          }
+          $('.tbodyclientsqty').html('')
+          for (let i of data.clientsqty){
+          $('.tbodyclientsqty').append(`
+            <tr>
+              <td>${i.client}</td>
+              <td>${i.quantity}</td>
+            </tr>
+            `)
+          }
+          $('.tbodyclientsavoirs').html('')
+          for (let i of data.clientsavoirs){
+          $('.tbodyclientsavoirs').append(`
+            <tr>
+              <td>${i.client}</td>
+              <td>${i.quantity}</td>
+            </tr>
+            `)
+          }
+          months_data=data.outbymonth
+          const canvas = document.getElementById('outbymonth');
+          const ctx = canvas.getContext('2d');
+          months=months_data.map(row => row.month)
+          counts=months_data.map(row => row.count)
+          // Check if there's an existing chart and destroy it
+          if (window.myChart) {
+              window.myChart.destroy();
+          }
+          window.myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    data: counts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Example color
+                    borderColor: 'rgba(54, 162, 235, 1)', // Example color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: 'black',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value) => {
+                            return value;
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        display: false // Hide y-axis
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        }
+        $('.pdctdaterepport').toggleClass('blurred');
+      })
+
+    }
+    function getpdctdata(event, pdctref){
+      $('.pdctdaterepport').toggleClass('blurred')
+      $('.pdctcategorybody tr').css('background', 'none')
+      $(event.target).parent().css('background', 'yellowgreen')
+      $('html, body').animate({ scrollTop: 0 }, 'slow');
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+    }
+    function difffob(event, id){
+      foban= parseFloat($(event.target).parent().parent().find(`.foban`).val())
+      fobnv= parseFloat($(event.target).parent().parent().find(`.fobnv`).val())
+      $(`.difffob${id}`).text((fobnv-foban).toFixed(2))
+    }
+    $('.categoryselect').on('change', function(){
+      $('.pdctcategorybody').html('<div class="spinner-border" role="status"></div>')
+      if(!$(this).val()==""){
+        $.get('/products/pdctscategoryrepport', {'categoryid':$(this).val()}, (data)=>{
+
+          $('.pdctcategorybody').html('')
+          //minstock is used to indeicate arrivage
+          for (i of data.pdctdata){
+            $('.pdctcategorybody').append(`
+            <tr >
+              <td ondblclick="getpdctdata(event, '${i.ref}')">${i.ref.toUpperCase()}</td>
+              <td>${i.name}</td>
+              <td><input class="foban" value="${(i.devise).toFixed(2)}" onkeyup="difffob(event, ${i.id})"></span></td>
+              <td><input class="fobnv" value="0.00" onkeyup="difffob(event, ${i.id})"></span></td>
+              <td class="difffob difffob${i.id}"></td>
+              <td><input value="${i.arrivage}" onchange="$('.arrivage${i.id}').text($(this).val()), minstockpdct(event, '${i.id}')"><span class="arrivage${i.id}">${i.arrivage}</span></td>
+              <td style="background: #baf9c7;">${i.totalqtyin}</td>
+              <td style="background: #f3d5d0;">${i.totalqtyout}</td>
+              <td style="background: #5f9ea08a;">${i.stocktotal}</td>
+              <td><input value="${i.qtycommande}" onchange="$('.qty${i.id}').text($(this).val()), commandpdct(event, '${i.id}')"><span class="qty${i.id}">${i.qtycommande}</span></td>
+            </tr>
+            `)
+          }
+          $('.excelfile').removeClass('d-none')
+
+        })
+      }
+    })
+    // minstock is arrivage
+    function minstockpdct(event, pdctid){
+      $.get('/products/minstockpdct', {
+        'pdctid':pdctid,
+        'qty':$(event.target).val()
+      }, (data)=>{
+      })
+    }
+    function commandpdct(event, pdctid){
+      $.get('/products/commandpdct', {
+        'pdctid':pdctid,
+        'qty':$(event.target).val()
+      }, (data)=>{
+      })
+    }
+    $('.select2').select2({
+
+
+      ajax: {
+        type:'get',
+        dataType: 'json',
+        url: '/products/searchproduct?target={{target}}',
+        data: function (params) {
+          var query = {
+            term: params.term,
+          }
+          // Query parameters will be ?search=[term]&type=public
+          return query;
+        },
+        proccessresults: function (data) {
+            return {
+              results:data.results
+            }
+        },
+        cache:true
+      },
+      minimumInputLength: 1,
+      placeholder:'Chercher Produits',
+      templateResult: formatRepo,
+      templateSelection: formatRepoSelection,
+    });
+    function formatRepo (repo) {
+      if (repo.loading) {
+        return repo.text;
+      }
+
+      var $container = $(
+        `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+        );
+
+
+
+        return $container;
+    }
+    // IF YOU HAVE MORE THN ONE SELECT2, THE ONE THAT'S SIMPLE NEEDS TO BE THE LAST ONE
+    $('.categoryselect').select2();
+    function formatRepoSelection (repo) {
+      return repo.text;
+    }
+    $('.select2').on('change', function(){
+      $('.pdctdaterepport').toggleClass('blurred')
+
+      var [pdctref, name, dp, stock, stockfacture, pdctid, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+    })
+
+
+    $('.inputref').on('change', function (){
+      $('.pdctdaterepport').toggleClass('blurred')
+      pdctref=$(this).val()
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+
+          // Once both functions are finished, remove blur class
+
+
+
+    })
+  </script>
+</body>

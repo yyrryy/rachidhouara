@@ -1,0 +1,68 @@
+<form class="form-horizontal add-ledger-form" id="updateclientform" autocomplete="off">
+    <div class="form-group">
+        {% csrf_token %}
+        <input type="text" name="updateclientname" class="form-control mb-2 col-6" placeholder="client" value="{% if client.name %}{{client.name}}{%endif%}">
+        <input type="text" name="updateclientice" class="form-control mb-2 col-6" placeholder="ICE" value="{% if client.ice %}{{client.ice}}{%endif%}">
+        <input type="text" name="updateclientrc" class="form-control mb-2" placeholder="RC" value="{% if client.clientrc %}{{client.clientrc}}{%endif%}">
+        <input type="text" name="updateclientif" class="form-control mb-2" placeholder="IF" value="{% if client.clientif %}{{client.clientif}}{%endif%}">
+        <input type="text" name="updateclientcity" class="form-control mb-2" placeholder="Ville" value="{% if client.city %}{{client.city}}{%endif%}">
+        <!-- <div class="mb-2">
+            <small>Representant</small>
+        <select name="updateclientrep" class="form-select">
+            <option value="">--</option>
+            {% for i in commerciaux %}
+            <option value="{{i.id}}">{{i.name}}</option>
+            {% endfor %}
+        </select>
+        </div> -->
+        <input type="text" name="updateclientplafon" class="form-control mb-2" placeholder="plafon" value="{% if client.plafon %}{{client.plafon}}{%endif%}">
+        <input type="text" name="updateclientphone" class="form-control mb-2" placeholder="phone" value="{% if client.phone %}{{client.phone}}{%endif%}">
+        <input type="text" name="updateclientpersonalname" class="form-control mb-2" placeholder="NOM PERSONNEL" value="{% if client.clientname %}{{client.clientname}}{%endif%}">
+        <input type="text" name="updateclientphone2" class="form-control mb-2" placeholder="phone 2" value="{% if client.phone2 %}{{client.phone2}}{%endif%}">
+        <input type="text" name="updateclientaddress" class="form-control mb-2" placeholder="Addresse" value="{% if client.address %}{{client.address}}{%endif%}">
+        <input hidden type="text" name="updateclientid" value="{% if client.id %}{{client.id}}{%endif%}">
+        <hr>
+        <small>Mode reglement:</small>
+        <select name="updatemodereglement" class="modereglement form-control mb-2">
+            <option value="{% if client.modereglement %}{{client.modereglement}}">{%endif%}{% if client.modereglement %}{{client.modereglement}}{%endif%}</option>
+            <option value="compte">En compte</option>
+            <option value="espece">Contre espece</option>
+            <option value="cheque">Contre cheque</option>
+            <option value="effet">Contre effet</option>
+            <option value="verement">Contre verement</option>
+        </select>
+
+        <button class="w-100 btn btn-primary updateclientbtn">Modifier</button>
+    </div>
+</form>
+<script>
+    $('.updateclientbtn').on('click', function(event){
+        event.preventDefault()
+        if ($('[name="updateclientname"]').val()=="" || $('[name="updateclientcode"]').val()==""){
+            $('#updateclientform').css('border', '1px solid red')
+            return
+        }
+        $(this).addClass('disabled')
+        $('#editclientmodal').modal('hide')
+        $('.modal-backdrop').remove()
+        var formData = new FormData($('#updateclientform')[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updateclient" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                if (data.success){
+                    ajaxpage('addclientstab', 'list clients', '/products/clientspage?target={{target}}')
+
+                }else{
+                    alertify.error(data.error)
+                }
+
+
+            })
+        })
+    })
+    
+</script>

@@ -1,0 +1,52 @@
+<div class="row">
+    <div class="col-3">
+       
+       
+        <div class="bg-white p-2">
+            <strong>
+                Modifer les données
+            </strong>
+            <form method="post" class="updateadmindataform">
+                {% csrf_token %}
+                <div class="mt-2">
+                    <small>
+                        Username:
+                    </small>
+                    <input type="text" name="adminusername" value="{{request.user.username}}" class="form-control">
+                </div>
+                <div class="mt-2">
+                    <small>
+                        Password:
+                    </small>
+                    <input type="text" name="adminpassword" class="form-control">
+                </div>
+               
+                <button class="btn btn-success mt-2" onclick="updateadmindate(event)">
+                    Enregistrer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function updateadmindate(event){
+        event.preventDefault()
+        console.log('sending')
+        if ($('[name="adminusername"]').val() == '' || $('[name="adminpassword"]').val() == ''){
+            alertify.error('ERRROR')
+            return
+        }
+        var formData = new FormData($('.updateadmindataform')[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updateadmindata" %}',  // adminlace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                window.location.href='/logoutuser'
+            })
+        })
+    }
+</script>

@@ -1,0 +1,27 @@
+<table class="table table-bordered">
+    <tr>
+        <td>Ref</td>
+        <td class="bg-darkblue text-white"> {{product.ref}} </td>
+    </tr>
+    <tr>
+        <td>
+        Designations
+        </td>
+        <td>
+        {% for i in cars %}
+        -{{i}} <br>
+        {% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ref equiv
+        </td>
+        <td>
+            {{product.refeq1}}<br>
+            {{product.refeq2}}<br>
+            {{product.refeq2}}<br>
+            {{product.refeq4}}<br>
+        </td>
+    </tr>
+</table>

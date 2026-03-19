@@ -1,0 +1,47 @@
+{% for i in bons %}
+<tr class="reglfc-row" year={{year}}  style={% if i.echance and i.echance == today %}"background: yellow;"{% elif i.echance and i.echance < today %}"color:red" {% endif %}>
+    <td>
+         {{i.mode}}
+    </td>
+    <td>
+         {{i.npiece}}
+    </td>
+    <td>
+         {{i.amount|floatformat:2}}
+    </td>
+    <td>
+         {{i.date|date:"d/m/Y"}}
+    </td>
+    <td>
+         {{i.client.name}}
+    </td>
+    <td>
+         {{i.client.code}}
+    </td>
+    <td>
+         {{i.echance|date:"d/m/Y"}}
+    </td>
+    <td class="d-flex justify-content-between">
+       <div class="accordion" id="accordionfactures{{i.id}}">
+
+            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsfacture{{i.id}}" aria-expanded="true" aria-controls="collapsfacture{{i.id}}">
+
+
+            </button>
+
+            <div id="collapsfacture{{i.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionfactures{{i.id}}">
+                {% for bon in i.factures.all %}
+                -{{ bon.facture_no }} <br>
+                {% endfor %}
+
+
+            </div>
+        </div>
+       <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.factures.all %}{{ bon.facture_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="ajaxpage('viewreg{{i.id}}', 'reglement #{{i.id}}', '/products/viewreglementfc/{{i.id}}')">
+       </button> -->
+
+       <button class="btn btn-success btn-sm" onclick="updatereglementfc({{i.id}})" style="font-size: 12px;
+       height: 19px;">✐</button>
+    </td>
+</tr>
+{% endfor %}

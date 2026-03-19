@@ -1,0 +1,657 @@
+<div class="row">
+    <div class="col-3">
+        <div class="bg-white p-2">
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        Nom
+                    </td>
+                    <td>
+                        {{rep.name}}
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        Username
+                    </td>
+                    <td>
+                        {{rep.user.username}}
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        Mot de passe
+                    </td>
+                    <td>
+                        {% if rep.user %}
+                        <button class="btn w-100 btn-secondary" onclick="$('.cretenewacc{{rep.id}}').toggleClass('d-none')">
+                            NEW account
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Compte
+                    </td>
+                    <td>
+                        {% if rep.user %}
+                        {% if rep.user.is_active %}
+                        <button class="btn w-100 btn-danger" onclick="desactivercompte('{{rep.user.id}}', 'rep{{rep.id}}', '/products/onereppage/{{rep.id}}')">
+                            Desactiver
+                        </button>
+                        {% else %}
+                        <button class="btn w-100 btn-success" onclick="activercompte('{{rep.user.id}}', 'rep{{rep.id}}', '/products/onereppage/{{rep.id}}')">
+                            Activer
+                        </button>
+                        {% endif %}
+                        {% else %}
+                        <button class="btn w-100 btn-info" onclick="$('.creteacc{{rep.id}}').toggleClass('d-none')">
+                            Creer compte
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                </tr>
+            </table>
+            <div class="mt-5 p-2 creteacc{{rep.id}} d-none">
+
+                <div class="align-items-center">
+                    <div class="">
+                      <label class="sr-only" for="inlineFormInput">username</label>
+                      <input autocomplete="off" type="text" class="form-control mb-2" name="repusername">
+                    </div>
+                    <div class="">
+                      <label class="sr-only" for="inlineFormInputGroup">Password (+6 Characters)</label>
+                      <div class="input-group mb-2">
+
+                        <input autocomplete="off" type="text" class="form-control" name="reppassword">
+                    </div>
+
+                    <div class="col-auto">
+                      <button type="submit" class="btn w-100 btn-primary mb-2" onclick="createrepaccount(event)">Submit</button>
+                    </div>
+                  </div>
+
+                </div>
+
+            </div>
+
+            <div class="mt-5 p-2 cretenewacc{{rep.id}} d-none">
+
+                <div class="align-items-center">
+                    <div class="">
+                      <label class="sr-only" for="inlineFormInput">username</label>
+                      <input autocomplete="off" type="text" class="form-control mb-2" name="newrepusername">
+                    </div>
+                    <div class="">
+                      <label class="sr-only" for="inlineFormInputGroup">Password (+6 Characters)</label>
+                      <div class="input-group mb-2">
+
+                        <input autocomplete="off" type="text" class="form-control" name="newreppassword">
+                    </div>
+
+                    <div class="col-auto">
+                      <button type="submit" class="btn w-100 btn-primary mb-2" onclick="createnewrepaccount(event)">Submit</button>
+                    </div>
+                  </div>
+
+                </div>
+
+            </div>
+
+            <!-- udate password -->
+            <div class="mt-5 p-2 updatepassword{{rep.id}} d-none">
+
+                <div class="align-items-center">
+
+                    <div class="">
+                        <input type="hidden" name="repid" value="rep.id">
+                      <label class="sr-only" for="inlineFormInputGroup">Password (+6 Characters)</label>
+                      <div class="input-group mb-2">
+
+                        <input autocomplete="off" type="text" class="form-control" name="updatedreppassword">
+                    </div>
+
+                    <div class="col-auto">
+                      <button type="submit" class="btn w-100 btn-primary mb-2" onclick="updatereppassword(event)">Submit</button>
+                    </div>
+                  </div>
+
+            </div>
+        </div>
+        </div>
+
+        <div class="bg-white p-2">
+            <strong>
+                Modifer les données
+            </strong>
+            <form method="post" class="updaterepdataform{{rep.id}}">
+                {% csrf_token %}
+                <input hidden name="repid" value="{{rep.id}}">
+                <div class="mt-2">
+                    <small>
+                        Region:
+                    </small>
+                    <input type="text" name="region" value="{{rep.region}}" class="form-control">
+                </div>
+                <div class="form-check position-relative mt-2">
+                    <input class="form-check-input" type="checkbox" id="flexCheckIndeterminate" name="caneditprice" {% if rep.caneditprice %} checked {% endif %}>
+                    <label class="form-check-label" for="flexCheckIndeterminate">
+                      Relevé client
+                    </label>
+                </div>
+                <div class="form-check position-relative mt-2">
+                    <input class="form-check-input" type="checkbox"  id="slidescheck" name="slides" {% if rep.slides %} checked {% endif %}>
+                    <label class="form-check-label" for="slidescheck">
+                      Les pages
+                    </label>
+                </div>
+                <button class="btn btn-success" onclick="updaterepdate(event)">
+                    Enregistrer
+                </button>
+            </form>
+        </div>
+
+        <div>
+            <strong>Notes</strong>
+            <textarea rows="10" style="width: 100%">{{notes}}</textarea>
+            <button class="btn btn-success bi bi-check w-100" onclick="addrepnote(event, '{{rep.id}}')"></button>
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="d-flex">
+          <div class="me-2">
+            <!-- <input type="date" name="" id="" class="startdatefilterbl" value="{{today|date:'Y-m-d'}}"> -->
+             <input type="date" name="" id="" class="startdatefilterreponfo{{rep.id}}" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div>
+            <input type="date" name="" id="" class="enddatefilterreponfo{{rep.id}}" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div class="d-flex justify-content-between w-100">
+            <div class="me-2">
+                <select class="bontarget">
+                    <option value="all">--</option>
+                    <option value="1">Reglé</option>
+                    <option value="0">Non reglé</option>
+                </select>
+            <button class="btn btn-sm bg-dark text-white" onclick="filterepbons('{{rep.id}}')">Filtrer</button>
+            </div>
+            <button class="btn btn-sm bg-dark text-white" onclick="$('.systembons').toggleClass('d-none')"></button>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-12 row systembons d-none">
+                <div class="w-100 rounded p-2 bg-dark text-white text-center mb-2">System</div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total Bon livraison
+                        <div class="totalsystembons">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total Facture
+                        <div class="totalfactures">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total BL FC TTC
+                        <div class="totalblfc">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-orange text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total Bon Avoirs
+                        <div class="totalavoirs">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Result TTC
+                        <div class="resultttc">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Result HT
+                        <div class="resultht">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Charges
+                        <div class="">
+                            <input type="text" style="width: 100%" class="totalcharges" onchange="getrepresults(event)">DH
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-success text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        apres charges HT
+                        <div class="aftercharges">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Pourcentage
+                        <div>
+                            <input type="text" style="width: 80%"  class="percentage" onchange="getrepresults(event)">
+                        </div>%
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Resultat
+                        <div class="finalresult" >
+                            --
+                        </div>DH
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 row mt-5">
+                <div class="w-100 rounded p-2 bg-dark text-white text-center mb-2">Tablet</div>
+
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total Bon livraison
+                        <div class="totalrepbons">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total Facture
+                        <div class="totalrepfactures">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total BL FC TTC
+                        <div class="reptotalblfc">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                      Difference
+                      <div class="">
+                          <input type="text" style="width: 100%" class="reptotaldiff" onkeyup="getrepresultsrep(event)">DH
+                      </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-orange text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Total Bon Avoirs
+                        <div class="totalrepavoirs">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Result TTC
+                        <div class="represultttc">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Result HT
+                        <div class="represultht">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Charges
+                        <div class="">
+                            <input type="text" style="width: 100%" class="reptotalcharges" onkeyup="getrepresultsrep(event)">DH
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-success text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        apres charges HT
+                        <div class="repaftercharges">
+                            --
+                        </div>DH
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Pourcentage
+                        <div>
+                            <input type="text" style="width: 80%"  class="reppercentage" onkeyup="getrepresultsrep(event)">%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
+
+                        Resultat
+                        <div class="repfinalresult" >
+                            --
+                        </div>DH
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-2">
+             <div style="height: 45vh; overflow: scroll;" class="">
+                <table class="table table-bordered table-hover table-striped " style="font-size: 12px;" id="addbonlivraisonle">
+                  <thead style="position: sticky; top: 0;">
+                    <tr style="background: #676767; color: white;">
+                      <td style="width: 8%;" onclick="sorttable(event)">N° bon</td>
+                      <td style="width: 8%;" class="">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortupbl(event)">↑</button>  -->
+                          <div>Date</div>
+                          <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortdownbl(event)">↓</button>  -->
+                        </div>
+                      </td>
+                      <td style="width: 12%;" onclick="sorttable(event)">Client</td>
+                      <td style="width: 5%;">Code client</td>
+                      <td style="width: 5%;" onclick="intsorttable(event)">Total</td>
+                      <td style="width: 5%;" onclick="sorttable(event)">Region</td>
+                      <td style="width: 5%;" onclick="sorttable(event)">Ville</td>
+                      <td style="width: 5%;">Solde bl cl.</td>
+                      <td style="width: 5%;" onclick="sorttable(event)">Repr</td>
+                      <td style="width: 4%;">Reglé</td>
+                      <td style="width: 5%;">Facturé</td>
+                      <td style="width: 5%;" onclick="sorttable(event)">Cmnd</td>
+                      <td style="width: 5%;" onclick="sorttable(event)">Transport</td>
+                      <td style="width: 5%;" onclick="sorttable(event)">Notes</td>
+                      <td style="width: 2%;"></td>
+                    </tr>
+                  </thead>
+                  <tbody class="listblbodyinreponfo">
+                  </tbody>
+                  <tfoot style="background:white;">
+                    <td style="width: 12%;" onclick="sorttable(event)">
+                    </td>
+                    <td style="width: 5%;">
+                    </td>
+                    <td style="width: 5%;" onclick="intsorttable(event)">
+                    </td>
+                    <td style="width: 5%;" onclick="sorttable(event)">
+                    </td>
+                    <td style="width: 5%;" onclick="sorttable(event)" class="totalbonfc">
+                    </td>
+                    <td style="width: 5%;">
+                    </td>
+                    <td style="width: 5%;" onclick="sorttable(event)">
+                    </td>
+                    <td style="width: 4%;">
+                    </td>
+                    <td style="width: 5%;">
+                    </td>
+                    <td style="width: 5%;" onclick="sorttable(event)">
+                    </td>
+                    <td style="width: 5%;" onclick="sorttable(event)">
+                    </td>
+                    <td style="width: 5%;" onclick="sorttable(event)">
+                    </td>
+                    <td style="width: 2%;">
+
+                    </td>
+                  </tfoot>
+                </table>
+        </div>
+    </div>
+</div>
+<script>
+    function getrepresults(event){
+
+        let parent=$(event.target).parent().parent().parent().parent()
+        totalsystembons=parseFloat(parent.find('.totalsystembons').text())
+        totalfactures=parseFloat(parent.find('.totalfactures').text())
+        totalavoirs=parseFloat(parent.find('.totalavoirs').text())
+        resultht=parseFloat(parent.find('.resultht').text().replace(/\s/g, ''))
+        console.log(resultht)
+        totalcharges=parseFloat(parent.find('.totalcharges').val())
+        percentage=parseFloat(parent.find('.percentage').val())
+        aftercharges=(resultht-totalcharges).toFixed(2)
+        $('.aftercharges').text(aftercharges)
+        afterpercentage=((aftercharges*percentage)/100).toFixed(2)
+        $('.finalresult').text(afterpercentage)
+        console.log(totalcharges, totalavoirs, totalfactures, resultht)
+    }
+    function getrepresultsrep(event){
+        let parent=$(event.target).parent().parent().parent().parent()
+        totalsystembons=parseFloat(parent.find('.totalrepbons').text())
+        totalfactures=parseFloat(parent.find('.totalrepfactures').text())
+        totalavoirs=parseFloat(parent.find('.totalrepavoirs').text().replace(/\s/g, ''))
+        resultht=parseFloat(parent.find('.represultht').text().replace(/\s/g, ''))
+        totalblfc=parseFloat(parent.find('.reptotalblfc').text().replace(/\s/g, ''))
+        totalcharges=parseFloat(parent.find('.reptotalcharges').val()?parent.find('.reptotalcharges').val():0)
+        totaldiff=parseFloat(parent.find('.reptotaldiff').val()?parent.find('.reptotaldiff').val():0)
+        percentage=parseFloat(parent.find('.reppercentage').val()?parent.find('.reppercentage').val():0)
+        console.log('afterdiff',totalblfc,totaldiff,totalavoirs)
+        afterdiff=(totalblfc+totaldiff-totalavoirs).toFixed(2)
+        htafterdif=(afterdiff/1.2).toFixed(2)
+        parent.find('.represultttc').text(afterdiff)
+        parent.find('.represultht').text(htafterdif)
+        aftercharges=(htafterdif-totalcharges).toFixed(2)
+        $('.repaftercharges').text(aftercharges)
+        afterpercentage=((aftercharges*percentage)/100).toFixed(2)
+        $('.repfinalresult').text(afterpercentage)
+        console.log(totalcharges, totalavoirs, totalfactures, resultht)
+    }
+
+    function filterepbons(repid){
+
+        if ($('.startdatefilterreponfo{{rep.id}}').val()=='' || $('.enddatefilterreponfo{{rep.id}}').val()==''){
+            alertify.error('Date')
+        }else{
+            $('.totalsystembons').text('loading.........')
+            $('.totalrepbons').text('loading.........')
+            $('.totalrepfactures').text('loading.........')
+            $('.reptotalcharges').val('')
+            $('.reptotaldiff').val('')
+            $('.totalcharges').val('')
+            $('.percentage').val('')
+            $('.reppercentage').val('')
+            $('.totalfactures').text('loading.........')
+            $('.aftercharges').text('loading.........')
+            $('.repaftercharges').text('loading.........')
+            $('.finalresult').text('loading.........')
+            $('.repfinalresult').text('loading.........')
+            $('.totalavoirs').text('loading.........')
+            $('.totalblfc').text('loading.........')
+            $('.resultttc').text('loading.........')
+            $('.resultht').text('loading.........')
+            $('.listblbodyinreponfo').html('loading.........')
+            $.get('/products/filterepbons', {
+                'repid':repid,
+                'startdate':$('.startdatefilterreponfo{{rep.id}}').val(),
+                'enddate':$('.enddatefilterreponfo{{rep.id}}').val(),
+                'bontarget':$('.bontarget').val()
+            }, (data)=>{
+                $('.totalsystembons').text(data.totalbons.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalrepbons').text(data.totalrepbons.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalrepfactures').text(data.totalrepfactures.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalfactures').text(data.totalfactures.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                //$('.totalavoirs').text(data.totalavoirs.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalrepavoirs').text(data.totalavoirs.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalblfc').text(data.totalblfc.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.reptotalblfc').text(data.reptotalblfc.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.resultttc').text(data.resultttc.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.represultttc').text(data.represultttc.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.resultht').text(data.resultht.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.represultht').text(data.represultht.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.listblbodyinreponfo').html(data.bons)
+                $('.listblbodyinreponfo').append(data.factures)
+                $('.totalbonfc').text(data.totalblfctable)
+
+            })
+        }
+    }
+    function updaterepdate(event){
+        event.preventDefault()
+        console.log('sending')
+
+        var formData = new FormData($('.updaterepdataform{{rep.id}}')[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updaterepdata" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                console.log(data)
+                if (data.success){
+                    updatetab('rep{{rep.id}}', '/products/onereppage/{{rep.id}}')
+                    alertify.success('Modifé')
+                }else{
+                    alertify.error('ERR Connexion Serveur')
+                }
+
+            })
+        })
+    }
+    function createnewrepaccount(event){
+        parentdiv=$(event.target).parent().parent().parent()
+        var username = parentdiv.find('input[name="newrepusername"]').val();
+        var password = parentdiv.find('input[name="newreppassword"]').val();
+        if (username=='' || password=='' || password.length<6){
+            alertify.error('Veuillez remplir les champs correctement')
+            return;
+        }
+        var repid = '{{rep.id}}';
+        $.ajax({
+            url: '/products/createnewrepaccount',
+            type: 'POST',
+            data: {
+                'username': username,
+                'password': password,
+                'repid': repid,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.success){
+                    alertify.success('OK')
+                    updatetab('rep{{rep.id}}', 'products/onereppage/{{rep.id}}')
+                }else{
+                    alertify.error(data.error);
+                }
+            }
+        });
+    }
+
+    function createrepaccount(event){
+        parentdiv=$(event.target).parent().parent().parent()
+        var username = parentdiv.find('input[name="repusername"]').val();
+        var password = parentdiv.find('input[name="reppassword"]').val();
+        if (username=='' || password=='' || password.length<6){
+            alertify.error('Veuillez remplir les champs correctement')
+            return;
+        }
+        var repid = '{{rep.id}}';
+        $.ajax({
+            url: '/products/createrepaccount',
+            type: 'POST',
+            data: {
+                'username': username,
+                'password': password,
+                'repid': repid,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.success){
+                    updatetab('rep{{rep.id}}', 'products/onereppage/{{rep.id}}')
+                }else{
+                    alertify.error(data.error);
+                }
+            }
+        });
+    }
+
+    function newrepaccount(repid){
+
+    }
+    function updatereppassword(event){
+        parentdiv=$(event.target).parent().parent().parent()
+        var password = parentdiv.find('input[name="updatedreppassword"]').val();
+        if (password=='' || password.length<6){
+            alertify.error('Veuillez remplir les champs correctement')
+            return;
+        }
+        console.log(password, parentdiv)
+        var repid = '{{rep.id}}';
+        $.ajax({
+            url: '/products/updatereppassword',
+            type: 'POST',
+            data: {
+                'password': password,
+                'repid': repid,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.success){
+                    //updatetab('rep{{rep.id}}', 'products/onereppage/{{rep.id}}')
+                }else{
+                    alertify.error(data.error);
+                }
+            }
+        });
+    }
+
+</script>

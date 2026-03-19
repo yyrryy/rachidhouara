@@ -1,0 +1,130 @@
+{% load global_tags %}
+<div class="bg-gray rounded mb-3" style="width: 12em;
+border: 2px solid black;
+padding: 5px;
+background: #b7b7b7;">
+    <strong >
+        Situation Fournisseur {{supplier.name}}
+    </strong>
+</div>
+<div class="mb-2">
+    <strong>
+        Du: {{startdate|date:'d/m/Y'}} - A: {{enddate|date:'d/m/Y'}}
+    </strong>
+</div>
+<div class="d-flex justify-content-between">
+</div>
+<!-- {% for i in releve %}
+{{i.1}}
+{% endfor %} -->
+<table class="table table-bordered " style="font-size: 14px">
+
+    <tbody>
+        <tr class="bg-gray">
+            <td>Date</td>
+            <td>lable</td>
+            <td>debit</td>
+            <td>credit</td>
+            <td>sold</td>
+        </tr>
+        {% for i in releve %}
+        <tr>
+            <td>{{i.0.date|date:'d/m/Y'}}</td>
+            {% if i.1 == 'Itemsbysupplier' %}
+            <td {% if i.0.ismanual %}style="color:red;"{% endif %}>
+                Bon achat N° {{i.0.nbon}}
+            </td>
+            <td class="debitsoldsupp">
+                {{i.0.total|floatformat:2|intspace}}
+            </td>
+            <td></td>
+            <td class="soldsupp"></td>
+            {% elif i.1 == 'factureachat' %}
+            <td {% if i.0.ismanual %}style="color:red;"{% endif %}>
+                Facture achat N° {{i.0.facture_no}}
+            </td>
+            <td class="debitsoldsupp">
+                {{i.0.total|floatformat:2|intspace}}
+            </td>
+            <td></td>
+            <td class="soldsupp"></td>
+            {% elif i.1 == 'Paymentsupplier' %}
+            <td>
+                Regl. BL {{i.0.mode}} {{i.0.npiece}} {%if i.0.isavoir %}(avoir){% endif %}
+            </td>
+            {%if i.0.isavoir %}
+            <td class="debitsoldsupp">
+                {{i.0.amount|floatformat:2|intspace}}
+            </td>
+            <td></td>
+            {% else %}
+            <td></td>
+            <td class="creditsoldsupp">
+                {{i.0.amount|floatformat:2|intspace}}
+            </td>
+            {% endif %}
+            <td class="soldsupp"></td>
+            {% elif i.1 == 'Avoirsupplier' %}
+            <td>
+                Avoir {{i.0.no}}
+
+            </td>
+            <td>
+
+            </td>
+            <td class="creditsoldsupp">
+                {{i.0.total|floatformat:2|intspace}}
+            </td>
+            <td class="soldsupp"></td>
+            {% elif i.1 == 'avancesupplier' %}
+            <td>
+                AvanceF#{{i.0.id}}
+            </td>
+            <td>
+
+            </td>
+            <td class="creditsoldsupp">
+                {{i.0.amount|floatformat:2|intspace}}
+            </td>
+            <td class="soldsupp"></td>
+            {% endif %}
+        </tr>
+       {% endfor %}
+       <tr>
+
+            <td colspan="2"></td>
+            <td class="totaldebitbl" style="background: #c2c2c2; color: red;"></td>
+            <td class="totalcreditbl" style="background: #c2c2c2; color: red;"></td>
+        </tr>
+        <tr>
+
+            <td colspan="2"></td>
+            <td style="background: #c2c2c2; color: red;">Sold</td>
+            <td class="totalsold" style="background:  #c2c2c2; color: red;"></td>
+        </tr>
+    </tbody>
+    <tfoot>
+
+    </tfoot>
+</table>
+<script>
+    var sold=0
+    $('.soldsupp').each(function(){
+        sold+=parseFloat($(this).prev().prev().text().replace(/\s/g, ''))?parseFloat($(this).prev().prev().text().replace(/\s/g, '')):0-parseFloat($(this).prev().text().replace(/\s/g, '')?parseFloat($(this).prev().text().replace(/\s/g, '')):0)
+        $(this).text(sold.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+        $('.totalsold').text(sold.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+    var totaldebit=0
+    $('.debitsoldsupp').each(function(){
+        totaldebit+=parseFloat($(this).text().replace(/\s/g, ''))?parseFloat($(this).text().replace(/\s/g, '')):0
+        $('.totaldebitbl').text(totaldebit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+    var totalcredit=0
+    $('.creditsoldsupp').each(function(){
+        totalcredit+=parseFloat($(this).text().replace(/\s/g, ''))?parseFloat($(this).text().replace(/\s/g, '')):0
+        $('.totalcreditbl').text(totalcredit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+</script>

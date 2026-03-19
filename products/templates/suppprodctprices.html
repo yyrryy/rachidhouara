@@ -1,0 +1,31 @@
+<!-- <input type="text" class="form-control" placeholder="chercher"> -->
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>date</th>
+            <th>N°</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Remise</th>
+            <th>Remise</th>
+            <th>Remise</th>
+            <th>Remise</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in producthistory %}
+        <tr>
+            <td>{{ product.date|date:"d/m/Y" }}</td>
+            <td>{{ product.bon.bon_no }}{{ product.nbon.nbon }}</td>
+            <td>{{ product.qty }}{{ product.quantity }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.remise1 }}%</td>
+            <td>{{ product.remise2 }}%</td>
+            <td>{{ product.remise3 }}%</td>
+            <td>{{ product.remise4 }}%</td>
+            <td><button class="btn btn-sm" onclick="populateavoirsupp(event, '{{ product.price }}', '{{ product.remise1 }}', '{{ product.remise2 }}', '{{ product.remise3 }}', '{{ product.remise4 }}', '{{product.bon.id}}')">^</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

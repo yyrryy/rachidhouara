@@ -1,0 +1,193 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+<!-- tabs holder -->
+<div class="tabsholder expended" style="width: 100%;">
+  <!-- tabs s -->
+  <div class="px-2 d-flex justify-content-between border-bottom align-items-center">
+    <div class="d-flex">
+      <div class="dropdown show">
+        <a class="btn border dropdown-toggle bg-white" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </a>
+  
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <!-- <a class="dropdown-item" href="/products/ste1" >FARAH</a> -->
+          <a class="dropdown-item" href="/products/ste2" >ORGH</a>
+          <a class="dropdown-item text-success" href="/products/pointdevente" >Point de vente</a>
+        </div>
+      </div>
+      <div class="btn p-2 text-center">
+        Point de vente
+      </div>
+      <div class="dropdown show">
+        <a class="btn border dropdown-toggle bg-dark text-white" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menu
+        </a>
+  
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <div class="bg-darkblue" style="height: 90vh; overflow-y: scroll;">
+            <nav class="account-nav__list mt-2">
+              
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addbonsortie', '+sortie', '/products/bonsortie')">
+                <a  href="#">+ Bon de sortie</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addbonsortie', '+sortie', '/products/listbonsortie')">
+                <a  href="#">List bons sorties</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addclientstab', 'CLIENTS', '/products/clientspage?target=s')">
+                <a  href="#">List Clients</a>
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addlistreglementbl', 'REGL BL', '/products/listreglementbl?target=s')">
+                <a  href="#">Reglement clients</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addbonsortie', '+bon livraison', '/products/listavoirclient?target=s')">
+                <a  href="#">Avoirs</a>
+        
+              </li>
+              
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addlistreglementbl', 'REGL BL', '/products/listavances?target=s')">
+                <a  href="#">Avances</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('situationcl', 'Sit.CLBL', '/products/situationcl?target=s')">
+                <a  href="#">Situation Client</a>
+        
+              </li>
+              
+        
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addpducts', 'ARTICLES', '/products/stock?target=s')">
+                <a  href="#">Stock</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addpducts', 'ARTICLES', '/products/journalvente?target=s')">
+                <a  href="#">Journa ventes</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addpducts', 'ARTICLES', '/products/carlogospage?target=s')">
+                <a  href="#">Voitures</a>
+        
+              </li>
+              <li class="account-nav__item tab-link" onclick="ajaxpage('addpducts', 'ARTICLES', '/products/caissepage?target=s')">
+                <a  href="#">Gestion Finance</a>
+        
+              </li>
+              
+              <!-- stock -->
+              
+        
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <button class="btn border">Clients</button>
+    <div class="dropdown show">
+      <a class="btn border dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        + Ajouter
+      </a>
+
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item" onclick="addscreen('/products/addproductspage')">Produit</a>
+        <a class="dropdown-item" href="#">Client</a>
+        <a class="dropdown-item" href="#">Fournisseur</a>
+      </div>
+    </div>
+    <h1 class="text-center">
+      POS
+    </h1> -->
+    <div>
+      <input style="
+      width: 19em;
+      
+      border-radius: 11px;
+      margin-bottom: 9px;
+      " type="text" placeholder="Cherche Article" class="searchitemsforlistbl"
+      onfocus="$('.itemssearchresultslistbl').removeClass('d-none')"
+      onchange="getitemsforlistbl(event, '{{target}}')">
+      <div style="
+      position: absolute;
+      right:0;
+      height: 80vh;
+      width: 90vw;
+      overflow-x: scroll;
+      z-index: 99;
+      background: white;
+      padding: 10px;
+      box-shadow: -6px 5px 4px 4px #24232391" class="itemssearchresultslistbl d-none">
+        <div class="sticky-top bg-white">
+          <button class="w-100 btn btn-danger" onclick="$('.itemssearchresultslistbl').addClass('d-none')">X</button>
+          <div class="suggestions__group-title brands d-flex" >
+  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3 categoriesfilter"></div>
+          <div class="col-9">
+            <table class="table table-bordered">
+              <thead>
+                <tr class="text-center bg-darkblue text-white">
+                  <td style="width:30%;">IMAGE</td>
+                  <td>REF.</td>
+                  <td>ARTICLE</td>
+                  <td>STOCK 2</td>
+                  <td>STOCK Orgh</td>
+                  <!-- <td>PR. Vent</td> -->
+                  <td>Marque</td>
+                  
+                </tr>
+              </thead>
+              <tbody class="itemsforlistblresult">
+      
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<div class="d-flex">
+  <!-- <div class="sidebarholder p-0 position-relative" style="width: 13%;">
+    <div class="d-flex">
+        <img src="" alt="" style="width: 100%; z-index: 9999">
+  
+  
+  
+    </div>
+    
+  
+  </div> -->
+  <div id="maintab" class="w-100" style="height: 90vh; overflow-y: scroll;">
+    
+  
+  </div>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+  ajaxpage('addbonsortie', '+sortie', '/products/bonsortie')
+  // $.get('/products/echeancetoday', (data)=>{
+  //   if (data.length > 0){
+  //     $('.echeanceindex').removeClass('d-none').text(data.length)
+  //     //alertify.confirm('Echenaces', data.length+' ECHEANES AUJOURD HUI', function(){
+  //     //  ajaxpage('echeancetab', 'Echeances', '/products/listecheance')
+  //     //}, ()=>{
+
+  //     //})
+  //   }
+  // })
+  
+
+</script>
+{% endblock %}

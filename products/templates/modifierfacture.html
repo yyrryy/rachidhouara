@@ -1,0 +1,755 @@
+<style>
+  .autocomplete {
+position: relative;
+width: 300px; /* Adjust as needed */
+}
+
+#search-input {
+width: 100%;
+padding: 10px;
+}
+
+#suggestion-list {
+position: absolute;
+list-style: none;
+background-color: white;
+border: 1px solid #ccc;
+max-height: 200px;
+overflow-y: auto;
+width: 100%;
+padding: 0;
+margin: 0;
+}
+</style>
+<div class="addclientholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
+  <div class="ms-3">
+    <label>Client</label> <br>
+    <input type="text" class="addclientname">
+  </div>
+  <div class="ms-3">
+    <label>CODE</label> <br>
+    <input type="text" class="addclientcode" value="{{lastcode}}">
+  </div>
+  <div class="ms-3">
+    <label>Ville</label> <br>
+    <input type="text" class="addclientville">
+  </div>
+
+
+
+  <button class="btn btn-sm btn-success" onclick="addclient(event)">
+    Enregistrer
+  </button>
+  <button class="btn btn-danger" onclick="$('.addclientholder').css('top', '-10vh')"></button>
+
+</div>
+<div class="text-white rounded h3 text-center" style="background: #1a6a9b;">
+  <div>
+    {{title}}
+  </div>
+</div>
+
+<div class="">
+       <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
+          <div class="col-5 row">
+              <div class="mb-2">
+                <button class="btn btn-danger bi bi-plus" onclick="$('.addclientholder').css('top', '10vh')"></button>
+
+                  <small>Client: {{facture.client.name}}</small>
+
+                  <select name="client" id="" style="width:100%;" class="select2 clientselectfacture{{facture.id}} form-select notemptylivraison">
+
+
+                  </select>
+              </div>
+              <div class="mb-2 col-4">
+                  <small>Representant:</small>
+                  <select name="representant" id="" style="width:100%;" class="select2 repsselectsfacture{{facture.id}} form-select notemptylivraison">
+                      <option value="{{facture.salseman.id}}">{{facture.salseman.name}}</option>
+                      {% for i in commercials %}
+                      <option value="{{i.id}}">{{i.name}}</option>
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="mb-2 col-4">
+                <small>Date:</small>
+
+                  <input type="date" class="form-control datebonfacture{{facture.id}}" name="datebonfacture{{facture.id}}" value="{{facture.date|date:'Y-m-d'}}" placeholder="Date bon">
+              </div>
+              <div class="mb-2 col-4">
+                <small>N° Facture:</small>
+                  <input type="text" class="form-control ordernofacture{{facture.id}}" name="ordernofacture{{facture.id}}" value="{{facture.facture_no}}">
+              </div>
+              <div class="mb-2 col-4">
+                <small>Transport:</small>
+
+                  <input placeholder="transport" type="text" class="form-control transportfacture{{facture.id}}" name="transportfacture{{facture.id}}" value="{%if facture.transport %}{{facture.transport}}{%endif%}">
+              </div>
+              <div class="mb-2 col-8">
+                <small>Note:</small>
+
+                  <input placeholder="note" type="text" class="form-control notefacture{{facture.id}}" name="notefacture{{facture.id}}" value="{%if facture.note %}{{facture.note}}{%endif%}">
+              </div>
+          </div>
+
+          <div class="col-7 row">
+            <div class="col-12">
+
+              <select class="resultsholderfacture{{facture.id}} form-select select2" style="width: 100%;">
+
+              </select>
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Quantité" name="addqtyupdatefc">
+              <div class="addstock text-danger"></div>
+              <div class="addstockfacture mt-5 text-primary"></div>
+
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Prix" name="addpriceibupdatefc">
+              <div class="addclientprice text-danger"></div>
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Remise" name="addremiseinupdatefc">
+            </div>
+            <div class="col-3">
+              <button class="btn btn-outline-secondary" onclick="addrowupdatefacture(event, '{{facture.id}}')">Ajouter</button>
+            </div>
+            <div class="col-12">
+              <input hidden readonly type="text" name="addnameinupdatefc" class="form-control">
+            </div>
+
+          </div>
+
+
+
+
+        </div>
+
+    <div>
+        <div class="bg-white rounded shadow p-2 tableholder">
+
+          <input type="text" class="searchupdatefacture{{facture.id}} col-5" placeholder="Search..." />
+          <div style="height: 19em; overflow-y: scroll;">
+            <table class="table table-bordered text-center updatefacture{{facture.id}} table-hover" style="font-size: 12px;">
+              <thead style="background: orange; color:#091b27; position: sticky; top: 0;">
+
+                  <tr>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Article</td>
+
+                      <td style="padding: 2px 0; font-size: 13px;">Stock (FC)</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                  </tr>
+              </thead>
+              <!-- <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>TOTAL</td>
+                  <td class="totalbon" style="background: orange; color:#091b27;">
+                      0.00
+                  </td>
+                </tr>
+              </tfoot> -->
+              <!-- bonlivraisonbody we use parentdiv -->
+              <tbody class="bonlivraisonbody">
+                {% for i in items %}
+                <tr class="itemrow">
+                    <td class="ref" onclick="removelineupdatefacture(event, '{{i.product.id}}')">{{i.product.ref}}</td>
+                    <td class="name">{{i.product.name}}</td>
+                    <td>{{i.product.stockfacture}}</td>
+                    <td><input type="number" class="calculate qty" onkeyup="calculate(event)" name="qty" value="{{i.qty}}"></td>
+                    <td><input type="number" class="calculate price" onkeyup="calculate(event)" name="price" value="{{i.price}}" step="0.01"></td>
+                    <td><input type="number" class="calculate remise" onkeyup="calculate(event)" name="remise" value="{{i.remise}}"></td>
+                    <td class="netprice">{{i.product.prixnet}}</td>
+                    <td class="total">{{i.total}}</td>
+                    <input type="hidden" name="productid" value="{{i.product.id}}">
+
+              {% endfor %}
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
+                <button class="btn btn-success submitbonfacture{{facture.id}}">
+                      Valider
+                </button>
+                <div>
+                  <b class="totalbonlivraison{{facture.id}} totalbon text-danger border p-2" style="color: #dc3545 !important;">
+                    {{facture.total}}
+                  </b>
+                  <button class="btn btn-danger" onclick="canceltab()">
+                    Fermer
+                  </button>
+                </div>
+            </div>
+          </div>
+
+        </div>
+    </div>
+    {{facture.id}}
+</div>
+
+<script>
+  function addclient(event){
+    let clientname=$('.addclientname').val()
+    let clientcode=$('.addclientcode').val()
+    let clientville=$('.addclientville').val()
+    $.post('{% url "products:checkcodeclient" %}', {
+        code: clientcode,
+        name:clientname,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(data){
+            if(data.exist){
+                    alertify.error('Client deja existé')
+                    return
+            }else{
+                $.get('products/addclientdivers', {'name':clientname, 'code':clientcode, 'ville':clientville}, (data)=>{
+                  $('.addclientholder').css('top', '-10vh')
+                  alertify.success('OK')
+                })
+            }
+    })
+    // Create a hidden iframe to trigger the file download
+
+  }
+  $(function(){
+
+    $('.clientselectfacture{{facture.id}}').select2({
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher client',
+        templateResult: formatclientfc{{facture.id}},
+        templateSelection: formatclientSelectionfc{{facture.id}},
+      });
+      function formatclientfc{{facture.id}} (client) {
+          if (client.loading) {
+            return client.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${client.diver>0?"red":""};">${client.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatclientSelectionfc{{facture.id}} (client) {
+          return client.text;
+        }
+
+      $('.resultsholderfacture{{facture.id}}').select2({
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproduct?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher Produits',
+        templateResult: formatmodfac,
+        templateSelection: formatmodfacSelection,
+      });
+      function formatmodfac (repo) {
+          if (repo.loading) {
+            return repo.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${repo.stockfacture>0?"blue":"red"};">${repo.text}</strong>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatmodfacSelection (repo) {
+          return repo.text;
+        }
+
+    })
+  function canceltab(){
+    deletetab('addmodifierfacture{{facture.id}}')
+    ajaxpage('facture{{facture.id}}', 'Facture {{facture.facture_no}}', '/products/facturedetails/{{facture.id}}')
+  }
+  function removelineupdatefacture(event, id) {
+      let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+      clicksinupdatefc++;
+
+      if (clicksinupdatefc === requiredClicks) {
+          // User has clicked the element four times consecutively
+          // Add your code to run when there are four consecutive clicks here
+          alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+            console.log('delete'),
+            // remove element
+            // remove id from localstorage
+            $(event.target).parent().remove()
+            pdcts=JSON.parse(localStorage.getItem('pdctsinfacture{{facture.id}}'))
+            pdcts.splice(pdcts.indexOf(id), 1)
+            localStorage.setItem('pdctsinfacture{{facture.id}}', JSON.stringify(pdcts))
+            // update total
+            let totalbon = parseFloat(parentdiv.find('.totalbon').text())
+            let totalrow = parseFloat($(event.target).parent().find('.total').text())
+            let totalbonvalue = (totalbon-totalrow).toFixed(2)
+            parentdiv.find('.totalbon').html(totalbonvalue)
+            // Reset the count
+            clicksinupdatefc = 0;
+
+          }
+            , function(){ alertify.error('Cancel')});
+          // Reset the count
+          clicksinupdatefc = 0;
+      }
+  }
+
+  function addrowupdatefacture(event, factureid){
+        let target=$(event.target)
+        parentdiv=target.parent().parent().parent().parent()
+        console.log(parentdiv)
+        // this reset the select2 value
+        // $('.resultsholderbonlivraison').val('').trigger('change')
+        // ids of products in bon stored in localstorage
+        let bonachatbody = parentdiv.find('.bonlivraisonbody')
+        let addname=parentdiv.find('[name="addnameinupdatefc"]')
+        let addqty=parentdiv.find('[name="addqtyupdatefc"]')
+        let addprice=parentdiv.find('[name="addpriceibupdatefc"]')
+        let addremise=parentdiv.find('[name="addremiseinupdatefc"]')
+        let priceclient=parentdiv.find('.addclientprice ').text()
+        if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
+          alertify.error('Veuillez remplir tous les champs')
+          return
+        }
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
+        pdcts=JSON.parse(localStorage.getItem(`pdctsinfacture${factureid}`)) || []
+        console.log(id, pdcts, pdcts.includes(id))
+        if (pdcts.includes(id)){
+          addqty.val('')
+          addname.val('')
+          addremise.val('')
+          addprice.val('')
+          parentdiv.find('.addclientprice').text('')
+          parentdiv.find('.addstock').text('')
+
+          parentdiv.find('.addstockfacture').text('')
+          alertify.error('Ce produit est deja dans le bon')
+          $('.resultsholderfacture{{facture.id}}').select2('open')
+
+          return
+        }
+
+        // here is the case if qty is greater than stock
+        console.log(addqty.val(), stockfacture)
+        if (parseInt(addqty.val())>parseInt(stockfacture)){
+
+          alertify.confirm('Quantité superieur au stock facture', 'Voulez vous continuer ?', function(){
+            if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
+              alertify.error('Veuillez remplir tous les champs')
+              return
+            }
+
+            if (pdcts.includes(id)){
+              addqty.val('')
+              addname.val('')
+              addremise.val('')
+              addprice.val('')
+              parentdiv.find('.addclientprice').text('')
+              parentdiv.find('.addstock').text('')
+              parentdiv.find('.addstockfacture').text('')
+              alertify.error('Ce produit est deja dans le bon')
+              // $('.resultsholderfacture{{facture.id}}').val('').trigger('change')
+              $('.resultsholderfacture{{facture.id}}').select2('open')
+              return
+            }
+            pdcts.push(id)
+            localStorage.setItem(`pdctsinfacture${factureid}`, JSON.stringify(pdcts))
+            //let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100)).toFixed(2)
+            let net=parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100)
+            let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+            let tr = `
+            <tr class="itemrow ${stockfacture<=0? "text-danger":"" }" id=${id}>: 2
+                <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelineupdatefacture(event, '${id}')">${ref}</td>
+                <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+                <td style="padding: 2px 0; font-size: 13px;">${stockfacture}</td>
+
+                <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+                <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+                <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
+                <td style="padding: 2px 0; font-size: 13px;" class="netprice">${net.toFixed(2)}</td>
+                <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+                <input type="hidden" name="productid" value="${id}">
+
+            </tr>
+            `
+
+            bonachatbody.prepend(tr)
+            // delete selected option
+            addqty.val('')
+            addname.val('')
+            addremise.val('')
+            addprice.val('')
+            parentdiv.find('.addclientprice').text('')
+            parentdiv.find('.addstock').text('')
+            parentdiv.find('.addstockfacture').text('')
+            var totalSum = 0;
+            parentdiv.find('.total').each(function() {
+                totalSum += parseFloat($(this).text());
+            });
+            parentdiv.find('.totalbon').text(totalSum.toFixed(2))
+            $('.resultsholderfacture{{facture.id}}').select2('open')
+
+          }, function(){
+            alertify.error('Cancel')
+            $('.resultsholderfacture{{facture.id}}').select2('open')
+
+
+          }
+          );
+          return
+        }
+
+        pdcts.push(id)
+        localStorage.setItem(`pdctsinfacture${factureid}`, JSON.stringify(pdcts))
+        let net=parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100)
+        let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+        let tr = `
+        <tr class="itemrow ${stockfacture<=0? "text-danger":"" }" id=${id}>: 2
+          <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelineupdatefacture(event, '${id}')">${ref}</td>
+          <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+          <td style="padding: 2px 0; font-size: 13px;">${stockfacture}</td>
+
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
+          <td style="padding: 2px 0; font-size: 13px;" class="netprice">${net.toFixed(2)}</td>
+          <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+          <input type="hidden" name="productid" value="${id}">
+        </tr>
+        `
+
+        bonachatbody.prepend(tr)
+        // delete selected option
+        addqty.val('')
+        addname.val('')
+        addremise.val('')
+        addprice.val('')
+        parentdiv.find('.addclientprice').text('')
+        parentdiv.find('.addstock').text('')
+        parentdiv.find('.addstockfacture').text('')
+        totals=parentdiv.find('.total')
+        totalbon=parentdiv.find('.totalbon')
+        var totalSum = 0;
+        totals.each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        totalbon.text(totalSum.toFixed(2))
+        $('.resultsholderfacture{{facture.id}}').select2('open')
+
+
+        // let selected = $('.resultsholderbonlivraison').find(':selected')
+        // selected.remove()
+
+  }
+
+
+  var productIds = [];
+  {% for i in items %}
+  productIds.push('{{ i.product.id }}');
+  {% endfor %}
+  localStorage.setItem('pdctsinfacture{{facture.id}}', JSON.stringify(productIds));
+
+
+
+
+
+    $('.resultsholderfacture{{facture.id}}').on('change', function(){
+
+
+        if ($(this).val()==''){
+            return
+        }
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+        let repswithprice=[]
+        let diff=stockfacture-stock
+        let addname=$('input[name="addnameinupdatefc"]')
+        let addprice=$('input[name="addpriceibupdatefc"]')
+        let addremise=$('input[name="addremiseinupdatefc"]')
+        let addqty=$('input[name="addqtyupdatefc"]')
+        $('.addstock').text('Stock fc: '+stockfacture+' ('+diff+')')
+        $('.addstockfacture').text('Stock tt: '+stock)
+        addqty.val('')
+        addremise.val(remise)
+        addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
+        // we are getting ere list of reps that have price
+        $.ajax({
+            url: "{% url 'products:getrepswithprice' %}",
+            type: 'POST',
+            data: {
+                'id': id,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data){
+              repswithprice=data.repswithprice
+              let repid=$('.repsselectsfacture{{facture.id}}').val()
+              if (repswithprice.includes(repid)){
+                console.log('rep with price')
+                addprice.val(sellprice)
+                addremise.val(data.representremise)
+              }
+              else{
+                addprice.val(sellprice)
+                console.log('focus')
+                addqty.focus()
+              }
+            }
+          })
+
+        console.log('getting client price')
+        $.ajax({
+            url: "{% url 'products:getclientprice' %}",
+            type: 'POST',
+            data: {
+                'id': id,
+                'clientid': $('.clientselectfacture{{facture.id}}').val(),
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data){
+              console.log(data.price)
+              $('.addclientprice').text(data.price)
+            }
+          })
+
+        let selected = $(this).find(':selected')
+        // selected.remove()
+        // delect selected option
+    })
+
+    $('.submitbonfacture{{facture.id}}').on('click', (e)=>{
+      let parentdiv=$(e.target).parent().parent().parent().parent().parent()
+      if (parentdiv.find('.repsselectsfacture{{facture.id}}').val()==''){
+          parentdiv.find('.data').addClass('border border-danger')
+          return
+      }
+      parentdiv.find('.data').removeClass('border border-danger')
+      // check if .itemrow is exist
+      if (parentdiv.find('.itemrow').length==0){
+          parentdiv.find('.tableholder').addClass('border border-danger')
+          //return
+      }
+      parentdiv.find('.tableholder').removeClass('border border-danger')
+        var isAnyEmpty = parentdiv.find('.notemptylivraison').filter(function() { return $(this).val() == ''; }).length > 0;
+          if (isAnyEmpty){
+              let emptyInputs = parentdiv.find('input.notemptylivraison').filter(function() {
+                  return !this.value.trim();
+              });
+
+              // Add a red border to all empty input elements
+              alertify.error('Veuillez remplir tous les champs obligatoires')
+              emptyInputs.css('border', '1px solid red');
+              parentdiv.find('input.notemptylivraison').not(emptyInputs).css('border', '');
+              $(this).attr('disabled', false)
+              return
+          }
+
+        parentdiv.find('.submitbonfacture{{facture.id}}').addClass('disabled')
+        trs=parentdiv.find('.bonlivraisonbody tr')
+        let products = []
+        trs.each(function(){
+            let tr = $(this)
+            let qty = tr.find('.qty').val()
+            let name = tr.find('.name').text()
+            let ref = tr.find('.ref').text()
+            let price = tr.find('.price').val()
+            let remise = tr.find('.remise').val()
+            let total = tr.find('.total').text()
+            let clientprice = tr.find('.clientprice').text()
+            let productid = tr.find('input[name="productid"]').val()
+            let product = {
+                'qty': qty,
+                'name': name,
+                'ref': ref,
+                'price': price,
+                'remise': remise,
+                'total': total,
+                'productid': productid,
+                'clientprice': clientprice
+            }
+            products.push(product)
+        })
+        console.log('')
+        let clientid = parentdiv.find('.clientselectfacture{{facture.id}}').val()?parentdiv.find('.clientselectfacture{{facture.id}}').val():'{{facture.client.id}}'
+        let repid = parentdiv.find('.repsselectsfacture{{facture.id}}').val()
+        let datebon = parentdiv.find('.datebonfacture{{facture.id}}').val()
+        let transport = parentdiv.find('.transportfacture{{facture.id}}').val()
+        let note = parentdiv.find('.notefacture{{facture.id}}').val()
+        let orderno = parentdiv.find('.ordernofacture{{facture.id}}').val()
+        let totalbon=parseFloat(parentdiv.find('.totalbon').text())
+        console.log('>>>>', parentdiv)
+        console.log('sending')
+        // localStorage.setItem('pdctsinfacture{{facture.id}}', '[]')
+        // remove the local storage
+
+        console.log({
+              'factureid':'{{facture.id}}',
+              'totalbon': totalbon,
+              'datebon': datebon,
+              'clientid': clientid,
+              'repid':repid,
+              'transport':transport,
+              'datebon': datebon,
+              'orderno': orderno,
+              'products': JSON.stringify(products),
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+            })
+            console.log(JSON.stringify(products))
+            $.get('/products/checkfactureno', {'no':orderno, 'id':'{{facture.id}}'}, (data)=>{
+              if (data.exist){
+                $('.loadingscreen').removeClass('d-flex').addClass('d-none')
+                $('.submitbonfacture{{facture.id}}').removeClass('disabled')
+                alertify.error('CE NUMERO EST DEJA EXISTE')
+              }
+              else{
+                $.ajax({
+                url: "{% url 'products:updatebonfacture' %}",
+                type: 'POST',
+                data: {
+                  'factureid':'{{facture.id}}',
+                  'totalbon': totalbon,
+                  'datebon': datebon,
+                  'clientid': clientid,
+                  'repid':repid,
+                  'transport':transport,
+                  'note':note,
+                  'orderno': orderno,
+                  'products': JSON.stringify(products),
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
+                },
+                success: function(data){
+                  if (data.success){
+                    localStorage.removeItem('pdctsinfacture{{facture.id}}')
+                    alertify.success('Facture modifié')
+                    // delerte this tab
+                    deletetab('addmodifierfacture{{facture.id}}')
+                    ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+                    updatetab('facture{{facture.id}}', '/products/facturedetails/{{facture.id}}')
+                  }
+                  else{
+                    alertify.error('ERROR')
+                  }
+                  console.log('sent')
+                    // parentdiv.find('#addbonlivraison').html('')
+                    // parentdiv.find('#addbonlivraison').html(data.html)
+                    // parentdiv.find('.select2').select2()
+                }
+            })
+              }
+            })
+
+      })
+    // end submit botton click
+    $('.searchupdatefacture{{facture.id}}').on("keyup", function() {
+  var value = $(this).val().toLowerCase();
+  $(this).parent().find("tbody tr").filter(function() {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
+});
+
+
+
+    // const selectElement = document.getElementById("my-select");
+
+    // selectElement.addEventListener("keydown", function(event) {
+    //     if (event.key === "Enter") {
+
+    //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+    //         let bonachatbody = $('.bonachatbody')
+    //         let tr = `
+    //         <tr>
+    //             <td class="ref">${ref}</td>
+    //             <td class="name">${name}</td>
+    //             <td>${dp}</td>
+    //             <td>${stock}</td>
+    //             <td>
+    //                 <select name"local" class="form-select local">
+    //                     <option value="principal">Principal</option>
+    //                     <option value="depot">Depot</option>
+    //                 </select>
+    //             </td>
+    //             <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+    //             <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+    //             <td><input type="number" class="form-control calculate remise" onkeyup="calculate(event)" name="remise"></td>
+    //             <td class="total"></td>
+    //             <input type="hidden" name="productid" value="${id}">
+    //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+    //         </tr>
+    //         `
+    //         bonachatbody.prepend(tr)
+    //         // delect selected option
+    //         selectElement.remove(selectElement.selectedIndex);
+    //     }
+    // });
+
+
+    // const addtobon=(e, ref, name, stock)=>{
+    //     let target = $(e.target)
+    //     console.log(target)
+    //     target.remove()
+    //     let bonachatbody = $('.bonachatbody')
+    //     let tr = `
+    //     <tr>
+    //         <td>${ref}</td>
+    //         <td>${name}</td>
+    //         <td>${stock}</td>
+
+    //         <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+    //         <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+    //         <td class="total"></td>
+    //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+    //     </tr>
+    //     `
+    //     bonachatbody.append(tr)
+    // }
+
+
+</script>

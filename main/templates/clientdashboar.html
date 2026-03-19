@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-5">
+    <!--<div class="col-4">
+        <div class="text-white bg-orange p-3 rounded shadow">
+    
+            <strong>
+                Sold BL
+            </strong>
+            <h5>
+                {{soldbl}}
+            </h5>
+        </div>
+    </div>
+     <div class="col-4">
+        <div class="text-white bg-orange p-3 rounded shadow">
+    
+            <strong>
+                Sold Facture
+            </strong>
+            <h5>
+                {{soldfacture}}
+            </h5>
+        </div>
+    </div> -->
+    <div class="col-4">
+        <div class="text-white bg-orange p-3 rounded shadow">
+    
+            <strong>
+                Sold Total
+            </strong>
+            <h5>
+                {{soldtotal}}
+            </h5>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="text-white bg-orange p-3 rounded shadow">
+    
+            <strong>
+                {{user.client.name}}
+            </strong> 
+            <div>
+                 <strong>
+                    {{user.client.city.upper}}
+                </strong>
+            </div>
+           <div>
+               <strong>
+                {{user.client.address}}
+            </strong>
+           </div>
+            
+        </div>
+    </div>
+    
+</div>
+<div class="row">
+    <!-- <div class="col-md-2">
+        <div class="mt-2">
+            <strong>Relevé</strong>
+            <div>
+                <small>Du</small>
+                <input type="date" name="situationcldatefrom" class="situationcldatefrom form-control notempty">
+            </div>
+            <div>
+                <small>Au</small>
+                <input type="date" name="situationcldateto" class="situationcldateto form-control notempty">
+            </div>
+        </div>
+        
+        <button class="btn btn-success w-100 mt-2" onclick="genererrelvecl(event)">Generer</button>
+    </div> -->
+    
+    <div class="col-md-6">
+        <!-- dont show bon commnd generé -->
+        <div class="bg-white shadow p-2 text-darkblue">
+            <strong>
+                Bons de commandes
+            </strong>
+            <table class="table table-hover table-bordered text-darkblue">
+                <thead>
+                    <tr class="bg-darkblue text-white">
+                        <td>N°</td>
+                        <td>Date</td>
+                        <td>Total</td>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    {% for i in orders %}
+                    <tr>
+                        <td>
+                            {{i.order_no}}
+                        </td>
+                        <td>
+                            {{i.date|date:'d/m/Y'}}
+                        </td>
+                        <td>
+                            {{i.total}}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="bg-white shadow p-2 text-darkblue">
+            <strong>
+                Bons de Livraison
+            </strong>
+            <table class="table table-hover table-bordered text-darkblue">
+                <thead>
+                    <tr class="bg-darkblue text-white">
+                        <td>N°</td>
+                        <td>Date</td>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    {% for i in livraisons %}
+                    <tr>
+                        <td>
+                            {{i.bon_no}}
+                        </td>
+                        <td>
+                            {{i.date|date:'d/m/Y'}}
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-5"></div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    
+</script>
+{% endblock %}

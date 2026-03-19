@@ -1,0 +1,1094 @@
+{% load global_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <meta content="telephone=no" name="format-detection" />
+    <!-- favicon -->
+    <link href="/media/facturebody.jpg" rel="icon" />
+    {% block meta %}
+    {% endblock %}
+    {% if title %}
+    <title>{{title}} - system</title>
+    {% endif %}
+    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet" /> -->
+    <!-- css -->
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="{% static 'js/jquerySpellingNumber.js'%}"></script>
+    <link href="{% static 'css/minified.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/tabulator.min.css'%}" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/datepicker.css">
+    <style>
+      .btnselect.active{
+    background:white;
+    border-bottom: 2px solid white;
+    color: black;
+  }
+  .blink {
+  animation: blinker .6s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+@keyframes blinker {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+    button{
+      border-bottom:5px solid black;
+    }
+    .sectionbtn.active{
+      border-bottom: 2px solid;
+    }
+    /* .sectionbtn.active::after{
+      content: '';
+      position: absolute;
+      width: 10px;
+      transform: rotate(45deg);
+      height: 10px;
+      background: white;
+      bottom: -7px;
+      left: 16px;
+    } */
+    button:active {
+      box-shadow: 1px 1px 3px gray;
+      transform: translateY(3px);
+    }
+    .blurred{
+    	filter:blur(4px);
+    }
+    :root{--darkblue:#2b3e50;--orange:#df691a}
+    .matrix:hover{
+    cursor: pointer;
+    color: red;
+    transform: translate(0px, -4px);
+  }
+  .nav-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px; /* Adjust as needed */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    background: orange;
+    font-weight: bold;
+    color: white;
+}
+
+.prev-btn {
+    left: 0;
+}
+
+.next-btn {
+    right: 0;
+}
+  .matrix{
+    color: white;
+  }
+    .nav-item a span:hover{
+      background: var(--darkblue);
+    }
+    .sec-center {
+  position: relative;
+  max-width: 100%;
+  text-align: center;
+}
+[name="checkboxsidebar"]:checked,
+[name="checkboxsidebar"]:not(:checked){
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+.dark-light:checked + label,
+.dark-light:not(:checked) + label{
+  position: fixed;
+  top: 50px;
+  right: 40px;
+  z-index: 20000;
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  transition: all 200ms linear;
+  box-shadow: 0 0 25px rgba(255,235,167,.45);
+}
+.dark-light:checked + label{
+  transform: rotate(360deg);
+}
+.dark-light:checked + label:after,
+.dark-light:not(:checked) + label:after{
+  position: absolute;
+  content: '';
+  top: 1px;
+  left: 1px;
+  overflow: hidden;
+  z-index: 2;
+  display: block;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background-color: #102770;
+  background-image: url('https://assets.codepen.io/1462889/moon.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 200ms linear;
+  opacity: 0;
+}
+.dark-light:checked + label:after {
+  opacity: 1;
+}
+.dark-light:checked + label:before,
+.dark-light:not(:checked) + label:before{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  background-color: #48dbfb;
+  background-image: url('https://assets.codepen.io/1462889/sun.svg');
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 200ms linear;
+}
+.dark-light:checked + label:before{
+  background-color: #000;
+}
+.light-back{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background-color: #fff;
+  overflow: hidden;
+  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg');
+  background-position: center;
+  background-repeat: repeat;
+  background-size: 4%;
+  height: 100%;
+  width: 100%;
+  transition: all 200ms linear;
+  opacity: 0;
+}
+.dark-light:checked ~ .light-back{
+  opacity: 1;
+}
+.dropdown:checked + label,
+.dropdown:not(:checked) + label{
+  position: relative;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 2;
+  height: 50px;
+  transition: all 200ms linear;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  color:white;
+}
+.dark-light:checked ~ .sec-center .for-dropdown{
+  background-color: #102770;
+  color: #ffeba7;
+  box-shadow: 0 12px 35px 0 rgba(16,39,112,.25);
+}
+.dropdown:checked + label:before,
+.dropdown:not(:checked) + label:before{
+  position: fixed;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  cursor: auto;
+  pointer-events: none;
+}
+.dropdown:checked + label:before{
+  pointer-events: auto;
+}
+.dropdown:not(:checked) + label .uil {
+  font-size: 24px;
+  margin-left: 10px;
+  transition: transform 200ms linear;
+}
+.dropdown:checked + label .uil {
+  transform: rotate(180deg);
+  font-size: 24px;
+  margin-left: 10px;
+  transition: transform 200ms linear;
+}
+.section-dropdown {
+  position: absolute;
+  padding: 5px;
+  background-color: #111;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.4);
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .sec-center .section-dropdown {
+  background-color: #fff;
+  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.15);
+}
+.dropdown:checked ~ .section-dropdown{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.section-dropdown:before {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  content: '';
+  display: block;
+  z-index: 1;
+}
+.section-dropdown:after {
+  position: absolute;
+  top: -7px;
+  left: 30px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #111;
+  content: '';
+  display: block;
+  z-index: 2;
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .sec-center .section-dropdown:after {
+  border-bottom: 8px solid #fff;
+}
+
+.section-dropdown a {
+  position: relative;
+  color: #fff;
+  transition: all 200ms linear;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 2px;
+  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 15px;
+  margin: 2px 0;
+  text-align: left;
+  text-decoration: none;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+    -ms-flex-pack: distribute;
+}
+.dark-light:checked ~ .sec-center .section-dropdown a {
+  color: #102770;
+}
+.section-dropdown a:hover {
+  color: #102770;
+  background-color: #ffeba7;
+}
+.dark-light:checked ~ .sec-center .section-dropdown a:hover {
+  color: #ffeba7;
+  background-color: #102770;
+}
+a .uil {
+  font-size: 22px;
+}
+.dropdown-sub:checked + label,
+.dropdown-sub:not(:checked) + label{
+  position: relative;
+  color: #fff;
+  transition: all 200ms linear;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 2px;
+  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 15px;
+  text-align: left;
+  text-decoration: none;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+    -ms-flex-pack: distribute;
+    cursor: pointer;
+}
+.dropdown-sub:checked + label .uil,
+.dropdown-sub:not(:checked) + label .uil{
+  font-size: 22px;
+}
+.dropdown-sub:not(:checked) + label .uil {
+  transition: transform 200ms linear;
+}
+.dropdown-sub:checked + label .uil {
+  transform: rotate(135deg);
+  transition: transform 200ms linear;
+}
+.dropdown-sub:checked + label:hover,
+.dropdown-sub:not(:checked) + label:hover{
+  color: #102770;
+  background-color: #ffeba7;
+}
+.dark-light:checked ~ .sec-center .section-dropdown .for-dropdown-sub{
+  color: #102770;
+}
+.dark-light:checked ~ .sec-center .section-dropdown .for-dropdown-sub:hover{
+  color: #ffeba7;
+  background-color: #102770;
+}
+
+.section-dropdown-sub {
+  position: relative;
+  display: block;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0;
+  max-height: 0;
+  padding-left: 10px;
+  padding-right: 3px;
+  overflow: hidden;
+  transition: all 200ms linear;
+}
+.dropdown-sub:checked ~ .section-dropdown-sub{
+  pointer-events: auto;
+  opacity: 1;
+  max-height: 999px;
+}
+.section-dropdown-sub a {
+  font-size: 14px;
+}
+.section-dropdown-sub a .uil {
+  font-size: 20px;
+}
+.logo {
+	position: fixed;
+	top: 50px;
+	left: 40px;
+	display: block;
+	z-index: 11000000;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+	transition: all 250ms linear;
+}
+.logo:hover {
+  background-color: transparent;
+}
+.logo img {
+	height: 26px;
+	width: auto;
+	display: block;
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .logo img{
+  filter: brightness(10%);
+}
+
+@media screen and (max-width: 991px) {
+.logo {
+	top: 30px;
+	left: 20px;
+}
+.dark-light:checked + label,
+.dark-light:not(:checked) + label{
+  top: 20px;
+  right: 20px;
+}
+}
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+      .dashboard-nav-list {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-item {
+    color: white;
+    min-height: 56px;
+    padding: 0 30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    letter-spacing: 0.02em;
+    transition: ease-out 0.5s;
+}
+.dashboard-nav-dropdown-toggle>a:hover{
+  color:#f06623;
+}
+.dashboard-nav-item i {
+    width: 36px;
+    font-size: 19px;
+    margin-left: -40px;
+}
+
+.dashboard-nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
+
+.dashboard-nav-dropdown {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown.show {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle {
+    font-weight: bold;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle:after {
+    -webkit-transform: none;
+    -o-transform: none;
+    transform: none;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-menu {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.dashboard-nav-dropdown-toggle:after {
+    content: "";
+    margin-left: auto;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(81, 81, 81, 0.8);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.dashboard-nav .dashboard-nav-dropdown-toggle:after {
+    border-top-color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-nav-dropdown-menu {
+    display: none;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background: aliceblue;
+}
+
+.dashboard-nav-dropdown-item {
+    min-height: 40px;
+    padding: 8px 20px 8px 70px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    transition: ease-out 0.5s;
+}
+
+.dashboard-nav-dropdown-item:hover {
+    background: rgba(226, 226, 226, 0.873);
+}
+
+.menu-toggle {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #443ea2;
+}
+
+.menu-toggle:hover, .menu-toggle:active, .menu-toggle:focus {
+    text-decoration: none;
+    color: #875de5;
+}
+
+.menu-toggle i {
+    font-size: 20px;
+}
+
+.dashboard-toolbar {
+    min-height: 84px;
+    background-color: #dfdfdf;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 8px 27px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.nav-item-divider {
+    height: 1px;
+    margin: 1rem 0;
+    overflow: hidden;
+    background-color: rgba(236, 238, 239, 0.3);
+}
+
+@media (min-width: 992px) {
+    .dashboard-app {
+        margin-left: 238px;
+    }
+
+    .dashboard-compact .dashboard-app {
+        margin-left: 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 15px 0px;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1070;
+    }
+
+    .dashboard-nav.mobile-show {
+        display: block;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav header .menu-toggle {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboard-toolbar {
+        left: 238px;
+    }
+
+    .dashboard-compact .dashboard-toolbar {
+        left: 0;
+    }
+}
+      .closetab {
+        float: none;
+        margin-left: 10px;
+      }
+        .fixedheader{
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+        .fitscreen{
+            height: 80vh;
+            overflow-y: scroll;
+
+
+        }
+
+        .cartholder{
+            top: 0;
+            z-index: 9999;
+            background: aliceblue;
+            box-shadow: -11px 2px 7px 0px grey;
+            width: 99%;
+            right: -500rem;
+            height: 100%;
+            transition: all .5s ease-in-out;
+        }
+        /* width */
+        ::-webkit-scrollbar {
+        width: 5px;
+        }
+
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+        }
+        #button {
+            display: inline-block;
+            background-color: #e82323;
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            border-radius: 8px;
+            position: fixed;
+            bottom: 136px;
+            right: 53px;
+            transition: background-color .3s, opacity .5s, visibility .5s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        #button::after {
+            content: "⬆";
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 2em;
+            line-height: 50px;
+            color: #fff;
+        }
+            #button:hover {
+            cursor: pointer;
+            background-color: #333;
+        }
+            #button:active {
+            background-color: #555;
+            }
+            #button.show {
+            opacity: 1;
+            visibility: visible;
+            }
+            /* .dataTables_scrollHeadInner{
+              width:100% !important;
+            }
+            .dataTables_scrollHeadInner table{
+              width:100% !important;
+            } */
+        .wrapper {
+  border-radius: 50%;
+  display: grid;
+  mask: repeating-conic-gradient(from 22.5deg, transparent 0deg 5deg, #000 5deg 40deg, transparent 40deg 45deg);
+}
+.wrapper .block {
+  --start: 100px;
+  --end: 130px;
+  width: 135px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  grid-area: 1/1;
+  clip-path: polygon(25% 0, 50% 50%, 75% 0);
+  animation: loading 2s steps(5) infinite;
+}
+.wrapper .block:nth-child(1) {
+  transform: rotate(0deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.2s;
+}
+.wrapper .block:nth-child(2) {
+  transform: rotate(45deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.4s;
+  background: var(--darkblue)
+}
+.wrapper .block:nth-child(3) {
+  transform: rotate(90deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.6s;
+}
+.wrapper .block:nth-child(4) {
+  transform: rotate(135deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.8s;
+}
+.wrapper .block:nth-child(5) {
+  transform: rotate(180deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1s;
+}
+.wrapper .block:nth-child(6) {
+  transform: rotate(225deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.2s;
+}
+.wrapper .block:nth-child(7) {
+  transform: rotate(270deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.4s;
+}
+.wrapper .block:nth-child(8) {
+  transform: rotate(315deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.6s;
+}
+
+@keyframes loading {
+  15% {
+    --start: 110px;
+    --end: 150px;
+    background: orange;
+  }
+  45% {
+    --start: 100px;
+    --end: 130px;
+    background: var(--bg);
+  }
+}
+    </style>
+    {% block css%}
+    {% endblock %}
+</head>
+<body>
+  
+<div class="row">
+  
+
+
+  <div id="printbl{{order.id}}" class="bonbody col-9 position-relative">
+
+
+    
+    {% for i in orderitems %}
+    {% if forloop.counter == orderitems|length %}
+    <!-- last iteration -->
+    <div class="d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+      <!-- header -->
+      <div class="">
+        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+
+        <div class="d-flex justify-content-between mt-3">
+          <div class="">
+
+              <div>
+                <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+              </div>
+              <div>
+                <strong>N°: {{ order.bon_no }}</strong>
+              </div>
+          </div>
+          <h3>
+              <b>
+                Bon de Sortie
+              </b>
+            </h3>
+
+          <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <div>Client</div>
+            <div>{{order.client.name.upper}}</div>
+            <div>{{order.client.code.upper}}</div>
+            <div>{{order.client.city.upper}}</div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- livraison items -->
+      <div class="orderitems bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+          <thead style="background: #c9c9c967; font-size: 10px;
+        font-weight: 800;" class="text-center">
+            <tr>
+              <td style="">Ref</td>
+              <td style="width:53%;">Designation</td>
+              <td style="width: 5%;">Qté</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 190mm;white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.product.ref.upper}} ({% if v.isfarah %}FR{% else %}OR{% endif %})
+                  <br>
+                  {% endfor %}
+              </td>
+              <td style="white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.product.name.upper|slice:'45'}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.qty}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.price|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.remise}}%
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.total|floatformat:2|intspace}}
+                  <br>
+                  {% endfor %}
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+        <!-- footer total -->
+        <div
+        style="width: 8em;
+        float: right;">
+          <div class="text-center d-flex justify-content-between" style="background: #aeaeae8c;
+          font-size: 13px;">
+            <div>Total</div>
+            <div style="font-size: 16px; margin-right: 13px;">
+              <strong>
+                {{order.total|floatformat:2|intspace}}
+              </strong>
+            </div>
+          </div>
+
+
+        </div>
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+      </div>
+    </div>
+
+
+    {% else %}
+    <!-- other pages -->
+    <div class="d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+      <!-- header -->
+      <div class="">
+        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+
+        <div class="d-flex justify-content-between mt-3">
+          <div class="">
+
+              <div>
+                <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+              </div>
+              <div>
+                <strong>N°: {{ order.bon_no }}</strong>
+              </div>
+          </div>
+          <h3>
+              <b>
+                Bon de {% if bonsortie %}Sortie{% else %}Livraison{% endif %}
+              </b>
+            </h3>
+
+          <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <div>Client</div>
+            <div>{{order.client.name.upper}}</div>
+            <div>{{order.client.code.upper}}</div>
+            <div>{{order.client.city.upper}}</div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- livraison items -->
+      <div class="orderitems bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+          <thead style="background: #c9c9c980; font-size: 10px;
+        font-weight: 800;" class="text-center">
+            <tr>
+              <td style="">Ref</td>
+              <td style="width:53%;">Designation</td>
+              <td style="width: 5%;">Qté</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 150mm;white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.product.ref.upper}} ({% if v.isfarah %}FR{% else %}OR{% endif %})
+                  <br>
+                  {% endfor %}
+                  </td>
+                <td style="white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.product.name.upper|slice:'45'}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.qty}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.price|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.remise}}%
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.total|floatformat:2|intspace}}
+                  <br>
+                  {% endfor %}
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+      <!-- livraison footer -->
+      <div style="float:right;">
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+      </div>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+</body>

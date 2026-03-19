@@ -1,0 +1,41 @@
+{% for i in products %}
+<a class="suggestions__item suggestions__product mb-3 p-3" href="/product/{{i.id}}">
+    
+    <div class="suggestions__product-info">
+      <div class="suggestions__product-name">
+        {% if i.stocktotal <= 0 %}
+          <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+          {% else %}
+            {% if i.stocktotal <= 5 %}
+            <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+              
+              {% else %}
+              <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+              </div>
+            {% endif %}
+                
+          {% endif %}
+        <strong>{{i.mark.name.upper}} -</strong>  {{i.name.upper}}
+      </div>
+      
+    </div>
+    <div class="suggestions__product-price">
+      {% if i.remise != 0 %}
+        <div style="font-size: 12px;">
+          
+          {{i.sellprice|floatformat:2}} 
+        </div>
+        <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+        {% else %}
+        <div style="font-size: 12px;">
+          {{i.prixnet|floatformat:2}}
+        </div>
+        <div class="text-danger" style="font-size: 12px;">(NET)</div>
+        {% endif %}
+    </div>
+  </a>
+{% empty %}
+<strong>
+    No results found
+</strong>
+{% endfor %}

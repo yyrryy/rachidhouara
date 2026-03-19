@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Insert your CSS here */
+body {
+  padding: 20px;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, rgb(250, 250, 255) 0%, rgb(240, 240, 246) 50%, rgb(230, 230, 237) 100%);
+}
+
+.window {
+  width: 100%;
+  max-width: 800px;
+  max-height: 500px;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+}
+.window .content {
+  min-height: 0;
+  height: 100%;
+}
+
+.head {
+  background-color: #dee1e6;
+  display: flex;
+  overflow: hidden;
+}
+.head .buttons {
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 12px;
+}
+.head .buttons .button {
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+}
+.head .buttons .button:not(:last-child) {
+  margin-right: 6px;
+}
+.head .buttons .button.-red {
+  background-color: #fb5a59;
+}
+.head .buttons .button.-yellow {
+  background-color: #ffc139;
+}
+.head .buttons .button.-green {
+  background-color: #60d045;
+}
+
+.menu {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dee1e6;
+}
+.menu .buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+}
+.menu .buttons .arrows {
+  display: flex;
+  justify-content: space-between;
+  width: 44px;
+}
+.menu .buttons .arrows .arrow {
+  width: 14px;
+  height: 2px;
+  background-color: #ccc;
+  border-radius: 100px;
+  position: relative;
+}
+.menu .buttons .arrows .arrow::before, .menu .buttons .arrows .arrow::after {
+  content: "";
+  display: block;
+  background-color: #ccc;
+  position: absolute;
+  width: 71%;
+  height: 100%;
+  border-radius: 100px;
+  transform-origin: center left;
+}
+.menu .buttons .arrows .arrow::before {
+  transform: rotate(45deg);
+}
+.menu .buttons .arrows .arrow::after {
+  transform: rotate(-45deg);
+}
+.menu .buttons .arrows .arrow.-forward {
+  transform: rotate(180deg);
+}
+.menu .search {
+  box-sizing: border-box;
+  border-radius: 100px;
+  border: 0;
+  background-color: #f1f1f1;
+  height: 26px;
+  outline: 0;
+  flex: 1;
+  margin-right: 20px;
+  padding: 0 12px;
+  font-size: 12px;
+  border: 2px solid transparent;
+}
+.menu .search:focus {
+  border: 2px solid #6dbce7;
+}
+
+.tabs-group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+  min-width: 0px;
+}
+.tabs-group .add-button {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  padding: 8px;
+  margin: 0 4px 2px;
+  border-radius: 100%;
+  transition: background-color 0.5s;
+}
+.tabs-group .add-button:hover {
+  background-color: #ccc;
+}
+.tabs-group .add-button::before, .tabs-group .add-button::after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 2px;
+  height: 14px;
+  background-color: #666;
+}
+.tabs-group .add-button::before {
+  transform: rotate(90deg);
+}
+
+.tabs {
+  display: inline-flex;
+  align-items: flex-end;
+  box-sizing: border-box;
+  padding: 0 8px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  user-select: none;
+  width: 100%;
+}
+
+.tab {
+  position: relative;
+  background-color: transparent;
+  padding: 14px 12px;
+  border-radius: 10px 10px 0 0;
+  font-size: 12px;
+  display: block;
+  max-width: 160px;
+  transition: background-color 0.2s;
+  cursor: default;
+  position: relative;
+  margin-right: -1px;
+  white-space: nowrap;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tab:hover {
+  background-color: #e7eaef;
+}
+.tab:hover::before {
+  background-color: #e7eaef;
+  right: 0;
+}
+.tab.-active {
+  background-color: #fff;
+}
+.tab.-active::before {
+  background-color: #fff;
+  right: 0;
+}
+.tab.-dragging {
+  opacity: 0;
+}
+.tab::after {
+  content: "";
+  display: block;
+  height: 20px;
+  width: 1px;
+  background-color: #888;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  z-index: -1;
+}
+.tab::before {
+  content: "";
+  display: block;
+  height: 20px;
+  width: 30px;
+  position: absolute;
+  right: 1px;
+  background-color: #dee1e6;
+  transition: background-color 0.2s;
+}
+.tab .close-button {
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+  border-radius: 100%;
+  padding: 4px;
+  position: absolute;
+  right: 8px;
+}
+.tab .close-button:hover {
+  background-color: #ddd;
+}
+.tab .close-button::before, .tab .close-button::after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 2px;
+  height: 12px;
+  background-color: #666;
+}
+.tab .close-button::before {
+  transform: rotate(90deg);
+}
+
+.tab-content {
+  display: none;
+  padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
+}
+.tab-content.-active {
+  display: block;
+}
+.tab-content .image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+  </style>
+</head>
+<body>
+  <div class="window">
+    <div class="head">
+      
+      <div class="tabs-group">
+        <div style="max-width: 1140px; width: 100%; min-width: 0px; transition: max-width 0.2s ease 0s;">
+          <span class="tabs">
+            <div class="tab -active">
+              <p class="text">new tab</p> 
+              <div class="close-button"></div>
+            </div>
+          </span>
+        </div> <div class="add-button" onclick="addTab()"></div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="contenttab" id="maitab">
+        test
+      </div>
+      <!-- Your content goes here -->
+    </div>
+  </div>
+</body>
+<script>
+  // Insert your JavaScript here
+  var currentTabId = 1;
+  var nextTabId = 4;
+  var tabs = [
+    {
+      id: 1,
+      name: "Hello CodePen",
+    },
+    {
+      id: 2,
+      name: "Hi CodePen",
+    },
+    {
+      id: 3,
+      name: "Hey CodePen",
+    }
+  ];
+  
+  function isactive(id) {
+    return id === currentTabId ? "-active" : "";
+  }
+  
+  function changeTab(id) {
+    currentTabId = id;
+  }
+  
+  function beforeCloseTab(e) {
+    e.stopPropagation();
+  }
+  
+  function addTab() {
+    console.log("add tab");
+    tabs.push({
+      id: nextTabId,
+      name: "new tab"
+    });
+    currentTabId = nextTabId;
+    nextTabId++;
+  }
+  
+  function closeTab(id) {
+    tabs.forEach(function (tab, index) {
+      if (tab.id === id) {
+        tabs.splice(index, 1);
+        if (currentTabId === id) {
+          currentTabId = tabs[index] ? tabs[index].id : tabs[index - 1].id;
+        }
+      }
+    });
+  }
+</script>
+</html>

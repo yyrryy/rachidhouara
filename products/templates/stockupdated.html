@@ -1,0 +1,48 @@
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<td>
+				Date
+			</td>
+			<td>
+				Ref
+			</td>
+			<td>
+				Difference
+			</td>
+			<td>
+				
+			</td>
+		</tr>
+
+	</thead>
+	<tbody>
+		{% for i in products %}
+		<tr>
+			<td>
+				{{i.date|date:'d/m/Y'}}
+			</td>
+			<td>
+				{{i.product.ref}}
+			</td>
+			<td>
+				{{i.stock}}
+			</td>
+			<td> 
+				{%if i.stockfc %}
+				(Stock facture)
+				<!-- <button class="btn btn-danger" onclick="deletsearchedref(event, '{{i.id}}')">X</button>  -->
+				{%endif%}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<script>
+	function deletsearchedref(event, refid){
+		$.get('/products/deletsearchedref', {
+			'refid':refid
+		}, (data)=>{
+			$(event.target).parent().parent().remove()
+		})
+	}

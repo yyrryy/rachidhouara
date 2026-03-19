@@ -1,0 +1,405 @@
+{% load global_tags %}
+
+<div class="row">
+  <div class="col-3 bg-white rounded">
+    <button class="btn w-100 btn-primary mb-2" onclick="printboncommand('{{order.id}}', '{{target}}')">
+      Imprimer
+    </button>
+    {% if order.devi and order.devi.generatedbl %}
+    <div>
+      <strong>
+        Devis est generé
+      </strong>
+    </div>
+    {% elif not order.generatedbl %}
+    <button class="btn w-100 btn-success mb-2" onclick="ajaxpage('id', 'title', '/products/boncommandobl?commandid={{order.id}}&&target={{target}}')">
+      Generer bon livraison
+    </button>
+    {% endif %}
+    <!-- {% if not order.generatedbc %}
+    <button class="btn w-100 btn-success" onclick="ajaxpage('id', 'title', '/products/devitoboncommand?devid={{order.id}}&&target={{target}}')">
+      Generer bon commande
+    </button>
+    {% endif %} -->
+    
+    <!-- <button class="btn w-100 bg-orange text-white mt-2" onclick="ajaxpage('modifierlivraison{{order.id}}', 'Modifier {{order.bon_no}}', '/products/modifierlivraison/{{order.id}}')">
+      Modifier
+    </button> -->
+
+
+    <!-- <button class="btn btn-sm bg-darkblue text-white w-100 mt-2" onclick="hidetettebl()">
+      Entette
+    </button> -->
+
+    <!-- <strong class="mt-2">Transport</strong>
+    <div class="d-flex">
+      <input value="{{order.modlvrsn}}">
+      <button onclick="updatetransportbl(event, '{{order.id}}')">+</button>
+    </div> -->
+    <strong class="mt-2">Note</strong>
+    <div class="d-flex">
+      <input value="{% if order.note %}{{order.note}}{% endif %}">
+      <button onclick="updatenotebs(event, '{{order.id}}')">+</button>
+    </div>
+    <!-- <strong class="mt-2">Reprenant</strong>
+    <div class="d-flex">
+      <select>
+        <option value="{{order.salseman.id}}">{{order.salseman.name}}</option>
+        {% for i in reps %}
+        <option value="{{i.id}}">{{i.name}}</option>
+        {% endfor %}
+      </select>
+      <button onclick="updaterepbl(event, '{{order.id}}')">+</button>
+    </div> 
+    <strong>Reglements:</strong>
+    {% for i in reglements %}
+    <table style="border-color: black;" class="table table-bordered mb-2" style="font-size: 12px;">
+      <tr>
+        <td style="background: #e1e7ff;">Date</td>
+        <td>{{i.date|date:"d/m/Y"}}</td>
+      </tr>
+      <tr>
+        <td style="background: #e1e7ff;">Montant</td>
+        <td>{{i.amount|floatformat:2}}</td>
+      </tr>
+
+      <tr>
+        <td style="background: #e1e7ff;">Mode</td>
+        <td>{{i.mode}}</td>
+      </tr>
+      <tr>
+        <td style="background: #e1e7ff;">N° piece</td>
+        <td>{{i.npiece}}</td>
+      </tr>
+      <tr>
+        <td style="background: #e1e7ff;">Echeance</td>
+        <td>{{i.echance|date:"d/m/Y"}}</td>
+      </tr>
+    </table> 
+    {% endfor %} 
+    {% if order.rest > 0 %}
+    Rest: {{order.rest|floatformat:2}}
+    {% endif %} -->
+  </div>
+
+
+  <div id="printbl{{order.id}}" class="bonbody col-9 position-relative">
+
+
+    {% if order.total == 0 and order.isfacture %}
+    <div class="alert alert-success">
+      <b>Tous produit de ce bon ont eté generé</b>
+    </div>
+    {%endif%}
+    {% for i in orderitems %}
+    {% if forloop.counter == orderitems|length %}
+    <!-- last iteration -->
+    <div class="d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+      <!-- header -->
+      <div class="">
+        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+
+        <div class="d-flex justify-content-between mt-3">
+          <div class="">
+
+              <div>
+                <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+              </div>
+              <div>
+                <strong>N°: {{ order.bon_no }}</strong>
+              </div>
+          </div>
+          <h3>
+              <b>
+                Bon de commande
+              </b>
+            </h3>
+
+          <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <div>Client</div>
+            <div>{{order.client.name.upper}}</div>
+            <div>{{order.client.code.upper}}</div>
+            <div>{{order.client.city.upper}}</div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- livraison items -->
+      <div class="orderitems bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+          <thead style="background: #c9c9c967; font-size: 10px;
+        font-weight: 800;" class="text-center">
+            <tr>
+              <td style="">Ref</td>
+              <td style="width:53%;">Designation</td>
+              <td style="width: 5%;">Qté</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 190mm;white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.ref.upper}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td style="white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.name.upper|slice:'45'}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.qty}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.price|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.remise}}%
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.total|floatformat:2|intspace}}
+                  <br>
+                  {% endfor %}
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+        <!-- footer total -->
+        <div
+        style="width: 8em;
+        float: right;">
+          <div class="text-center d-flex justify-content-between" style="background: #aeaeae8c;
+          font-size: 13px;">
+            <div>Total</div>
+            <div style="font-size: 16px; margin-right: 13px;">
+              <strong>
+                {{order.total|floatformat:2|intspace}}
+              </strong>
+            </div>
+          </div>
+
+
+        </div>
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+      </div>
+    </div>
+
+
+    {% else %}
+    <!-- other pages -->
+    <div class="d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+      <!-- header -->
+      <div class="">
+        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+
+        <div class="d-flex justify-content-between mt-3">
+          <div class="">
+
+              <div>
+                <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+              </div>
+              <div>
+                <strong>N°: {{ order.bon_no }}</strong>
+              </div>
+          </div>
+          <h3>
+              <b>
+                Bon de commane
+              </b>
+            </h3>
+
+          <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <div>Client</div>
+            <div>{{order.client.name.upper}}</div>
+            <div>{{order.client.code.upper}}</div>
+            <div>{{order.client.city.upper}}</div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- livraison items -->
+      <div class="orderitems bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+          <thead style="background: #c9c9c980; font-size: 10px;
+        font-weight: 800;" class="text-center">
+            <tr>
+              <td style="">Ref</td>
+              <td style="width:53%;">Designation</td>
+              <td style="width: 5%;">Qté</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 150mm;white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.ref.upper}}
+                  <br>
+                  {% endfor %}
+                  </td>
+                <td style="white-space: nowrap;">
+                  {% for v in i %}
+
+                  {{v.name.upper|slice:'45'}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.qty}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.price|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.remise}}%
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.total|floatformat:2|intspace}}
+                  <br>
+                  {% endfor %}
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+      <!-- livraison footer -->
+      <div style="float:right;">
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+      </div>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+
+
+
+<script>
+  function devitobl(event, devid){
+    $(event.target).attr('disabled', true)
+    $.get('/products/devitobl', {'devid':devid, 'target':'{{target}}'}, (data)=>{
+      ajaxpage('bonl{{order.id}}', 'tt', '/products/devidetails?id={{order.id}}&target={{target}}')
+    })
+  }
+  $(function(){
+
+      $('.clientselectchangeinbl').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+  $('.clientselectchangeinbl').on('change', function(){
+    let oldclient='{{order.client.id}}'
+    let total='{{order.total}}'
+    console.log('updateclient for bon', oldclient, $(this).val(), total)
+    $.get('/products/changeclientbl', {'oldclient': oldclient, 'newclient':$(this).val(), 'total':total, 'orderid':'{{order.id}}'}, (data)=>{
+      updatetab('bonl{{order.id}}', '/products/bonlivraisondetails/{{order.id}}')
+    })
+  })
+  function hidetettebl(){
+    $('.bllogo').css('visibility', 'visible')
+    $('.bgbl').css('visibility', 'visible')
+  }
+  $('#download-frame').remove()
+
+  function livraison(divName){
+         var printContents = document.getElementById(divName).innerHTML;
+         var originalContents = document.body.innerHTML;
+         document.body.innerHTML = printContents;
+         $('.blitems').css({'font-size': '15px','font-family':'serif'})
+         $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+         //  $('body').addClass('d-flex flex-column vh-100 p-3')
+         window.print();
+         document.body.innerHTML = originalContents;
+
+    }
+  </script>

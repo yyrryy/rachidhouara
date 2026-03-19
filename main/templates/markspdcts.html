@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block css %}
+<style>
+  
+@keyframes blink {
+  0%, 100% {opacity: 1;}
+  50% {opacity: 0;}
+}
+#blinking-text {
+  animation: blink 1s linear infinite;
+
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- confirm order fixed at the bottom -->
+
+<!--question Modal -->
+<div class="modal fade" id="questionmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+      <p class="text-center">
+        سؤال عن المنتج
+      </p>
+			<div class="accordion mb-2" id="accordionExample">
+				<div class="accordion-item">
+				  
+				  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<form id="questionform">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="exampleInputEmail1">ref</label>
+								<input readonly name="ref" type="text" required class="form-control">
+							</div>
+							
+							<div class="form-group">
+								<label for="exampleInputPassword1">question</label>
+								<textarea name="question" class="form-control" rows="15"></textarea>
+							</div>
+							
+              <input type="text" hidden name="phone" value="{{request.user.client.phone}}">
+              <input type="text" hidden name="client" value="{{request.user.client.name}}">
+
+							<button  class="btn btn-primary addclientbtn w-100 mt-3">Submit</button>
+					  </form>
+					</div>
+				  </div>
+				</div>
+			</div>
+			
+		</div>
+	  </div>
+	</div>
+</div>
+<!-- <div class="col-12 shadow-lg rounded p-2 categorytitle fixed-bottom container border border-2 bg-dark">
+    <div class="d-flex justify-content-between align-items-center">
+      <a href="/catalogpage" class="bi bi-arrow-left me-2 btn text-primary">Catalog</a>
+      <div>
+        {{category.title.upper}}
+      </div>
+
+
+      
+      
+    </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+          <a href="/catalogpage" class="btn btn-primary">
+            ←
+          </a>
+          <div class="d-flex col-8">
+            <input type="text" placeholder="Chercher Model/Voiture ..." aria-describedby="button-addon1" class="form-control border bg-light" id="searchbox">
+            
+          </div>
+          
+          <a href="/cart">
+            <div class="d-flex flex-column">
+              <span class="input-group-text" id="basic-addon1">
+                <span class="badge bg-danger rounded-pill commanditems">0</span>
+                <svg width="20" height="20">
+                  <circle cx="7" cy="17" r="2"></circle>
+                  <circle cx="15" cy="17" r="2"></circle>
+                  <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+    V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+    C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+                </svg>
+              </span>
+              
+            </div>
+          </a>
+          
+      </div>
+      <div type="text" class="text-center" placeholder="Input group example" aria-label="Input group example" aria-describedby="basic-addon1">
+        <span class="ttt">0</span>
+        <span>NET</span>
+      </div>
+  </div> -->
+<div class="position-relative">
+  <!-- products holder -->
+  <div class="block-split__item block-split__item-content col-auto">
+    <div class="block">
+      <div class="products-view">
+        <div class="products-view__list products-list products-list--grid--4 position-relative row" data-layout="list" data-with-features="false">
+        <!-- title holder -->
+        {% if user.groups.all.0.name == 'salsemen'%}
+        
+          <div class="products-list__content owl-carousel">
+              {% for items in products %}
+              <div >
+              {% for i in items %}
+              <div class="col-12 mb-2">
+                <div class="border rounded product-card">
+                  <div class="product-card__image">
+                    <div class="image image--type--product text-center">
+                      {% if i.image %}
+                      <img  src="{% if i.image %} {{i.image.url}} {% endif %}" alt="{{ i.name }}" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+                      {% endif %}
+                      
+                    </div>
+                    
+                    <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+                    </div>
+                  </div>
+                  <div class="product-card__info p-2">
+                    
+                    <div class="product-card__name">
+                      <div class="d-flex">
+                        <div style="margin-right: 3px;">
+                          <strong style="font-size: 25px;">
+                            {{ i.ref.upper }} 
+                          </strong>
+                          <div>
+                            <strong>
+                              {{i.refeq1}}
+                            </strong> <br>
+                            <strong>
+                              {{i.refeq2}}
+                            </strong>
+                          </div>
+                          {% if i.stocktotal %}
+                            {% if i.stocktotal <= 0 %}
+                            <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+                            {% elif i.stocktotal <= 5 %}
+                            <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+                            {% else %}
+                                <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+                                </div>
+                            {% endif %}
+                          {% else %}
+                            <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+                            </div>
+                          {% endif %}
+
+                          
+                            {% if i.isnew %}
+                        
+                          <div id="blinking-text" class="blink">
+                            <img src="/media/new.jpg" width="40" style="width: 40px;">
+                          </div>
+                          {% endif %}
+                          <div style="color:#00538c;">
+                            {{i.diametre}}
+                          </div>
+                          <div class="d-flex justify-content-end mt-2">
+                            {% if i.mark.image %}
+                            <img src="{{i.mark.image.url}}" width="70" style="width:70px;">
+                            {% endif %}
+                            {% if i.carlogos.image %}
+                            <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div>
+                          {% for car in i.getcars %}
+                          <div>
+                            {{car}}
+                          </div>
+                          {% endfor %}
+                        </div>
+                        
+                      </div>
+
+                      
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="product-card__footer d-flex flex-column">
+                    <div class="bg-darkblue text-white w-100 text-center rounded mt-2">
+                      <strong>REF: {{i.ref.upper}} </strong>
+                    </div>
+                    <div class="product-card__prices p-2 border w-100 mt-2">
+                      <div class="d-flex justify-content-between align-items-center w-100">
+                        {% if i.remise != 0 %}
+                        <div style="font-size: 12px;">
+                          
+                          {{i.sellprice|floatformat:2}} 
+                        </div>
+                        <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+                        {% else %}
+                        <div style="font-size: 12px;">
+                          {{i.sellprice|floatformat:2}}
+                        </div>
+                        <div class="text-danger" style="font-size: 12px;">(NET)</div>
+                        {% endif %}
+                      </div>
+
+                    </div>
+                    <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                <button class="btn btn-primary cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+
+                <button class="btn btn-info mt-2 d-none anullercmnd w-100" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+                  Anuller
+                </button>
+                
+                {% if i.checkprice %}
+                Prix cheque: {{i.checkprice|floatformat:2}} Net
+                {% endif %}
+                  </div>
+                  
+                </div>
+              </div>
+            {% endfor %}
+            {% if forloop.counter == products|length %}
+
+          <div class="text-end">
+              <button class="btn btn-danger" onclick="gotonext()">
+                next
+              </button>
+            </div>
+            {% endif %}
+          </div>
+            {% endfor %}
+          </div>
+        {% else %}
+        <div class="products-list__content row p-0">
+          <div class="col-2" style="position: sticky; top: 0;">
+        		<img src="" alt="" style="width: 100%;">
+
+            <div class="carousel-container">
+              <div class="carousel">
+                {% for i in newproducts %}
+                <a href="/product/{{i.id}}">
+                <div class="carousel-item d-flex flex-column">
+                    {% if i.image %}
+                    <div>
+                      <img class="card-img-top" style="width:100%;"  src="{{i.image.url}}" alt="">
+                    </div>
+                    {% endif %}
+                      <small class="bg-dark rounded text-white" style="font-size: 15px;">{{i.ref}} - {{i.name}}</small>
+
+
+                  </div>
+                </a>
+                {% endfor %}
+              </div>
+              </div>
+          </div>
+          <div class="col-10 row p-0" style="height: 90vh;
+          overflow-y: scroll;">
+          <!-- <div class="bg-dark rounded text-white">{{target}}</div> -->
+          
+          {% for i in products %}
+          <div class="col-12 mb-2">
+            <div class="border rounded product-card">
+              <div class="product-card__image">
+                <div class="image image--type--product text-center">
+                  {% if i.image %}
+                  <img  src="{{i.image.url}}" alt="{{ i.name }}" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+                  {% endif %}
+                  
+                </div>
+                
+                <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+                </div>
+              </div>
+              <div class="product-card__info p-2">
+                
+                <div class="product-card__name">
+                  <div class="d-flex">
+                    <div style="margin-right: 3px;">
+                      <strong style="font-size: 25px;">
+                        {{ i.ref.upper }} 
+                      </strong>
+                      <div>
+                        <strong>
+                          {{i.refeq1}}
+                        </strong> <br>
+                        <strong>
+                          {{i.refeq2}}
+                        </strong>
+                      </div>
+                      {% if i.stocktotal %}
+                        {% if i.stocktotal <= 0 %}
+                        <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+                        {% elif i.stocktotal <= 5 %}
+                        <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+                        {% else %}
+                            <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+                            </div>
+                        {% endif %}
+                      {% else %}
+                        <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+                        </div>
+                      {% endif %}
+
+                      
+                        {% if i.isnew %}
+                    
+                      <div id="blinking-text" class="blink">
+                        <img src="/media/new.jpg" width="40" style="width: 40px;">
+                      </div>
+                      {% endif %}
+                      <div style="color:#00538c;">
+                        {{i.diametre}}
+                      </div>
+                      <div class="d-flex justify-content-end mt-2">
+                        {% if i.mark.image %}
+                        <img src="{{i.mark.image.url}}" width="70" style="width:70px;">
+                        {% endif %}
+                        {% if i.carlogos.image %}
+                        <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div>
+                      {% for car in i.getcars %}
+                      <div>
+                        {{car}}
+                      </div>
+                      {% endfor %}
+                    </div>
+                    
+                  </div>
+
+                  
+                </div>
+                
+                
+              </div>
+              <div class="product-card__footer d-flex flex-column">
+                <div class="bg-darkblue text-white w-100 text-center rounded mt-2">
+                  <strong>REF: {{i.ref.upper}} </strong>
+                </div>
+                <div class="product-card__prices p-2 border w-100 mt-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    {% if i.remise != 0 %}
+                    <div style="font-size: 12px;">
+                      
+                      {{i.sellprice|floatformat:2}} 
+                    </div>
+                    <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+                    {% else %}
+                    <div style="font-size: 12px;">
+                      {{i.sellprice|floatformat:2}}
+                    </div>
+                    <div class="text-danger" style="font-size: 12px;">(NET)</div>
+                    {% endif %}
+                  </div>
+
+                </div>
+                <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+            <button class="btn btn-primary cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+
+            <button class="btn btn-info mt-2 d-none anullercmnd w-100" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+              Anuller
+            </button>
+            
+            {% if i.checkprice %}
+            Prix cheque: {{i.checkprice|floatformat:2}} Net
+            {% endif %}
+              </div>
+              
+            </div>
+          </div>
+          {% endfor %}
+          <!-- end full affichage -->
+          
+      </div>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+   <!-- cart 
+   <div class="col-md-4 borders cartdd">
+  <div class="sticky-top card-header text-center d-flex justify-content-between align-items-center">
+    <small>
+        Bon de commande
+    </small>
+    <button class="btn clearcommande bi bi-trash-fill text-danger" onclick="clearcommande()">
+    </button>
+  </div>
+    <div class="col-5 fitscreen bg-white shadow rounded px-2 w-100">
+    
+    
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th >ref</th>
+            <th >article</th>
+            <th style="width: 5%;">Qty</th>
+            <th style="width: 5%;">total</th>
+        </tr>
+        </thead>
+        <tbody class="commande-table">
+            
+        </tbody>
+    </table>
+    
+    </div>
+    
+</div>-->
+  
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/catalog.js' %} "></script>
+<script src="{% static 'js/owl.min.js'%}"></script>
+
+<script>
+
+  $(document).ready(function(){
+    
+  $(".owl-carousel").owlCarousel({
+    items:1,
+    nav:true,
+    navText: [
+      "<i class='bi bi-arrow-left'></i>",
+      "<i class='bi bi-arrow-right'></i>"
+    ]
+  })
+  })
+  function gotonext() {
+    // Get the current URL
+    var currentURL = window.location.href;
+    var parts = currentURL.split('/'); // Split the URL by '/'
+    var lastPart = parts[parts.length - 1]; // Get the last part of the URL
+    var currentNumber = parseInt(lastPart); // Try to parse it as a number
+
+    if (!isNaN(currentNumber)) {
+      var newNumber = currentNumber + 1;
+      var newURL = currentURL.replace(/(\d+)(?=\D*$)/, newNumber);
+      // Navigate to the new URL
+      window.location.href = newURL;
+    } else {
+      console.log("No valid number found at the end of the URL to increment.");
+    }
+  }
+  $('.askbtn').each((i, el)=>{
+    $(el).on('click', ()=>{
+      $('[name=ref]').val($(el).data('id'))
+    })
+  })
+  var form = document.getElementById('questionform');
+   $('.addclientbtn').on('click', function(e){
+        
+        e.preventDefault();
+        const scriptURL='https://script.google.com/macros/s/AKfycbysYBeRsdX8zbXzloiRkigWUsnAC0NWwtLUzcZGsoerf_VvLRBsdvVMi4LYjJYU5J90/exec'
+        if ($('[name=question]').val()=='' ){
+            alert('Veuillez remplir tous les champs');
+        }
+        else{
+            $(this).addClass('disabled')
+            $(this).text('En cours ...')
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+            alert('Votre demande a été envoyée avec succès');
+            // hide modal
+          $('#questionmodal').modal('hide')
+
+            })
+            .catch(error => {
+                alert('ERROR');
+                // redierct to home
+                location.reload 
+            }) 
+        }
+   }) 
+ 
+   $(window).ready(function(){
+    
+   })
+</script>
+{% endblock %}

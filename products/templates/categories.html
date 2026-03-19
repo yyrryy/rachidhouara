@@ -1,0 +1,154 @@
+
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
+  </div>
+<div class="row">
+    <div class="col-3">
+        <div class="bg-white rounded shadow p-2">
+            <form action="createcategory" method="post" enctype="multipart/form-data" id="createcategory">
+                {% csrf_token %}
+                <input name="categoryname" type="text" class="form-control mb-2" placeholder="Categorie" required>
+                <input name="categorycode" type="text" class="form-control mb-2" placeholder="Code" required>
+                <select hidden name="categoryaffichage" class="form-control mb-2" required>
+                    <option value="full">full</option>
+                    <option value="table">table</option>
+                    <option value="double">double</option>
+                </select>
+                <strong>Image</strong>
+                <input name="categoryimage" type="file" class="form-control" required>
+                
+                
+                
+                <button class="btn btn-success mt-2 createcategorybtn">Ajouter</button>
+            </form>
+            <div class="mt-5" >
+                <input type="file" class="form-control excelfile">
+                <button class="btn-success btn-sm w-100" onclick="excelcategories(event)" style="
+                  height: 36px;
+                ">Excel Categories</button>
+            
+              </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <input type="text" class="form-control" placeholder="Chercher" id="searchbox">
+        <div class="bg-white border p-2">
+            <div class="row">
+                {% for i in categories %}
+                <div class="col-4 mb-2 searchcards">
+                    <p hidden>
+                        {{i.name}}
+                    </p>
+                    <div class="bg-white rounded shadow p-2">
+                        <form action="{% url 'products:updatecategory' %}" method="post" enctype="multipart/form-data" id="updateform{{i.id}}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.id}}">
+                            {{i.id}}
+                            {% if i.image %}
+                            <img class="text-center w-100 mb-2" src="{{i.image.url}}" alt="">
+                            {% endif %}
+                            <input type="file" name="updatecategoryimage" class="form-control imageinp">
+                            <input type="text" name="updatecategoryname" class="form-control nameinp mb-2" value="{{i.name}}" placeholder="Nom de categorie">
+                            <input type="text" name="updatecategorycode" class="form-control codeinp" value="{{i.code}}" placeholder="Code">
+                            
+                            <button class="btn btn-sm btn-success w-100 updatecategorybtn" id="{{i.id}}">Mise à jour</button>
+                        </form>
+                    </div>
+                </div>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script>
+    function excelcategories(event){
+        let parentdiv=$(event.target).parent().parent()
+        excelfile=parentdiv.find('.excelfile')
+        // send excel file data in a ajax request
+        let formData = new FormData();
+
+        // Append the Excel file to the FormData object
+        formData.append('excelFile', excelfile[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        formData.append('target', '{{ target }}');
+      // Make an AJAX request to send the file data
+        //$('.loadingscreen').removeClass('d-none')
+        $.ajax({
+          url: '/products/excelcategories', // to get products to databese
+          //url: '/products/updatestockinv', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            // Handle the success response from the server
+            $('.loadingscreen').addClass('d-none')
+            alertify.success('File uploaded successfully')
+            //updatetab('pducts', '/products/stock')
+
+          },
+          error: function(xhr, status, error) {
+            $('.loadingscreen').addClass('d-none')
+            // Handle errors if the AJAX request fails
+            alertify.error('Error uploading file');
+          }
+        });
+    }
+
+    $(function(){
+     $('.select').select2()
+    })
+
+    $('.updatecategorybtn').on('click', function(event){
+        event.preventDefault()
+        id=$(event.target).attr('id')
+        form=$(event.target).parent()
+        name=$($(event.target).parent().find('input')[3]).val()
+        code=$($(event.target).parent().find('input')[4]).val()
+        console.log(name, code)
+        if (name=="" || code==""){
+            $($(event.target).parent()[0]).css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($(event.target).parent()[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updatecategory" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                //$(`#ctg`).html(data.html)
+                updatetab('ctg', '/products/categoriespage')
+                
+            })
+        })
+        
+    
+    })
+    $('.createcategorybtn').on('click', function(event){
+        event.preventDefault()
+        console.log('sending')
+        if ($('[name="categoryname"]').val()==""){
+            $('#createcategory').css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($('#createcategory')[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:createcategory" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                //$(`#ctg`).html(data.html)
+                ajaxpage('ctg', 'list catg', '/products/categoriespage')
+            })
+        })
+    })
+ </script>

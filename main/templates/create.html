@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+</div>
+
+        <!-- <br>
+        <div class="row">
+            <form class="mb-3 col-md-4" action="/addcategory" method="POST">
+                {% csrf_token %}
+                <p>ajouter category</p>
+                <div class="form-group d-flex">
+                    <input required type="text" class="form-control" placeholder="Category" name="category">
+                    <button class="btn btn-primary addcategory">Add</button>
+                </div>
+            </form>
+    
+            <form class="mb-3 col-md-4" action="/addbrand" method="POST">
+                {% csrf_token %}
+                <p>ajouter Brand</p>
+                <div class="form-group d-flex">
+                    <input required type="text" class="form-control" placeholder="Brand" name="brand">
+                    <button class="btn btn-primary addcategory">Add</button>
+                </div>
+            </form>
+
+            <form class="mb-3 col-md-4" action="/addmark" method="POST">
+                {% csrf_token %}
+                <p>ajouter Mark</p>
+                <div class="form-group d-flex">
+                    <input required type="text" class="form-control" placeholder="Brand" name="brand">
+                    <button class="btn btn-primary addcategory">Add</button>
+                </div>
+            </form>
+        </div>
+
+
+        <hr>
+
+        <p>
+            Ajouter des excel selon les categories
+        </p>
+        <table class="table table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">ref</th>
+                <th scope="col">n</th>
+                <th scope="col">pr</th>
+                <th scope="col">b</th>
+                <th scope="col">ma</th>
+                <th scope="col">mo</th>
+              </tr>
+            </thead>
+        </table> -->
+
+
+        <form action="/addbulk" method="POST" class="row" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+              {% csrf_token %}
+              <input required type="file" name="file">
+              <button class="btn btn-primary addbulk" type="submit">
+                  Add
+              </button>
+          </div>
+      </form>
+        
+        <!--  bootstrap cards 
+        <div class="row addforms">
+            {% for i in categories %}
+            <div class="card col-3">
+            <div class="card-header text-white">
+                {{i}}
+            </div>
+            <div class="card-body">
+                <form action="/addbulk/{{i.id}}" method="POST" class="row" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <input required type="file" name="file">
+                        <button class="btn btn-primary addbulk" type="submit">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+            </div>
+            {% endfor %}
+        
+        </div>-->
+        
+
+        
+    </div>
+{% endblock %}

@@ -1,0 +1,293 @@
+{% load global_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+      @media print {
+         .page-holder {
+             height: 27.5cm; /* Slightly less than the maximum printable height */
+             width: 21cm; /* Full width of A4 */
+             border: 1px solid black; /* For debugging and visibility */
+             page-break-after: always; /* Ensures each div starts on a new page */
+             box-sizing: border-box; /* Include padding and border in the element's total width and height */
+         }
+
+         /* Reset margins and paddings for printing */
+         body {
+             margin: 0;
+             padding: 0;
+         }
+         td > div{
+           margin:4px;
+         }
+
+         /* Optional: If you need to adjust margins more precisely */
+         @page {
+             margin: 0; /* Remove any default margins */
+         }
+     }
+    </style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquerySpellingNumber.js"></script>
+    <link href="/static/css/minified.css" rel="stylesheet" />
+</head>
+<body
+<div id="printbachat{{bon.id}}" class="bonbody">
+  {% for i in orderitems %}
+  {% if forloop.counter == orderitems|length %}
+  <!-- last iteration -->
+  <div class="postion-relative cmnd{{order.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+    <!-- header -->
+    <div class="">
+      <div class="d-flex justify-content-between">
+        <div>
+          <h3>
+            <b>
+              Bon de Commande
+            </b>
+          </h3>
+          <div class="">
+            <div>
+              <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+            </div>
+            <div>
+              <strong>N°: {{ order.order_no }}</strong>
+            </div>
+          </div>
+        </div>
+        <div style="width: 10em; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+          <div>Note</div>
+          {{order.note|linebreaks}}
+        </div>
+        <div style="width: 10em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+          <div>Client</div>
+          <div>{{order.client.name.upper}}</div>
+          <div>{{order.client.code.upper}}</div>
+          <div>{{order.client.city.upper}}</div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+    <!-- livraison items -->
+    <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+
+      <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+        <thead style="background: #c9c9c967; font-size: 10px;
+      font-weight: 800;" class="text-center">
+          <tr>
+            <td style="width: 17%;">Ref</td>
+            <td>Designation</td>
+            <td style="width: 5%;">Stock</td>
+            <td style="width: 5%;">Qté</td>
+            <td style="width: 7%;">P.U</td>
+            <td style="width: 5%;">Rem</td>
+            <td style="width: 9%;">Mantant</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="height: 200mm;">
+                {% for v in i %}
+
+                {{v.ref.upper}} {% if reliquat and not v.islivraison and v.product.stocktotal > 0 %}<button style="height:16px;" onclick="makeitemsent('{{v.id}}')"></button>{%endif%}
+                <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for v in i %}
+
+                {{v.name.upper|slice:"30"}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.product.stocktotal}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.qty}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.price|floatformat:2}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.remise}}%
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.total|floatformat:2}}
+                <br>
+                {% endfor %}
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+      <!-- footer total -->
+      <div class="d-flex justify-content-between">
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+        <div class="text-center d-flex justify-content-between" style="background: #aeaeae8c;
+        font-size: 13px; width: 14em;">
+          <div>Total</div>
+          <div style="font-size: 16px;">
+            <strong>
+              {{order.total|floatformat:2|intspace}}
+            </strong>
+          </div>
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+  {% else %}
+  <div class="postion-relative cmnd{{order.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+    <!-- header -->
+    <div class="">
+      <div class="d-flex justify-content-between">
+        <div>
+          <h3>
+            <b>
+              Bon de Commande
+            </b>
+          </h3>
+          <div class="">
+            <div>
+              <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+            </div>
+            <div>
+              <strong>N°: {{ order.order_no }}</strong>
+            </div>
+          </div>
+        </div>
+        <div style="width: 10em; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+          <div>Note</div>
+          {{order.note|linebreaks}}
+        </div>
+        <div style="width: 10em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+          <div>Client</div>
+          <div>{{order.client.name.upper}}</div>
+          <div>{{order.client.code.upper}}</div>
+          <div>{{order.client.city.upper}}</div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+    <!-- livraison items -->
+    <div class="orderitems bg-white rounded p-2 position-relative">
+
+     <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+        <thead style="background: #c9c9c967; font-size: 10px;
+      font-weight: 800;" class="text-center">
+          <tr>
+            <td style="width: 17%;">Ref</td>
+            <td>Designation</td>
+            <td style="width: 5%;">Stock</td>
+            <td style="width: 5%;">Qté</td>
+            <td style="width: 7%;">P.U</td>
+            <td style="width: 5%;">Rem</td>
+            <td style="width: 13%;">Mantant</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="height: 200mm;">
+                {% for v in i %}
+
+                {{v.ref.upper}} {% if reliquat and not v.islivraison and v.product.stocktotal > 0 %}<button style="height:16px;" onclick="makeitemsent('{{v.id}}')"></button>{%endif%}
+                <br>
+                {% endfor %}
+                </td>
+              <td>
+                {% for v in i %}
+
+                {{v.name.upper|slice:"30"}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.product.stocktotal}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.qty}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.price|floatformat:2}}
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.remise}}%
+                <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+                {% for v in i %}
+
+                {{v.total|floatformat:2}}
+                <br>
+                {% endfor %}
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+    <div style="float:right;">
+      <small>
+        page: {{forloop.counter}}/{{orderitems|length}}
+      </small>
+    </div>
+
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+</body>
+</html>

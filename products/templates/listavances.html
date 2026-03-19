@@ -1,0 +1,1039 @@
+
+{% load global_tags %}
+<style>
+    [data-tooltip] {
+    position: relative;
+    letter-spacing: 0.1rem;
+}
+
+[data-tooltip]::before,
+[data-tooltip]::after {
+    --tooltip-color: #333;
+    --arrow-size: .5rem;
+    --scale: 0;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, var(--translate-y)) scale(var(--scale));
+    transition: transform 100ms;
+    transition-timing-function: linear;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+    --scale: 1;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.45, 1.93);
+}
+
+[data-tooltip]::before {
+    --translate-y: calc(-100% - var(--arrow-size));
+    content: attr(data-tooltip);
+    background-color: var(--tooltip-color);
+    color: white;
+    padding: .5em;
+    border-radius: .3em;
+    width: fit-content;
+    text-align: center;
+    transform-origin: bottom center;
+}
+
+[data-tooltip]::after {
+    --translate-y: calc(-1 * var(--arrow-size));
+    content: '';
+    border: var(--arrow-size) solid transparent;
+    border-top-color: var(--tooltip-color);
+    transform-origin: top center;
+}
+</style>
+
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addlistavances')">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistavances', '/products/listavances')">↻</button>
+  </div>
+<!-- addsupplier modal -->
+<div class="modal fade" id="editsuppmodal" tabindex="-1" aria-labelledby="editsuppmodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white">
+
+            <div class="modal-body">
+
+                <form class="form-horizontal add-ledger-form" id="updatesupplierform" autocomplete="off">
+                    <div class="form-group">
+                            {% csrf_token %}
+                            <label>
+                                <strong>Fournisseur (*)</strong>
+                            </label>
+                            <input type="text" class="form-control customer" name="pname" required>
+                            <br>
+                            <label>
+                                <strong>Phone</strong>
+                            </label>
+                            <input type="text" class="form-control customer" name="pphone">
+                            <br>
+                            <br>
+                            <label>
+                                <strong>Address</strong>
+                            </label>
+                            <input type="text" class="form-control customer" name="paddress">
+                            <br>
+                            <br>
+                            <input type="hidden" name="pid">
+
+                            <br>
+
+                            <br>
+                            <button class="w-100 btn btn-primary updatesupplierbtn">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="w-100 btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="card">
+    <div class="border p-2 position-relative updateavances position-fixed shadow rounded d-none" style="z-index: 999;overflow: scroll; height: 85vh;background: aliceblue; width: 85%;">
+        <button onclick="$(this).parent().addClass('d-none')" >X</button>
+        
+        <div class="row reglebldata">
+
+            
+            <!-- <button class="btn text-white w-100" onclick="submitupdateavances(event)" style="background: #00538c;">
+                Valider
+            </button> -->
+            <div class="mt-3">
+                {% csrf_token %}
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- section ajouter -->
+    <div class="border-end p-2 position-relative">
+    <div class="accordion" id="accordionreglbl">
+        <div class="">
+
+            <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
+            style="border-radius: 10px;"
+            >
+                + Ajouter
+            </button>
+
+          <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
+            <div class="card-body border shadow rounded">
+                <div class="row">
+                    <small class="errordatereglclbl text-danger d-none">
+                        Date incorrect
+                      </small>
+                    <div class="col-3">
+                        
+                        <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+                        <select name="addreglementclientsbl" id="" class="form-select addreglementclientsbl select2client" style="width:100%;" onchange="getbons()">
+
+                        </select>
+                        <input type="text" class="form-control bonofavance" placeholder="N° bon">
+                        
+                    </div>
+
+                    <div class="reglementbonsholder col-9 border position-relative">
+
+                        <div class="inputsholder">
+                            <!-- <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button> -->
+                            <strong class="totalreglblfields">0.00</strong>
+                                <div class="d-flex justify-content-between align-items-center">
+                                      <div class="me-2">
+                                          <small>Mantant:</small> <br>
+
+                                      </div>
+                                      <div class="me-2">
+                                          <small>N° piece:</small> <br>
+
+                                      </div>
+                                      <div class="me-2">
+                                          <small>Mode Paiment:</small> <br>
+
+                                      </div>
+                                      <div class="me-2">
+                                        <small>Echeance:</small> <br>
+
+                                    </div>
+                                    <div class="me-2">
+                                        <small>Bank:</small> <br>
+                                    </div>
+                                  </div>
+                                <div class="reglements">
+                                    <div class="d-flex align-items-center mt-2">
+                                        <div class="me-2">
+                                            <input type="number" name="mantantreglementclient" onchange="totalavances(event)" class="w-100 notempty" placeholder="Mantant">
+                                        </div>
+                                        <div class="me-2">
+                                            <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece">
+                                        </div>
+                                        <div class="me-2">
+                                            <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)">
+                                                <option value="cheque">Cheque</option>
+                                                <option value="effet">effet</option>
+                                                <option value="espece">espece</option>
+                                                <option value="verement">verement</option>
+                                                <option value="versement">versement</option>
+                                                <option value="carte">carte banquaire</option>
+                                            </select>
+                                        </div>
+                                        <div class="me-2">
+                                            <input type="date" name="echeance" class="w-100 notempty echeancereglbl" value="{{today|date:'Y-m-d'}}">
+                                        </div>
+                                        <div class="me-2">
+                                            <input type="text" name="bank" class="w-100" placeholder="Nom du bank">
+                                        </div>
+                                        <div class="me-2">
+                                            <input type="text" name="note" class="w-100" placeholder="Note">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            
+                            
+                            <!-- <div>
+                                <button class="btn btn-sm btn-danger" onclick="filternonreglr()" style="border-radius: 10px;">NR</button>
+                                <button class="btn btn-sm btn-info" onclick="getallbl()" style="border-radius: 10px;">TOUS</button>
+                            </div>
+                            <input style="width:10em;background: #8080802b;
+                            border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistaddreglbl"> -->
+
+                        </div>
+
+                        
+                        <button class="btn text-white w-100 submitaddreglemntclientbtn disabled" style="background: #00538c;">
+                            Valider
+                        </button>
+                        <!-- <div class="mb-2">
+                            <small>Facture</small>
+                            <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                            </select>
+                        </div>
+
+                        <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                        </select> -->
+
+                    </div>
+                    <div class="mt-3">
+                        {% csrf_token %}
+
+
+                    </div>
+
+                </div>
+            </div>
+          </div>
+    </div>
+    </div>
+
+    </div>
+    <div class="d-flex justify-content-between">
+
+    </div>
+
+
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+          <div class="me-2">
+            <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div>
+            <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div>
+
+              <button class="btn btn-sm bg-dark text-white ">Filtrer</button>
+          </div>
+
+        </div>
+        <div>
+            <div class="text-end">
+                <select name="yearsreglbl" hidden class="populateyears disabled" hidden onchange="yeardatareglbl()" style="background: #eaeaea;
+                margin: 0 6px 10px;
+                width: 5em;
+                border-radius: 10px;">
+
+
+                </select>
+            </div>
+            <input style="width:20em;background: #8080802b;
+            border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="">
+        </div>
+
+      </div>
+
+    <!-- list reglement -->
+    <div style="height: 62vh; overflow: scroll;" class="reglbltableholder mt-2">
+      <table class="table table-bordered reglbltable text-center table-hover" style="font-size: 12px;">
+          <thead style="position: sticky; top: 0;" class="bg-darkblue text-white">
+                <th>
+                    Serie
+                </th>
+              <th onclick="sorttable(event)">
+                  Type
+              </th>
+              <th onclick="sorttable(event)">
+                  N°
+              </th>
+              <th onclick="sorttable(event)">
+                  Mantant
+              </th>
+              <th onclick="sorttable(event)">
+                  Date saisie
+              </th>
+              <th onclick="sorttable(event)" class="text-start">
+                  Client
+              </th>
+              <th onclick="sorttable(event)">
+                  Code cl.
+              </th>
+              <th onclick="sorttable(event)">
+                Echeance
+            </th>
+            <th onclick="sorttable(event)">
+                Banque
+            </th>
+            <th onclick="sorttable(event)">
+                Note
+            </th>
+
+            <th onclick="sorttable(event)">
+                N° bon
+            </th>
+            
+            <th onclick="sorttable(event)">
+                Status
+            </th>
+              
+          </thead>
+          <tbody>
+               {% for i in avances %}
+               <tr class="reglbl-row" style={% if i.mode != 'espece' and i.echance == today %}"background: yellow;"{% elif i.mode != 'espece' and i.echance < today %}"color:red" {% endif %} >
+                    <td>
+                        AVANCECLIENT#{{i.id}}
+                    </td>
+                     <td>
+                          {{i.mode}} <br>
+                          <!-- <select name="updatemodereglbl{{i.id}}" id=""></select> -->
+                     </td>
+                     <td>
+                          {{i.npiece}} <br>
+                          <input type="text" class="d-none updatenpiecereglbl{{i.id}}">
+                     </td>
+                     <td>
+                          {{i.amount|floatformat:'2'|intspace}}<br>
+                          <!-- <input type="text" class="d-none updateamountreglbl{{i.id}}"> -->
+                     </td>
+                     <td>
+                          {{i.date|date:"d/m/Y"}}<br>
+                          <input type="date" class="d-none updatetdatereglbl{{i.id}}">
+                     </td>
+                     <td class="text-start">
+                          {{i.client.name}}
+                     </td>
+                     <td>
+                          {{i.client.code}}
+                     </td>
+                     <td>
+                          {{i.echance|date:"d/m/Y"}} <br>
+                     </td>
+                     <td>
+                        {{i.bank.upper}}
+                   </td>
+                   <td>
+                    {{i.note.upper}}
+               </td>
+               <td>
+                    {{i.bonofavance.upper}}
+                </td>
+                   <td>
+                    {% if i.inreglement %}
+                    <div class="" style="text-align: center; background: rgb(179, 255, 0);">
+                        Reglement
+                    </div>
+                    {% else %}
+                    <button class="btn bi bi-trash" onclick="deleteavanceclient(event, '{{i.id}}')"></button>
+                    <button class="btn bi bi-eye" onclick="showavanceclient(event, '{{i.id}}')"></button>
+                    {% endif %}
+                   </td>
+                     
+               </tr>
+               {% endfor %}
+          </tbody>
+          <thead style="background: white; position: sticky; bottom: 0;">
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th class="totalreglbl" style="background: yellowgreen;">
+                {{total|floatformat:2|intspace}}
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+        </thead>
+      </table>
+    </div>
+    <!-- {{today|date:'Y-m-d'}} -->
+    <div class="card-body row">
+      <div class="col-4">
+      </div>
+    </div>
+</div>
+
+
+<script>
+  populateyears()
+  function deleteavanceclient(event, avanceid){
+        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value'
+               , function(evt, value) { if (value=='ORGHAD'){
+                    $.get('/products/deleteavanceclient', {
+                        'avanceid':avanceid
+                    }, (data)=>{
+                        if (data.success){
+                            $(event.target).closest('tr').remove()
+                        }else{
+                            alertify.error('Error avance supprimer #334EdER3')
+                        }
+                    })
+                
+               }else{
+                alertify.error('Mot de passe')
+               } }
+               , function() { alertify.error('Cancel') });
+        
+    }
+    function showavanceclient(event, avanceid){
+        $('.updateavances').removeClass('d-none')
+        
+        $.get('/products/showavanceclient', {
+            'target':'{{target}}', 
+            'avanceid':avanceid
+            }, function(data){
+                console.log(data)
+                $('.reglebldata').html(data)
+                
+        })
+    }
+    
+  // load more bl in regle not woking
+  function checkyearreglbl(event){
+    inpval=$(event.target).val()
+    console.log(inpval)
+    year=parseInt(inpval.split('-')[0])
+    var currentYear = new Date().getFullYear();
+    var previousYear = currentYear - 1;
+    console.log('>>>', year.isNaN)
+
+    // Check if the number is within the range
+    if (isNaN(year) || year < previousYear || year > currentYear) {
+        $('.errordatereglclbl').removeClass('d-none')
+    } else {
+        $('.errordatereglclbl').addClass('d-none')
+    }
+    console.log(year)
+  }
+    function deletereglbl(event){
+        target=$(event.target)
+        reglid=target.attr("reglid")
+        password=$('.passworddeletereglbl').val()
+        $.get('/products/deletereglbl', {'reglid':reglid, 'password':password}, (data)=>{
+            forceupdatetab('addlistavances', '/products/listavances')
+        })
+    }
+    $(function(){
+      $('.addreglementclientsbl').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher client',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+
+    
+    
+    // load bl in adding reglement
+    function loadMoreRecordsreglblcl (clientid, nr)  {
+    loadingblregl = true;
+    $.get(`/products/laodblregl/?page=${currentPageblregl}&clientid=${clientid}&nr=${nr}`, (data)=>{
+
+      const tbody = $('.listaddreglbl tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadingblregl = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listaddreglblholder').off('scroll', handleScrollreglblcl);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrollreglblcl () {
+      console.log('scroll')
+      console.log(currentPageblregl, loadingblregl)
+
+      const container = $('.listaddreglblholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.blreglrow:last-child');
+      let clientid=lastRow.getAttribute('clientid')
+      let nonregllist=lastRow.classList.contains('nr')?1:0
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+      const containerBottom = container.scrollTop + container.clientHeight;
+
+      if (containerBottom+900 >= lastRowOffset && !loadingblregl) {
+          currentPageblregl++;
+          loadMoreRecordsreglblcl(clientid, nonregllist);
+      }
+    };
+
+    // Attach the scroll event listener
+
+    // ########### load bl in adding reglement
+
+    // load in updae reglement
+    function loadMoreblclupdateregl (reglementid)  {
+        console.log('sending in update')
+        loadingupdateblregl = true;
+        $.get(`/products/laodblinupdateregl/?page=${currentPageupdateblregl}&reglementid=${reglementid}`, (data)=>{
+
+        const tbody = $('.reglblupdate tbody');
+        tbody.append(data.trs);
+
+        console.log('products loaded')
+        loadingupdateblregl = false;
+
+
+          if (!data.has_more) {
+            $('.listupdatereglblholder').off('scroll', scrollupdateregl);
+          }
+        })
+
+    };
+
+    function scrollupdateregl () {
+
+        const container = $('.listupdatereglblholder')[0]; // Get the native DOM element
+
+        const lastRow = document.querySelector('.loadblinupdateregl:last-child');
+        let reglementid=lastRow.getAttribute('reglemntid')
+        const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+        const containerBottom = container.scrollTop + container.clientHeight;
+        console.log(containerBottom)
+        console.log(containerBottom+900 >= lastRowOffset && !loadingupdateblregl)
+        if (containerBottom+900 >= lastRowOffset && !loadingupdateblregl) {
+            currentPageupdateblregl++;
+            loadMoreblclupdateregl(reglementid);
+        }
+    };
+    // ###load in updae reglement
+
+    function loadregRecords ()  {
+    loadingreglbl = true;
+    term=$('.searchinputlistreglbl').val()
+    year=$('[name="yearsreglbl"]').val()
+    $.get(`/products/loadreglbl/?page=${currentPagereglbl}&term=${term}&year=${year}`, (data)=>{
+
+      const tbody = $('.reglbltable tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadingreglbl = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.reglbltableholder').off('scroll', handleScrollinregl);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrollinregl () {
+      console.log('scroll')
+      const container = $('.reglbltableholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.reglbl-row:last-child');
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+      const containerBottom = container.scrollTop + container.clientHeight;
+      console.log(containerBottom+900, lastRowOffset, containerBottom+900 >= lastRowOffset)
+      if (containerBottom+900 >= lastRowOffset && !loadingreglbl) {
+          currentPagereglbl++;
+          loadregRecords();
+      }
+    };
+
+    // Attach the scroll event listener
+    //$('.reglbltableholder').on('scroll', handleScrollinregl)
+    // var today = new Date();
+
+    // // Get the current date in the "yyyy-mm-dd" format
+    // var yyyy = today.getFullYear();
+    // var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+    // var dd = String(today.getDate()).padStart(2, '0');
+
+    // // Format the date as "yyyy-mm-dd"
+    // var currentDate = yyyy + '-' + mm + '-' + dd;
+
+    function filternonreglr(){
+        currentPageblregl=1
+        loadingblregl = false;
+        $('.listaddreglblholder').on('scroll', handleScrollreglblcl)
+        let clientid=$('[name="addreglementclientsbl"]').val()
+        console.log(clientid)
+        $.get(
+            'products/filternonreglr',
+            {clientid:clientid},
+            (data)=>{
+                $('.reglementclientbonholder').html(data.trs)
+                $('.totalbonsbl').text(data.total)
+                $('.soldblregl').text((data.soldbl).toFixed(2))
+            }
+        )
+    }
+
+    function getallbl(){
+        console.log('err')
+        currentPageblregl=1
+        loadingblregl = false;
+        $('.listaddreglblholder').on('scroll', handleScrollreglblcl)
+        let clientid=$('[name="addreglementclientsbl"]').val()
+        console.log(clientid)
+        $.post(
+            'products/getclientbons',
+            {clientid:clientid,csrfmiddlewaretoken: '{{ csrf_token }}', target:'{{target}}', moderegl:$('.moderegl').val()},
+
+            (data)=>{
+                $('.reglementclientbonholder').html(data.bons)
+                $('.avoirs').html(data.avoirs)
+                $('.avances').html(data.avances)
+            }
+        )
+    }
+    $('.searchinputlistaddreglbl').on("change", function() {
+    // Get the values from all filter input fields
+        var filterValue = $(this).val().toLowerCase();
+
+        // Split the filter value into individual terms based on the '&' sign
+        // var filterTerms = filterValue.split('+').map(function(term) {
+        //     return term.trim();
+        // });
+        if (filterValue.length > 1){
+
+            $.get('/products/searchclientbls', {'term':filterValue.trim(), 'clientid':$('[name="addreglementclientsbl"]').val()}, (data)=>{
+                console.log('eee')
+                $('.reglementclientbonholder').html(data.trs)
+            })
+        }
+    });
+
+    $('.searchinputlistreglbl').on("change", function() {
+        var filterValue = $(this).val().toLowerCase();
+
+    // Split the filter value into individual terms based on the '&' sign
+    // var filterTerms = filterValue.split('+').map(function(term) {
+    //     return term.trim();
+    // });
+        if (filterValue.length > 1){
+          year=$('[name="yearsreglbl"]').val()
+            $('.reglbltableholder').on('scroll', handleScrollinregl);
+            currentPagereglbl=1
+            loadingreglbl = false;
+            $.get('/products/searchregl', {'term':filterValue.trim(), 'year':year}, (data)=>{
+                console.log('eee')
+                $('.reglbltable tbody').html(data.trs)
+                $('.totalreglbl').text(data.total)
+
+            })
+        }
+    // Get the values from all filter input fields
+        // var filterValue = $(this).val().toLowerCase();
+
+        // // Split the filter value into individual terms based on the '&' sign
+        // var filterTerms = filterValue.split('+').map(function(term) {
+        //     return term.trim();
+        // });
+
+        // // Iterate through the table rows
+        // $(".reglbltable tbody tr").each(function() {
+        //     var rowText = $(this).text().toLowerCase();
+        //     var showRow = true;
+
+        //     // Check if all filter terms are present in the row text
+        //     $.each(filterTerms, function(index, term) {
+        //         if (term !== '' && rowText.indexOf(term) === -1) {
+        //             showRow = false;
+        //             return false; // Exit the loop early if a mismatch is found
+        //         }
+        //     });
+
+        //     // Toggle the visibility of the row based on the filter criteria
+        //     $(this).toggle(showRow);
+        // });
+        // total=0
+        // $('.reglbltable tbody tr:visible').each(function(){
+        // total+=parseFloat($(this).find('td:nth-child(3)').text())
+        // })
+        // $('.totalreglbl').text(total.toFixed(2))
+    });
+
+    $('.searchinputlistreglblupdate').on("change", function() {
+        var filterValue = $(this).val().toLowerCase();
+
+
+        if (filterValue.length > 1){
+            $('.reglblupdate tbody').find('.loadblinupdateregl').remove()
+            $.get('/products/searchclientblsupdatereg', {'term':filterValue.trim(), 'clientid':$('.searchinputlistreglblupdate').attr('clientid')}, (data)=>{
+                $('.reglblupdate tbody').append(data.trs)
+            })
+        }
+    });
+
+
+    $('.filterreglbldate').on('click', function(){
+
+        let parentdiv= $(this).parent().parent().parent()
+        startdate=parentdiv.find('.startdate').val()
+        enddate=parentdiv.find('.enddate').val()
+        if (startdate=='' || enddate==''){
+        alertify.error('Date')
+        return
+        }
+        $.get('/products/filterreglbldate', {startdate:startdate, enddate:enddate},(data)=>{
+        parentdiv.find('tbody').html(data.html)
+        parentdiv.find('.totalreglbl').text(data.total)
+        }).fail(()=>{
+            alertify.error('No result')
+        })
+    })
+
+    function submitupdateavances(event){
+        // $('.loadingscreen').removeClass('d-none')
+
+        $(event.target).addClass('disabled')
+        $('.updateavances').removeClass('d-none')
+        // get reglement data
+        date=$('.updateavances').find('[name="date"]').val()
+        reglementid=$('.updateavances').find('[name="reglementid"]').val()
+        mantant=$('.updateavances').find('[name="mantant"]').val()
+        tbody=$('.updateavances').find('.reglementclientbonholder')
+        npiece=$('.updateavances').find('[name="npiece"]').val()
+        mode=$('.updateavances').find('[name="mode"]').val()
+        echeance=$('.updateavances').find('[name="echeance"]').val()
+        bank=$('.updateavances').find('[name="bank"]').val()
+        // check if echeance is today
+        if ((mode=='cheque'||mode=='effet')&&echeance=='{{today|date:"Y-m-d"}}'){
+            necheance=parseInt($('.echeanceindex').text())
+            $('.echeanceindex').text(necheance+1)
+        }
+        // yes: add a number to echeance index
+        var isAnyEmpty = $('.updateavances').find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+        if (isAnyEmpty){
+            let emptyInputs = $('.updateavances').find('input.notempty').filter(function() {
+                return !this.value.trim();
+            });
+
+            $(event.target).removeClass('disabled')
+            // Add a red border to all empty input elements
+            alertify.error('Veuillez remplir tous les champs obligatoires')
+            emptyInputs.css('border', '1px solid red');
+            $('.updateavances').find('input.notempty').not(emptyInputs).css('border', '');
+            $(this).attr('disabled', false)
+            return
+        }
+        $(event.target).addClass('disabled')
+
+        $('.updateavances').find('input.notempty').css('border', '1px solid green')
+        // if ((selectedValues = $('.updateavances').find("input[name='bonstopay']:checked").map(function() {
+        //     return this.value;
+        // }).get()).length == 0){
+        //     alertify.error('Veuillez selectionner au moins un bon')
+        //     return
+        // }
+        selectedValues = $('.updateavances').find("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        console.log(reglementid, date, mantant, npiece, mode, echeance, selectedValues)
+        $.post('/products/updatereglebons', {
+            reglementid:reglementid,
+            mantant:mantant,
+            mode:mode,
+            npiece:npiece,
+            echeance:echeance,
+            bank:bank,
+            date:date,
+            bons:JSON.stringify(selectedValues),
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+              $('.updateavances').addClass('d-none')
+                //forceupdatetab('addlistavances', '/products/listavances')
+                alertify.success('Reglement modifié')
+        })
+    // end submitupdatereg function
+    }
+
+    function updateavances(reglementid){
+        // activate load more
+        $('.listupdatereglblholder').on('scroll', scrollupdateregl);
+        loadingupdateblregl=false
+        currentPageupdateblregl=1
+        $('.loadingscreen').removeClass('d-none')
+        $('.deletereglblbtn').attr('reglid', reglementid)
+        $('.updateavances').removeClass('d-none')
+        // get reglement data
+        // date=$('.updateavances').find('[name="date"]')
+        // regid=$('.updateavances').find('[name="reglementid"]').val(reglementid)
+        // mantant=$('.updateavances').find('[name="mantant"]')
+        // client=$('.updateavances').find('.client')
+        // tbody=$('.updateavances').find('tbody')
+        // npiece=$('.updateavances').find('[name="npiece"]')
+        // mode=$('.updateavances').find('[name="mode"]')
+        // echeance=$('.updateavances').find('[name="echeance"]')
+
+        // tbody.html('')
+        //console.log(date, mantant)
+        // get regl data
+        $.get('/products/getavances/'+reglementid, {
+
+            }, function(data){
+                console.log(data)
+                $('.reglebldata').html(data.html)
+                // $('.searchinputlistreglblupdate').attr('clientid', data.clientid)
+                // $('.totalblinupdatereglbl').text(data.total)
+                // $('.soldblinupdatereglbl').text((data.soldclient).toFixed(2))
+                // $('.loadingscreen').addClass('d-none')
+                // date.val(data.date)
+                // mantant.val(data.mantant.toFixed(2))
+                // client.text(data.client)
+                // npiece.val(data.npiece)
+                // mode.val(data.mode)
+                // echeance.val(data.echance)
+                // if (data.mode == "espece"){
+                //     echeance.removeClass('notempty')
+                //     npiece.removeClass('notempty')
+                // }
+                // // bons of this reglement
+                // for (let i of data.bons){
+                //     const date = new Date(i.date);
+
+                //     // Create formatted date string in the desired format "d/m/Y"
+                //     const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                //     tbody.append(`
+                //     <tr style="background:#ddfaed" ><td>${formattedDate}</td><td>${i.bon_no}</td><td>${i.total.toFixed(2)}</td><td class="text-danger">${i.ispaid?"R0":"NR"}</td> <td><input type="checkbox" value="${i.id}" name="bonstopay" onchange="checkreglementbox(event)" checked></td></tr>
+                //     `)
+                // }
+                // tbody.append(data.livraisons)
+                // all bons of this client
+                // for (let i of data.livraisons){
+                //     const date = new Date(i.date);
+
+                //     // Create formatted date string in the desired format "d/m/Y"
+                //     const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                //     tbody.append(`
+                //     <tr class="loadblinupdateregl" reglemntid="${reglementid}"><td>${formattedDate}</td><td>${i.bon_no}</td><td>${i.total.toFixed(2)}</td><td class="text-danger">${i.ispaid?"R0":"NR"}</td> <td><input type="checkbox" value="${i.id}" name="bonstopay" onchange="checkreglementbox(event)" ></td></tr>
+                //     `)
+                // }
+                // // $('.select2').select2()
+            // populate bons multiselect
+        })
+    }
+//     var dateInput = document.querySelector('.datereglement');
+
+// // Create a new Date object for today
+//     var today = new Date();
+
+//     // Get the current date in the "yyyy-mm-dd" format
+//     var yyyy = today.getFullYear();
+//     var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+//     var dd = String(today.getDate()).padStart(2, '0');
+
+//     // Format the date as "yyyy-mm-dd"
+//     var currentDate = yyyy + '-' + mm + '-' + dd;
+
+//     // Set the value of the date input to today's date
+//     dateInput.value = currentDate;
+
+
+    // on change mode
+    // $('[name="modereglementclient"]').on('change', function(){
+    //     if ($(this).val()=="cheque" || $(this).val()=="effet"){
+    //         // echeance n piece will be required
+    //         $('[name="npiece"]').addClass('notempty')
+    //         $('[name="datereglementclientbl"]').addClass('notempty')
+    //     }else{
+    //         $('[name="npiece"]').removeClass('notempty')
+    //         $('[name="datereglementclientbl"]').removeClass('notempty')
+    //     }
+    // })
+
+    // client change
+    function getbons(){
+        
+        clientid=$('[name="addreglementclientsbl"]').val()
+        
+        if (clientid==null){
+           
+            $('.reglementbonsholder').addClass('d-none')
+            alertify.error('Champs vide')
+            // disable the divholder of the multiselects
+            // disable the button
+            $('.submitaddreglemntclientbtn').addClass('disabled')
+            return
+        }
+        $('.submitaddreglemntclientbtn').removeClass('disabled')
+        
+    }
+
+    // check for npiece existence
+    // $('[name="npiece"]').on('input', function(){
+    //     npiece=$(this).val()
+    //     console.log('check npiece', npiece)
+    //     $.get('/products/checknpiece', {
+    //         npiece:npiece,
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //         }, function(data){
+    //             console.log(data)
+    //             if (data.exist){
+    //                 alertify.error('N° piece existe deja')
+    //                 $('.submitaddreglemntclientbtn').addClass('disabled')
+    //             }
+    //             else{
+    //                 $('.submitaddreglemntclientbtn').removeClass('disabled')
+    //             }
+    //         })
+    // })
+
+
+    $('.submitaddreglemntclientbtn').on('click', function(event){
+        event.preventDefault()
+        $(event.target).addClass('disabled')
+        let parentdiv=$(this).parent().parent()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+        if (isAnyEmpty){
+            let emptyInputs = parentdiv.find('input.notempty').filter(function() {
+                return !this.value.trim();
+            });
+
+            // Add a red border to all empty input elements
+            $(event.target).removeClass('disabled')
+            alertify.error('Veuillez remplir tous les champs obligatoires')
+            emptyInputs.css('border', '1px solid red');
+            parentdiv.find('input.notempty').not(emptyInputs).css('border', '');
+            $(this).attr('disabled', false)
+            return
+        }
+        $(event.target).addClass('disabled')
+        // if ((selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
+        //     return this.value;
+        // }).get()).length == 0){
+        //     alertify.error('Veuillez selectionner au moins un bon')
+        //     return
+        // }
+        
+        
+        $(this).addClass('disabled')
+        clientid=parentdiv.find('[name="addreglementclientsbl"]').val()
+        mantant=parentdiv.find('[name="mantantreglementclient"]').map(function() {
+            return parseFloat(this.value);
+        }).get();
+        mode=parentdiv.find('[name="modereglementclient"]').map(function() {
+            return this.value;
+        }).get();
+        note=parentdiv.find('[name="note"]').map(function() {
+            return this.value;
+        }).get();
+        npiece=parentdiv.find('[name="npiece"]').map(function() {
+            return this.value;
+        }).get();
+        bank=parentdiv.find('[name="bank"]').map(function() {
+            return this.value;
+        }).get();
+        echeance=parentdiv.find('[name="echeance"]').map(function() {
+            return this.value;
+        }).get();
+        date=parentdiv.find('[name="datereglementclientbl"]').val()
+
+        
+        echeance=parentdiv.find('[name="echeance"]').map(function() {
+            return this.value;
+        }).get();
+        bonofavance=$('.bonofavance').val()
+        $.get('/products/addavanceclient', {
+            clientid:clientid,
+            bonofavance:bonofavance,
+            target:'{{target}}',
+            mantant:JSON.stringify(mantant),
+            mode:JSON.stringify(mode),
+            note:JSON.stringify(note),
+            npiece:JSON.stringify(npiece),
+            echeance:JSON.stringify(echeance),
+            bank:JSON.stringify(bank),
+            //date:date,
+            }, function(data){
+                ajaxpage('addlistavances', 'd', '/products/listavances?target={{target}}')
+                alertify.success('Reglement ajouté')
+        })
+    })
+
+</script>

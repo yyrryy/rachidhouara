@@ -1,0 +1,150 @@
++<div class="p-2">
+    <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('journalachatfc')">x</button>
+        <div>
+          {{title}}
+        </div>
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('journalachatfc', '/products/journalachatfc')">↻</button>
+      </div>
+      <div class="d-flex">
+        <div>
+            <input type="date" name="jachfcdatefrom" class="form-control notempty jachfcdatefrom" value="{{today|date:'Y-m-d'}}">
+        </div>
+        <div>
+            <input type="date" name="jachfcdateto" class="form-control notempty jachfcdateto" value="{{today|date:'Y-m-d'}}">
+        </div>
+        <button class="btn btn-success" onclick="getdatefilterjachfc()">Filtrer</button>
+    </div>
+    <div class="d-flex justify-content-between">
+      <input style="width:20em; height: 25px;" type="text" name="" id="" placeholder="Recherche" class="searchinpulistjachfc">
+      <select onchange="getjachfcdatayear(event)" class="jachfcyear populateyears disabled" hidden style="width:9em; border-radius: 10em;">
+          <!-- <option value="0">----</option>
+          <option value="2024">2024</option> -->
+
+      </select>
+    </div>
+        <div style="height: 60vh; overflow: scroll;" class="listjournalachatfcholder">
+            <table style="font-size: 12px;" class="table table-bordered listjournalachatfc table-hover">
+                <thead style="position: sticky; top: 0; background: gray;">
+                    <tr>
+                        <td>Date</td>
+                        <td>REf</td>
+                        <td>Product</td>
+                        <td>Prix achat</td>
+                        <td>Fournisseur</td>
+                        <td>Devise</td>
+                        <td>Quantity</td>
+                        <td>Total</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in items %}
+                    <tr class="journalachafc-row">
+                        <td>{{i.date|date:"d/m/Y"}}</td>
+                        <td>{{i.product.ref}}</td>
+                        <td>{{i.product.name.upper}}</td>
+                        <td>{{i.price}}</td>
+                        <td>{{i.supplier.name}}</td>
+                        <td>{{i.devise}}</td>
+                        <td class="qtyjournalachat">{{i.quantity}}</td>
+                        <td class="totaljournalachat">{{i.total|floatformat:2}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot style="position: sticky; bottom: 0; background: white;">
+                    <tr >
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="totalqtyjachfc" style="background: yellowgreen;">{{totalqty}}</td>
+                        <td class="totaljachfc" style="background: yellowgreen;">{{total}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+</div>
+<script>
+  populateyears()
+    $('.searchinpulistjachfc').on("keyup", function() {
+        var filterValue = $(this).val().toLowerCase();
+        let year=$('.jachfcyear').val()
+        $.get('/products/searchforjachfc', {'term':filterValue.trim(), 'year':year}, (data)=>{
+            $('.listjournalachatfc tbody').html(data.trs)
+            $('.totaljachfc').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+            $('.totalqtyjachfc').text(data.totalqty)
+        })
+    });
+    function getdatefilterjachfc(){
+        currentPagejournalventefc=1
+        loadingjournalventefc=false
+        $('.listjournalachatholder').on('scroll', handleScrolljachfc)
+        datefrom=$('.jachfcdatefrom').val()
+        dateto=$('.jachfcdateto').val()
+        $.get('products/filterjachfcdate', {'datefrom':datefrom, 'dateto':dateto}, (data)=>{
+            console.log(data)
+            $('.listjournalachatfc tbody').html(data.trs)
+            $('.totaljachfc').text(data.total?data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '):0)
+            $('.totalqtyjachfc').text(data.totalqty?data.totalqty:0)
+        })
+    }
+
+    function getjachfcdatayear(event){
+        currentPagejournalventefc=1
+        loadingjournalventefc=false
+        $('.journalvfctableholder').on('scroll', handleScrolljachfc);
+        year=$(event.target).val()
+        if (year != '0'){
+            $.get('products/yeardatajachfc', {'year':year}, (data)=>{
+                console.log(data)
+                $('.listjournalachatfc tbody').html(data.trs)
+                $('.totaljachfc').text(data.total?data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '):0)
+                $('.totalqtyjachfc').text(data.totalqty?data.totalqty:0)
+            })
+        }
+    }
+
+    function loadMorejachfc ()  {
+    loadingjournalachafc = true;
+    $.get(`/products/loadjournalachatfc/?page=${currentPagejournalachafc}`, (data)=>{
+
+      const tbody = $('.listjournalachatfc tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadingjournalachafc = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listjournalachatfcholder').off('scroll', handleScrolljachfc);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrolljachfc () {
+      console.log('scroll')
+      const container = $('.listjournalachatfcholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.journalachafc-row:last-child');
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+      const containerBottom = container.scrollTop + container.clientHeight;
+      console.log(containerBottom+900, lastRowOffset, containerBottom+900 >= lastRowOffset)
+      if (containerBottom+900 >= lastRowOffset && !loadingjournalachafc) {
+          currentPagejournalachafc++;
+          loadMorejachfc();
+      }
+    };
+
+    // Attach the scroll event listener
+    $('.listjournalachatfcholder').on('scroll', handleScrolljachfc)
+
+</script>

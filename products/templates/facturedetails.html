@@ -1,0 +1,662 @@
+{% load global_tags %}
+<div class="d-flex mb-5" style="position: sticky;top: 0; background: white;z-index: 999;">
+  <div>
+    <button class="btn btn-success" onclick="printfacture('{{target}}', '{{facture.id}}')">
+      Telecharger (Categorie)
+    </button>
+    <button class="btn btn-success" onclick="printfactureproductname('{{target}}', '{{facture.id}}')">
+      Telecharger (Designation)
+    </button>
+  <!-- <button class="btn btn-sm btn-success" onclick="entete()">
+    entette
+  </button> -->
+  {% if not facture.bons.all %}
+  <button class="btn btn-danger" onclick="ajaxpage('addmodifierfacture{{facture.id}}', 'Modifier facture {{facture.facture_no}}', '/products/modifierfacture/{{facture.id}}')">
+    Modifier
+  </button>
+  {% endif %}
+  <button class="btn btn-success" onclick="comptable(event, '{{facture.id}}')">
+  {% if facture.isaccount %}
+    Normal
+  {% else %}
+    Comptabilité
+  {% endif %}
+  </button>
+  <input placeholder="Note" class="notefacture{{facture.id}}input" value="{%if facture.note%}{{facture.note}}{%endif%}"><button class="btn btn-info" onclick="updatenotefacture('{{facture.id}}')">+</button>
+  </div>
+  
+
+  {% if not facture.printed %}
+  <button class="ms-2 btn btn-success" onclick="printed(event, '{{facture.id}}')">
+    Reçu par client
+  </button>
+  {% endif %}
+</div>
+<div class="d-flex justify-content-between">
+  
+  <div id="printfc{{facture.id}}" style="position:relative;">
+    <div class="row">
+      <div class="col-6">
+        <select class="ms-2 updatefactureclient" style="width: 100%;">
+        
+        </select>
+        <button class="btn btn-dark w-100" onclick="updatefactureclient()">Modifier client</button>
+      </div>
+      <div class="col-6">
+        <input type="date" class="ms-2 updatefacturedate form-control" value="{{facture.date|date:'Y-m-d'}}">
+        
+        <button class="btn btn-dark w-100" onclick="updatefacturedate()">Modifier date</button>
+      </div>
+      
+    </div>
+    {% for i in orderitems %}
+    {% if forloop.counter == orderitems|length %}
+    <!-- last iteration -->
+    <div class="postion-relative p-2 facture{{facture.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+
+
+      <!-- facture header -->
+      <div class="">
+        <img src="" alt="" style="width: 40%;" class="factureheader">
+          <div class="d-flex justify-content-between mt-5">
+            <div>
+              <h5 style="
+                border: 3px solid;
+                padding: 8px;
+                box-shadow: 4px 3px black;
+                border-radius: 12px;
+                width: 12em;
+                "
+                >Facture N°: <strong>{{facture.facture_no}}</strong></h5><br>
+                <h5 style="
+                border: 1px solid;
+                border-radius: 10px;
+                padding: 8px;
+            ">Date: <strong>{{facture.date|date:"d/m/Y"}}</strong></h5>
+            </div>
+            <div style="width: 20em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+              Client <strong>{{facture.client.name.upper}}</strong>
+              <p>
+                {{facture.client.code}}
+              </p>
+              {% if facture.client.ice %}
+              <p>
+
+                ICE: {{facture.client.ice}}
+              </p>
+              {% endif %}
+              <p>
+
+              Ville: {{facture.client.city}}
+              </p>
+            </div>
+          </div>
+
+
+      </div>
+
+      <!-- facture items -->
+      <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgfacture" src="/media/logos/dd.png" style="
+      position: absolute !important;
+      right: 9.3em;
+      opacity: 0.18;
+      top: 5em;
+      ">
+        <table class="table table-bordered fcitems" style="font-size: 13px; border-color: black;">
+          <thead style="background: #c9c9c9; font-size: 10px;
+          font-weight: 800;" class="text-center">
+            <tr>
+              <td style="width: 19%;">Ref</td>
+              <td style="width: 35%;">Designation</td>
+              <td style="width: 9%;">Qté</td>
+              <td style="width: 14%;">P.U</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 16%">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+                  <tr>
+                      <td style="height: 156mm;">
+                        {% for v in i %}
+                        {{v.ref.upper}}
+                        <br>
+                        {% endfor %}
+                      </td>
+                    <td style="white-space: nowrap;">
+                        {% for v in i %}
+                          {{v.name.upper|slice:"50"}}
+                          <br>
+                        {% endfor %}
+                    </td>
+                    <td class="text-center">
+                      {% for v in i %}
+                      {{v.qty}}
+                      <br>
+                      {% endfor %}
+                    </td>
+                    <td class="text-center">
+                      {% for v in i %}
+                      {{v.price|floatformat:2|intspace}}
+                      <br>
+                      {% endfor %}
+                    </td>
+                    <td class="text-center">
+                      {% for v in i %}
+                      {{v.remise}}%
+                      <br>
+                      {% endfor %}
+                    </td>
+                    <td class="text-center">
+                      {% for v in i %}
+                      {{v.total|floatformat:2|intspace}}
+                      <br>
+                      {% endfor %}
+                    </td>
+
+                  </tr>
+          </tbody>
+          <tfoot class="text-center">
+
+          </tfoot>
+        </table>
+
+      </div>
+
+      <div class="text-center">
+        <table class="table table-bordered" style="margin-bottom: 35px;">
+          <tr style="background: #c9c9c9; font-size: 10px;
+          font-weight: 800;border: 1px solid">
+            <td colspan="5">
+              <strong style="font-size: 13px" >
+                Total H.T
+              </strong>
+            </td>
+            <td>
+              <strong class="htfc{{facture.id}}" style="font-size: 13px">
+                {{ht|floatformat:2|intspace}}
+              </strong>
+            </td>
+            <td colspan="5">
+              <strong style="font-size: 13px">
+                TVA
+              </strong>
+            </td>
+            <td>
+              <strong class="tvafc{{facture.id}}" style="font-size: 13px">
+                {{tva|floatformat:2|intspace}}
+              </strong>
+            </td>
+            <td colspan="5">
+              <strong style="font-size: 13px">
+                Total TTC
+              </strong>
+            </td>
+            <td>
+              <strong class="ttcgc{{facture.id}}" style="font-size: 15px">
+                {{ttc|floatformat:2|intspace}}
+              </strong>
+            </td>
+          </tr>
+        </table>
+        <div style="font-size: 15px; text-align: start;">
+            Arreter la presente facture à la somme de: <br>
+          <span class="totalfactureprint" style="font-size:10px ;"></span>
+        </div>
+        <div style="font-size:11px">
+          adress <br>
+          IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
+          Fixe: +212 500000000 - Tel: 06 0000
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="postion-relative p-2 facture{{facture.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+
+
+      <!-- facture header -->
+      <div class="">
+        <img src="" alt="" style="width: 40%;" class="factureheader">
+          <div class="d-flex justify-content-between mt-5">
+            <div>
+              <h5 style="
+                border: 3px solid;
+                padding: 8px;
+                box-shadow: 4px 3px black;
+                border-radius: 12px;
+                width: 12em;
+                "
+                >Facture N°: <strong>{{facture.facture_no}}</strong></h5><br>
+                <h5 style="
+                border: 1px solid;
+                border-radius: 10px;
+                padding: 8px;
+            ">Date: <strong>{{facture.date|date:"d/m/Y"}}</strong></h5>
+            </div>
+            <div style="width: 20em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+              Client <strong>{{facture.client.name.upper}}</strong>
+              <p>
+                {{facture.client.code}}
+              </p>
+              <p>
+                ICE: {{facture.client.ice}} <br>Ville: {{facture.client.city}}
+              </p>
+            </div>
+          </div>
+
+
+      </div>
+
+      <!-- facture items -->
+      <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgfacture" src="/media/logos/dd.png" style="
+      position: absolute !important;
+      right: 9.3em;
+      opacity: 0.18;
+      top: 2em;
+      ">
+        <table class="table table-bordered fcitems" style="font-size: 13px; border-color: black;">
+          <thead style="background: #c9c9c9; font-size: 10px;
+          font-weight: 800;" class="text-center">
+            <tr>
+              <td style="width: 19%;">Ref</td>
+              <td style="width: 35%;">Designation</td>
+              <td style="width: 9%;">Qté</td>
+              <td style="width: 14%;">P.U</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 16%">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 180mm;">
+                {% for v in i %}
+                {{v.ref.upper}}
+                <br>
+                {% endfor %}
+              </td>
+              <td style="white-space: nowrap;">
+                {% for v in i %}
+                  {{v.name.upper|slice:"50"}}
+                  <br>
+                {% endfor %}
+            </td>
+            <td class="text-center">
+              {% for v in i %}
+              {{v.qty}}
+              <br>
+              {% endfor %}
+            </td>
+            <td class="text-center">
+              {% for v in i %}
+              {{v.price|floatformat:2|intspace}}
+              <br>
+              {% endfor %}
+            </td>
+            <td class="text-center">
+              {% for v in i %}
+              {{v.remise}}%
+              <br>
+              {% endfor %}
+            </td>
+            <td class="text-center">
+              {% for v in i %}
+              {{v.total|floatformat:2|intspace}}
+              <br>
+              {% endfor %}
+            </td>
+
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- facture footer -->
+
+      <div class="text-center" style="font-size:11px">
+
+        adress <br>
+        IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
+        Fixe: +212 500000000 - Tel: 06 0000
+      </div>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+
+  </div>
+
+  <div class="col-5">
+    Reglement
+    {% for i in reglements %}
+    <div class="alert alert-danger">
+      Reglement de bon: REG#{{i.id}} <br>
+      <strong>Mantant: {{i.amount}}</strong> <br>
+      <strong>Mode: {{i.mode}}</strong> <br>
+      <strong>N° piece: {{i.npiece}}</strong> <br>
+      <strong>echeance: {{i.echance|date:'d/m/y'}}</strong> <br>
+      <strong>Mode: {{i.mode}}</strong> <br>
+      {% for avoir in i.avoirs.all %}
+      <strong>
+        Avoir N° {{avoir.no}}: {{avoir.total}}
+      </strong> <br>
+      {% endfor %}
+      {% for avance in i.avances.all %}
+      <strong>
+        avance N° AVANCEF#{{avance.id}}: {{avance.amount}}
+      </strong>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    <br>
+
+    <strong>
+      bons:
+    </strong> <br>
+    {% for i in facture.bons.all %}
+    <div class="alert alert-success">
+      <strong>N°: {{i.bon_no}}</strong> <br>
+      {% if facture.bons.all|length > 1%}
+      {% if not facture.ispaid %}
+      <button class="w-100" onclick="removebonfromfacture(event, '{{facture.id}}', '{{i.id}}')">Decrocher</button>
+      {% endif %}
+      {% endif %}
+    </div>
+    
+    {% endfor %}
+    <!-- add bons to facture -->
+     {% if not facture.ispaid %}
+    <div class="mt-5">
+      <div class="accordion" id="accordionreglbl">
+        <div class="">
+    
+            <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
+            style="border-radius: 10px;"
+            onclick="getclientbonsforfacture('{{target}}', '{{facture.client.id}}')"
+            >
+                Ajouter facture global
+            </button>
+    
+          <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
+            <div class="card-body border shadow rounded">
+                <div class="row">
+    
+                    <div class="d-flex justify-content-between">
+                        <!-- <div class="">
+                            <small>Date:</small> <br>
+                            <input type="date" name="datereglementclientbl" class="w-100 notempty datereglement mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
+                            <small class="errordatereglclbl text-danger d-none">
+                              Date incorrect
+                            </small>
+                        </div> -->
+                        <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+                        <!-- <div class="col-3">
+                          <button class="btn btn-dark" onclick="getclientbonsforfacture('{{facture.client.id}}')">Les bons</button>
+                        </div> -->
+                    </div>
+    
+                    
+    
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <small>Bons:</small> <strong class="totalcheckedbl">0.00</strong><br>
+                            </div>
+                            
+                            
+                        </div>
+    
+                        <div class="mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
+    
+                            <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
+                                <thead style="position: sticky; top: 0; background: white;">
+                                    <tr>
+                                        <td>
+                                            Date
+                                        </td>
+                                        <td>
+                                            N° Bon
+                                        </td>
+                                        <td>
+                                            Client
+                                        </td>
+                                        <td>
+                                            total
+                                        </td>
+                                        <td>
+                                          <input type="checkbox">
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody class="reglementclientbonholder">
+                                </tbody>
+                                
+    
+                            </table>
+                            <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+    
+                            </select> -->
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- <div>
+                                <small>Client facture:</small><br>
+                                <select name="clientoffacture" id="" class="clientoffacture"></select>
+                            </div> -->
+                            <!-- <div>
+                              <small>Date:</small><br>
+                              <input type="date" class="dateoffacture form-control" value="{{today|date:'Y-m-d'}}">
+                          </div> 
+                          <div>
+                            <small>N° facture:</small><br>
+                            <input readonly value="{{facture.facture_no}}" type="text" class="facture_no form-control">
+                          </div>-->
+                        </div>
+                        <button class="btn text-white w-100" onclick="updatebonsoffacture('{{target}}', '{{facture.id}}')" style="background: #00538c;">
+                            Modifier
+                        </button>
+                        <!-- <div class="mb-2">
+                            <small>Facture</small>
+                            <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+    
+                            </select>
+                        </div>
+    
+                        <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+    
+                        </select> -->
+    
+                    </div>
+                    <div class="mt-3">
+                        {% csrf_token %}
+    
+    
+                    </div>
+    
+                </div>
+            </div>
+          </div>
+    </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
+<script>
+  $(function(){
+      
+      $('.updatefactureclient').select2({
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher client',
+        templateResult: formatclientfc,
+        templateSelection: formatclientSelectionfc,
+      });
+      function formatclientfc (client) {
+          if (client.loading) {
+            return client.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${client.diver>0?"red":""};">${client.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatclientSelectionfc (client) {
+          return client.text;
+        }
+
+    })
+  $('.updaterepfacture{{facture.id}}').on('change', function(){
+    console.log(">>>>>>>>up")
+    rep=$(this).val()
+    $.get('/products/updatefacturerep', {
+      'rep':rep,
+      'factureid':'{{facture.id}}',
+    }, (data)=>{
+      updatetab('facture{{facture.id}}', '/products/facturedetails/{{facture.id}}')
+
+    })
+  })
+  function updatenotefacture(id){
+    $.get('/products/updatefacturenote', {
+      'factureid':'{{facture.id}}',
+      'note':$('.notefacture{{facture.id}}input').val()
+    },(data)=>{
+      ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+    }
+  )}
+  function updatefactureclient(id){
+    clientid=$('.updatefactureclient').val()
+    if (clientid==null){
+      alertify.error('Selectionner un client')
+      return
+    }
+    $.get('/products/updatefactureclient', {
+      'factureid':'{{facture.id}}',
+      'clientid':clientid
+    },(data)=>{
+      ajaxpage('facture2', 'Facture FR-FC25000000001', '/products/facturedetails/{{facture.id}}?target={{target}}')
+    }
+  )}
+  function updatefacturedate(id){
+    date=$('.updatefacturedate').val()
+    if (date==""){
+      alertify.error('Selectionner un client')
+      return
+    }
+    $.get('/products/updatefacturedate', {
+      'factureid':'{{facture.id}}',
+      'date':date
+    },(data)=>{
+      ajaxpage('facture2', 'Facture FR-FC25000000001', '/products/facturedetails/{{facture.id}}?target={{target}}')
+    }
+  )}
+  // facture is comptablisé
+  function comptable(event, factureid){
+    $.get('/products/comptable', {
+      'factureid':factureid
+    }, (data)=>{
+      if($(event.target).text().includes('Normal')){
+        $(event.target).text('Comptabilité')
+      }else{
+        $(event.target).text('Normal')
+      }
+    })
+  }
+  function entete(){
+    if ($('.factureheader').hasClass('show')) {
+      $('.factureheader').removeClass('show')
+      $('.factureheader').css('visibility', 'hidden')
+      $('.bgfacture').removeClass('show')
+      $('.bgfacture').css('visibility', 'hidden')
+      localStorage.setItem('showentete', false)
+    }
+    else{
+      $('.factureheader').addClass('show')
+      $('.factureheader').css('visibility', 'visible')
+      $('.bgfacture').addClass('show')
+      $('.bgfacture').css('visibility', 'visible')
+      localStorage.setItem('showentete', true)
+    }
+
+  }
+  showentete=localStorage.getItem('showentete')||true
+  if (showentete == 'true') {
+    $('.factureheader').addClass('show')
+    $('.factureheader').css('visibility', 'visible')
+    $('.bgfacture').addClass('show')
+    $('.bgfacture').css('visibility', 'visible')
+  }
+  else{
+    $('.factureheader').removeClass('show')
+    $('.factureheader').css('visibility', 'hidden')
+    $('.bgfacture').removeClass('show')
+    $('.bgfacture').css('visibility', 'hidden')
+  }
+  function separateThousands(number) {
+    console.log(number)
+  // Split the number into integer and decimal parts
+    const parts = number.toString().split('.');
+    const integerPart =  parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+    if (parts[1]) {
+      decimalpart=Number(parts[1]).toFixed(2)
+      return integerPart + '.' + parts[1];
+    } else {
+      return Number(integerPart).toFixed(2);
+    }
+}
+  /*$('.ttcgc{{facture.id}}').text(separateThousands('{{facture.total|floatformat:2|intspace}}'))
+  $('.tvafc{{facture.id}}').text(separateThousands({{tva|floatformat:2|intspace}}))
+  $('.htfc{{facture.id}}').text(separateThousands({{ht|floatformat:2|intspace}}))*/
+   $('.totalfactureprint').text($.spellingNumber('{{facture.total|floatformat:2}}', {
+    lang:'fr',
+    wholesUnit:"Dirhams",
+    fractionUnit:"Centimes",
+    digitsLengthW2F: 2,
+    decimalSeperator:"et"
+
+  }).toUpperCase())
+  // function Printfacture(divName){
+  //   //$('.facture{{facture.id}}holder').addClass('d-flex flex-column')
+  //        var printContents = document.getElementById(divName).innerHTML;
+  //        var originalContents = document.body.innerHTML;
+  //        document.body.innerHTML = printContents;
+  //       //  $('.bgfacture').css({
+  //       //   "position": "absolute !important",
+  //       //   "right": "26em",
+  //       //   "opacity": "0.18",
+  //       //   "top": "23em",
+  //       //  })
+  //       // $('body').addClass('d-flex flex-column vh-100')
+  //        $('.fcitems').css({'font-size': '14px','font-family':'serif'})
+  //        $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+  //        //$("table > thead").css('background','#c9c9c9');
+  //        window.print();
+  //        document.body.innerHTML = originalContents;
+  //       //  $('body').removeClass('d-flex flex-column vh-100 p-3')
+  //   }
+  </script>

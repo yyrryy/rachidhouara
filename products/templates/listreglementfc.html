@@ -1,0 +1,1090 @@
+{% load global_tags %}
+
+<style>
+    [data-tooltip] {
+        position: relative;
+        letter-spacing: 0.1rem;
+    }
+
+    [data-tooltip]::before,
+    [data-tooltip]::after {
+        --tooltip-color: #333;
+        --arrow-size: .5rem;
+        --scale: 0;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, var(--translate-y)) scale(var(--scale));
+        transition: transform 100ms;
+        transition-timing-function: linear;
+    }
+
+    [data-tooltip]:hover::before,
+    [data-tooltip]:hover::after {
+        --scale: 1;
+        transition-timing-function: cubic-bezier(0.25, 0.1, 0.45, 1.93);
+    }
+
+    [data-tooltip]::before {
+        --translate-y: calc(-100% - var(--arrow-size));
+        content: attr(data-tooltip);
+        background-color: var(--tooltip-color);
+        color: white;
+        padding: .5em;
+        border-radius: .3em;
+        width: fit-content;
+        text-align: center;
+        transform-origin: bottom center;
+    }
+
+    [data-tooltip]::after {
+        --translate-y: calc(-1 * var(--arrow-size));
+        content: '';
+        border: var(--arrow-size) solid transparent;
+        border-top-color: var(--tooltip-color);
+        transform-origin: top center;
+    }
+</style>
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addlistreglementfc')">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistreglementfc', '/products/listreglementfc')">↻</button>
+  </div>
+
+
+
+<div class="card">
+
+    <!-- modifier reglement -->
+    <div class="border p-2 position-relative updatereglementfc position-fixed shadow rounded d-none" style="z-index: 999;overflow: scroll; height: 80vh;background: aliceblue;">
+        <button onclick="$(this).parent().addClass('d-none')">X</button>
+        <strong>
+            Modifier le reglement
+        </strong>
+        <div class="row">
+
+            <div class="col-3">
+                <div class="">
+                    <small>Date:</small> <br>
+                    <input type="date" name="date" class="w-100 notempty mb-2">
+                </div><br>
+                <input name="reglementid" hidden>
+                <small>Client: <span class="client"></span></small><br>
+                <small>Sold Fc Client: <span class="soldblinupdatereglfc text-danger" style="margin-left: 10px;"></span></small><br>
+                <div class="mt-5">
+                    <input type="password" class="passworddeletereglfc form-control">
+                    <button class="btn btn-danger deletereglfcbtn w-100" reglfcid="" onclick="deletereglfc(event)">Supprimer</button>
+                </div>
+            </div>
+
+            <div class="reglementbonsholder col-9 border position-relative">
+
+                <div class="inputsholder">
+
+
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <small>Mantant:</small> <br>
+                            <input type="number" name="mantant" class="w-100 notempty" placeholder="Mantant">
+                        </div>
+                        <div class="col-3">
+                            <small>N° piece:</small> <br>
+                            <input type="text" name="npiece" class="w-100" placeholder="N° piece">
+                        </div>
+                        <div class="col-3">
+                            <small>Mode Paiment:</small> <br>
+                            <select name="mode" class="w-100 notempty" onchange="checkmodereglement(event)">
+                                <option value="cheque">Cheque</option>
+                                <option value="effet">effet</option>
+                                <option value="espece">espece</option>
+                                <option value="avoir">avoir</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <small>Echeance:</small> <br>
+                            <input type="date" name="echeance" class="w-100 ">
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="mb-2 mt-2">
+
+                    <div class="d-flex justify-content-between">
+                        <div>Facture:</div>
+                        <div>
+                            <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglfcupdate">
+                        </div>
+                    </div>
+                    <div style="max-height: 229px; overflow-y: scroll;" class="listupdatereglfcholder">
+                        <table class="table table-bordered reglfcupdate table-hover" style="font-size: 12px;">
+                            <thead style="position: sticky; top: 0;" class="bg-white">
+                                <tr>
+                                    <td>
+                                        Date
+                                    </td>
+                                    <td>
+                                        N° Bon
+                                    </td>
+
+                                    <td>
+                                        total
+                                    </td>
+                                    <td>
+                                        Status
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot style="position: sticky; bottom: 0;" class="bg-white">
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                    <td class="totalblinupdatereglfc" style="background: yellowgreen;">
+                                    </td>
+                                    <td class="">
+
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+
+                        </table>
+                    </div>
+                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                    </select> -->
+                </div>
+                <button class="btn text-white w-100" onclick="submitupdatereglementfc()" style="background: #00538c;">
+                    Valider
+                </button>
+                <!-- <div class="mb-2">
+                    <small>Facture</small>
+                    <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                    </select>
+                </div>
+
+                <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                </select> -->
+
+            </div>
+            <div class="mt-3">
+                {% csrf_token %}
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ajouter un reglement -->
+    <div style="background:#df971a70">
+        <div class="border-end p-2 position-relative">
+            <div class="accordion" id="accordionreglfc">
+                <div class="">
+
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsereglfc" aria-expanded="true" aria-controls="collapsereglfc" style="border-radius: 10px;">
+                        + Ajouter
+                    </button>
+
+                  <div id="collapsereglfc" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglfc">
+                    <div class="card-body border shadow rounded">
+                        <div class="row">
+
+                            <div class="col-3">
+                                <div>
+                                    <input class="form-control">
+                                    <button class="btn btn-info" onclick="getclientcode(event)">+</button>
+                                </div>
+                                <div class="">
+                                    <small>Date:</small> <br>
+                                    <input type="date" name="datereglementclientfc" class="w-100 notempty datereglementfc mb-2" onchange="checkyearreglfc(event)">
+                                    <small class="errordatereglclfc text-danger d-none">
+                                      Date incorrect
+                                    </small>
+                                </div><br>
+                                <div class="d-flex justify-content-between">
+                                  <div class="clientcode"></div>
+                                  <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectreglfc(event)">↻</button>
+
+                                </div>
+                                <select name="addreglementclientsfc" id="" class="select2 form-select addreglementclientsfc" style="width:100%;">
+
+                                </select>
+                            </div>
+
+                            <div class="reglementfcholder d-none col-9 border">
+                                <div class="inputsholder">
+                                    <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglementfc(event)">+</button>
+                                    <strong class="totalreglfcfields">0.00</strong>
+                                    <div class="row align-items-center">
+                                        <div class="col-3">
+                                            <small>Mantant:</small> <br>
+                                            <input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant">
+                                        </div>
+                                        <div class="col-3">
+                                            <small>N° piece:</small> <br>
+                                            <input type="text" name="npiece" class="w-100 notempty npiecereglementclient" placeholder="N° piece">
+                                        </div>
+                                        <div class="col-3">
+                                            <small>Mode Paiment:</small> <br>
+                                            <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)">
+                                                <option value="cheque">Cheque</option>
+                                                <option value="effet">effet</option>
+                                                <option value="espece">espece</option>
+                                                <option value="avoir">avoir</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
+                                            <small>Echeance:</small> <br>
+                                            <input type="date" name="echeance" class="w-100 notempty echeancereglfc">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <div>
+                                        <small>Bons: <strong class="totalcheckedfc">0.00</strong></small><br>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-sm btn-danger" onclick="filternonreglrfc()">NR</button>
+                                        <button class="btn btn-sm btn-info" onclick="getallfc()">TOUS</button>
+                                    </div>
+
+                                    <input style="width:10em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistaddreglfc">
+
+                                </div>
+                                <div class="mb-2 mt-2 listaddreglfcholder" style="max-height: 160px; overflow-y: scroll;">
+
+                                    <table class="table table-bordered listaddreglfc" style="font-size: 12px;">
+                                        <thead style="position: sticky; top: 0; background: white;">
+                                            <tr>
+                                                <td>
+                                                    Date
+                                                </td>
+                                                <td>
+                                                    N° Bon
+                                                </td>
+                                                <td>
+                                                    Client
+                                                </td>
+                                                <td>
+                                                    total
+                                                </td>
+                                                <td>
+                                                    Rest
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="reglementclientfcholder">
+                                        </tbody>
+                                        <tfoot style="position: sticky; bottom: 0;">
+                                            <td colspan="2"></td>
+                                            <td class="soldfactureregl" style="background: yellowgreen; color:red;"></td>
+                                            <td class="totalfactures" style="background: yellowgreen; color:red;"></td>
+                                        </tfoot>
+
+                                    </table>
+                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                    </select> -->
+                                </div>
+                                <button class="btn text-white w-100 submitaddreglemntclientbtnfc disabled" style="background: #00538c;">
+                                    Valider
+                                </button>
+                                <!-- <div class="mb-2">
+                                    <small>Facture</small>
+                                    <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                    </select>
+                                </div>
+
+                                <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                </select> -->
+
+                            </div>
+                            <div class="mt-3">
+                                {% csrf_token %}
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex">
+              <div class="me-2">
+                <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}">
+              </div>
+              <div>
+                <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}">
+              </div>
+              <div>
+
+                <button class="btn btn-sm bg-dark text-white filterreglfcdate">Filtrer</button>
+              </div>
+
+            </div>
+            <div>
+                <div class="text-end">
+                    <select name="yearsreglfc" hidden class="populateyears disabled" hidden onchange="yeardatareglfc()" style="background: #eaeaea;
+                    margin: 0 6px 10px;
+                    width: 5em;
+                    border-radius: 10px;">
+
+
+                    </select>
+                </div>
+                <input style="width:20em;border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglfc">
+            </div>
+
+        </div>
+    </div>
+    <div style="height: 60vh; overflow-y: scroll;" class="mt-2 reglfctableholder">
+      <table class="table table-bordered reglfctable text-center" style="font-size: 12px;">
+            <thead style="position: sticky; top: 0; overflow-y: scroll;" class="bg-darkblue text-white">
+              <th>
+                  Type
+              </th>
+              <th>
+                  N°
+              </th>
+              <th>
+                  Mantant
+              </th>
+              <th>
+                  Date saisie
+              </th>
+              <th class="text-start">
+                  Client
+              </th>
+              <th>
+                  Code cl.
+              </th>
+              <th>
+                  Echeance
+              </th>
+              <th>
+                  N° Bons
+              </th>
+          </thead>
+          <tbody>
+               {% for i in reglements %}
+               <tr class="reglfc-row"  style={% if i.echance and i.echance == today %}"background: yellow;"{% elif i.echance and i.echance < today %}"color:red" {% endif %}>
+                     <td>
+                          {{i.mode}}
+                     </td>
+                     <td>
+                          {{i.npiece}}
+                     </td>
+                     <td>
+                          {{i.amount|floatformat:2|intspace}}
+                     </td>
+                     <td>
+                          {{i.date|date:"d/m/Y"}}
+                     </td>
+                     <td>
+                          {{i.client.name}}
+                     </td>
+                     <td>
+                          {{i.client.code}}
+                     </td>
+                     <td>
+                          {{i.echance|date:"d/m/Y"}}
+                     </td>
+                     <td class="d-flex justify-content-between">
+                        <div class="accordion" id="accordionfactures{{i.id}}">
+
+                            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsfacture{{i.id}}" aria-expanded="true" aria-controls="collapsfacture{{i.id}}">
+
+
+                            </button>
+
+                            <div id="collapsfacture{{i.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionfactures{{i.id}}">
+                                {% for bon in i.factures.all %}
+                                -{{ bon.facture_no }} <br>
+                                {% endfor %}
+
+
+                            </div>
+                        </div>
+                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.factures.all %}{{ bon.facture_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="ajaxpage('viewreg{{i.id}}', 'reglement #{{i.id}}', '/products/viewreglementfc/{{i.id}}')">
+                        </button> -->
+
+                        <button class="btn btn-success btn-sm" onclick="updatereglementfc({{i.id}})" style="font-size: 12px;
+                        height: 19px;">✐</button>
+                     </td>
+               </tr>
+               {% endfor %}
+          </tbody>
+          <thead style="position: sticky; background: white; bottom: 0; overflow-y: scroll;">
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th class="totalreglfc" style="background: yellowgreen;">
+                {{total|floatformat:2|intspace}}
+            </th>
+            <th>
+
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </thead>
+      </table>
+    </div>
+    <div class="card-body row">
+      <div class="col-4">
+      </div>
+    </div>
+</div>
+
+
+<script>
+  populateyears()
+  function totalreglementfc(event){
+    let sum = 0;
+    $('input[name="mantantreglementclientfc"]').map(function() {
+        const value = parseFloat($(this).val()) || 0;
+        sum += value;
+    });
+    $('.totalreglfcfields').text(sum.toFixed(2))
+  }
+  function refreshselectreglfc(event){
+    selection=$(event.target).parent().parent().find('.selection')
+    selection.remove()
+    $('.addreglementclientsfc').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+  }
+  function checkyearreglfc(event){
+    inpval=$(event.target).val()
+    console.log(inpval)
+    year=parseInt(inpval.split('-')[0])
+    var currentYear = new Date().getFullYear();
+    var previousYear = currentYear - 1;
+    console.log('>>>', year.isNaN)
+
+    // Check if the number is within the range
+    if (isNaN(year) || year < previousYear || year > currentYear) {
+        $('.errordatereglclfc').removeClass('d-none')
+    } else {
+        $('.errordatereglclfc').addClass('d-none')
+    }
+    console.log(year)
+  }
+    function getclientcode(event){
+        factureno=$(event.target).parent().find('input').val()
+        $.get('/products/getclientcode', {"factureno":factureno}, (data)=>{
+            $('.clientcode').text(data.code)
+        })
+    }
+    function deletereglfc(event){
+        target=$(event.target)
+        reglid=target.attr("reglfcid")
+        password=$('.passworddeletereglfc').val()
+        $.get('/products/deletereglfc', {'reglid':reglid, 'password':password}, (data)=>{
+            forceupdatetab('addlistreglementfc', '/products/listreglementfc')
+        })
+    }
+    $(function(){
+      $('.addreglementclientsfc').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+
+    function removereglrowfc(event){
+        let parentdiv=$(event.target).parent().parent()
+        let amountinp=parentdiv.find('[name="mantantreglementclientfc"]').val()
+        console.log(amountinp)
+        if (amountinp.length==0){
+            parentdiv.remove()
+        }
+    }
+
+    function addfieldsreglementfc(event){
+        let parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        // parentdiv.find('.mantantholder').append('<input type="number" name="mantantreglementclientfc" class="w-100 notempty mt-2">')
+        // parentdiv.find('.modeholder').append('<select name="modereglementclient" class="w-100 notempty"><option value="cheque">Cheque</option><option value="effet">effet</option></select>')
+        // parentdiv.find('.echeanceholder').append('<input type="date" name="echeancereglementclient" class="w-100 notempty">')
+        // parentdiv.find('.npieceholder').append('<input type="text" name="npiecereglementclient" class="w-100 notempty mt-2">')
+        //today's date in yyyy-mm-dd format
+        var today = new Date();
+
+        // Get the current date in the "yyyy-mm-dd" format
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Format the date as "yyyy-mm-dd"
+        var currentDate = yyyy + '-' + mm + '-' + dd;
+        parentdiv.append(`<div class="row align-items-center mt-2"><div class="col-3"> <input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrowfc(event)"></button></div></div>`)
+    }
+
+    function yeardatareglfc(){
+        let year=$('[name="yearsreglfc"]').val()
+        if (year != 0){
+            $.get('/products/yeardatareglfc', {'year':year}, (data)=>{
+                $('.reglfctable tbody').html(data.trs)
+                $('.totalreglfc').text(data.total)
+            })
+        }
+    }
+
+    function getallfc(){
+        currentPagefcregl=1
+        loadingfcregl = false;
+        $('.listaddreglfcholder').on('scroll', handleScrollreglfc)
+        let clientid=$('[name="addreglementclientsfc"]').val()
+        console.log(clientid)
+        $.post(
+            'products/getclientfactures',
+            {clientid:clientid,csrfmiddlewaretoken: '{{ csrf_token }}'},
+
+            (data)=>{
+                $('.listaddreglfc tbody').html(data.trs)
+                $('.totalfactures').text(data.totalfactures)
+            }
+        )
+    }
+
+    // load fc in adding reglement
+    function loadMoreRecordsreglfc (clientid, nr)  {
+    loadingfcregl = true;
+    $.get(`/products/laodfcregl/?page=${currentPagefcregl}&clientid=${clientid}&nr=${nr}`, (data)=>{
+
+      const tbody = $('.listaddreglfc tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadingfcregl = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listaddreglfcholder').off('scroll', handleScrollreglfc);
+          }
+        })
+
+
+        // Append the new records to your tafce or update the DOM as needed
+    };
+
+    function handleScrollreglfc () {
+      console.log('scroll')
+      console.log(currentPagefcregl, loadingfcregl)
+
+      const container = $('.listaddreglfcholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.fcreglrow:last-child');
+      let clientid=lastRow.getAttribute('clientid')
+      let nonregllist=lastRow.classList.contains('nr')?1:0
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+      const containerBottom = container.scrollTop + container.clientHeight;
+
+      if (containerBottom+900 >= lastRowOffset && !loadingfcregl) {
+          currentPagefcregl++;
+          loadMoreRecordsreglfc(clientid, nonregllist);
+      }
+    };
+    // ########### load fc in adding reglement
+
+    // load in updae reglement
+    function loadMorefcupdateregl (reglementid)  {
+        console.log('sending in update')
+        loadingupdatefcregl = true;
+        $.get(`/products/laodfcinupdateregl/?page=${currentPageupdatefcregl}&reglementid=${reglementid}`, (data)=>{
+
+        const tbody = $('.reglfcupdate tbody');
+        tbody.append(data.trs);
+
+        console.log('products loaded')
+        loadingupdatefcregl = false;
+
+
+          if (!data.has_more) {
+            $('.listupdatereglfcholder').off('scroll', scrollupdatereglfc);
+          }
+        })
+
+    };
+
+    function scrollupdatereglfc () {
+
+        const container = $('.listupdatereglfcholder')[0]; // Get the native DOM element
+
+        const lastRow = document.querySelector('.loadblinupdatereglfc:last-child');
+        let reglementid=lastRow.getAttribute('reglemntid')
+        const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+        const containerBottom = container.scrollTop + container.clientHeight;
+        console.log(containerBottom)
+        console.log(containerBottom+900 >= lastRowOffset && !loadingupdatefcregl)
+        if (containerBottom+900 >= lastRowOffset && !loadingupdatefcregl) {
+            currentPageupdatefcregl++;
+            loadMorefcupdateregl(reglementid);
+        }
+    };
+    // ###load in updae reglement
+
+
+    // load reglements
+    function loadregRecordsfc ()  {
+    loadinglistfc = true;
+    term=$('.searchinputlistreglfc').val()
+    year=$('[name="yearsreglfc"]').val()
+    $.get(`/products/laodreglfc/?page=${currentPagelistreglfc}&term=${term}&year=${year}`, (data)=>{
+
+      const tbody = $('.reglfctable tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadinglistfc = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.reglfctableholder').off('scroll', handleScrollinreglfc);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrollinreglfc () {
+      console.log('scroll')
+      const container = $('.reglfctableholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.reglfc-row:last-child');
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+      const containerBottom = container.scrollTop + container.clientHeight;
+      console.log(containerBottom+900, lastRowOffset, containerBottom+900 >= lastRowOffset)
+      if (containerBottom+900 >= lastRowOffset && !loadinglistfc) {
+          currentPagelistreglfc++;
+          loadregRecordsfc();
+      }
+    };
+
+    // Attach the scroll event listener
+    $('.reglfctableholder').on('scroll', handleScrollinreglfc)
+
+
+
+    $('.searchinputlistaddreglfc').on("change", function() {
+        var filterValue = $(this).val().toLowerCase();
+
+
+        if (filterValue.length > 1){
+            $.get('/products/searchclientfcs', {'term':filterValue.trim(), 'clientid':$('[name="addreglementclientsfc"]').val()}, (data)=>{
+                console.log('eee')
+                $('.reglementclientfcholder').html(data.trs)
+            })
+
+        }
+    });
+
+
+    $('.searchinputlistreglfcupdate').on("change", function() {
+        var filterValue = $(this).val().toLowerCase();
+
+
+        if (filterValue.length > 1){
+            $('.reglfcupdate tbody').find('.loadblinupdatereglfc').remove()
+            $.get('/products/searchclientfcsupdatereg', {'term':filterValue.trim(), 'clientid':$('.searchinputlistreglfcupdate').attr('clientid')}, (data)=>{
+                $('.reglfcupdate tbody').append(data.trs)
+            })
+        }
+    });
+
+    var today = new Date();
+
+    // Get the current date in the "yyyy-mm-dd" format
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+    var dd = String(today.getDate()).padStart(2, '0');
+
+    // Format the date as "yyyy-mm-dd"
+    var currentDate = yyyy + '-' + mm + '-' + dd;
+    $('.echeancereglfc').val(currentDate)
+    function filternonreglrfc(){
+        currentPagefcregl=1
+        loadingfcregl = false;
+        $('.listaddreglfcholder').on('scroll', handleScrollreglfc)
+        let clientid=$('[name="addreglementclientsfc"]').val()
+        console.log(clientid)
+        $.get(
+            'products/filternonreglrfc',
+            {clientid:clientid},
+            (data)=>{
+                $('.reglementclientfcholder').html(data.trs)
+                $('.totalfactures').text(data.total)
+            }
+        )
+    }
+
+    $('.searchinputlistreglfc').on("change", function() {
+        // Get the values from all filter input fields
+        var filterValue = $(this).val().toLowerCase();
+
+        let year=$('[name="yearsreglfc"]').val()
+        $.get('/products/searchreglfc', {'term':filterValue.trim(), year:year}, (data)=>{
+            $('.reglfctableholder').on('scroll', handleScrollinreglfc);
+            loadinglistfc = false;
+            currentPagelistreglfc=1
+            $('.reglfctable tbody').html(data.trs)
+            $('.totalreglfc').text(data.total)
+        })
+        // if (filterValue.length > 1){
+
+        // }
+    });
+
+
+    $('.filterreglfcdate').on('click', function(){
+
+        let parentdiv= $(this).parent().parent().parent()
+        startdate=parentdiv.find('.startdate').val()
+        enddate=parentdiv.find('.enddate').val()
+        if (startdate=='' || enddate==''){
+        alertify.error('Date')
+        return
+        }
+        $.get('/products/filterreglfcdate', {startdate:startdate, enddate:enddate},(data)=>{
+        console.log(data)
+        parentdiv.find('tbody').html(data.html)
+        parentdiv.find('.totalreglfc').text(data.total)
+        }).fail(()=>{
+            alertify.error('No result')
+        })
+    })
+
+
+    function submitupdatereglementfc(){
+        // $('.loadingscreen').removeClass('d-none')
+
+        $('.updatereglementfc').removeClass('d-none')
+        // get reglement data
+        date=$('.updatereglementfc').find('[name="date"]').val()
+        reglementid=$('.updatereglementfc').find('[name="reglementid"]').val()
+        mantant=$('.updatereglementfc').find('[name="mantant"]').val()
+        tbody=$('.updatereglementfc').find('.reglementclientbonholder')
+        npiece=$('.updatereglementfc').find('[name="npiece"]').val()
+        mode=$('.updatereglementfc').find('[name="mode"]').val()
+        echeance=$('.updatereglementfc').find('[name="echeance"]').val()
+        if ((mode=='cheque'||mode=='effet')&&echeance=="{{today|date:'Y-m-d'}}"){
+            necheance=parseInt($('.echeanceindex').text())
+            $('.echeanceindex').text(necheance+1)
+        }
+        var isAnyEmpty = $('.updatereglementfc').find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+        if (isAnyEmpty){
+            let emptyInputs = $('.updatereglementfc').find('input.notempty').filter(function() {
+                return !this.value.trim();
+            });
+
+            // Add a red border to all empty input elements
+            alertify.error('Veuillez remplir tous les champs obligatoires')
+            emptyInputs.css('border', '1px solid red');
+            $('.updatereglementfc').find('input.notempty').not(emptyInputs).css('border', '');
+            $(this).attr('disabled', false)
+            return
+        }
+        $('.updatereglementfc').find('input.notempty').css('border', '1px solid green')
+        // if ((selectedValues = $('.updatereglementfc').find("input[name='facturestopay']:checked").map(function() {
+        //     return this.value;
+        // }).get()).length == 0){
+        //     alertify.error('Veuillez selectionner au moins un bon')
+        //     return
+        // }
+        selectedValues = $('.updatereglementfc').find("input[name='facturestopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        console.log(reglementid, date, mantant, npiece, mode, echeance, selectedValues)
+        $.post('/products/updatereglefactures', {
+            reglementid:reglementid,
+            mantant:mantant,
+            mode:mode,
+            npiece:npiece,
+            echeance:echeance,
+            date:date,
+            bons:JSON.stringify(selectedValues),
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                //forceupdatetab('addlistreglementfc', '/products/listreglementfc')
+                $('.updatereglementfc').addClass('d-none')
+                alertify.success('Reglement modifié')
+        })
+    // end submitupdatereg function
+    }
+
+
+    function updatereglementfc(reglementid){
+        console.log($(this))
+        $('.listupdatereglfcholder').on('scroll', scrollupdatereglfc);
+        loadingupdatefcregl=false
+        currentPageupdatefcregl=1
+        $('.loadingscreen').removeClass('d-none')
+        $('.updatereglementfc').removeClass('d-none')
+        $('.deletereglfcbtn').attr('reglfcid', reglementid)
+        // get reglement data
+        date=$('.updatereglementfc').find('[name="date"]')
+        regid=$('.updatereglementfc').find('[name="reglementid"]')
+        regid.val(reglementid)
+
+        mantant=$('.updatereglementfc').find('[name="mantant"]')
+        client=$('.updatereglementfc').find('.client')
+        tbody=$('.updatereglementfc').find('tbody')
+        npiece=$('.updatereglementfc').find('[name="npiece"]')
+        mode=$('.updatereglementfc').find('[name="mode"]')
+        echeance=$('.updatereglementfc').find('[name="echeance"]')
+
+        tbody.html('')
+        console.log(date, mantant)
+        // get regl data
+        $.get('products/getreglementfc/'+reglementid, {
+
+            }, function(data){
+                $('.searchinputlistreglfcupdate').attr('clientid', data.clientid)
+                $('.totalblinupdatereglfc').text(data.total)
+                $('.soldblinupdatereglfc').text(data.soldclientfc)
+                $('.loadingscreen').addClass('d-none')
+                date.val(data.date)
+                mantant.val(data.mantant)
+
+                client.text(data.client)
+                npiece.val(data.npiece)
+                mode.val(data.mode)
+                echeance.val(data.echance)
+                if (data.mode == "espece"){
+                    echeance.removeClass('notempty')
+                    npiece.removeClass('notempty')
+                }
+                for (let i of data.bons){
+                    const date = new Date(i.date);
+
+                    // Create formatted date string in the desired format "d/m/Y"
+                    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    tbody.append(`
+                    <tr style="background:#ddfaed"><td>${formattedDate}</td><td>${i.facture_no}</td><td>${i.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</td><td class="text-danger">${i.rest}</td> <td><input type="checkbox" value="${i.id}" name="facturestopay" onchange="checkreglementbox(event)" checked></td></tr>
+                    `)
+                }
+                tbody.append(data.livraisons.replace(/\B(?=(\d{3})+(?!\d))/g, ''))
+                // for (let i of data.livraisons){
+                //     console.log(i)
+                //     const date = new Date(i.date);
+
+                //     // Create formatted date string in the desired format "d/m/Y"
+                //     const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                //     tbody.append(`
+                //     <tr class="loadblinupdatereglfc" tt=${i.reglementsfc} reglemntid="${reglementid}"><td>${formattedDate}</td><td>${i.facture_no}</td><td>${i.total}</td><td class="text-danger">${i.rest}</td> <td><input type="checkbox" value="${i.id}" name="facturestopay" onchange="checkreglementbox(event)" ></td></tr>
+                //     `)
+                // }
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+    }
+    var dateInput = document.querySelector('.datereglementfc');
+
+// Create a new Date object for today
+    var today = new Date();
+
+    // Get the current date in the "yyyy-mm-dd" format
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+    var dd = String(today.getDate()).padStart(2, '0');
+
+    // Format the date as "yyyy-mm-dd"
+    var currentDate = yyyy + '-' + mm + '-' + dd;
+
+    // Set the value of the date input to today's date
+    dateInput.value = currentDate;
+
+
+    // on change mode
+
+
+    // client change
+    $('[name="addreglementclientsfc"]').on('change', function(){
+        currentPagefcregl=1
+        loadingfcregl = false;
+        $('.listaddreglfcholder').on('scroll', handleScrollreglfc);
+        if ($(this).val()==""){
+            $('.reglementfcholder').addClass('d-none')
+            // disable the divholder of the multiselects
+            // disable the button
+            $('.submitaddreglemntclientbtnfc').addClass('disabled')
+            return
+        }
+        $('.submitaddreglemntclientbtnfc').removeClass('disabled')
+        $('.reglementfcholder').removeClass('d-none')
+        clientid=$(this).val()
+        $('.loadingscreen').removeClass('d-none')
+        $.post('/products/getclientfactures', {
+            clientid:clientid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.reglementclientfcholder').html(data.trs)
+                $('.totalfactures').text((data.totalfactures).toFixed(2))
+                $('.soldfactureregl').text((data.soldfactureregl).toFixed(2))
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+        // enable the divholder of the multiselects
+        // get client bons
+        //populate bons multiselect
+        // get client facture
+        // populate facture multiselect
+    })
+
+    // check for npiece existence
+    // $('.npiecereglementclient').on('change', function(){
+    //     npiece=$(this).val()
+    //     console.log('check npiece', npiece)
+    //     $.get('/products/checknpiece', {
+    //         npiece:npiece,
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //         }, function(data){
+    //             console.log(data)
+    //             if (data.exist){
+    //                 alertify.error('N° piece existe deja')
+    //                 $('.submitaddreglemntclientbtnfc').addClass('disabled')
+    //             }else{
+    //                 $('.submitaddreglemntclientbtnfc').removeClass('disabled')
+    //             }
+    //         })
+    // })
+
+
+    $('.submitaddreglemntclientbtnfc').on('click', function(event){
+        event.preventDefault()
+        let parentdiv=$(this).parent().parent()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+        if (isAnyEmpty){
+            let emptyInputs = parentdiv.find('input.notempty').filter(function() {
+                return !this.value.trim();
+            });
+
+            // Add a red border to all empty input elements
+            alertify.error('Veuillez remplir tous les champs obligatoires')
+            emptyInputs.css('border', '1px solid red');
+            parentdiv.find('input.notempty').not(emptyInputs).css('border', '');
+            $(this).attr('disabled', false)
+            return
+        }
+        if ((selectedValues = parentdiv.find("input[name='facturestopay']:checked").map(function() {
+            return this.value;
+        }).get()).length == 0){
+            alertify.error('Veuillez selectionner au moins une facture')
+            return
+        }
+        $(this).addClass('disabled')
+        clientid=parentdiv.find('[name="addreglementclientsfc"]').val()
+        mantant=parentdiv.find('[name="mantantreglementclientfc"]').map(function() {
+            return parseFloat(this.value);
+        }).get();
+        mode=parentdiv.find('[name="modereglementclient"]').map(function() {
+            return this.value;
+        }).get();
+        npiece=parentdiv.find('[name="npiece"]').map(function() {
+            return this.value;
+        }).get();
+
+        date=parentdiv.find('[name="datereglementclientfc"]').val()
+
+        bons=parentdiv.find('[name="addreglementbons"]').map(function() {
+            return this.value;
+        }).get();
+        echeance=parentdiv.find('[name="echeance"]').map(function() {
+            return this.value;
+        }).get();
+
+        console.log(clientid)
+        $.post('/products/reglefactures', {
+            clientid:clientid,
+            mantant:JSON.stringify(mantant),
+            mode:JSON.stringify(mode),
+            npiece:JSON.stringify(npiece),
+            echeance:JSON.stringify(echeance),
+            date:date,
+            bons:JSON.stringify(selectedValues),
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                forceupdatetab('addlistreglementfc', '/products/listreglementfc')
+                alertify.success('Reglement ajouté')
+        })
+    })
+
+</script>

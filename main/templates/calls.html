@@ -1,0 +1,20 @@
+{% for i in products %}
+    <tr>
+      <td>
+         {{i.ref}}
+      </td>
+      <td>{{i.name}} - {{ i.ref }}{% if i.brand %} - {{i.brand}} - {% endif %} {% if i.model %} {{i.model}} - {% endif %} {% if i.mark %} {{i.mark.upper}} {% endif %} </td>
+      <td>{{i.price}}</td>
+      <td>{% if i.offre %} {{i.offre}} {% else %} - {% endif %}</td>
+      <td>{% if i.min %} {{i.min}} {% else %} - {% endif %}</td>
+      <td>
+         <div class="cart-table__quantity input-number"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+         <button class="btn btn-primary cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.price}}" pdctid="{{i.id}}">Cmnd</button>
+      </td>
+   </tr>
+   {% empty %}
+   <tr>
+      <td>No products found</td>
+   </tr>
+
+{% endfor %}

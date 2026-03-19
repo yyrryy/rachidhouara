@@ -1,0 +1,966 @@
+<style>
+    [data-tooltip] {
+        position: relative;
+        letter-spacing: 0.1rem;
+    }
+
+[data-tooltip]::before,
+[data-tooltip]::after {
+    --tooltip-color: #333;
+    --arrow-size: .5rem;
+    --scale: 0;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, var(--translate-y)) scale(var(--scale));
+    transition: transform 100ms;
+    transition-timing-function: linear;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+    --scale: 1;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.45, 1.93);
+}
+
+[data-tooltip]::before {
+    --translate-y: calc(-100% - var(--arrow-size));
+    content: attr(data-tooltip);
+    background-color: var(--tooltip-color);
+    color: white;
+    padding: .5em;
+    border-radius: .3em;
+    width: fit-content;
+    text-align: center;
+    transform-origin: bottom center;
+}
+
+[data-tooltip]::after {
+    --translate-y: calc(-1 * var(--arrow-size));
+    content: '';
+    border: var(--arrow-size) solid transparent;
+    border-top-color: var(--tooltip-color);
+    transform-origin: top center;
+}
+</style>
+
+
+
+<div class="card">
+
+    <div class="border p-2 position-relative updatereglementsupp position-fixed shadow rounded d-none" style="z-index: 999;overflow: scroll; height: 805vh;background: rgb(255, 255, 255); width: 85%;">
+        <button onclick="$(this).parent().addClass('d-none')">X</button>
+        
+        <div class="row reglebldata">
+
+            
+
+        </div>
+    </div>
+
+    <div class="border p-2 position-relative">
+        <div class="accordion" id="accordionreglsupp">
+            <div class="">
+
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsereglsupp" aria-expanded="true" aria-controls="collapsereglsupp">
+                    + Ajouter un Reglement Fournisseur
+                </button>
+
+              <div id="collapsereglsupp" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglsupp">
+                <div class="card-body border shadow rounded">
+                    <div class="row">
+
+                        
+                        <div class="col-3">
+                            <div class="">
+                                <small>Du:</small> <br>
+                                <input type="date" name="datereglementclientbl" class="w-100 notempty datestart mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
+                                
+                            </div>
+                            <div class="">
+                                <small>Au:</small> <br>
+                                <input type="date" name="dateend" class="w-100 notempty mb-2 dateend" value="{{today|date:'Y-m-d'}}">
+                            </div>
+                            <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+                            <select onchange="getbons()" name="addreglementsupp" id="" class="select2 form-select addreglementsupp suppslect2" style="width:100%;">
+
+                            </select>
+                            
+                            <select name="" id="" class="mode mt-2 form-control" onchange="getbons()">
+                                <option value="bl">bl</option>
+                                <option value="facture">facture</option>
+                            </select>
+                            <button class="btn btn-success w-100" onclick="getbons()">Situation</button>
+                            <!-- <div class="">
+                                <small>Date:</small> <br>
+                                <input type="date" value="{{today|date:'Y-m-d'}}" name="datereglementsupp" class="w-100 notempty datereglementsupp mb-2">
+                            </div><br> -->
+                            <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectsupp(event)">↻</button> -->
+                            
+                            <!-- <select name="" id="" class="mode form-control mt-2">
+                                <option value="bl">bl</option>
+                                <option value="facture">facture</option>
+                            </select> -->
+                        </div>
+
+                        <div class="reglementbonsachatholder d-none col-9 border position-relative">
+
+                            <div class="inputsholder">
+                                <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglementsupp(event)">+</button>
+                                <strong class="totalreglsupp">0.00</strong>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="me-2">
+                                        <small>Mantant:</small> <br>
+
+                                    </div>
+                                    <div class="me-2">
+                                        <small>N° piece:</small> <br>
+
+                                    </div>
+                                    <div class="me-2">
+                                        <small>Mode Paiment:</small> <br>
+
+                                    </div>
+                                    <div class="me-2">
+                                      <small>Echeance:</small> <br>
+
+                                    </div>
+                                    <div class="me-2">
+                                        <small>Bank:</small> <br>
+                                    </div>
+                                </div>
+                                <div class="reglements">
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                  
+                                      <div class="me-2">
+                                          <input type="number" name="mantantreglementsupp" oninput="totalreglementsupp(event)" class="w-100 notempty" placeholder="Mantant">
+                                      </div>
+                                      <div class="me-2">
+                                          <input type="text" name="npiecereglementsupp" class="w-100 notempty" placeholder="N° piece">
+                                      </div>
+                                      <div class="me-2">
+                                          <select name="modereglementsupp" class="w-100 notempty" onchange="checkmodereglementsupp(event)">
+                                              <option value="cheque">Cheque</option>
+                                              <option value="effet">effet</option>
+                                              <option value="espece">espece</option>
+                                              <option value="verement">verement</option>
+                                              <option value="versement">versement</option>
+                                          </select>
+                                      </div>
+                                      <div class="me-2">
+                                          <input type="date" value="{{today|date:'Y-m-d'}}" name="echeancereglementsupp" class="w-100 notempty">
+                                      </div>
+                                      <div class="me-2">
+                                        <input type="text" name="bank" class="w-100" placeholder="Nom du bank">
+                                    </div>
+                                    <div class="me-2">
+                                        <select name="source">
+                                            <option value="">Source</option>
+                                            <option value="societe">Societe</option>
+                                            <option value="client">client</option>
+                                            <option value="personel">personel</option>
+                                        </select>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+
+
+
+                            
+                            <!-- <div class="mb-2">
+                                <small>Facture</small>
+                                <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                </select>
+                            </div>
+
+                            <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                            </select> -->
+
+                        </div>
+                        <!-- <small>Bons: <strong class="totalcheckedsupp">0.00</strong></small> -->
+                        <div class="row">
+                            <div class="col-4">
+                                <small>Bons: <strong class="totalbons">0.00</strong></small>
+                                <div class="mb-2 mt-2" style="max-height: 160px; overflow-y: scroll;">
+                                    <table class="table table-bordered table-hover" style="font-size: 12px;">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    Date
+                                                </td>
+                                                <td>
+                                                    N° Bon
+                                                </td>
+                                                <!-- <td>
+                                                    Client
+                                                </td> -->
+                                                <td>
+                                                    total
+                                                </td>
+                                                <td>
+                                                    Rest
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="reglementsuppbonholder bonstable">
+                                        </tbody>
+
+                                    </table>
+                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                    </select> -->
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <small>Avoirs: <strong class="totalavoirs">0.00</strong></small>
+                                <div class="mb-2 mt-2" style="max-height: 160px; overflow-y: scroll;">
+                                    <table class="table table-bordered table-hover" style="font-size: 12px;">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    Date
+                                                </td>
+                                                <td>
+                                                    N° Bon
+                                                </td>
+                                                <td>
+                                                    total
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="reglementsuppbonholder avoirstable">
+                                        </tbody>
+
+                                    </table>
+                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                    </select> -->
+                                </div>
+                            </div>
+
+
+                            <div class="col-4">
+                                <small>Avances: <strong class="totalavances">0.00</strong></small>
+                                <div class="mb-2 mt-2" style="max-height: 160px; overflow-y: scroll;">
+                                    <table class="table table-bordered table-hover" style="font-size: 12px;">
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    Date
+                                                </td>
+                                                <td>
+                                                    Mantant
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="reglementsuppbonholder avancestable">
+                                        </tbody>
+
+                                    </table>
+                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                                    </select> -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            Mantant a payé <strong class="whattopay">0.00</strong>DH
+                        </div>
+                        <div>
+                            Date de reglement <input type="date" value="{{today|date:'Y-m-d'}}" class="datereglement mb-2">
+                        </div>
+                        <button class="btn text-white w-100 submitaddreglemntsuppbtn disabled" style="background: #00538c;">
+                            Valider
+                        </button>
+                        <div class="mt-3">
+                            {% csrf_token %}
+
+
+                        </div>
+
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+    </div>
+
+    
+    <div class="row">
+        <div class="col-8 p-2">
+            <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                <select name="yearsreglbl" hidden class="populateyears disabled" hidden onchange="yeardatareglbl()" style="background: #eaeaea;
+                    margin: 0 6px 10px;
+                    width: 5em;
+                    border-radius: 10px;">
+
+
+                    </select>
+            <!-- <div class="me-2">
+                Du <br>
+                <input type="date" value="{{today|date:'Y-m-d'}}" name="" id="" class="startdate">
+            </div> -->
+            <!-- <div>
+                Au <br>
+                <input type="date" value="{{today|date:'Y-m-d'}}" name="" id="" class="enddate">
+            </div>
+            <button class="btn btn-sm bg-dark text-white filterreglsuppdate">Filtrer</button> -->
+
+                </div>
+                <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglsupp">
+
+            </div>
+            <div style="height: 70vh; overflow-y: scroll;" >
+            <table class="table table-bordered reglsupptable" style="font-size: 12px;">
+                <thead style="position: static; top: 0; background: gray;">
+                    <th>
+                        Series
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        N°
+                    </th>
+                    <th>
+                        Mantant
+                    </th>
+                    <th>
+                        Date saisie
+                    </th>
+                    <th>
+                        Fournisseur
+                    </th>
+        
+                    <th>
+                        Echeance
+                    </th>
+                    <th>
+                        N° Bons
+                    </th>
+                </thead>
+                <tbody>
+                    {% for i in reglements %}
+                    <tr>
+                            <td>
+                                REGLFOURN#{{i.id}}
+                            </td>
+                            <td>
+                                {{i.mode}}
+                            </td>
+                            <td>
+                                {{i.npiece}}
+                            </td>
+                            <td>
+                                {{i.amount}}
+                            </td>
+                            <td>
+                                {{i.date|date:"d/m/Y"}}
+                            </td>
+                            <td>
+                                {{i.supplier.name}}
+                            </td>
+                            <td>
+                                {{i.echeance|date:"d/m/Y"}}
+                            </td>
+                            <td class="d-flex justify-content-between">
+        
+                                <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.bons.all %}{{ bon.nbon }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                                </button> -->
+        
+                                <button class="btn btn-success btn-sm" onclick="updatereglementsupp('{{i.id}}')">✐</button>
+                                {% if not i.ispaid %}
+                                {% if i.mode == 'effet' or i.mode == 'cheque' %}
+                                    <button reglid="{{i.id}}" reglmode="{{i.mode}}" rglnpiece="{{i.npiece}}" onclick="selectregl('{{i.id}}', '{{i.mode}}', '{{i.npiece}}', '{{i.amount}}')" class="btn btn-dark bi bi-arrow-right"></button>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="bg-white p-2 border">
+              <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+                <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button> -->
+                <!-- <div>
+                  Transfer
+                </div> -->
+                <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button> -->
+              </div>
+        
+              <div>
+                date:
+                <input type="date" class="form-control mb-2 dateregl">
+                <input type="text" class="form-control mb-2 nrecu" placeholder="N° reçu">
+                <select class="form-control bank">
+                  <option value="">-- Banque--</option>
+                  {% for i in banks %}
+                  <option value="{{i.id}}">
+                    {{i.name}} ({{i.rib}})
+                  </option>
+                  {% endfor %}
+                </select>
+                <div class="mt-3 reglholder" ids="[]" style="height: 60vh; overflow: scroll;">
+        
+                </div>
+                <button class="btn bg-darkblue w-100 text-white" onclick="payreglementsupp()">Transfer</button>
+              </div>
+        
+            </div>
+        </div>
+    </div>
+    <div class="card-body row">
+        
+    </div>
+</div>
+
+
+<script>
+    function selectregl(reglid, reglmode, reglpiece, reglamount){
+    ids=JSON.parse($('.reglholder').attr('ids'))
+    if (ids.includes(reglid)){
+      alertify.error('Déja ajouté')
+      return
+    }
+    $('.reglholder').attr('ids', JSON.stringify(ids.concat(reglid)))
+    $('.reglholder').append(`
+      <div class="d-flex justify-content-between bg-darkblue text-white p-2 mb-2">
+        <div>
+          ${reglpiece} - ${reglmode} - ${reglamount}
+        </div>
+        <button class="btn bg-danger text-white" onclick="removeregl(event, ${reglid})">X</button>
+      </div>
+    `)
+    
+  }
+  function selectregl(reglid, reglmode, reglpiece, reglamount){
+    ids=JSON.parse($('.reglholder').attr('ids'))
+    if (ids.includes(reglid)){
+      alertify.error('Déja ajouté')
+      return
+    }
+    $('.reglholder').attr('ids', JSON.stringify(ids.concat(reglid)))
+    $('.reglholder').append(`
+      <div class="d-flex justify-content-between bg-darkblue text-white p-2 mb-2">
+        <div>
+          ${reglpiece} - ${reglmode} - ${reglamount}
+        </div>
+        <button class="btn bg-danger text-white" onclick="removeregl(event, ${reglid})">X</button>
+      </div>
+    `)
+    
+  }
+  function removeregl(event, reglid){
+    $(event.target).parent().remove()
+    ids=JSON.parse($('.reglholder').attr('ids'))
+    $('.reglholder').attr('ids', JSON.stringify(ids.filter(id=>id!=reglid)))
+  }
+  function payreglementfc(event, reglid) {
+    console.log(consecutiveClicksfc)
+
+      // User has clicked the element four times consecutively
+      // Add your code to run when there are four consecutive clicks here
+      alertify.confirm('Payer', 'Payer le reglement', function(){
+        $.get('/products/payreglfc', {'reglid': reglid}, (data)=>{
+          $(event.target).parent().parent().css('background', 'yellowgreen')
+          necheance=parseInt($('.echeanceindex').text())
+          if (necheance>0){
+            $('.echeanceindex').text(necheance-1)
+          }
+        })
+        // Reset the count
+
+      }
+        , function(){ alertify.error('Cancel')});
+      // Reset the count
+
+
+  }
+  // transfer
+  function payreglementsupp() {
+    nrecu=$('.nrecu').val()
+    dateregl=$('.dateregl').val()
+    bank=$('.bank').val()
+    ids=JSON.parse($('.reglholder').attr('ids'))
+    if (nrecu==''||bank==''||dateregl==''||ids.length==0){
+      alertify.error('N° reçu, Banque, reglements')
+      return
+
+    }
+    console.log(ids, nrecu, bank)
+        // User has clicked the element four times consecutively
+        // Add your code to run when there are four consecutive clicks here
+    alertify.confirm('Payer', 'Payer le reglement', function(){
+      $.get('/products/payreglsupp', {'ids': JSON.stringify(ids), 'bank':bank, 'nrecu':nrecu, 'dateregl':dateregl}, (data)=>{
+        necheance=parseInt($('.echeanceindexcl').text())
+        if (necheance>0){
+          $('.echeanceindexcl').text(necheance-1)
+        }
+        ajaxpage('add', '+ Article', '/products/listreglementsupp?target={{target}}')
+      })
+      // Reset the count
+
+    }
+      , function(){ alertify.error('Cancel')});
+
+
+  }
+    // egl single reglement
+    // function payreglementsupp(reglid){
+    //     banktarget=$('.banktarget').val()
+    //     if (banktarget==''){
+    //         alertify.error('Bank is required')
+    //         return
+    //     }
+    //     alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value', function(evt, value) { 
+    //         if (value=='ORGHAD'){
+    //             $.get('/products/payreglementsupp', {
+    //                 'reglid':reglid,
+    //                 'banktarget':banktarget,
+    //             }, (data)=>{
+    //                 if (data.success){
+    //                     updatereglementsupp(reglid)
+    //                 }
+    //             })
+            
+    //     }
+    //     }, function() { alertify.error('Cancel') });
+    // }
+    function refusedreglsupp(reglid){
+        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value', function(evt, value) { 
+            console.log('>> value', value)
+            if (value=='ORGHAD'){
+                console.log('>> sending efused')
+                $.get('/products/refusedreglsupp', {'reglid':reglid}, (data)=>{
+                    ajaxpage('add', '+ Article', '/products/listreglementsupp?target={{target}}')
+                })
+            }else{
+                alertify.error('Mot de passe')
+            }
+        }, function() { alertify.error('Cancel') });
+    }
+    populateyears()
+    function deletereglementsupplier(reglid){
+        alertify.confirm(
+            'Confirmation',
+            'Confirmer?',
+            ()=>{
+            $.get('/products/deletereglementsupplier', {
+                'reglid':reglid,
+            }, (data)=>{
+                ajaxpage('ee','ee', '/products/listreglementsupp?target={{target}}')
+                // if (data.success){
+                //     $(event.target).parent().remove()
+                // }
+            })
+            }, ()=>console.log('>>'))
+    
+    }
+    
+  function removereglrowsupp(event){
+        let parentdiv=$(event.target).parent().parent()
+        let amountinp=parentdiv.find('[name="mantantreglementsupp"]').val()
+        if (amountinp.length==0){
+            parentdiv.remove()
+        }
+    }
+  function totalreglementsupp(event){
+    let sum = 0;
+    $('input[name="mantantreglementsupp"]').map(function() {
+        const value = parseFloat($(this).val()) || 0;
+        sum += value;
+    });
+    $('.totalreglsupp').text(sum.toFixed(2))
+  }
+  function deletereglsupp(event){
+      target=$(event.target)
+      reglid=target.attr("reglid")
+      password=$('.passworddeletereglsupp').val()
+      $.get('/products/deletereglsupp', {'reglid':reglid, 'password':password}, (data)=>{
+          forceupdatetab('addlistreglementsupp', '/products/listreglementsupp')
+      })
+  }
+    $(function(){
+      $('.addreglementsupp').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchsupplier',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+function submitupdatereglementsupp(event){
+
+        // $('.loadingscreen').removeClass('d-none')
+
+        $(event.target).addClass('disabled')
+        $('.updatereglementsupp').removeClass('d-none')
+        // get reglement data
+        date=$('.updatereglementsupp').find('[name="date"]').val()
+        reglementid=$('.updatereglementsupp').find('[name="reglementid"]').val()
+
+
+        mantant=$('.updatereglementsupp').find('[name="mantant"]').val()
+        tbody=$('.updatereglementsupp').find('.reglementclientbonholder')
+        npiece=$('.updatereglementsupp').find('[name="npiece"]').val()
+        mode=$('.updatereglementsupp').find('[name="mode"]').val()
+        echeance=$('.updatereglementsupp').find('[name="echeance"]').val()
+        var isAnyEmpty = $('.updatereglementsupp').find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+        if (isAnyEmpty){
+            let emptyInputs = $('.updatereglementsupp').find('input.notempty').filter(function() {
+                return !this.value.trim();
+            });
+
+            $(event.target).removeClass('disabled')
+            // Add a red border to all empty input elements
+            alertify.error('Veuillez remplir tous les champs obligatoires')
+            emptyInputs.css('border', '1px solid red');
+            $('.updatereglementsupp').find('input.notempty').not(emptyInputs).css('border', '');
+            $(this).attr('disabled', false)
+            return
+        }
+        $(event.target).addClass('disabled')
+
+        $('.updatereglementsupp').find('input.notempty').css('border', '1px solid green')
+        // if ((selectedValues = $('.updatereglementsupp').find("input[name='bonstopay']:checked").map(function() {
+        //     return this.value;
+        // }).get()).length == 0){
+        //     alertify.error('Veuillez selectionner au moins un bon')
+        //     return
+        // }
+        selectedValues = $('.updatereglementsupp').find("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        console.log(reglementid, date, mantant, npiece, mode, echeance, selectedValues)
+        $.post('/products/updatereglesupp', {
+            reglementid:reglementid,
+            mantant:mantant,
+            mode:mode,
+            npiece:npiece,
+            echeance:echeance,
+            date:date,
+            bons:JSON.stringify(selectedValues),
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+              $('.updatereglementsupp').addClass('d-none')
+                //forceupdatetab('listreglementsupp', '/products/listreglementsupp')
+                alertify.success('Reglement modifié')
+        })
+    // end submitupdatereg function
+    }
+
+
+    function updatereglementsupp(reglementid){
+        // $('.loadingscreen').removeClass('d-none')
+        // $('.deletereglsuppbtn').attr('reglid', reglementid)
+        $('.updatereglementsupp').removeClass('d-none')
+        // // get reglement data
+        // date=$('.updatereglementsupp').find('[name="date"]')
+        // regid=$('.updatereglementsupp').find('[name="reglementid"]').val(reglementid)
+        // mantant=$('.updatereglementsupp').find('[name="mantant"]')
+        // tbody=$('.updatereglementsupp').find('tbody')
+        // npiece=$('.updatereglementsupp').find('[name="npiece"]')
+        // mode=$('.updatereglementsupp').find('[name="mode"]')
+        // echeance=$('.updatereglementsupp').find('[name="echeance"]')
+
+        // tbody.html('')
+        // console.log(date, mantant)
+        // get regl data
+        $.get('/products/getreglementsupp/'+reglementid, {
+            'target':'{{target}}'
+            }, function(data){
+                console.log(data)
+                $('.reglebldata').html(data.html)
+                // $('.submitupdatereglementsupp').removeClass('disabled')
+                // $('.totalblinupdatereglsupp').text(data.total)
+                // $('.soldblinupdatereglsupp').text(data.soldsupplier)
+                // $('.supplierinupdatereglsupp').text(data.supplier)
+                // $('.loadingscreen').addClass('d-none')
+                // date.val(data.date)
+                // mantant.val((data.mantant).toFixed(2))
+                // npiece.val(data.npiece)
+                // mode.val(data.mode)
+                // echeance.val(data.echance)
+                // if (data.mode == "espece"){
+                //     echeance.removeClass('notempty')
+                //     npiece.removeClass('notempty')
+                // }
+                // for (let i of data.bons){
+                //     const date = new Date(i.date);
+
+                //     // Create formatted date string in the desired format "d/m/Y"
+                //     const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                //     tbody.append(`
+                //     <tr style="background:#ddfaed"><td>${formattedDate}</td><td>${i.nbon}</td><td>${i.total}</td><td class="text-danger">${i.ispaid?'R0':'N1'}</td> <td><input type="checkbox" value="${i.id}" name="bonstopay" onchange="checkreglementbox(event)" checked></td></tr>
+                //     `)
+                // }
+                // for (let i of data.livraisons){
+                //     const date = new Date(i.date);
+
+                //     // Create formatted date string in the desired format "d/m/Y"
+                //     const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                //     tbody.append(`
+                //     <tr><td>${formattedDate}</td><td>${i.nbon}</td><td>${i.total}</td><td class="text-danger">${i.rest}</td> <td><input type="checkbox" value="${i.id}" name="bonstopay" onchange="checkreglementbox(event)" ></td></tr>
+                //     `)
+                // }
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+    }
+
+    $('.searchinputlistreglsupp').on("change", function() {
+    // Get the values from all filter input fields
+        var filterValue = $(this).val().toLowerCase();
+
+
+        if (filterValue.length > 1){
+          year=$('[name="yearsreglbl"]').val()
+            //$('.reglbltableholder').on('scroll', handleScrollinregl);
+            currentPagereglbl=1
+            loadingreglbl = false;
+            $.get('/products/searchreglsupp', {'term':filterValue.trim(), 'year':year, 'target':'{{target}}'}, (data)=>{
+                console.log('eee')
+                $('.reglsupptable tbody').html(data.trs)
+                //$('.totalreglbl').text(data.total)
+
+            })
+        }
+    });
+
+
+    $('.filterreglsuppdate').on('click', function(){
+
+        let parentdiv= $(this).parent().parent().parent()
+        startdate=parentdiv.find('.startdate').val()
+        enddate=parentdiv.find('.enddate').val()
+        if (startdate=='' || enddate==''){
+        alertify.error('Date')
+        return
+        }
+        $.get('/products/filterreglsuppdate', {startdate:startdate, enddate:enddate},(data)=>{
+        console.log(data)
+        parentdiv.find('tbody').html(data.html)
+        parentdiv.find('.totalbbonachat').text(data.total)
+        })
+    })
+    // $('.select2').select2()
+    var dateInput = document.querySelector('.datereglementsupp');
+
+// Create a new Date object for today
+    var today = new Date();
+
+    // Get the current date in the "yyyy-mm-dd" format
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+    var dd = String(today.getDate()).padStart(2, '0');
+
+    // Format the date as "yyyy-mm-dd"
+    var currentDate = yyyy + '-' + mm + '-' + dd;
+
+    // Set the value of the date input to today's date
+    //dateInput.value = currentDate;
+
+
+    // on change mode
+    // $('[name="modereglementsupp"]').on('change', function(){
+    //     if ($(this).val()=="cheque" || $(this).val()=="effet"){
+    //         // echeance n piece will be required
+    //         $('[name="npiecereglementsupp"]').addClass('notempty')
+    //         $('[name="datereglementsupp"]').addClass('notempty')
+    //     }else{
+    //         $('[name="npiecereglementsupp"]').removeClass('notempty')
+    //         $('[name="datereglementsupp"]').removeClass('notempty')
+    //     }
+    // })
+
+    // client change
+    function getbons(){
+        supplierid=$('[name="addreglementsupp"]').val()
+        mode=$('.mode').val()
+        datestart=$('.datestart').val()
+        dateend=$('.dateend').val()
+        if (supplierid==null || datestart=="" || dateend==""){
+            alertify.error('Champs vide')
+            $('.reglementbonsachatholder').addClass('d-none')
+            // disable the divholder of the multiselects
+            // disable the button
+            $('.submitaddreglemntsuppbtn').addClass('disabled')
+            return
+        }
+        $('.submitaddreglemntsuppbtn').removeClass('disabled')
+        $('.reglementbonsachatholder').removeClass('d-none')
+        
+        $('.loadingscreen').removeClass('d-none')
+        $.post('/products/getsuppbons', {
+            'target':'{{target}}',
+            supplierid:supplierid,
+            mode:mode,
+            datestart:datestart,
+            dateend:dateend,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.bonstable').html(data.bons)
+                $('.avoirstable').html(data.avoirs)
+                $('.avancestable').html(data.avances)
+                $('.totalbons').text(data.totalbons)
+                $('.totalavoirs').text(data.totalavoirs)
+                $('.totalavances').text(data.totalavances)
+                // $('.select2').select2()
+            // populate bons multiselect
+        })
+        // enable the divholder of the multiselects
+        // get client bons
+        //populate bons multiselect
+        // get client facture
+        // populate facture multiselect
+    }
+
+    // check for npiece existence
+    // $('[name="npiecereglementsupp"]').on('input', function(){
+    //     npiece=$(this).val()
+    //     console.log('check npiece', npiece)
+    //     $.post('/products/checknpiece', {
+    //         npiece:npiece,
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //         }, function(data){
+    //             console.log(data)
+    //             if (data.exist){
+    //                 alertify.error('N° piece existe deja')
+    //                 //$('[name="npiecereglementsupp"]').val('')
+    //             }
+    //         })
+    // })
+
+
+    $('.submitaddreglemntsuppbtn').on('click', function(event){
+        event.preventDefault()
+        date=$('.datereglement').val()
+        if (date==''){
+            alertify.error('Date')
+            return
+        }
+        let parentdiv=$(this).parent().parent()
+        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+        if (isAnyEmpty){
+            let emptyInputs = parentdiv.find('input.notempty').filter(function() {
+                return !this.value.trim();
+            });
+
+            // Add a red border to all empty input elements
+            alertify.error('Veuillez remplir tous les champs obligatoires')
+            emptyInputs.css('border', '1px solid red');
+            parentdiv.find('input.notempty').not(emptyInputs).css('border', '');
+            $(this).attr('disabled', false)
+            return
+        }
+        //used to return if no bon is selected
+        // if ((selectedValues = parentdiv.find("input[name='bonsachattopay']:checked").map(function() {
+        //     return this.value;
+        // }).get()).length == 0){
+        //     alertify.error('Veuillez selectionner au moins un bon')
+        //     return
+        // }
+
+        whattopay=parseFloat($('.whattopay').text())
+        totalregl=parseFloat($('.totalreglsupp').text())
+        if (whattopay<=0){
+            alertify.error('Selectionner bon')
+            return
+        }
+        if (whattopay!=totalregl){
+            alertify.error('Mantant a payé doit etre egal au payment')
+            return
+        }
+        $(this).addClass('disabled')
+        supplierid=parentdiv.find('[name="addreglementsupp"]').val()
+        mantant=parentdiv.find('[name="mantantreglementsupp"]').map(function() {
+            return parseFloat(this.value);
+        }).get();
+        mode=parentdiv.find('[name="modereglementsupp"]').map(function() {
+            return this.value;
+        }).get();
+        npiece=parentdiv.find('[name="npiecereglementsupp"]').map(function() {
+            return this.value;
+        }).get();
+        echeance=parentdiv.find('[name="echeancereglementsupp"]').map(function() {
+            return this.value;
+        }).get();
+        source=parentdiv.find('[name="source"]').map(function() {
+            return this.value;
+        }).get();
+        bank=parentdiv.find('[name="bank"]').map(function() {
+            return this.value;
+        }).get();
+        //date=parentdiv.find('[name="datereglementsupp"]').val()
+
+        bons=parentdiv.find('[name="addreglementbons"]').map(function() {
+            return this.value;
+        }).get();
+        
+        selectedValues=parentdiv.find("input[name='bonstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        selectedavoirs=parentdiv.find("input[name='avoirstopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        selectedavances=parentdiv.find("input[name='avancestopay']:checked").map(function() {
+            return this.value;
+        }).get()
+        
+        console.log(supplierid, date, mantant, mode, npiece, echeance, selectedValues, selectedavances, selectedavoirs)
+        $.post('/products/reglebonsachat', {
+            // bl or facture
+            whattopay:whattopay,
+            moderegl:$('.mode').val(),
+            supplierid:supplierid,
+            mantant:JSON.stringify(mantant),
+            mode:JSON.stringify(mode),
+            npiece:JSON.stringify(npiece),
+            echeance:JSON.stringify(echeance),
+            source:JSON.stringify(source),
+            bank:JSON.stringify(bank),
+            date:date,
+            bons:JSON.stringify(selectedValues),
+            avoirs:JSON.stringify(selectedavoirs),
+            avances:JSON.stringify(selectedavances),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            'target':'{{target}}'
+            }, function(data){
+                ajaxpage('addlistreglementsupp', 'list reglemnts', '/products/listreglementsupp?target={{target}}')
+                alertify.success('Reglement ajouté')
+            })
+    
+    })
+
+</script>

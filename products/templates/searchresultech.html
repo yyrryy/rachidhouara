@@ -1,0 +1,56 @@
+
+{% for month, items in grouped_data %}
+    <strong>{% if month %}{{ month }}{% else %} -- {% endif %}</strong>
+    <table>
+        {% for i in items %}
+        <tr code="{{ i.id }}">
+          <td>
+              <input onclick="onetotal(event, '{{i.id}}')" type="checkbox" class="checkboxgroup" id={{i.id}}>
+          </td>
+          <td>
+              <input onclick="movetodate(event, '{{i.id}}')" type="checkbox" class="checkboxmovetodate" id={{i.id}}>
+          </td>
+          <td style="width:5%;">
+              <input value="{% if i.npiece %}{{ i.npiece }}{% endif %}" onchange="getnpiecedata(event)"="getnpiecedata(event)" class="npieceinput" style="width:7em;">
+          </td>
+          <td class="mode">{{ i.mode }}</td>
+          <td class="echeance">{{ i.echeance }}</td>
+          <td class="client">{{ i.client }}</td>
+          <td>
+              <input onchange="calculatetva(event)" value="{% if i.amount %}{{ i.amount|floatformat:2 }}{% endif %}" class="amount" style="width:7em; {% if i.ispaid %}background:skyblue;{% endif %}">
+          </td>
+          <td class="tva">{{ i.tva }}</td>
+          <td>
+              <input value="{% if i.note %}{{ i.note }}{% endif %}" class="nomde w-100">
+          </td>
+          <td>
+              <input {% if i.ispaid %}checked{% endif %} type="checkbox" class="regle" onclick="makethisregle(event, id)">
+          </td>
+          <td {% if i.isimpye %}class="bg-danger"{% endif %}>
+              <input {% if i.isimpye %}checked{% endif %} type="checkbox" class="impye" onclick="makethisimpye(event, id)">
+          </td>
+          <td>
+              <input {% if i.ispointage %}checked{% endif %} type="checkbox" class="pointage" onclick="makethipointage(event, id)">
+          </td>
+          <td class="codeclient" style="{% if i.ispointage %}background:skyblue;{% endif %}">{{ i.clientcode }}</td>
+          <td class="d-flex justify-content-between">
+              <input style="font-size:16px; background:{% if i.iscontable %}yellow{% elif i.isempty %}yellowgreen;{% endif %}" value="{% if i.factures %}{{ i.factures }}{% endif %}" class="factures w-100 {% if i.iscontable %}bg-warning{% endif %}" isempty='{{ i.isempty }}'>
+              {% if not i.isprinted %}<button class="btn btn-sm bi bi-download" onclick="makethisprint(event, '{{i.id}}')"></button>{% endif %}
+
+          </td>
+          <td>
+          <input {% if i.iscontable %}checked{% endif %} type="checkbox" class="comptable" onclick="makethicomptacle(event, '{{i.id}}')">
+          </td>
+          <td>
+            {% if i.grandtotal %}
+            <strong>
+              {{ i.grandtotal }}
+            </strong>
+            {% endif %}
+          </td>
+          <!-- <td onclick="deleterow(event, '{{i.id}}')" class="bg-danger">
+          </td> -->
+        </tr>
+        {% endfor %}
+    </table>
+{% endfor %}

@@ -1,0 +1,323 @@
+{% load global_tags%}
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addCommandestab')">x</button>
+  <div>
+    {{title}}
+  </div>
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addCommandestab', 'products/listboncommnd')">↻</button>
+</div>
+<div class="bg-white shadow rounded">
+    <div class="d-flex justify-content-between">
+      <div class="d-flex">
+        <div class="me-2">
+          <!-- <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}"> -->
+          <input type="date" name="" id="" class="startdate" >
+        </div>
+        <div>
+          <input type="date" name="" id="" class="enddate">
+          <!-- <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}"> -->
+        </div>
+        <div>
+          <button class="btn btn-sm bg-dark text-white filterboncommnddate">Filtrer</button>
+        </div>
+
+      </div>
+      <div class="d-flex">
+        <button class="btn btn-info" onclick="getreliquatcommande(event)">Reliquat</button>
+        <button class="btn btn-danger" onclick="getnongenerer(event)">Non generer</button>
+        <div class="d-flex">
+          <div class="me-2">
+            <!-- <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}"> -->
+            <input type="date" name="" id="" class="reliquatstartdate" >
+          </div>
+          <div>
+            <input type="date" name="" id="" class="reliquatenddate">
+            <!-- <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}"> -->
+          </div>
+          <button class="bi bi-bell btn btn-secondary btn-icon" onclick="alertreliquatcommande(event)">
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="d-flex justify-content-between">
+        <input  type="text" name="" id="" placeholder="Recherche" class="searchinputlistboncommnd col-6">
+      <select name="yearsbc" hidden class="populateyears disabled" hidden onchange="yeardatabc()">
+
+
+      </select>
+    </div>
+
+  <div class="d-flex justify-content-between fixed-bottom p-2 bg-white">
+
+
+  </div>
+
+  <div style="height: 70vh; overflow-y: scroll;" class="listbcholder">
+
+    <table class="table table-bordered table-hover table-striped table-borded tablecommande listbctable" style="font-size: 12px;">
+      <thead style="position: sticky; top: 0; background: rgb(193, 193, 193);">
+        <tr>
+          <th>N° bon</th>
+          <th>Date</th>
+          <th>Client</th>
+          <th>Code client</th>
+          <th>Total</th>
+          <th>Region</th>
+          <th>Ville</th>
+          <th>Solde cl.</th>
+          <th>Repr</th>
+          <th>Source</th>
+          <th>BL</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody class="listbcbody">
+        {% for order in bons %}
+          <tr class="orderrow {% if 'Reliquat' in order.note and not order.isdelivered %} bg-warning  {% elif not order.isdelivered  %} text-danger {%endif%}"  orderid="{{order.code}}" ondblclick="ajaxpage('command{{order.id}}', 'Commande {{order.order_no}}', '/products/boncommandedetails/{{order.id}}')" {% if 'Reliquat' in order.note %} style="color: blue"{% endif %}>
+            <td>{{ order.order_no }}</td>
+            <td>{{ order.date|dateadd}}</td>
+            <td>{{ order.client.name }}</td>
+            <td>{{ order.client.code }}</td>
+            <td>{{ order.total|floatformat:2|intspace}}</td>
+            <td>{{ order.client.region }}</td>
+            <td>{{ order.client.city }}</td>
+            <td>{{ order.client.soldbl|floatformat:2|intspace}}</td>
+            <td>{{ order.salseman }}</td>
+            <td>
+            {% if order.isclientcommnd %}
+              Non
+              {% else %}
+              Oui
+            {% endif %}
+            </td>
+            <td>
+              {% if order.isdelivered%} R1 {% else %} R0 {% endif %}
+            </td>
+            <td>
+              {{order.note}}
+            </td>
+
+          </tr>
+        {% endfor %}
+      </tbody>
+      <thead style="position: sticky; bottom: 0; background: white;">
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th style="background: yellowgreen;" class="totalbc" onclick="$('.hidebctotal').toggleClass('fade')">
+            <span class="fade hidebctotal">
+              {{total|floatformat:2|intspace}}
+            </span>
+          </th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // popukate years starting from 2024
+    console.log('>> populating years')
+    const $select = $('.populateyears');
+    const currentYear = new Date().getFullYear();
+    const startYear = 2025;
+    console.log('startYear, currentYear', startYear, currentYear)
+
+    for (let year = startYear; year <= currentYear; year++) {
+        $select.prepend($('<option>', {
+            value: year,
+            text: year
+        }));
+    }
+    $select.val(currentYear);
+  })
+  function alertreliquatcommande(event){
+    if ($('.reliquatstartdate').val()=="" || $('.reliquatenddate').val()==""){
+      alertify.error('Date reliquat')
+      return
+    }
+    $(event.target).toggleClass('btn-loading')
+    $.get('/products/alertreliquatcommande',{
+      'startdate':$('.reliquatstartdate').val(),
+      'enddate':$('.reliquatenddate').val()
+    }, (data)=>{
+
+      $('.listbctable tbody').html(data.trs)
+      $(event.target).toggleClass('btn-loading')
+    })
+  }
+  function getnongenerer(event){
+    $(event.target).toggleClass('btn-loading')
+
+    $.get('/products/getnongenerer', (data)=>{
+      $('.listbctable tbody').html(data.trs)
+      $('.totalbc').text(data.total)
+      $(event.target).toggleClass('btn-loading')
+
+    })
+  }
+  function getreliquatcommande(event){
+    $(event.target).toggleClass('btn-loading')
+
+    $.get('/products/getreliquatcommande', (data)=>{
+      $('.listbctable tbody').html(data.trs)
+      $('.totalbc').text(data.total)
+      $(event.target).toggleClass('btn-loading')
+
+    })
+  }
+  function loadMoreRecordslistbc (year, startdate, enddate, term)  {
+    loadinglistbc = true;
+    $.get(`/products/loadlistbc/?page=${currentPagelistbc}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
+
+      const tbody = $('.listbctable tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadinglistbc = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listbcholder').off('scroll', handleScrolllistbc);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+  function handleScrolllistbc () {
+      console.log('scroll')
+      const container = $('.listbcholder')[0]; // Get the native DOM element
+      const lastRow = document.querySelector('.orderrow:last-child');
+      let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+      let startdate=lastRow.getAttribute('startdate')?lastRow.getAttribute('startdate'):0
+      let enddate=lastRow.getAttribute('enddate')?lastRow.getAttribute('enddate'):0
+      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
+      const containerBottom = container.scrollTop + container.clientHeight;
+      console.log(containerBottom+900, lastRowOffset, containerBottom+900 >= lastRowOffset)
+      if (containerBottom+900 >= lastRowOffset && !loadinglistbc) {
+          currentPagelistbc++;
+          loadMoreRecordslistbc(year, startdate, enddate, term);
+      }
+    };
+
+  function yeardatabc(){
+    let year=$('select[name="yearsbc"]').val()
+    if (year==''){return}
+    currentPagelistbc=1
+    loadinglistbc = false;
+    $('.listbcholder').on('scroll', handleScrolllistbc);
+    $.get('/products/yeardatabc', {year:year}, (data)=>{
+      $('.listbctable tbody').html(data.trs)
+      $('.totalbc').text(data.total)
+    })
+  }
+
+    // Attach the scroll event listener
+  $('.listbcholder').on('scroll', handleScrolllistbc)
+
+
+
+  $('.filterboncommnddate').on('click', function(){
+    currentPagelistbc=1
+    loadinglistbc = false;
+    $('.listbcholder').on('scroll', handleScrolllistbc);
+    let parentdiv= $(this).parent().parent()
+    startdate=parentdiv.find('.startdate').val()
+    enddate=parentdiv.find('.enddate').val()
+    if (startdate=='' || enddate==''){
+      alertify.error('Date')
+      return
+    }
+    $.get('/products/filterbcdate', {startdate:startdate, enddate:enddate},(data)=>{
+      console.log(data)
+      $('.listbcbody').html(data.bons)
+      $('.totalbc').text(data.total)
+    })
+  })
+  $('.searchinputlistboncommnd').on("change", function() {
+    $('.listbcholder').on('scroll', handleScrolllistbc);
+    currentPagelistbc=1
+    loadinglistbc = false;
+    // Get the values from all filter input fields
+    var filterValue = $(this).val().toLowerCase();
+    console.log(filterValue)
+    if (filterValue==""){
+      //forceupdatetab('addlistbonlivraison', '/products/listbonlivraison')
+      return
+
+    }
+    else{
+      // Split the filter value into individual terms based on the '&' sign
+      // var filterTerms = filterValue.split('+').map(function(term) {
+      //     return term.trim();
+      // });
+      let year=$('select[name="yearsbc"]').val()
+      let startdate=$('.startdate').val()==""?0:$('.startdate').val()
+      let enddate=$('.enddate').val()==""?0:$('.enddate').val()
+      $.get('/products/searchforlistbc', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year}, (data)=>{
+        console.log('eee')
+        $(".listbcbody").html('')
+        $(".listbcbody").html(data.trs)
+        $('.totalbc').text(data.total)
+        });
+
+    }
+
+
+    // Iterate through the table rows
+    // total=0
+    // $('.listbltable tbody tr:visible').each(function(){
+    //   total+=parseFloat($(this).find('td:nth-child(5)').text())
+    // })
+    // $('.totalbons').text(total)
+  })
+
+  // $('.searchinputlistboncommnd').on("keyup", function() {
+  //   // Get the values from all filter input fields
+  //   var filterValue = $(this).val().toLowerCase();
+  //
+  //   // Split the filter value into individual terms based on the '&' sign
+  //   var filterTerms = filterValue.split('+').map(function(term) {
+  //       return term.trim();
+  //   });
+  //
+  //   // Iterate through the table rows
+  //   $(".listbctable tbody tr").each(function() {
+  //       var rowText = $(this).text().toLowerCase();
+  //       var showRow = true;
+  //
+  //       // Check if all filter terms are present in the row text
+  //       $.each(filterTerms, function(index, term) {
+  //           if (term !== '' && rowText.indexOf(term) === -1) {
+  //               showRow = false;
+  //               return false; // Exit the loop early if a mismatch is found
+  //           }
+  //       });
+  //
+  //       // Toggle the visibility of the row based on the filter criteria
+  //       $(this).toggle(showRow);
+  //   });
+  //   total=0
+  //   $('.listbctable tbody tr:visible').each(function(){
+  //     total+=parseFloat($(this).find('td:nth-child(5)').text())
+  //   })
+  //   $('.totalbc').text(total.toFixed(2))
+  // });
+
+</script>

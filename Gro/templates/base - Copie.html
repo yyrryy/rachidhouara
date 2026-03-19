@@ -1,0 +1,1174 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <meta content="telephone=no" name="format-detection" />
+    <!-- favicon -->
+    <link href="{% static 'images/favicon.png'%}" rel="icon" />
+    {% block meta %}
+    {% endblock %}
+    {% if title %}
+    <title>{{title}} - IBRA</title>
+    {% else %}
+    <title>Catalogue</title>
+    {% endif %}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet" />
+    <!-- css -->
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script>
+        $.get('/getitemsincart', (data)=>{
+            $('.commanditems').text(data.length)
+        })
+    </script>
+    <link href="{% static 'css/minified.css'%}" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/datepicker.css">
+    <style> 
+     /* You may need to adjust the styles based on your specific requirements */
+  
+
+.carousel-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 600px; /* Adjust the height as needed */
+}
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+  width: 100%;
+  height: 300px; /* Adjust the height as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  border: 1px solid #ccc;
+}
+
+      .dashboard-nav-list {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-item {
+    min-height: 56px;
+    padding: 0 30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    letter-spacing: 0.02em;
+    transition: ease-out 0.5s;
+}
+
+.dashboard-nav-item i {
+    width: 36px;
+    font-size: 19px;
+    margin-left: -40px;
+}
+
+.dashboard-nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.active {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-nav-dropdown {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown.show {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle {
+    font-weight: bold;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle:after {
+    -webkit-transform: none;
+    -o-transform: none;
+    transform: none;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-menu {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.dashboard-nav-dropdown-toggle:after {
+    content: "";
+    margin-left: auto;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(81, 81, 81, 0.8);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.dashboard-nav .dashboard-nav-dropdown-toggle:after {
+    border-top-color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-nav-dropdown-menu {
+    display: none;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background: aliceblue;
+}
+
+.dashboard-nav-dropdown-item {
+    min-height: 40px;
+    padding: 8px 20px 8px 70px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    transition: ease-out 0.5s;
+}
+
+.dashboard-nav-dropdown-item:hover {
+    background: rgba(226, 226, 226, 0.873);
+}
+
+.menu-toggle {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #443ea2;
+}
+
+.menu-toggle:hover, .menu-toggle:active, .menu-toggle:focus {
+    text-decoration: none;
+    color: #875de5;
+}
+
+.menu-toggle i {
+    font-size: 20px;
+}
+
+.dashboard-toolbar {
+    min-height: 84px;
+    background-color: #dfdfdf;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 8px 27px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.nav-item-divider {
+    height: 1px;
+    margin: 1rem 0;
+    overflow: hidden;
+    background-color: rgba(236, 238, 239, 0.3);
+}
+
+@media (min-width: 992px) {
+    .dashboard-app {
+        margin-left: 238px;
+    }
+
+    .dashboard-compact .dashboard-app {
+        margin-left: 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 15px 0px;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1070;
+    }
+
+    .dashboard-nav.mobile-show {
+        display: block;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav header .menu-toggle {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboard-toolbar {
+        left: 238px;
+    }
+
+    .dashboard-compact .dashboard-toolbar {
+        left: 0;
+    }
+}
+      .closetab {
+        float: none;
+        margin-left: 10px;
+      }
+        .fixedheader{
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+        .fitscreen{
+            height: 80vh;
+            overflow-y: scroll;
+            
+
+        }
+
+        .cartholder{
+            top: 0;
+            z-index: 9999;
+            background: aliceblue;
+            box-shadow: -11px 2px 7px 0px grey;
+            width: 99%;
+            right: -500rem;
+            height: 100%;
+            transition: all .5s ease-in-out;
+        }
+        /* width */
+        ::-webkit-scrollbar {
+        width: 5px;
+        }
+
+ 
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #888; 
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+        }
+        #button {
+            display: inline-block;
+            background-color: #e82323;
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            border-radius: 8px;
+            position: fixed;
+            bottom: 136px;
+            right: 53px;
+            transition: background-color .3s, opacity .5s, visibility .5s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        #button::after {
+            content: "⬆";
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 2em;
+            line-height: 50px;
+            color: #fff;
+        }
+            #button:hover {
+            cursor: pointer;
+            background-color: #333;
+        }
+            #button:active {
+            background-color: #555;
+            }
+            #button.show {
+            opacity: 1;
+            visibility: visible;
+            }
+            </style>
+            {% block css%}
+            {% endblock %}
+</head>
+
+<body>
+
+    <!-- mobile header -->
+    
+    <!-- site -->
+    <!-- <a id="button"></a> -->
+    <div class="site">
+
+        {% if user.username %}
+        <!-- mobile site__header -->
+        {% include "mobileheader.html" %}
+        {% include "header.html" %}
+        {% endif %}
+        <!-- site__body -->
+        
+        <!-- screen loader -->
+        <div class="d-flex flex-column align-items-center justify-content-center loadingscreen position-fixed"
+        style="height: 100vh;background:#171717bc ; width: 100vw; z-index: 9999;"
+        >
+        <div class="spinner-border text-white" role="status">
+        </div>
+        </div>
+        
+        <div class="site__body mt-5">
+            <div>
+                
+                <div class="">
+                  {% if messages %}
+                  <div class="messages">
+                      {% for message in messages %}
+                      <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                          {{ message }}
+                      </div>
+                      {% endfor %}
+                  </div>
+                  {% endif %}
+                  <div class="warning-content">
+<h1>Site Under Construction</h1>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     width="100.001px" height="70px" viewBox="0 0 100 68">
+<g id="large">
+    <g>
+    <path d="M55.777,38.473l6.221-1.133c0.017-1.791-0.123-3.573-0.41-5.324l-6.321-0.19c-0.438-2.053-1.135-4.048-2.076-5.931
+        l4.82-4.094c-0.868-1.552-1.874-3.028-3.005-4.417l-5.569,2.999c-1.385-1.54-2.98-2.921-4.771-4.099l2.124-5.954
+        c-0.759-0.452-1.543-0.878-2.357-1.269c-0.811-0.39-1.625-0.732-2.449-1.046l-3.325,5.381c-2.038-0.665-4.113-1.052-6.183-1.174
+        L31.34,6.002c-1.792-0.02-3.571,0.119-5.32,0.406l-0.191,6.32c-2.056,0.439-4.051,1.137-5.936,2.08l-4.097-4.82
+        c-1.546,0.872-3.022,1.875-4.407,3.006l2.996,5.566c-1.54,1.384-2.925,2.985-4.104,4.778c-2.16-0.771-4.196-1.498-5.953-2.127
+        c-0.449,0.765-0.875,1.544-1.265,2.354c-0.39,0.811-0.733,1.63-1.049,2.457c1.587,0.981,3.424,2.119,5.377,3.325
+        c-0.662,2.037-1.049,4.117-1.172,6.186l-6.218,1.136c-0.021,1.789,0.12,3.566,0.407,5.321l6.32,0.188
+        c0.442,2.06,1.143,4.057,2.082,5.937l-4.818,4.095c0.872,1.549,1.873,3.026,3.009,4.412l5.563-2.998
+        c1.392,1.54,2.989,2.92,4.777,4.099l-2.121,5.954c0.756,0.446,1.538,0.871,2.348,1.258c0.813,0.394,1.633,0.739,2.462,1.05
+        l3.326-5.375c2.033,0.662,4.109,1.05,6.175,1.17l1.137,6.221c1.791,0.019,3.569-0.123,5.323-0.407l0.194-6.324
+        c2.053-0.438,4.045-1.136,5.927-2.079l4.093,4.817c1.55-0.865,3.026-1.87,4.414-2.999l-2.995-5.572
+        c1.537-1.385,2.914-2.98,4.093-4.772l5.953,2.127c0.448-0.761,0.878-1.545,1.268-2.356c0.388-0.808,0.729-1.631,1.047-2.458
+        l-5.378-3.324C55.268,42.615,55.655,40.542,55.777,38.473z M42.302,42.435c-3.002,6.243-10.495,8.872-16.737,5.866
+        c-6.244-2.999-8.872-10.493-5.867-16.736c3.002-6.244,10.495-8.873,16.736-5.869C42.676,28.698,45.306,36.19,42.302,42.435z"  fill="none" stroke="#E43"/>    <animateTransform 
+            attributeName="transform"
+            begin="0s"
+            dur="3s"
+            type="rotate"
+            from="0 31 37"
+            to="360 31 37"
+            repeatCount="indefinite"> 
+    </animateTransform>
+</g>
+<g id="small">
+    <path d="M93.068,19.253L99,16.31c-0.371-1.651-0.934-3.257-1.679-4.776l-6.472,1.404c-0.902-1.436-2.051-2.735-3.42-3.819
+        l2.115-6.273c-0.706-0.448-1.443-0.867-2.213-1.238c-0.774-0.371-1.559-0.685-2.351-0.958l-3.584,5.567
+        c-1.701-0.39-3.432-0.479-5.118-0.284L73.335,0c-1.652,0.367-3.256,0.931-4.776,1.672l1.404,6.47
+        c-1.439,0.899-2.744,2.047-3.835,3.419c-2.208-0.746-4.38-1.476-6.273-2.114c-0.451,0.71-0.874,1.448-1.244,2.229
+        c-0.371,0.764-0.68,1.541-0.954,2.329c1.681,1.078,3.612,2.323,5.569,3.579c-0.399,1.711-0.486,3.449-0.291,5.145
+        c-2.086,1.034-4.143,2.055-5.936,2.945c0.368,1.648,0.929,3.25,1.67,4.769c1.954-0.426,4.193-0.912,6.468-1.405
+        c0.906,1.449,2.06,2.758,3.442,3.853l-2.117,6.27c0.708,0.449,1.439,0.865,2.218,1.236c0.767,0.371,1.551,0.685,2.338,0.96
+        c1.081-1.68,2.319-3.612,3.583-5.574c1.714,0.401,3.457,0.484,5.156,0.288L82.695,42c1.651-0.371,3.252-0.931,4.773-1.676
+        c-0.425-1.952-0.912-4.194-1.404-6.473c1.439-0.902,2.744-2.057,3.835-3.436l6.273,2.11c0.444-0.7,0.856-1.43,1.225-2.197
+        c0.372-0.777,0.691-1.569,0.963-2.361l-5.568-3.586C93.181,22.677,93.269,20.939,93.068,19.253z M84.365,24.062
+        c-1.693,3.513-5.908,4.991-9.418,3.302c-3.513-1.689-4.99-5.906-3.301-9.419c1.688-3.513,5.906-4.991,9.417-3.302
+        C84.573,16.331,86.05,20.549,84.365,24.062z" fill="none" stroke="#E43"/>  
+  <animateTransform 
+            attributeName="transform"
+            begin="0s"
+            dur="2s"
+            type="rotate"
+            from="0 78 21"
+            to="-360 78 21"
+            repeatCount="indefinite" >
+    </animateTransform>
+</g>
+</svg>
+<p>
+  Encours de mise à jour
+</p>
+
+</div>
+                  
+                
+                </div>
+                <!-- cart -->
+                <!-- <div class="position-fixed cartholder">
+                    <div class="col-5 fitscreen bg-white shadow rounded px-2 w-100">
+                    <div class="sticky-top card-header text-center d-flex justify-content-between align-items-center">
+                        <button class="btn hidecommande bi bi-arrow-left"></button> 
+                        <h2>
+                            Commande
+                        </h2>
+                        <button class="btn clearcommande bi bi-trash-fill text-danger" onclick="clearcommande()">
+                        </button>
+                    </div>
+                    
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th >ref</th>
+                            <th >article</th>
+                            <th style="width: 5%;">Qty</th>
+                            <th style="width: 5%;">total</th>
+                        </tr>
+                        </thead>
+                        <tbody class="commande-table">
+                            
+                        </tbody>
+                    </table>
+                    
+                    </div>
+                    <div class=" mt-3  p-2 bg-white rpunded shadow d-flex justify-content-between align-items-center">
+                        <div>
+                            TOTAL: <span class="total">0</span>
+                        </div>
+            
+                        <div class="d-flex justify-content-between modes border p-2">
+                            <select class="form-select mb-2" aria-label="Default select example" name="modpymnt">
+                                <option selected value="0">Mode de payement</option>
+                                <option value="espece">Espece (-5%/article)</option>
+                                <option value="cheque">Cheque (delai 4 mois)</option>
+                              </select>
+                        
+                        
+                        
+                            <select class="form-select mb-2" aria-label="Default select example" name="modlvrsn">
+                                <option selected value="0">Mode de livraison</option>
+                                <option value="lux">Lux</option>
+                                <option value="sdtm">SDTM</option>
+                                <option value="ghazala">Ghazala</option>
+                                <option value="baha">Baha express</option>
+                              </select>
+                        </div>
+                        {% if user.groups.all.0.name == 'salsemen' %}
+                        <div class="col-4">
+                            <div class="d-flex justify-content-center">
+                                <select class="form-control form-control-select2 clientid" name="client" >
+                                    <option value="0">---</option>
+                                    {% for i in clients %}
+                                        <option value="{{i.id}}">{{i.name}} ({{i.address}})</option>
+                                    {% endfor %}
+                                </select>
+                                
+                                {% csrf_token %}
+                                <button class="btn btn-primary valider" disabled>
+                                Confirmer
+                                </button>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100 mt-2" data-toggle="modal" data-target="#addclientmodal">
+                                <i class="bi bi-plus"></i>Nouveau client
+                            </button>
+            
+                            <small class="text-danger d-none clienterr">
+                                Choisir un client ou ajouter un nouveau
+                            </small>
+                        </div>
+                            
+                        {% endif %}
+                        {% if user.groups.all.0.name == 'clients' %}
+                        <input type="hidden" class="clientid" value="{{user.client.id}}">
+                        <div>{{ request.user.client.name }}</div>
+                        <button class="btn btn-primary valider" disabled>confirmer</button>
+                        
+                        {% endif %}
+                        
+                    </div>
+                </div> -->
+                
+            </div>
+            
+
+            <!-- <footer class="px-3 bg-white text-muted mt-auto d-flex justify-content-between align-items-center">
+                <small>
+                    Version: 2.0.0
+                </small>
+                
+                <small>
+                   IBRA @ <span id="thisyear"></span> 
+                </small>
+
+                <small>
+                    <a href="/me">developer</a>
+                </small> 
+            </footer> -->
+            
+        </div><!-- site__body / end -->
+        <!-- site__footer -->
+        
+    </div><!-- site / end -->
+    <!-- mobile-menu -->
+    <div class="mobile-menu">
+      <div class="mobile-menu__body" style="width: 70vw;">
+        <button class="mobile-menu__close" type="button">
+          <svg width="12" height="12">
+            <path d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6
+        c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4
+        C11.2,9.8,11.2,10.4,10.8,10.8z"></path>
+          </svg>
+        </button>
+        <div class="mobile-menu__panel">
+          <div class="mobile-menu__panel-header">
+            <div class="mobile-menu__panel-title">Menu</div>
+          </div>
+          <div class="mobile-menu__panel-body bg-orange p-2">
+            {% if user.groups.all.0.name != 'admin' %}
+                <a href="#" class="account-menu__user">
+                
+                    <div class="account-menu__user-info">
+                    {{user.username.upper}}
+                    </div>
+                </a>
+                {% if user.groups.all.0.name == 'salsemen' %}
+                <select name="client" class="clientid modes clientscartselect" style="width: 100%;">
+                    <!-- <option value="0">---</option>
+                    {% for client in clients %}
+                    <option value="{{client.id}}">{{client.code}} | {{client.name}} | {{client.city}}</option>
+                    {% endfor %} -->
+                </select>
+                {% endif %}
+                <ul class="account-menu__links">
+                    <li>
+                        <a href="/client/clientshome">Acueill</a>
+                    </li>
+                    <li>
+                      {% if user.groups.all.0.name == 'clients' %}
+                      <a href="{% url 'main:clientdashboar' %}">Compte</a>
+                      {% elif user.groups.all.0.name == 'salsemen' %}
+                      <a href="{% url 'main:ordersforeach' %}">Commandes</a>
+                      <div class="card-body border mt-3">
+                        
+                        <h5 class="bg-darkblue p-2 text-white">
+                            Ajouter nouveau client
+                        </h5>
+                        <input type="text" class="form-control mb-3  notempty clientname" placeholder="Client">
+                        <input type="text" class="form-control mb-3  notempty clientcity" placeholder="Ville">
+                        <input type="text" class="form-control mb-3  notempty clientaddress" placeholder="Addresse">
+                        <input id="onlynumbers" type="tel" class="form-control mb-3  notempty clientphone" placeholder="telephone">
+                        <input id="onlynumbers" type="text" class="form-control mb-3  notempty clientice" placeholder="ICE">
+                        <button class="btn w-100 createclient bg-darkblue text-white">
+                          Creer
+                        </button>
+                    </div>
+                      {% endif %}
+                    </li>
+                    <!-- <li>
+                      <a href="{% url 'main:logoutuser' %}" class="text-danger">Logout</a>
+                    </li> -->
+                  </ul>
+            {% endif %}
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+  <div class="modal fade" id="addclientmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			<div class="accordion mb-2" id="accordionExample">
+				<div class="accordion-item">
+				  <h2 class="accordion-header" id="headingOne">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					  +Ajouter
+					</button>
+				  </h2>
+				  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<form id="addclientform">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="exampleInputEmail1">Nom ou Nom commercial</label>
+								<input name="name" type="text" required class="form-control">
+							</div>
+							
+							<div class="form-group">
+								<label for="exampleInputPassword1">Phone</label>
+								<input name="phone" type="text" required class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Ville</label>
+								<input name="city" type="text" required class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Addresse</label>
+								<input name="address" type="text" required class="form-control">
+							</div>
+							<button  class="btn btn-primary addclientbtn w-100">Submit</button>
+					  </form>
+					</div>
+				  </div>
+				</div>
+			</div>
+			
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <!-- image display modal -->
+<div class="modal fade" id="imagedisplaymodal" tabindex="-1" aria-labelledby="eimagedisplaymodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-body text-center">
+            <img src="" alt="" class="imgproductmodal" style="max-width: 100%;">
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- scripts -->
+    <script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'js/select2.min.js'%}"></script>
+    <script src="{% static 'js/number.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/alertify.min.js'%}"></script>
+    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script>
+        function cmnd(event){
+            console.log($(event.target))
+            // id=$(el).attr('pdct');
+            ref=$(event.target).attr('pdctref')
+            name=$(event.target).attr('pdctname')
+            ctg=$(event.target).attr('pdctcategory')
+            pr=$(event.target).attr('pdctpr')
+            id=$(event.target).attr('pdctid')
+            img=$(event.target).attr('pdctimg')
+            //min is remise
+            min=$(event.target).attr('pdctremise')
+            // get nearest item
+            let qty = $(event.target).parent().find('.input-number > .input-number__input').val()
+            // add new row to coommand table
+            console.log({'productid':id, 'qty':qty})
+            if (qty!=''){
+                $(event.target).attr('disabled', true)
+                $(event.target).addClass('d-none')
+                $(event.target).parent().find('.anullercmnd').removeClass('d-none')
+                //addcmnd(name, ctg, ref, qty, pr, id, img, min)
+                $.get('/addtocart', {'productid':id, 'qty':qty}, (data)=>{
+                if (!data.success){
+                    alertify.error(data.message)
+                }else{
+                    $('.commanditems').html(parseInt($('.commanditems').html())+1)
+                }
+            })
+            }
+            // update total
+        }
+        function emptycard(){
+            localStorage.removeItem('products')
+            localStorage.removeItem('productsdetails')
+            // clear table
+            $('.cart-table__body').empty()
+            //$('.prdctslist').empty()
+            $('.commanditems').text(0)
+            window.reload()
+        }
+        function validercmdinheader(){
+
+            console.log($('.clientidholder').attr('clientid'), 'from base')
+            products=JSON.parse(localStorage.getItem('productsdetails'))
+            if ($('.clientidholder').attr('clientid')==""||products==null){
+              
+              alertify.error('Veuillez remplir le champ client')
+              
+              return
+            }
+            if (confirm('Valider la commande ?')) {
+                clientid=$('.clientidholder').attr('clientid')
+                notesorder = localStorage.getItem('notesorder')
+                
+                if (products && products.length){
+                    $('.loadingscreen').removeClass('d-none').addClass('d-flex');
+                    $('.valider').prop('disabled', false)
+                    $('.fromclient').prop('disabled', false)
+                    ttt=0
+                    commande=[]
+                    for (i of products){
+                        let [ref, n, ctg, qty, pr, tt, img, remise, id]=i
+                        ttt+=parseFloat(tt)
+                        cmd=ref+':'+n+':'+qty+':'+pr+':'+id+':'+remise+':'+tt
+                        commande.push(cmd)
+                    }
+                    let cmndfromclient=$('.cmndfromclient').val()
+                    console.log(commande, ttt.toFixed(2), cmndfromclient)
+                    $.ajax({
+                        url: '/commande',
+                        type: 'POST',
+                        data: {
+                            'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+                            'commande': commande,
+                            'client':clientid,
+                            'total':ttt.toFixed(2),
+                            'notesorder':notesorder,
+                            'modpymnt':$('[name="modpymnt"]').val(),
+                            'modlvrsn':$('[name="modlvrsn"]').val(),
+                            'clientname':$('.clientname').val(),
+                            'cmndfromclient':$('.cmndfromclient').val(),
+                            'clientphone':$('.clientphone').val(),
+                            'clientaddress':$('.clientaddress').val(),
+                            'totalremise':parseFloat($('.totalremise').text())
+                        },
+
+                        success: function(data){
+                            localStorage.removeItem('selectedclientid')
+                            localStorage.removeItem('selectedclientname')
+                            $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+                            $('select').val(0)
+                            $('.modes').removeClass('border-danger')
+                            $('.cmndholder').remove()
+                            localStorage.removeItem('products')
+                            localStorage.removeItem('productsdetails')
+                            // clear table
+                            $('.cart-table__body').empty()
+                            //$('.prdctslist').empty()
+                            $('.commanditems').text(0)
+                            $('.valider').prop('disabled', true)
+                            $('.fromclient').prop('disabled', true)
+                            alertify.success('Commande envoyé')
+                            localStorage.removeItem('notesorder')
+                            $.post('products/notifyadmin', {
+                                'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()
+                            },
+                            (data)=>{
+                                console.log('notify admin')
+                            })
+                            // go to thank you 
+                            // if representant
+                            if (cmndfromclient=='true'){
+
+                                window.location.href='/clientdashboar'
+                            }
+                            else{
+
+                                window.location.href='/ordersforeach'
+                            }
+                            // if client
+
+                            // window.location.href='/catalogpage'
+                        },
+                        error:(err)=>{
+                            $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+
+                            alertify.alert('ERROR', 'ERROR')
+                        }
+                    })
+                
+                }
+            }
+        }
+        $('.clientid').on('change', function(){
+                // get the text inside the option selected
+                let text=$(this).find('option:selected').text()
+                
+                // save the value and text to localstorage
+                localStorage.setItem('selectedclientid', $(this).val())
+                localStorage.setItem('selectedclientname', text)
+                var data = {
+                    id: $(this).val(),
+                    text: text
+                };
+                $('.clientidholder').attr('clientid', data.id).text(data.text)
+                
+        })
+        $('.createclient').each((i, el)=>{
+            
+            $(el).on('click', ()=>{
+                console.log($(el).parent().find('.notempty'))
+                var isAnyEmpty = $(el).parent().find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+                if (isAnyEmpty){
+                    let emptyInputs = $(el).parent().find('input.notempty').filter(function() {
+                    return !this.valuel();
+                    });
+                    
+                    // Add a red border to all empty input elements
+                    emptyInputs.css('border', '1px solid red');
+                    $(el).parent().find('input.notempty').not(emptyInputs).css('border', '');
+                    
+                }
+                else{
+                    $(el).addClass('disabled')
+                    $.ajax({
+                    type: "POST",
+                    url: "/addclient",
+                    data: {
+                        'name':$(el).parent().find('.clientname').val(),
+                        'phone':$(el).parent().find('.clientphone').val(),
+                        'address':$(el).parent().find('.clientaddress').val(),
+                        'city':$(el).parent().find('.clientcity').val(),
+                        'ice':$(el).parent().find('.clientice').val(),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (data) {
+                        
+    
+                        // $('.clientid').html(data.options)
+                        $(el).parent().find('input.notempty').val('')
+                        $('#collapseOne').collapse('hide')
+                    }
+                    });
+                }
+            })
+        })
+        // detect USER interacting by mouse move or click
+        // get the ducument title
+        documentTitle= document.title
+        // send ajax request to server to make user connected
+
+        // $(document).mousemove(function() {
+        //     $.get('/makeuserconnected', {'activity':document.title}, (data)=>{
+        //         console.log(data)
+        //     })
+        // });
+
+        $(window).on('click', (e)=>{
+            if (e.target.className=='imagedisplaybtn'){
+                console.log($(e.target))
+                img=$(e.target).attr('src')
+                $('.imgproductmodal').attr('src', img)
+            }
+        })
+        // update cart count on load
+        //products=JSON.parse(localStorage.getItem('products')) || 0
+        //$('.commanditems').text(products.length)
+
+      // window.addEventListener("beforeunload", function (e) {
+      // var confirmationMessage = "Are you sure you want to leave this page?";
+
+      // // Display the confirmation message
+      // e.returnValue = confirmationMessage;
+      // return confirmationMessage;
+    // });
+      const populatefields=(id)=>{
+          $.ajax({
+              url: "{% url 'products:getsupplierdata' %}",
+              type: "post",
+              data: {
+                  'id':id,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function (data) {
+                  console.log(data);
+                  $('input[name="pname"]').val(data.name);
+                  $('input[name="pphone"]').val(data.phone);
+                  $('input[name="paddress"]').val(data.address);
+                  $('input[name="pid"]').val(data.id);
+              },
+              error: function (data) {
+                  console.log(data);
+              }
+          });
+      }
+
+      const addcarsinput = (e)=>{
+        e.preventDefault();
+        $('.carsholder').append('<div class="d-flex mb-3"><input type="text" class="form-control" name="cars"><button class="btn btn-danger" onclick="deletecarinput(event)">-</button></div>');
+    }
+      const deletecarinput = (e)=>{
+        e.preventDefault();
+        var input = $(e.target).parent().find('input');
+        if (input.val().length > 0){
+            input.css('border', '1px solid red');
+        }
+        else{
+            $(e.target).parent().remove();
+        }
+    }
+      
+      $(".dashboard-nav-dropdown-toggle").click(function () {
+        $(this).closest(".dashboard-nav-dropdown")
+            .toggleClass("show")
+            .find(".dashboard-nav-dropdown")
+            .removeClass("show");
+        $(this).parent()
+            .siblings()
+            .removeClass("show");
+    });
+      $('.select2').select2();
+      $('tab-link').click(function(e) {
+          e.preventDefault();
+
+          // Get link data attributes
+          var target = $(this).data('target');
+          var title = $(this).text();
+          var url = $(this).attr('url');
+
+          // Create tab link with close button
+          var tabLink = $('<a class="nav-link" data-toggle="tab" href="#' + target + '">' + title + '<button type="button" class="btn btn-sm close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a>');
+
+          // Append tab link to tabs list
+          var tabListItem = $('<li class="nav-item"></li>').append(tabLink);
+          $('#myTabs').append(tabListItem);
+
+          // Load content
+          var tabContent = $('<div class="tab-pane fade" id="' + target + '">Loading...</div>');
+          $('#myTabsContent').append(tabContent);
+          console.log(url)
+          $.get(url, (data) => {
+              console.log(data);
+              $(`#${target}`).html(data)
+          })
+
+          // Show the newly created tab
+          tabLink.tab('show');
+          // Handle tab close button
+          tabLink.find('.close').click(function() {
+              tabListItem.remove();
+              tabContent.remove();
+          });
+      });
+      
+      $(".searchtableinput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".tablesearch tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  
+        const loadtotal=()=>{
+            products=JSON.parse(localStorage.getItem('productsdetails'))
+            $('.loadingcartitems').addClass('d-none')
+            if (products && products.length){
+                $('.valider').prop('disabled', false)
+                $('.fromclient').prop('disabled', false)
+                ttt=0
+                for (i of products){
+                    let tt=i[5]
+                    ttt+=parseFloat(tt)
+        
+                    
+                }
+                $('.ttt').text(ttt.toFixed(2))
+                return
+            }
+        }
+        loadtotal()
+
+        var btn = $('#button');
+
+        $(window).scroll(function() {
+        if ($(window).scrollTop() > 300) {
+            btn.addClass('show');
+        } else {
+            btn.removeClass('show');
+        }
+        });
+
+        btn.on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({scrollTop:0}, '300');
+        });
+        
+        const loading=()=>{
+		    $('.loadingscreen').removeClass('d-none').addClass('d-flex');
+        }
+
+    const stoploading=()=>{
+        $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+    }
+    function searchproductspc(event){
+        form=$('.hiddenformpc')
+        forminput=form.find('input')
+        ref=$('.searchpc').val()
+        forminput.val(ref)
+        console.log('clicked', ref)
+        form.submit()
+        // if (ref!=''){
+        //     loading()
+        //     $.ajax({
+        //         url: '/searchref',
+        //         type: 'POST',
+        //         data: {
+        //             'ref': ref,
+        //             'csrfmiddlewaretoken': '{{ csrf_token }}'
+        //         },
+        //         success: function (data) {
+        //             stoploading()
+        //             if (data){
+        //                 $('.searchref').focus()
+        //                 $('.searchresults').html(data.data)
+        //             }
+        //         }
+        //     });
+        // }
+    }
+
+    function searchproductsphone(event){
+        event.preventDefault()
+        ref=$(event.target).parent().find('.searchphone').val()
+        console.log('>>>>', ref)
+        if (ref!=''){
+            loading()
+            $.get('/searchrefphone', {'ref': ref.toLowerCase()}, (data)=>{
+                stoploading()
+                if (data){
+                    $('.searchref').focus()
+                    $('.searchresults').html(data.data)
+                }
+            }) 
+        }
+    }
+
+    function searchproducts(event){
+        // prevent default
+        event.preventDefault()
+        ref=$('.searchpc').val()
+        console.log('>>>>', ref)
+        if (ref!=''){
+            loading()
+            $.get('/searchrefphone', {'ref': ref}, (data)=>{
+                stoploading()
+                if (data){
+                    $('.searchref').focus()
+                    $('.searchresults').html(data.data)
+                }
+            })
+        }
+        
+    }
+    
+        $('#thisyear').text(new Date().getFullYear())
+          
+    products=JSON.parse(localStorage.getItem('products'))
+    if (products && products.length){
+        $('.commanditems').text(products.length)
+    }
+    // document ready
+    $(document).ready(function () {
+        // asign the value of the selected client to seletct2
+        var selectedClientId = localStorage.getItem('selectedclientid');
+        var selectedClientname = localStorage.getItem('selectedclientname');
+        if (selectedClientId !== null && selectedClientId !== undefined) {
+            var data = {
+                id: selectedClientId,
+                text: selectedClientname
+            };
+            var newOption = new Option(data.text, data.id, false, false);
+            $('.clientid').append(newOption).trigger('change');
+            $('.clientidholder').attr('clientid', data.id).text(data.text)
+
+        }
+        // $('.clientid').select2().val(selectedClientId).trigger('change');
+        // }
+
+        // if (selectedClientname !== null && selectedClientname !== undefined) {
+        // $('.clientid').select2().tetxt(selectedClientname).trigger('change');
+        // }
+        // // asign the value of the selected client to seletct2
+        // $('.clientid').select2().text(localStorage.getItem('selectedclientname')).trigger('change')
+        
+        $('.loadingscreen').addClass('d-none')
+        $.get('/makeuserconnected', {'activity':document.title}, (data)=>{
+            console.log('ready',data)
+        })
+        $('.clientscartselect').select2({
+            placeholder: 'Selectionner un client',
+            minimumInputLength: 1,
+            ajax: {
+                type:'get',
+                dataType: 'json',
+                url: '/products/searchclient',
+                data: function (params) {
+                var query = {
+                    term: params.term,
+                }
+                // Query parameters will be ?search=[term]&type=public
+                return query;
+                },
+                proccessresults: function (data) {
+                    return {
+                    results:data.results
+                    }
+                },
+                cache:true
+            }
+        });
+        
+    })
+    </script>
+    {% block js %}
+    
+    {% endblock %}
+</body>
+
+
+<!-- modals -->
+</html>

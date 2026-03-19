@@ -1,0 +1,29 @@
+{% load global_tags %}
+{% for order in bons %}
+          <tr class="{%if loadmore%}orderrow{%endif%} {% if 'Reliquat' in order.note and not order.isdelivered %} bg-warning {% elif not order.isdelivered  %} text-danger {%endif%}"  orderid="{{order.code}}"
+          startdate="{{startdate}}" enddate="{{enddate}}" term="{{term}}" year="{{year}}" ondblclick="ajaxpage('command{{order.id}}', 'Commande {{order.order_no}}', '/products/boncommandedetails/{{order.id}}')" {% if 'Reliquat' in order.note %} style="color: blue"{% endif %}>
+            <td>{{ order.order_no }}</td>
+            <td>{{ order.date|date:'d/m/Y' }}</td>
+            <td>{{ order.client.name }}</td>
+            <td>{{ order.client.code }}</td>
+            <td>{{ order.total|floatformat:2|intspace}}</td>
+            <td>{{ order.client.region }}</td>
+            <td>{{ order.client.city }}</td>
+            <td>{{ order.client.soldbl|floatformat:2|intspace}}</td>
+            <td>{{ order.salseman }}</td>
+            <td>
+            {% if order.isclientcommnd %}
+              Non
+              {% else %}
+              Oui
+            {% endif %}
+            </td>
+            <td>
+              {% if order.isdelivered%} R1 {% else %} R0 {% endif %}
+            </td>
+            <td>
+              {{order.note}}
+            </td>
+
+          </tr>
+        {% endfor %}

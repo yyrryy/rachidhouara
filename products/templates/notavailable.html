@@ -1,0 +1,153 @@
+<div class="row" >
+ 
+  <div class="d-flex justify-content-between">
+        
+    <button class="btn p-0 bi bi-arrow-left" onclick="(expendproducts())"></button>
+    <input style="width:25em;height: 1.7em;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistproducts rounded">
+  
+
+  <div class="d-flex justify-content-between" style="width: 12em;">
+    <button class="btn btn-danger btn-sm" style="height: 15px;" onclick="showdeactivated()"></button>
+    <button class="btn btn-info btn-sm" style="height: 15px;" onclick="$('.productstable tbody span.stockfacture').toggleClass('invisible')"></button>
+    <button class="btn bi bi-download text-white" onclick="$('.exportpdctsholder').css('top', '10vh')" 
+    style="width: 2.7em;
+    background: #df691a;
+    height: 21px;
+    border-radius: 11px;"></button>
+  </div>
+  <button class="btn btn-sm bi bi-plus btn-success" onclick="ajaxpage('add', '+ Article', '/products/addproductspage')"></button>
+  <div class="d-flex" >
+    <input type="file" class="form-control excelfile">
+    <button class="btn-success btn-sm" onclick="excelnotav(event)" style="
+      height: 36px;
+    ">Excel</button>
+
+  </div>
+</div>
+
+<div class="" style="height: 74vh; overflow: scroll;">
+  
+        <table class="table table-bordered table-advance table-hover  item-table" style="font-size: 12px;" id="">
+            <thead class="bg-darkblue text-white" style="position: sticky;top: 0;">
+              <tr class="text-center">
+                <td style="width: 9%"  onclick="sorttable(event)">Ref</td>
+                <td style="width:30%;"  onclick="sorttable(event)">Designation</td>
+                <td  onclick="intsorttable(event)">Prix achat</td>
+                <td  onclick="intsorttable(event)">Prix vente</td>
+                <td  onclick="intsorttable(event)">Remise</td>
+                <td  onclick="intsorttable(event)">Prix net</td>
+                <td  onclick="sorttable(event)">Stock</td>
+                <td class="text-center"  onclick="sorttable(event)">Q</td>
+                <td  onclick="sorttable(event)">Diametre</td>
+                <td class=""  onclick="sorttable(event)">block</td>
+                <td  onclick="sorttable(event)">Code</td>
+                <td  onclick="sorttable(event)">Ref 1</td>
+                <td  onclick="sorttable(event)">Ref 2</td>
+                <td  onclick="sorttable(event)">Ref 3</td>
+                <td  onclick="sorttable(event)">Marque</td>
+                <td  onclick="sorttable(event)">order</td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody class="product-table-body">
+              
+              {% for i in products %}
+                <!-- 
+                -->
+                <tr>
+                    <td style="padding: 5px; font-weight: bold;" class="pe-2">
+                        {{i.ref.upper}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.name}}
+                    </td>
+                    
+                    <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
+                       {% if i.buyprice %} {{i.buyprice|floatformat:2}} {% else %} 0 {% endif %}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center">
+                       {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold; font-size: 14px; color: var(--orange);" class="text-center">
+                        {{i.remise}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center">
+                        {{i.prixnet|floatformat:2}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
+                        {{i.stocktotal}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center stockfacture" style="color: blue;">
+                      <span class="stockfacture invisible">
+                        {{i.stockfacture}}
+                      </span>
+                  </td>
+                    
+                    <td style="padding: 5px; font-weight: bold;">
+                      {{i.diametre}}
+                  </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-success">
+                      {{i.block}}
+                  </td>
+                  <td style="padding: 5px; font-weight: bold;">
+                    {{i.coderef}}
+                  </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.0}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.1}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.2}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                      {{i.mark.name}}
+                  </td>
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                    {{i.code}}
+                </td>
+                <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                  <span class="percentage invisible">
+                    {{i.getpercentage|floatformat:2}}
+                  </span>
+                </td>
+                </tr>
+              {% endfor %}
+
+
+            </tbody>
+            
+        </table>
+</div>
+<script>
+    function excelnotav(event){
+      let parentdiv=$(event.target).parent().parent()
+      excelfile=parentdiv.find('.excelfile')
+      // send excel file data in a ajax request
+      let formData = new FormData();
+
+      // Append the Excel file to the FormData object
+      formData.append('excelFile', excelfile[0].files[0]);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      $.ajax({
+          url: '/products/excelnotav', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            // Handle the success response from the server
+            $('.loadingscreen').addClass('d-none')
+            alertify.success('File uploaded successfully')
+            updatetab('notavatab', '/products/notavailable')
+            
+          },
+          error: function(xhr, status, error) {
+            $('.loadingscreen').addClass('d-none')
+            // Handle errors if the AJAX request fails
+            alertify.error('Error uploading file');
+          }
+        });
+   }
+</script>

@@ -1,0 +1,196 @@
+{% load global_tags %}
+<style>
+	.status {
+    position: relative;
+  display: inline-block;
+  margin: 10px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin: 10px;
+}
+.status.disponible, .status.disponible:before {
+  background: #10b11d;
+}
+.status.indisponible, .status.indisponible:before {
+  background: #ff4242;
+}
+.status.soon, .status.soon:before {
+  background: orange
+}
+
+</style>
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('carttab')">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('carttab', '/products/cartpage')">↻</button>
+  </div>
+<div class="row">
+	<div class="col-4">
+		<div style="max-height: 30vh;overflow: scroll;">
+			<table class="table table-bordered">
+				<thead class="bg-darkblue text-white">
+					<tr>
+						<td>User</td>
+						<td>Total</td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in carts %}
+					<tr onclick="getcartdetail('{{i.user.id}}', event)">
+						<td>{{i.user.client.name}} {{i.user.represent.name}}</td>
+						<td>{{i.total}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+
+			</table>
+		</div>
+		<input class="form-control searchpanier" type="search" placeholder="Chercher panier">
+		<div style="max-height: 56vh;overflow: scroll;">
+			<table class="table table-bordered">
+				<thead class="bg-darkblue text-white sticky-top">
+					<tr>
+						<td>User (Server)</td>
+						<td>Total</td>
+					</tr>
+				</thead>
+				<tbody class="paniertablebody">
+					{% for i in cartsserver %}
+					{% if i.2 > 0 %}
+					<tr onclick="getcartdetailserver('{{i.0}}', event)">
+						<td>{{i.3}}</td>
+						<td>{{i.2|floatformat:2|intspace}}</td>
+					</tr>
+					{% endif %}
+					{% endfor %}
+				</tbody>
+
+			</table>
+		</div>
+	</div>
+	<div class="col-8">
+		<div class="bg-white border rounded p-2" style="max-height: 78vh;overflow: scroll;">
+			<table class="table table-bordered">
+				<thead class="bg-darkblue text-white">
+					<tr>
+						<th>Image</th>
+						<th>Article</th>
+						<th>Prix</th>
+						<th>Remise</th>
+						<th>Quantité</th>
+					</tr>
+				</thead>
+				<tbody class="cartitemsholder">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+	$('.searchpanier').on("keyup", function() {
+    // Get the values from all filter input fields
+        var filterValue = $(this).val().toLowerCase();
+
+        // Split the filter value into individual terms based on the '&' sign
+        var filterTerms = filterValue.split('+').map(function(term) {
+            return term.trim();
+        });
+
+        // Iterate through the table rows
+        $(".paniertablebody tr").each(function() {
+            var rowText = $(this).text().toLowerCase();
+            var showRow = true;
+
+            // Check if all filter terms are present in the row text
+            $.each(filterTerms, function(index, term) {
+                if (term !== '' && rowText.indexOf(term) === -1) {
+                    showRow = false;
+                    return false; // Exit the loop early if a mismatch is found
+                }
+            });
+
+            // Toggle the visibility of the row based on the filter criteria
+            $(this).toggle(showRow);
+        });
+    });
+	function getcartdetail(userid){
+		$('.cartitemsholder').addClass('blurred')
+		$(event.target).parent().parent().parent().parent().find('tr').removeClass('bg-success text-white')
+		$(event.target).parent().addClass('bg-success text-white')
+		$.get('/getitemsincart', {'userid': userid}, (data)=>{
+
+						$('.cartitemsholder').html('')
+            console.log(data)
+            for (i of data.items){
+          $('.cartitemsholder').append(`
+
+            <tr>
+
+            <td class="">
+              <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
+            </td>
+            <td class="">
+              ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
+            </td>
+            <td class="" data-title="Price">
+            <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
+            </td>
+            <td>${i.remise}%</td>
+            <td class="qtyholder d-flex align-items-center" data-title="Quantity">
+              <div>${i.qty}</div>
+              <div class="status ${i.status}"></div>
+            </td>
+
+
+
+            </tr>
+            `)
+        }
+		$('.loadingscreen').addClass('d-none')
+		$('.cartitemsholder').removeClass('blurred')
+
+        })
+	}
+	function getcartdetailserver(userid){
+		$(event.target).parent().parent().parent().find('tr').removeClass('bg-success text-white')
+		$('.cartitemsholder').addClass('blurred')
+		$(event.target).parent().addClass('bg-success text-white')
+		$.get('/products/getusercart', {'userid': userid}, (data)=>{
+						$('.cartitemsholder').html('')
+            console.log(data)
+            for (i of data.items){
+          $('.cartitemsholder').append(`
+
+            <tr>
+
+            <td class="">
+              <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
+            </td>
+            <td class="">
+              ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
+            </td>
+            <td class="" data-title="Price">
+            <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
+            </td>
+            <td>${i.remise}%</td>
+            <td class="qtyholder d-flex align-items-center" data-title="Quantity">
+              <div>${i.qty}</div>
+              <div class="status ${i.status}"></div>
+            </td>
+
+
+
+            </tr>
+            `)
+        }
+		$('.loadingscreen').addClass('d-none')
+		$('.cartitemsholder').removeClass('blurred')
+
+
+        })
+	}
+</script>

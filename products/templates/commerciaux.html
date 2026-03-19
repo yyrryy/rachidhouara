@@ -1,0 +1,168 @@
+
+
+<!-- addsupplier modal -->
+<div class="modal fade" id="updaterepmodal" tabindex="-1" aria-labelledby="updaterepmodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white">
+
+            <div class="modal-body">
+                <form class="form-horizontal add-ledger-form" id="updatecommercialform" method="post" autocomplete="off">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <input type="text" name="updaterepname" class="form-control mb-2" placeholder="Nom">
+                        <input type="number" name="updaterepphone" class="form-control mb-2" placeholder="phone">
+                        <input type="number" name="updaterepphone2" class="form-control mb-2" placeholder="phone2">
+                        <input type="text" name="updaterepregion" class="form-control mb-2" placeholder="Region">
+                            <br>
+                            <input type="hidden" name="updaterepid">
+
+                            <br>
+
+                            <br>
+                            <button class="w-100 btn btn-primary updatecommercialbtn">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="w-100 btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('replist')">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('replist', '/products/commercialspage')">↻</button>
+  </div>
+<div class="card">
+
+    <div class="card-body row">
+      <div class="col-4">
+        <div class="border-end p-2">
+            <strong>
+                + Ajouter un Commercial
+            </strong>
+            <form action="{% url 'products:addclient' %}" class="mt-3" method="post" id="addrepform">
+                {% csrf_token %}
+                <input type="text" name="repname" class="form-control mb-2" placeholder="Nom">
+                <input type="number" name="repphone" class="form-control mb-2" placeholder="phone">
+                <input type="number" name="repphone2" class="form-control mb-2" placeholder="phone2">
+                <input type="text" name="repregion" class="form-control mb-2" placeholder="Region">
+                <hr>
+                <input type="text" name="repusername" class="form-control mb-2 checkusername" placeholder="Username">
+                <input type="text" name="reppassword" class="form-control mb-2" placeholder="Password">
+                <button type="submit" class="btn btn-outline-success w-100 submitaddrepbtn">
+                    Envoyer
+                </button>
+            </form>
+        </div>
+      </div>
+      <div class="col-8">
+        <table class="table table-bordered">
+            <thead style="background: #2b3e50; color: white;">
+                <th></th>
+                <th>
+                    Nom
+                </th>
+                <th>
+                    phone
+                </th>
+                <th>
+                    Region
+                </th>
+            </thead>
+            <tbody>
+                {% for i in commercials %}
+                <tr>
+                    <td>
+                        <button style="background: orange;" class="btn editsuppbtn border" id="{{i.id}}" data-toggle="modal" data-target="#updaterepmodal" onclick="populatecommercialfields({{i.id}})">
+                            ✐ {{i.id}}
+                        </button>
+                    </td>
+                    <td onclick="ajaxpage('addrep{{i.id}}', 'Representant {{i.name}}', '/products/onereppage/{{i.id}}')">{{i.name}}</td>
+                    <td>{{i.phone}}</td>
+                    <td>{{i.region}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
+
+<script>
+    //onclick="ajaxpage('supp{{i.id}}', 'Cleint: {{i.name}}', '/products/supplier/{{i.id}}')"
+    function checkusername(username){
+        $.post('{% url "products:checkusername" %}', {username: username}, function(data){
+            if (data.exist){
+                $('.checkusername').css('border', '1px solid red')
+            }
+            else{
+                $('.checkusername').css('border', '1px solid green')
+            }
+        })
+    }
+    $('.updatecommercialbtn').on('click', function(event){
+        event.preventDefault()
+        if ($('[name="updaterepname"]').val()==""){
+            $('[name="updaterepname"]').css('border', '1px solid red')
+            return
+        }
+        $('#updaterepmodal').modal('hide')
+        $('.modal-backdrop').remove()
+        var formData = new FormData($('#updatecommercialform')[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updatecommercial" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                $(`#replist`).html(data.html)
+            })
+        })
+    })
+    $('.submitaddrepbtn').on('click', function(event){
+        event.preventDefault()
+        if ($('[name="repname"]').val()=="" || $('[name="repphone"]').val()=="" || $('[name="repregion"]').val()=="" || $('[name="repusername"]').val()=="" || $('[name="reppassword"]').val()==""){
+            $('#addrepform').css('border', '1px solid red')
+            return
+        }
+        username=$('[name="repusername"]').val()
+        $.post('{% url "products:checkusername" %}', {
+            username: username,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(data){
+            if (data.exist){
+                $('.checkusername').css('border', '1px solid red')
+                alertify.error('Username exist')
+            }
+            else{
+                $('.submitaddrepbtn').addClass('disabled')
+                $('.checkusername').css('border', '1px solid green')
+                var formData = new FormData($('#addrepform')[0]);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "products:addcommercial" %}',  // Replace with your Django URL
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success:((data)=>{
+                      if (data.success){
+                        updatetab('replist', '/products/commercialspage')
+                      }else{
+                        alertify.error(data.message)
+                      }
+                        //$(`#replist`).html(data.html)
+                    })
+                })
+            }
+        })
+
+    })
+
+</script>

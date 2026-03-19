@@ -1,0 +1,397 @@
+<div class="d-flex justify-content-between mb-5" style="position: sticky;top: 0; background: white;z-index: 999;">
+  <button class="bi bi-arrow-left" onclick="ajaxpage('addrecevoir', '+Achat', '/products/listavoirsupplier?target={{target}}')">LIST AVOIR FOURNISSEUR</button>
+  <button class="btn btn-success" onclick="Printavsuppoir('printavsupp{{avoir.id}}')">
+    Telecharger
+  </button>
+  <button 
+  {% if avoir.ispaid or avoir.inreglement%}disabled{% endif %}
+  class="btn btn-success" onclick="ajaxpage('addmodifieravoirsupp{{avoir.id}}', 'Modifier avoir {{avoir.no}}', '/products/modifieravoirsupp?target={{target}}&id={{avoir.id}}')">
+    Modifier
+  </button>
+  {% if reglement %}
+  <div class="accordion col-6" id="accordionreglbl">
+    <div class="">
+
+        <button class="btn btn-success w-100 border" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
+        >
+            Reglement
+        </button>
+
+        <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
+        <div class="card-body border shadow rounded">
+          <table class="table table-bordered">
+            <tr>
+              <td>
+                Serie
+              </td>
+              <td>
+                Mantant
+              </td>
+              <td>
+                mode
+              </td>
+              <td>
+                N° piece
+              </td>
+              <td>
+                Echeance
+              </td>
+            </tr>
+            {% for i in reglement %}
+            <tr>
+              <td>
+                #REGLFRN{{i.id}}
+              </td>
+              <td>
+                {{i.amount}}
+              </td>
+              <td>
+                {{i.mode}}
+              </td>
+              <td>
+                {{i.npiece}}
+              </td>
+              <td>
+                {{i.echeance}}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+            </div>
+        </div>
+        </div>
+  </div>
+  {% endif %}
+  <!-- <div class="col-3 d-flex">
+    <input class="form-control" type="date" value="{{avoir.date|date:'Y-m-d'}}">
+    <button class="btn btn-dark bi bi-check" onclick="updatedateavsupp(event, '{{avoir.id}}')"></button>
+  </div> -->
+</div>
+<div id="printavsupp{{avoir.id}}" style="position:relative;">
+  {% for i in orderitems %}
+  {% if forloop.counter == orderitems|length %}
+  <!-- last iteration -->
+  <div class="postion-relative p-2 avoir{{avoir.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+
+
+    <!-- avoir header -->
+    <div class="">
+      {% if not isfarah %}
+      <img src="/media/factureheader.jpg" style="width: 100%;" alt="" class="factureheader">
+      {% endif %}
+      <div class="d-flex justify-content-between">
+        <div style="border: 1px solid; padding: 5px; border-radius: 10px;">
+          Date: <strong>{{avoir.date|date:"d/m/Y"}}</strong><br>
+          Avoir N°:<strong>{{avoir.no}}</strong><br>
+        
+          page: {{forloop.counter}}/{{orderitems|length}}<br>
+        
+      </div>
+        <div style="width: 60%; border: 1px solid; padding: 5px; border-radius: 10px;">
+        
+          Code: <strong>
+            {{avoir.supplier.code}}
+          </strong>
+          
+          <br>
+          Fourn.: <strong>{{avoir.supplier.name.upper}}</strong><br>
+          ICE: <strong>
+             {% if avoir.supplier.ice %}{{avoir.supplier.ice}} {% endif %}
+          </strong><br>
+          Address: <strong>{{supplier.address}} {{avoir.supplier.city}}</strong><br>
+          Note: <strong>{{avoir.note.upper}}</strong>
+      </div>
+      
+      </div>
+        <div class="d-flex justify-content-between">
+          
+          
+        </div>
+
+
+    </div>
+
+    <!-- avoir items -->
+    <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+      <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+      <table class="table table-bordered avitems" style="font-size: 13px; border-color: black;">
+        <thead style="background: #c9c9c9;" class="text-center">
+          <tr>
+            <td style="width: 13%;">Ref</td>
+            <td>Designation</td>
+            <td style="width: 6%;">Qté</td>
+            <td style="width: 7%;">P.U</td>
+            <td style="width: 7%;">Remise1</td>
+            <td style="width: 7%;">Remise2</td>
+            <td style="width: 7%;">Remise3</td>
+            <td style="width: 7%;">Remise4</td>
+            <td style="width: 9%;">Mantant</td>
+          </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td style="height: 170mm;">
+                      {% for v in i %}
+                      {{v.product.ref.upper}}
+                      <br>
+                      {% endfor %}
+                    </td>
+                    <td>
+                      {% for v in i %}
+                        {{v.product.name.upper|slice:"30"}}
+                        <br>
+                      {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.qty}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.price|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise1|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise2|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise3|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise4|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.total|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+
+                </tr>
+        </tbody>
+
+      </table>
+
+      
+          <div class=" d-flex justify-content-between" style="border:1px solid black; padding: 2px;">
+            <div>Total</div>
+            <div style="font-size: 16px;">
+              <strong>
+                {{avoir.total|floatformat:2}}
+              </strong>
+            </div>
+          </div>
+
+
+        <!--<div class="text-center" style="font-size: 13px">
+
+          adress <br>
+          IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - 001667720000027 <br>
+          Fixe: +212 500000000 - Tel: 06 0000
+        </div>-->
+    </div>
+    {% if not isfarah %}
+    <div class="text-center" style="font-size:11px; margin-top: 5px;">
+      <strong style="font-size: 14px;">
+        Siege: Lot Dounia II N°118 Bd. Rabia OULED TEIMA Code Postal 83350 Patente: 49901722 ICE: 002394334000087 RC: 6513 CNSS: 1858196 IF: 39498717 Email: orghpieceauto@gmail.com Fix: 0528521331
+      </strong>
+    </div>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="postion-relative p-2 avoir{{avoir.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+
+    <!-- avoir header -->
+    <div class="">
+      {% if not isfarah %}
+      <img src="/media/factureheader.jpg" style="width: 100%;" alt="" class="factureheader">
+      {% endif %}
+      <div class="d-flex justify-content-between">
+        <div style="border: 1px solid; padding: 5px; border-radius: 10px;">
+          Date: <strong>{{avoir.date|date:"d/m/Y"}}</strong><br>
+          Avoir N°:<strong>{{avoir.no}}</strong><br>
+        
+          page: {{forloop.counter}}/{{orderitems|length}}<br>
+        
+      </div>
+        <div style="width: 60%; border: 1px solid; padding: 5px; border-radius: 10px;">
+        
+          Code: <strong>
+            {{avoir.supplier.code}}
+          </strong>
+          
+          <br>
+          Fourn.: <strong>{{avoir.supplier.name.upper}}</strong><br>
+          ICE: <strong>
+             {% if avoir.supplier.ice %}{{avoir.supplier.ice}} {% endif %}
+          </strong><br>
+          Address: <strong>{{supplier.address}} {{avoir.supplier.city}}</strong><br>
+          Note: <strong>{{avoir.note.upper}}</strong>
+      </div>
+      
+      </div>
+        <div class="d-flex justify-content-between">
+          
+          
+        </div>
+
+
+    </div>
+
+    <!-- avoir items -->
+    <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+      <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+      <table class="table table-bordered avitems" style="font-size: 13px; border-color: black;">
+        <thead style="background: #c9c9c9;" class="text-center">
+          <tr>
+            <td style="width: 13%;">Ref</td>
+            <td>Designation</td>
+            <td style="width: 6%;">Qté</td>
+            <td style="width: 7%;">P.U</td>
+            <td style="width: 7%;">Remise1</td>
+            <td style="width: 7%;">Remise2</td>
+            <td style="width: 7%;">Remise3</td>
+            <td style="width: 7%;">Remise4</td>
+            <td style="width: 9%;">Mantant</td>
+          </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td style="height: 170mm;">
+                      {% for v in i %}
+                      {{v.product.ref.upper}}
+                      <br>
+                      {% endfor %}
+                    </td>
+                    <td>
+                      {% for v in i %}
+                        {{v.product.name.upper|slice:"30"}}
+                        <br>
+                      {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.qty}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.price|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise1|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise2|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise3|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise4|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.total|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+
+                </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <!-- avoir footer -->
+
+    <!--<div class="text-center" style="font-size: 13px">
+
+          adress <br>
+          IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - 001667720000027 <br>
+          Fixe: +212 500000000 - Tel: 06 0000
+        </div>-->
+
+  </div>
+  {% endif %}
+  {% endfor %}
+
+</div>
+
+
+<script>
+  function updatedateavsupp(event, avoirid){
+    date=$(event.target).parent().find('input').val()
+    $.get('/products/updatedateavsupp', {
+        'avoirsupid':avoirid,
+        'date':date
+      }, (data)=>{
+      updatetab('avoirsupp{{avoir.id}}', '/products/avoirsuppdetails/{{avoir.id}}')
+    })
+  }
+  function Printavsuppoir(divName){
+    $('.avoir{{avoir.id}}holder').addClass('d-flex flex-column')
+         var printContents = document.getElementById(divName).innerHTML;
+         var originalContents = document.body.innerHTML;
+         document.body.innerHTML = printContents;
+        //  $('.bgavoir').css({
+        //   "position": "absolute !important",
+        //   "right": "26em",
+        //   "opacity": "0.18",
+        //   "top": "23em",
+        //  })
+        // $('body').addClass('d-flex flex-column vh-100')
+         //$('.avitems').css({'font-size': '19px','font-family':'serif'})
+         $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+         $("table > thead").css('background','#c9c9c9');
+         window.print();
+         document.body.innerHTML = originalContents;
+        //  $('body').removeClass('d-flex flex-column vh-100 p-3')
+         $('body').css('font-size', '')
+    }
+  </script>

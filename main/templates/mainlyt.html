@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Standard Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6c342" />
+    <meta name="description" content="IBRA est un importateur et vendeur leader de pièces automobiles de haute qualité pour une variété de modèles de voitures. Faites-nous confiance pour des pièces fiables et durables pour votre véhicule.">
+    <meta name="keywords" content="IBRA, IBRA PARTS, pièces automobiles, pièces importées, pièces de qualité, AUTOPARTS">
+    <meta name="robots" content="index, follow">
+
+    <!-- Site Properties -->
+    <title>
+        {% if title %}
+        ste IBRA | {{ title }}
+        {% else %}
+        ste IBRA | Importateur et Vendeur de Pièces Automobiles de Qualité
+        {% endif %}
+    </title>
+    <link rel="shortcut icon" href="media/logos/favicon.ico" type="image/x-icon">
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,700%7cLibre+Franklin&display=swap">
+    <!-- CSS -->
+    <link rel="stylesheet" href="static/css/main/uikit.css">
+    <link rel="stylesheet" href="static/css/main/style.css">
+
+</head>
+
+<body>
+    <div class="page-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <!-- page loader end -->
+    <!-- header begin -->
+    <header>
+        <div class="uk-section uk-padding-remove-vertical">
+            <nav class="uk-navbar-container" data-uk-sticky="show-on-up: true; animation: uk-animation-slide-top;">
+                <div class="uk-container" data-uk-navbar>
+                    <div class="uk-navbar-left uk-width-expand uk-flex uk-flex-between">
+                        <a class="uk-navbar-item uk-logo" href="/">
+                            <img src="/media/logos/headerlogo.jpg" data-src="/media/logos/headerlogo.jpg" alt="logo" width="50" height="36" data-uk-img>
+                        </a>
+                        <ul class="uk-navbar-nav uk-visible@m">
+                            <li><a href="/">Home</a>
+                            </li>
+                            
+                            <!--<li><a href="/fgff">A propos</span></a>
+                            </li>-->
+                            
+                        </ul>
+                    </div>
+                    <div class="uk-navbar-right uk-width-auto">
+                        <div class="uk-navbar-item uk-visible@m in-optional-nav">
+                            <div>
+                                <a href="/login" class="uk-button uk-button-primary uk-border-rounded">Connexion</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- header end -->
+    <main>
+    {% block content %}
+    {% endblock %}
+    </main>
+    <!-- footer begin -->
+    
+    <footer>
+        <div class="uk-section uk-section-secondary uk-padding-large uk-padding-remove-horizontal uk-margin-medium-top">
+            <div class="uk-container">
+                <p>
+                    Notre société, IBRA PARTS, est un importateur et distributeur de pièces automobiles de haute qualité pour une variété de marques et de modèles de voitures. Nous sommes fiers de fournir des pièces OEM de qualité et des pièces de rechange de qualité  pour répondre à tous les besoins de nos clients. Notre gamme complète de pièces comprend des freins, des filtres, des batteries, des pneus, des lubrifiants et bien plus encore. Nous nous engageons à fournir un excellent service client et à fournir toutes les pièces dont vous avez besoin à des prix compétitifs. Notre expertise et notre expérience de l'industrie font de IBRA PARTS  la solution idéale pour tous vos besoins en  pièces automobiles. Faites-nous confiance lorsqu'il s'agit de pièces fiables, durables et de  qualité pour votre véhicule.
+                </p>
+                <div class="uk-grid uk-flex uk-flex-center uk-margin-large-top uk-margin-small-bottom" data-uk-grid="">
+                    
+                    <div class="uk-width-1-2@m">
+                        <p class="copyright-text">© IBRAPARTS <span id="thisyear"></span>.</p>
+                    </div>
+                    <div class="uk-width-1-2@m uk-flex uk-flex-right@m">
+                        <!-- social media begin 
+                        <div class="uk-flex social-media-list">
+                        <div><a href="https://www.facebook.com/indonez" class="color-facebook text-decoration-none"><i class="fab fa-facebook-square"></i> Facebook</a></div>
+                        <div><a href="https://twitter.com/indonez_tw" class="color-twitter text-decoration-none"><i class="fab fa-twitter"></i> Twitter</a></div>
+                        <div><a href="https://www.instagram.com/indonez_ig" class="color-instagram text-decoration-none"><i class="fab fa-instagram"></i> Instagram</a></div>
+                        <div><a href="#some-link" class="color-youtube text-decoration-none"><i class="fab fa-youtube"></i> Youtube</a></div>
+                        </div>
+                         social media end -->
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </footer>
+    <!-- footer end -->
+    <!-- to top begin -->
+    <a href="#" class="to-top uk-visible@m" data-uk-scroll>
+        Top<i class="fas fa-chevron-up" ></i>
+    </a>
+    <!-- to top end -->
+    <!-- javascript -->
+    <script src="static/js/jquery.min.js"></script>
+    <script>
+        $('#thisyear').text(new Date().getFullYear())
+        // ready
+        $(document).ready(function () {
+            // page loader
+            $('.page-loader div').delay(500).fadeOut();
+            $('.page-loader').delay(800).fadeOut('slow');
+        });
+    </script>
+    <script src="static/js/main/utilities.min.js"></script>
+    <script src="static/js/main/config-theme.min.js"></script>
+    <script src="static/js/main/uikit.min.js"></script>
+    <script src="static/js/main/uikit-icons.min.js"></script>
+    <script src="static/js/main/config.js"></script>
+    <script src="static/js/main/vendor.js"></script>
+    {% block js %}
+    {% endblock %}
+
+</body>
+
+</html>
+

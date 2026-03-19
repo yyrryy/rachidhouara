@@ -1,0 +1,32 @@
+
+{% for i in products %}
+
+<tr>
+    <td>
+        {{i.ref}}
+    </td>
+    <td>
+        {{i.category.name}}
+    </td>
+    <td>
+        {{i.mark.name}}
+    </td>
+    <td>
+        {{i.stocktotal}}
+    </td>
+    <td class="d-flex td{{i.id}} justify-content-between">
+        {% if i.iscommanded %}
+        <div class="text-success">{{i.qtycommand}} commandé à {{i.suppliercommand.name}}</div>
+        <button class="btn btn-danger">X</button>
+        {% else %}
+        <input type="number" class="form-control qty{{i.id}}">
+        <button class="btn" onclick="commandsupplier({{i.id}}, 'qty{{i.id}}', 'td{{i.id}}')">+</button>
+        {% endif %}
+    </td>
+    
+
+</tr>
+
+{% endfor %}
+
+

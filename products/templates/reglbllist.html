@@ -1,0 +1,75 @@
+{% load global_tags %}
+{% for i in bons %}
+                    <tr class="reglbl-row" style={% if i.mode != 'espece' and i.echance == today %}"background: yellow;"{% elif i.mode != 'espece' and i.echance < today %}"color:red" {% endif %} >
+                            <td>
+                                REGL#{{i.id}} {% if i.isavoir %} (Avoir) {% endif %}
+                            </td>
+                            <td>
+                                {{i.mode}} <br>
+                                <!-- <select name="updatemodereglbl{{i.id}}" id=""></select> -->
+                            </td>
+                            <td>
+                                {{i.npiece}} <br>
+                                <input type="text" class="d-none updatenpiecereglbl{{i.id}}">
+                            </td>
+                            <td>
+                                {{i.amount|floatformat:'2'|intspace}}<br>
+                                <!-- <input type="text" class="d-none updateamountreglbl{{i.id}}"> -->
+                            </td>
+                            <td>
+                                {{i.date|date:"d/m/Y"}}<br>
+                                <input type="date" class="d-none updatetdatereglbl{{i.id}}">
+                            </td>
+                            <td class="text-start">
+                                {{i.client.name}}
+                            </td>
+                            <td>
+                                {{i.client.code}}
+                            </td>
+                            <td>
+                                {{i.echance|date:"d/m/Y"}} <br>
+                            </td>
+                            <td>
+                                {{i.bank.upper}}
+                        </td>
+                            <td class="d-flex justify-content-between">
+                                <div class="accordion" id="accordionbons{{i.id}}">
+
+                                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{i.id}}" aria-expanded="true" aria-controls="collapsbon{{i.id}}">
+
+
+                                    </button>
+
+                                    <div id="collapsbon{{i.id}}" class="text-start collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{i.id}}">
+                                        {% for bon in i.bons.all %}
+                                        (Bon){{ bon.bon_no }} <br>
+                                        {% endfor %}
+                                        {% for bon in i.bonsortie.all %}
+                                        (Bon){{ bon.bon_no }} <br>
+                                        {% endfor %}
+                                        {% for fact in i.factures.all %}
+                                        (Facture){{ fact.fact_no }} <br>
+                                        {% endfor %}
+                                        {% for av in i.avoirs.all %}
+                                        (avoir){{ av.no }} <br>
+                                        {% endfor %}
+                                        {% for av in i.avances.all %}
+                                        (Avance) ({{ av.amount }}DH) <br>
+                                        {% endfor %}
+
+
+                                    </div>
+                                </div>
+                                <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip="Bon Nos: {% for bon in i.bons.all %}{{ bon.bon_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="ajaxpage('regl{{i.id}}tab', 'regl{{i.id}}tab', 'products/viewreglement/{{i.id}}')">
+                                </button> -->
+
+                                <button class="btn btn-success btn-sm bi bi-eye" onclick="updatereglementbl('{{i.id}}')" style="font-size: 12px;
+                                height: 19px;"></button>
+                                {% if not i.ispaid %}
+                                {% if not i.mode == 'espece' %}
+                              <button reglid="{{i.id}}" reglmode="{{i.mode}}" rglnpiece="{{i.npiece}}" onclick="selectregl('{{i.id}}', '{{i.mode}}', '{{i.npiece}}', '{{i.amount}}')" class="btn btn-dark bi bi-arrow-right"></button>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                    </tr>
+                    {% endfor %}

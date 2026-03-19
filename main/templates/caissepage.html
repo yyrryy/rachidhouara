@@ -1,0 +1,334 @@
+{% load global_tags %}
+<!-- side to view data -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-1">
+            <button class="btn w-100 mb-2 bg-darkblue alternatebtn text-white" onclick="$('.bankssession').addClass('d-none'); $('.caissesession').removeClass('d-none')">Cisses</button>
+            <button class="btn w-100 mb-2 alternatebtn" onclick="$('.caissesession').addClass('d-none'); $('.bankssession').removeClass('d-none')">Banques</button>
+        </div>
+        <div class="col-11">
+            <!-- caisse -->
+            <div class="card caissesession">
+                <!-- <div class="card-header d-flex justify-content-between">
+                    <h4 class="card-title">Caisse</h4>
+                </div> -->
+                <!-- accordion add caisse -->
+                <div>
+                    <button class="btn btn-primary" data-toggle="collapse" data-target="#addcaisse">Ajouter une caisse</button>
+                    <div id="addcaisse" class="collapse">
+                        <div class="form-group">
+                            <label for="name">Nom de la caisse</label>
+                            <input type="text" name="name" class="form-control caissename">
+                        </div>
+                        <div class="form-group
+                        ">
+                            <label for="montant">Montant</label>
+                            <input type="number" name="initialcaisse" class="form-control initialcaisse">
+                        </div>
+                        <button class="btn btn-dark mt-2" onclick="addcaisse()">Ajouter caisse</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                    <thead class=" text-primary">
+                        <th>
+                        Description
+                        </th>
+                        <th>
+                        Montant
+                        </th>
+                        <th>
+                        </th>
+                    </thead>
+                    <tbody>
+                        {% for item in caisses %}
+                        <tr>
+                        
+                        <td class="p-2 d-flex">
+
+                            <button class="border bi bi-eye btn" title="Historique" onclick="$.get('/products/caisseviewdata?caisseid={{item.id}}', (data)=>{$('.viewdata').removeClass('d-none').html(data.html)})"></button>
+                            {{ item.name }}
+                            <div>
+                                <button class="border bi bi-arrow-bar-right" data-toggle="collapse" data-target="#transfercaisse{{item.id}}" title="transfer"></button>
+                                <div id="transfercaisse{{item.id}}" class="collapse">
+                                    <div class="d-flex">
+                                        <div class="form-group me-2">
+                                            <label for="name">Date</label>
+                                            <input type="date" class="form-control datefromcaisse{{item.id}}" placeholder="0.00">
+                                        </div>
+                                        <div class="form-group me-2">
+                                            <label for="name">Mantant</label>
+                                            <input type="number" class="form-control mantantfromcaisse{{item.id}}" placeholder="0.00">
+                                        </div>
+                                        <div class="form-group me-2">
+                                            <label for="name">transfert au caisse</label>
+                                            <select class="targetcaissefromcaisse{{item.id}} form-control">
+                                                <option value="">--</option>
+                                                {% for c in allcaisses %}
+                                                <option value="{{ c.id }}" {% if c.id == item.id %}disabled{% endif %}>{{ c.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group me-2
+                                        ">
+                                        <label for="name">transfert au banque</label>
+                                        <select class="targetbankfromcaisse{{item.id}} form-control">
+
+                                            <option value="">--</option>
+                                            {% for item in allbanks %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        </div>
+                                        <button class="btn btn-dark mt-2" onclick="transfertfromcaisse('{{item.id}}', '{{item.total}}')">Valider</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {{ item.total }}
+                        </td>
+                        <td>
+                            
+                        </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+
+            <!-- bank -->
+            <div class="card bankssession d-none">
+                <div class="card-header d-flex justify-content-between">
+                    <h4 class="card-title">Banques</h4>
+                    <!-- accordion add caisse -->
+                    <div>
+                        <button class="btn btn-primary" data-toggle="collapse" data-target="#addcaisse">Ajouter une banque</button>
+                        <div id="addcaisse" class="collapse">
+                            <div class="form-group me-2">
+                                <label for="name">Nom de la banque</label>
+                                <input type="text" name="name" class="form-control bankname">
+                            </div>
+                            <div class="form-group me-2
+                            ">
+                                <label for="montant">Montant initial</label>
+                                <input type="number" name="initialcaisse" class="form-control initialbank">
+                            </div>
+                            <div class="form-group
+                            ">
+                                <label for="montant">RIB</label>
+                                <input type="number" class="form-control rib">
+                            </div>
+                            <button class="btn btn-dark mt-2" onclick="addbank()">Ajouter banque</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                    <thead class=" text-primary">
+                        <th>
+                        Banque
+                        </th>
+                        <th>
+                        Montant
+                        </th>
+                        <th>
+                            RIB
+                        </th>
+                        <th>
+                        </th>
+                    </thead>
+                    <tbody>
+                        {% for item in banks %}
+                        <tr>
+                        
+                        <td class="p-2 d-flex">
+                            <button class="border bi bi-eye btn" title="Historique" onclick="$.get('/products/bankviewdata?bankid={{item.id}}', (data)=>{$('.viewdata').removeClass('d-none').html(data.html)})"></button>
+                            {{ item.name }}
+                            <div>
+                                <button class="border bi bi-arrow-bar-right" data-toggle="collapse" data-target="#transferbank{{item.id}}" title="Transfert"></button>
+                            <div id="transferbank{{item.id}}" class="collapse">
+                                <div class="d-flex">
+                                    <div class="form-group me-2">
+                                        <label for="name">Date</label>
+                                        <input type="date" class="form-control datefrombank{{item.id}}" placeholder="0.00">
+                                    </div>
+                                    <div class="form-group me-2">
+                                        <label for="name">Mantant</label>
+                                        <input type="number" class="form-control mantantfrombank{{item.id}}" placeholder="0.00">
+                                    </div>
+                                    <div class="form-group me-2">
+                                        <label for="name">transfert au caisse</label>
+                                        <select class="targetcaissefrombank{{item.id}} form-control">
+                                            <option value="">--</option>
+                                            {% for c in allcaisses %}
+                                            <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group me-2
+                                    ">
+                                    <label for="name">transfert au banque</label>
+                                    <select class="targetbankfrombank{{item.id}} form-control">
+                                        <option value="">--</option>
+                                        {% for b in allbanks %}
+                                        <option value="{{ item.id }}" {% if b.id == item.id %}disabled{%endif%}>{{ b.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    </div>
+                                    <button class="btn btn-dark mt-2" onclick="transfertfrombank('{{item.id}}', '{{item.total}}')">Valider</button>
+                                </div>
+                            </div>
+                            </div>
+                        </td>
+                        <td>
+                            {{ item.total }}
+                        </td>
+                        <td>
+                            {{item.rib}}
+                        </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+            <div class="vh-100 viewdata p-2">
+                <button onclick="$('.viewdata').addClass('d-none')">X</button>
+                <div class="spinner-border" role="status">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getcaissedata(caisseid){
+        $.get('/products/caisseviewdata?caisseid='+caisseid, )
+    }
+    function transfertfromcaisse(id, caissetotal){
+        var targetcaisse = $('.targetcaissefromcaisse'+id).val();
+        var mantant = $('.mantantfromcaisse'+id).val();
+        var date = $('.datefromcaisse'+id).val();
+        if (date==''){
+            alertify.error('Veuillez saisir une date');
+            return;
+        }
+        if (mantant==''||mantant<=0){
+            alertify.error('Veuillez saisir un mantant');
+            return;
+        }
+        if (parseFloat(mantant)>parseFloat(caissetotal)){
+            alertify.error('Mantant superieur au total caisse')
+            return
+        }
+        var targetbank = $('.targetbankfromcaisse'+id).val();
+        if (targetcaisse == '' && targetbank == ''){
+            alertify.error('Veuillez choisir une destination');
+            return;
+        }
+        // if all selects are selected return
+        if (targetcaisse != '' && targetbank != ''){
+            alertify.error('Veuillez choisir une seule destination');
+            return;
+        }
+        $.get('/products/transfertfromcaisse',{
+            amount:mantant,
+            date:date,
+            caissetarget: targetcaisse,
+            banktarget: targetbank,
+            sourceid: id
+        }, function(data){
+            console.log(data);
+            ajaxpage('addpducts', 'ARTICLES', '/products/caissepage?target={{target}}')
+        })
+    }
+    
+    function transfertfrombank(id, caissetotal){
+        var mantant = $('.mantantfrombank'+id).val();
+        var date = $('.datefrombank'+id).val();
+        if (date==''){
+            alertify.error('Veuillez saisir une date');
+            return;
+        }
+        if (mantant==''||mantant<=0){
+            alertify.error('Veuillez saisir un mantant');
+            return;
+        }
+        if (parseFloat(mantant)>parseFloat(caissetotal)){
+            alertify.error('Mantant superieur au total caisse')
+            return
+        }
+        var targetcaisse = $('.targetcaissefrombank'+id).val();
+        var targetbank = $('.targetbankfrombank'+id).val();
+        if (targetcaisse == '' && targetbank == ''){
+            alertify.error('Veuillez choisir une destination');
+            return;
+        }
+        // if all selects are selected return
+        if (targetcaisse != '' && targetbank != ''){
+            alertify.error('Veuillez choisir une seule destination');
+            return;
+        }
+        $.get('/products/transfertfrombank',{
+            amount:mantant,
+            date:date,
+            caissetarget: targetcaisse,
+            banktarget: targetbank,
+            sourceid: id
+        }, function(data){
+            console.log(data);
+            ajaxpage('addpducts', 'ARTICLES', '/products/caissepage?target={{target}}')
+        })
+    }
+    
+
+    function addcaisse(){
+        var name = $('.caissename').val();
+        var montant = $('.initialcaisse').val();
+        if (name == '' || montant == ''){
+            alertify.error('Veuillez remplir tous les champs');
+            return;
+        }
+        $.get('/products/addcaisse',{
+                name: name,
+                montant: montant,
+                'target': '{{target}}'
+            }, function(data){
+                console.log(data);
+                ajaxpage('addpducts', 'ARTICLES', '/products/caissepage?target={{target}}')
+            }
+        )
+    }
+    
+    function addbank(){
+        var name = $('.bankname').val();
+        var montant = $('.initialbank').val();
+        var rib = $('.rib').val();
+        if (name == '' || montant == ''){
+            alertify.error('Veuillez remplir tous les champs');
+            return;
+        }
+        $.get('/products/addbank',{
+                name: name,
+                rib: rib,
+                montant: montant,
+                'target': '{{target}}'
+            }, function(data){
+                console.log(data);
+                ajaxpage('addpducts', 'ARTICLES', '/products/caissepage?target={{target}}')
+            }
+        )
+    }
+    
+    
+    $('.alternatebtn').click(function(){
+        $('.alternatebtn').removeClass('bg-darkblue text-white');
+        $(this).addClass('bg-darkblue text-white');
+    })
+</script>

@@ -1,0 +1,16 @@
+{% for i in avoirs %}
+<tr>
+    <td>
+        {{i.date|date:"d/m/Y"}}
+    </td>
+    <td>
+        {{i.no}} {% if i.rest > 0 %}(Total: {{i.total}} Rest:){%endif%}
+    </td>
+    <td>
+        {% if i.rest > 0 %}{{i.rest}}{%else%}{{i.total}}{% endif %}
+    </td>
+    <td>
+        <input type="checkbox" total="{% if i.rest > 0 %}{{i.rest}}{%else%}{{i.total}}{% endif %}" value="{{i.id}}" name="avoirstopay" onchange="checkreglementbox(event)">
+    </td>
+</tr>
+{% endfor %}

@@ -1,0 +1,1093 @@
+<html>
+<head>
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/jquerySpellingNumber.js"></script>
+  <link href="/static/css/minified.css" rel="stylesheet" />
+  <script src="/static/js/chart.js"></script>
+  <script src="/static/js/xlsx.full.min.js"></script>
+
+</head>
+<style media="screen">
+  .blurred{
+    filter:blur(8px);
+  }
+
+  table {
+    border-color: black;
+  }
+</style>
+<body style="background: #e3e3e3; font-family: monospace;">
+  <div class="p-2">
+
+
+      <!-- mini tables (header) -->
+      <div class="d-flex justify-content-between p-2 bg-white rounded tablesarea">
+          <div class="col-4">
+            <a href="etude" class="btn btn-dark">Retour</a>
+            <table class="">
+              <tr>
+                <td>Date Facture</td>
+                <td>
+                  <input  type="date" class="datefacture">
+                </td>
+
+              </tr>
+              <tr>
+                <td>N° Facture</td>
+                <td>
+                  <input  type="text" class="facture_no">
+                </td>
+
+              </tr>
+
+              <tr>
+                <td>Fournisseur</td>
+                <td>
+                  <div class="col-5">
+                    <select type="text" name="" class="supplier notempty" style="width:100%;">
+                      <option value="">--Fournisseur--</option>
+                      {% for i in suppliers %}
+                      <option value="{{i.id}}">{{i.name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </td>
+
+              </tr>
+
+              <tr>
+                <td>Total Facture $</td>
+                <!-- <td class="facturedevise"> -->
+                <td>
+                  <input  type="text" class="facturedevise notempty" placeholder="0.00" onkeyup="calcfacturedh()" value="">
+                </td>
+
+              </tr>
+              <tr>
+                <td>taux de change</td>
+                <td>
+                  <input  type="text" name="" placeholder="0.00" class="tauxchange notempty" onkeyup="calcfacturedh()" value="">
+                </td>
+
+              </tr>
+              <tr>
+                <td>Total Facture DH</td>
+                <td>
+                  <input  readonly type="text" name="" placeholder="0.00" class="facturedh notempty" onkeyup="calccharges()">
+                </td>
+              </tr>
+              <tr>
+                <td>charges+facture</td>
+                <td>
+                  <strong class="totalchargesandfacture">0.00</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>CRF</td>
+                <td>
+                  <input  type="text" class="tauxcfr notempty" placeholder="taux de cfr" value="1">
+                </td>
+
+              </tr>
+              <tr>
+                <td>HS</td>
+                <td class="d-flex flex-column col-5">
+                  <input  type="text" placeholder="linges" class="lines_hs">
+                  <input  type="text" class="tauxhs" placeholder="taux de hs">
+                  <button class="btn btn-sm btn-success" onclick="apply_hs(event)">INSERER</button>
+                  <!-- <input  type="text" class="tauxhs" placeholder="taux de hs" onkeyup="$('.hs').val($(this).val())"> -->
+                </td>
+
+              </tr>
+            </table>
+            <div class="">
+              <button class="btn btn-danger" onclick="calcrows()">Calculer</button>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <table>
+              <tr>
+                <td>Transport international</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp notempty transport_international" onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>Douanne</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp notempty douane" onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>Magazinage</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp notempty magazinage" onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>SURRESTARIES</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp notempty surrestaries" onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>TRSP CAMION</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp notempty trsp_camion" onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>FORFAITS TRANSITAIRE</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp notempty forfait_transitaire " onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>AUTRE</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp autre_1" onkeyup="calccharges()" value="">
+                </td>
+              </tr>
+
+              <tr>
+                <td>AUTRE</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="chargeinp autre_2" onkeyup="calccharges()">
+                </td>
+              </tr>
+              <tr>
+                <td>Total charges</td>
+                <td>
+                  <strong class="totalcharges">0.00</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>Tauxcharge</td>
+                <td>
+                  <input style="width:100%;" type="text" name="" placeholder="0.00" class="tauxcharge notempty" readonly>
+                </td>
+              </tr>
+            </table>
+            <div class="mt-3">
+              PATTC*QUNATITE=<strong class="pattc_qty"></strong>
+            </div>
+
+          </div>
+
+          <div class="col-4">
+            <table class="table table-bordered">
+              <tr class="text-primary">
+                <td>Total facture excel $</td>
+                <td class="totalfactureexcel notemptyElemnt">
+
+                </td>
+              </tr>
+              <tr>
+                <td>T Dt</td>
+                <td class="alldt notemptyElemnt">0</td>
+              </tr>
+              <tr>
+                <td>T CHARGES </td>
+                <td class="allcharges notemptyElemnt">0</td>
+              </tr>
+
+            </table>
+            <div class="">
+              COIFF:<input type="text" name="" class="coeffval" onkeyup="populatecoef(event)">
+              <button type="button" name="button" onclick="calcmarges(event)">
+                Calcul marge
+              </button>
+            </div>
+            <button class="mt-5 btn btn-success w-100" onclick="createEtude()">Creer Etude</button>
+            <div id="error"></div>
+
+
+          </div>
+      </div>
+
+
+      <div class="mt-3 p-2 bg-white rounded">
+        <div class="d-flex justify-content-between">
+          <button class="btn" onclick="handleFile(event)">🔄</button>
+          <input style="width:100%;" type="file" id="upload" class="form-control excelfile" style="width:12em;" onchange="handleFile(event)" />
+        </div>
+        <div class="tableholder" style="height:65vh;overflow:scroll;position:relative;">
+          <div class="tableloader d-none" style="position:absolute;top:0">
+            <div class="spinner-border" role="status">
+            </div>
+          </div>
+          <table class="table table-bordered maintable table-hover" style="border-color:black;">
+            <thead style="position:sticky;top:0;background: #00538c;color: white;">
+              <tr>
+                <td style="width:1%;"></td>
+                <td style="width:5%;">ref</td>
+                <td style="width:;">Design.</td>
+                <td style="width:5%;">Qty</td>
+                <td style="width:5%;">Unit pr.</td>
+                <td style="width:5%;">CFR</td>
+                <td style="width:5%;">amount</td>
+                <td style="width:5%;">DH</td>
+                <td style="width:5%;">HS</td>
+                <td style="width:5%;">DT</td>
+                <td style="width:5%;">PA TTC</td>
+                <td style="width:5%;">PA HT</td>
+                <td style="width:5%;">Coeff.</td>
+                <td style="width:5%;">P.brut</td>
+                <td style="width:5%;">P.net</td>
+                <td style="width:5%;">Marge</td>
+                <td style="width:5%;">T dT</td>
+                <td style="width:5%;">T charges</td>
+              </tr>
+            </thead>
+            <tbody id="calcTable">
+              <!-- <tr>
+                <td>ref1</td>
+                <td>Design.</td>
+                <td class="qty">20</td>
+                <td class="unitpr">8.58</td>
+                <td class="cfr"></td>
+                <td class="amount"></td>
+                <td class="dh"></td>
+                <td>
+                  <input style="width:100%;" class="hs" onckeyup="calcrow(event)">
+                </td>
+                <td class="dt"></td>
+                <td class="pattc"></td>
+                <td class="paht"></td>
+                <td class="tdt"></td>
+                <td class="tcharges"></td>
+              </tr>
+              <tr>
+                <td>ref1</td>
+                <td>Design.</td>
+                <td class="qty">50</td>
+                <td class="unitpr">10.16</td>
+                <td class="cfr"></td>
+                <td class="amount"></td>
+                <td class="dh"></td>
+                <td>
+                  <input style="width:100%;" class="hs" onckeyup="calcrow(event)">
+                </td>
+                <td class="dt"></td>
+                <td class="pattc"></td>
+                <td class="paht"></td>
+                <td class="tdt"></td>
+                <td class="tcharges"></td>
+              </tr> -->
+              <!-- <tr>
+                <td>ref2</td>
+                <td>Design.</td>
+                <td>50</td>
+                <td>8.21</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>ref3</td>
+                <td>Design.</td>
+                <td>10</td>
+                <td>9.97</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <!-- <button type="button" name="button" onclick="processRows()"></button> -->
+
+  </div>
+  <script src="/static/js/select2.min.js"></script>
+  <script>
+  function createEtude(){
+
+    if ($('.datefacture').val()==""){
+      $('.datefacture').addClass('border-danger');
+      $('#error').text('Date facture');
+      return
+    }
+    $('.datefacture').removeClass('border-danger');
+    if ($('.facture_no').val()==""){
+      $('.facture_no').addClass('border-danger');
+      $('#error').text('N° facture');
+      return
+    }
+    $('#error').text('');
+
+    $('.facture_no').removeClass('border-danger');
+
+    if ($('.supplier').val()==""){
+      $('.supplier').addClass('border-danger');
+      $('#error').text('Fournisseur');
+      return
+    }
+    $('#error').text('');
+    $('.supplier').removeClass('border-danger');
+
+    if ($('.facturedevise').val()==""){
+      $('.facturedevise').addClass('border-danger');
+      $('#error').text('Fournisseur');
+      return
+    }
+    $('#error').text('');
+    $('.facturedevise').removeClass('border-danger');
+
+    if ($('.facturedh').val()==""){
+      $('.facturedh').addClass('border-danger');
+      $('#error').text('Fournisseur');
+      return
+    }
+    $('#error').text('');
+    $('.facturedh').removeClass('border-danger');
+
+    if ($('.tauxchange').val()==""){
+      $('.tauxchange').addClass('border-danger');
+      $('#error').text('Fournisseur');
+      return
+    }
+    $('#error').text('');
+    $('.tauxchange').removeClass('border-danger');
+
+    const tableData = [];
+    const rows = document.querySelectorAll("#calcTable tr");
+
+    rows.forEach((row) => {
+        const rowData = {
+            id: row.children[0].textContent.trim(),
+            ref: row.querySelector(".ref").textContent.trim(),
+            name: row.children[2].textContent.trim(),
+            qty: row.querySelector(".qty").textContent.trim(),
+            devise: row.querySelector(".unitpr").textContent.trim(),
+            amount: row.querySelector(".amount").textContent.trim(),
+            dh: row.querySelector(".dh").textContent.trim(),
+            hs: row.querySelector(".hs").value.trim(),
+            dt: row.querySelector(".dt").textContent.trim(),
+            pattc: row.querySelector(".pattc").textContent.trim(),
+            paht: row.querySelector(".paht").textContent.trim(),
+            coeff: row.querySelector(".coef").value.trim(),
+            pbrut: row.querySelector(".pbrut").textContent.trim(),
+            pnet: row.querySelector(".pnet").textContent.trim(),
+            marge: row.querySelector(".marge").textContent.trim(),
+            tdt: row.querySelector(".tdt").textContent.trim(),
+            tcharges: row.querySelector(".tcharges").textContent.trim(),
+        };
+
+        tableData.push(rowData);
+    });
+    $.post('/products/createetude', {
+      "csrfmiddlewaretoken": '{{ csrf_token }}',
+      "datefacture": $('.datefacture').val(),
+      "facture_no": $('.facture_no').val(),
+      "supplier": $('.supplier').val(),
+      "facturedevise": $('.facturedevise').val(),
+      "tauxchange": $('.tauxchange').val(),
+      "facturedh": $('.facturedh').val(),
+      "tauxcfr": $('.tauxcfr').val(),
+      "totalchargesandfacture": $('.totalchargesandfacture').text(),
+      "transport_international": $(".transport_international").val(),
+      "douane": $(".douane").val(),
+      "magazinage": $(".magazinage").val(),
+      "surrestaries": $(".surrestaries").val(),
+      "trsp_camion": $(".trsp_camion").val(),
+      "forfait_transitaire": $(".forfait_transitaire").val(),
+      "autre_1": $(".autre_1").val(),
+      "autre_2": $(".autre_2").val(),
+      "total_charges": $(".totalcharges").text(),
+      "tauxcharge": $(".tauxcharge").val(),
+      "pattcQty": $(".pattc_qty").text(),
+      "tdt": $(".alldt").text(),
+      "tcharge": $(".allcharges").text(),
+      "tableData":JSON.stringify(tableData)
+    }, (data)=>{
+      if (data.success){
+        location.reload()
+      }
+    })
+    // $('.notempty').each(function() {
+    //     const inputValue = $(this).val(); // Get the value of the current input field
+    //
+    //     // Check if the input is empty, 0, or NaN
+    //     if (inputValue === '' || inputValue == 0 || isNaN(inputValue)) {
+    //         // Show an error message if the input is invalid
+    //         console.log('>> there is empty input')
+    //         $('#error').text('Remplir les champs *');
+    //         $(this).addClass('border-danger'); // Add border-danger class to the invalid field
+    //         return
+    //     }
+    //     $('#error').text('');
+    //     $(this).removeClass('border-danger'); // Remove border-danger class if the input is valid
+    //
+    // });
+
+  }
+  function getExcel(event){
+    // get supplier, date facture, date reception, N° facture
+    //supplier_id=$('.supplier').val()
+    // check point to make sure table is populated
+    let hasEmptyInputs = $('.pnet').toArray().some(function(input) {
+      return $(input).val().trim() === ''; // Check if the input value is empty
+    });
+    if (hasEmptyInputs){
+      return
+    }
+    // get json of the products
+    $('#calcTable tr').each(function(){
+        let tr = $(this)
+        var ref = tr.find('.ref').text()
+        var qty = tr.find('.qty').text()
+        var devise = parseFloat(tr.find('.unitpr').text());
+        var pattc = tr.find('.pattc')
+        let product = {
+          'ref': ref,
+          'qty': qty,
+          'devise': devise,
+          'pattc': pattc,
+        }
+        products.push(product)
+    })
+
+
+  }
+  function apply_hs(event){
+    console.log('>>> apply hs')
+    // Get all input elements with class 'hs'
+    let lines=$(event.target).parent().find('.lines_hs')
+    let tauxhs=$(event.target).parent().find('.tauxhs')
+    if (lines.val()==""){
+      lines.addClass('border-danger')
+      return
+    }
+    if (tauxhs.val()==""){
+      tauxhs.addClass('border-danger')
+      return
+    }
+    lines.removeClass('border-danger')
+    tauxhs.removeClass('border-danger')
+    startLine=parseInt(lines.val().split('-')[0])
+    endLine=parseInt(lines.val().split('-')[1])
+    let inputs = $('.hs');
+    console.log(startLine, endLine, inputs.length)
+    // Loop through the specified range and apply the value
+    for (let i = startLine; i <= endLine; i++) {
+      $(inputs[i]).val(tauxhs.val()); // Set the value
+    }
+  }
+  function populatecoef(event){
+      coef=$(event.target).val()
+      $('.coef').val(coef)
+  }
+
+  function calcmarges(event){
+    $('#calcTable tr').each(function(index, row) {
+      // Call the function to calculate the result for the current row
+      //calculateRow(row);
+      // Find the two numbers in the row
+      var qty = parseFloat($(row).find('.qty').text());
+      var unitpr = parseFloat($(row).find('.unitpr').text());
+      var tauxcfr = parseFloat($('.tauxcfr').val());
+      var tauxchange = parseFloat($('.tauxchange').val());
+      var tauxcharge = parseFloat($('.tauxcharge').val());
+      var hs = $(row).find('.hs').val()
+      var cfr = $(row).find('.cfr')
+      var amount = $(row).find('.amount')
+      var dh = $(row).find('.dh')
+      var dt = $(row).find('.dt')
+      var pattc = $(row).find('.pattc').text()
+      var paht = $(row).find('.paht')
+      var tdt = $(row).find('.tdt')
+      var pbrut = $(row).find('.pbrut')
+      var coef = $(row).find('.coef').val()
+      var pnet = $(row).find('.pnet')
+      var marge = $(row).find('.marge')
+      var tcharges = $(row).find('.tcharges')
+      pbrutval=(parseFloat(pattc)*parseFloat(coef)).toFixed(2)
+      pnetval=(pbrutval*.65).toFixed(2)
+      margeval=(pnetval-parseFloat(pattc)).toFixed(2)
+      console.log(pbrutval,
+      pnetval,
+      margeval)
+      pbrut.text(pbrutval)
+      pnet.text(pnetval)
+      marge.text(margeval)
+    })
+
+  }
+  function matchData(excelData) {
+    //tauxcfr=parseFloat($('.tauxcfr').val())
+    $('#calcTable').html('')
+    $('.tableloader').removeClass('d-none')
+      let totalfacture=0
+
+      excelData.forEach(function(row, index) {
+        //1ref 2designation, 3qty, 4price$, 5
+        thistotal=(parseFloat(row[2])*parseFloat(row[3])).toFixed(2)
+        totalfacture+=parseFloat(row[2])*parseFloat(row[3])
+        $('#calcTable').append(`
+          <tr>
+            <td>${index}</td>
+            <td class="ref">${row[0]}</td>
+            <td>${row[1]}</td>
+            <td class="qty text-center">${row[2]}</td>
+            <td class="unitpr text-center">${row[3]}</td>
+            <td class="cfr"></td>
+            <td class="amount text-center"></td>
+            <td class="dh text-center"></td>
+            <td>
+              <input style="width:100%;" class="hs text-danger notempty" onckeyup="calcrows(event)" value="">
+            </td>
+            <td class="dt text-center"></td>
+            <td class="pattc text-center" style="color:blue;"></td>
+            <td class="paht text-center"></td>
+            <td>
+              <input style="width:100%;" class="coef notempty" onckeyup="calcrows(event)">
+            </td>
+            <td class="pbrut text-center"></td>
+            <td class="pnet text-center"></td>
+            <td class="marge text-center"></td>
+            <td class="tdt text-centert"></td>
+            <td class="tcharges text-center"></td>
+          </tr>
+            `)
+        $('.tableloader').addClass('d-none')
+        })
+
+      $('.totalfactureexcel').text(totalfacture.toFixed(2))
+  }
+  function handleFile(e) {
+    //$('.maintable').css('filter', 'blur(5px)')
+      var files = document.querySelector('.excelfile').files;
+      var i, f;
+      for (i = 0, f = files[i]; i !== files.length; ++i) {
+          var reader = new FileReader();
+          var name = f.name;
+          reader.onload = function(e) {
+              var data = e.target.result;
+              var workbook = XLSX.read(data, {type: 'binary'});
+              var firstSheetName = workbook.SheetNames[0];
+              var worksheet = workbook.Sheets[firstSheetName];
+              var excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+              matchData(excelData);
+              $('.maintable').css('filter', 'none')
+              $('.tablesarea').removeClass('d-none')
+          };
+          reader.readAsBinaryString(f);
+      }
+  }
+  function calccharges(totaldttimesqty){
+    // $('.pattc_qty').text(0.00)
+    console.log("total dt >>", totaldttimesqty)
+    totalchargesandfacture=$('.totalchargesandfacture')
+    facturedh=parseFloat($('.facturedh').val())
+    var total = 0;
+    // Iterate over each input with the class 'chargeinp'
+    $('.chargeinp').each(function() {
+     // Get the value of the input, parse it as a float, default to 0 if not a valid number
+     var value = parseFloat($(this).val()) || 0;
+     // Add the value to the total
+     total += value;
+    });
+    // Set the total value, rounded to 2 decimal places, in the total input field
+    $('.totalcharges').removeClass('bg-danger')
+    $('.totalcharges').text(total.toFixed(2));
+    grandtotal=parseFloat(total.toFixed(2))+parseFloat(facturedh)
+    totalchargesandfacture.text(grandtotal.toFixed(2))
+    // get taux charge
+    tauxcharge=totaldttimesqty/grandtotal
+    $('.tauxcharge').val(tauxcharge)
+
+
+    console.log('taux charge', tauxcharge)
+  }
+  function caldculateRow(row){
+    console.log(row)
+    // Find the two numbers in the row
+    var qty = parseFloat($(row).find('.qty').text());
+    var unitpr = parseFloat($(row).find('.unitpr').text());
+    var tauxcfr = parseFloat($('.tauxcfr').val());
+    var tauxchange = parseFloat($('.tauxchange').val());
+    var hs = $(row).find('.hs').val()
+    var cfr = $(row).find('.cfr')
+    var amount = $(row).find('.amount')
+    var dh = $(row).find('.dh')
+    var dt = $(row).find('.dt')
+    var pattc = $(row).find('.pattc')
+    var paht = $(row).find('.paht')
+    var tdt = $(row).find('.tdt')
+    var tcharges = $(row).find('.tcharges')
+    cfrval=(unitpr/tauxcfr)
+    amountval=(cfrval*qty).toFixed(2)
+    dhval=(cfrval.toFixed(2)*tauxchange).toFixed(2)
+    dtval=(hs*dhval).toFixed(2) // this is the checkpoint (dt val should be rediced to 2 numbers after the comma)
+    console.log(cfrval, tauxchange)
+    cfr.text(cfrval.toFixed(2))
+    amount.text(amountval)
+    dh.text(dhval)
+    dt.text(dtval)
+  }
+  function calcrows(){
+    // console.log('calculating')
+    // if($('.tauxcharge').val()==0||$('.tauxcharge').val()=='NaN'||$('.tauxcharge').val()==''){
+    //   $('.tauxcharge').addClass('bg-danger')
+    //   return
+    // }
+    // $('.tauxcharge').removeClass('bg-danger')
+    // Select each <tr> in the table
+    facturedh=parseFloat($('.facturedh').val())
+    totalcharges=parseFloat($('.totalcharges').text())
+    // tauxhs=$('.tauxhs').val()
+    // if (tauxhs==0 || tauxhs==""){
+    //   $('.tauxhs').addClass('bg-danger')
+    //   //alertify.error('Remplir les champs')
+    //   return
+    // }
+    let hasEmptyInputs = $('.hs').toArray().some(function(input) {
+      return $(input).val().trim() === ''; // Check if the input value is empty
+    });
+
+    if (hasEmptyInputs) {
+      // There are empty inputs
+      console.log('There are empty inputs.');
+      return
+    }
+    if (facturedh==0 || facturedh==""){
+      $('.facturedh').addClass('bg-danger')
+      //alertify.error('Remplir les champs')
+      return
+    }
+    if(totalcharges==0){
+      $('.totalcharges').addClass('bg-danger')
+      //alertify.error('Remplir les champs')
+      return
+    }
+    // if (tauxhs==0 || tauxhs==""){
+    //   $('.tauxhs').addClass('bg-danger')
+    //   //alertify.error('Remplir les champs')
+    //   return
+    // }
+    //$('.tauxhs').removeClass('bg-danger')
+    $('.facturedh').removeClass('bg-danger')
+    $('.totalcharges').removeClass('bg-danger')
+    totalfacturedevise=0
+    totaldttimesqty=0
+    totalcharges=0
+    totalfacturedh=0
+    pattc_qty=0
+    //$('.maintable').css('filter', 'blur(5px)')
+    $('#calcTable tr').each(function(index, row) {
+      // Call the function to calculate the result for the current row
+      //calculateRow(row);
+      // Find the two numbers in the row
+      var qty = parseFloat($(row).find('.qty').text());
+      var unitpr = parseFloat($(row).find('.unitpr').text());
+      var tauxcfr = parseFloat($('.tauxcfr').val());
+      var tauxchange = parseFloat($('.tauxchange').val());
+      var tauxcharge = parseFloat($('.tauxcharge').val());
+      var hs = $(row).find('.hs').val()
+      var cfr = $(row).find('.cfr')
+      var amount = $(row).find('.amount')
+      var dh = $(row).find('.dh')
+      var dt = $(row).find('.dt')
+      var pattc = $(row).find('.pattc')
+      var paht = $(row).find('.paht')
+      var tdt = $(row).find('.tdt')
+      var tcharges = $(row).find('.tcharges')
+      cfrval=unitpr/tauxcfr
+      amountval=cfrval*qty
+      dhval=cfrval*tauxchange
+      dtval=hs*dhval
+      totalfacturedh+=dhval*qty
+
+      //console.log('cfrval', cfrval)
+      //cfr.tex)
+      //console.log('amountval', amountval)
+      amount.text(amountval.toFixed(2))
+      //console.log('dhval', dhval)
+      dh.text(dhval.toFixed(2))
+      //console.log('dtval', dtval)
+      dt.text(dtval.toFixed(2))
+      if (!tauxcharge==0){
+        pattcval=dtval/tauxcharge
+        pahtval=pattcval/1.2
+        tchargesval=(pattcval-dtval)*qty
+        tdtval=(dtval-dhval)*qty
+        pattc_qty+=pattcval*qty
+
+        //console.log('pattcval', pattcval)
+        //console.log('pahtval', pahtval)
+        //console.log('tchargesval', tchargesval)
+        pattc.text(pattcval.toFixed(2))
+        paht.text(pahtval.toFixed(2))
+        tcharges.text(tchargesval.toFixed(2))
+        tdt.text(tdtval.toFixed(2))
+      }
+      totalfacturedevise+=parseFloat(amountval)
+      totaldttimesqty+=parseFloat(dtval)*qty
+    })
+    //$('.facturedevise').text(totalfacturedevise)
+    $('.maintable').css('filter', 'none')
+    $('.pattc_qty').text(pattc_qty.toFixed(2))
+    calcfacturedh()
+    calccharges(totaldttimesqty)
+    alldt=0
+    $('.tdt').each(function() {
+      alldt += parseFloat($(this).text()); // Convert the text to a float and add it to the total
+    });
+    allcharges=0
+    $('.tcharges').each(function() {
+      allcharges += parseFloat($(this).text()); // Convert the text to a float and add it to the total
+    });
+    $('.alldt').text(alldt.toFixed(2))
+    $('.allcharges').text(allcharges.toFixed(2))
+    calcmarges()
+  }
+  function calcfacturedh(){
+    facturedevise=parseFloat($('.facturedevise').val().replace(',', '.'))
+    facturedh=$('.facturedh')
+    tauxchange=parseFloat($('.tauxchange').val())
+    console.log(facturedevise, tauxchange)
+    facturedh.val((facturedevise*tauxchange).toFixed(2))
+    calccharges()
+  }
+
+  // Function to process each row one by one
+
+
+    // document.getElementById('upload').addEventListener('change', handleFile, false);
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    // do the work...
+    const sorttable=(event) => {
+      th=event.target
+        const table = th.closest('table').querySelector('tbody');
+        Array.from(table.querySelectorAll('tr'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr) );
+    };
+
+
+    function intcomparer(idx, asc) {
+  	  return function(a, b) {
+  	    function getintCellValue(row, idx) {
+  	      const value = row.cells[idx].innerText || row.cells[idx].textContent;
+  	      return value.trim().replace(' ', '');
+  	    }
+
+  	    const v1 = getintCellValue(asc ? a : b, idx);
+  	    const v2 = getintCellValue(asc ? b : a, idx);
+
+  	    if (v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)) {
+  	      return v1 - v2;
+  	    } else {
+  	      return v1.toString().localeCompare(v2);
+  	    }
+  	  }
+  	}
+    function intsorttable(event){
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(intcomparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+    function searchpdctcategory(event) {
+      // Get the values from all filter input fields
+          var filterValue = $(event.target).val().toLowerCase();
+
+          // Split the filter value into individual terms based on the '&' sign
+          var filterTerms = filterValue.split('+').map(function(term) {
+              return term.trim();
+          });
+
+          // Iterate through the table rows
+          $(".pdctcategorybody tr").each(function() {
+              var rowText = $(this).text().toLowerCase();
+              var showRow = true;
+
+              // Check if all filter terms are present in the row text
+              $.each(filterTerms, function(index, term) {
+                  if (term !== '' && rowText.indexOf(term) === -1) {
+                      showRow = false;
+                      return false; // Exit the loop early if a mismatch is found
+                  }
+              });
+
+              // Toggle the visibility of the row based on the filter criteria
+              $(this).toggle(showRow);
+          });
+      }
+    function exportcommand(){
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      //removing the
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable').find('input').remove()
+      table = document.getElementById('pdctcategorytable')
+    	var uri = 'data:application/vnd.ms-excel;base64,'
+        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+      	var ctx = {worksheet:'commande_category', table: table.innerHTML}
+        window.location.href = uri + base64(format(template, ctx))
+        setTimeout(()=>location.reload(), 2500)
+    }
+    // this here needs to be removed, cause he etude page will have different functions, but some functions will stay as we will need them
+    function getpdctins(pdctref){
+      $.get('/products/getpdctins', {'ref':pdctref}, (data)=>{
+        $('.tbodyinsrepport').html('')
+        $('.totalqtyin').html(data.totalqtyin)
+        if (data.success){
+          for (let i of data.pdctins){
+            $('.tbodyinsrepport').append(`
+            <tr>
+              <td>${i.date}</td>
+              <td>${i.supplier}</td>
+              <td style="background:yellowgreen;">${i.quantity}</td>
+              <td>${i.price}</td>
+              <td>${parseFloat(i.devise).toFixed(2)}</td>
+              <td>${(i.total).toFixed(2)}</td>
+            </tr>
+            `)
+          }
+        }
+
+      })
+    }
+    function getpdctouts(pdctref){
+      $.get('/products/getpdctouts', {'ref':pdctref}, (data)=>{
+        $('.totalqtyout').html('data.totalqtyout')
+        $('.totalqtyout').html(data.totalqtyout)
+        $('.pdctstock').html('')
+        $('.pdctstock').html(data.pdctstock)
+        $('.pdctimg').attr('src', '')
+        $('.pdctimg').attr('src', data.pdctimg)
+        $('.pdctname').html('')
+        $('.pdctname').html(data.pdctname)
+        $('.totalqtyavoirs').html('')
+        $('.totalqtyavoirs').html(data.totalqtyavoirs)
+        $('.tbodyoutsrepport').html('')
+        if (data.success){
+          //<td>${i.no}</td>
+          for (let i of data.pdctouts){
+            $('.tbodyoutsrepport').append(`
+            <tr>
+              <td>${i.date}</td>
+
+              <td style="text-align:center;">${i.quantity}</td>
+              <td>${i.price}</td>
+              <td style="text-align:center;">${i.remise}%</td>
+              <td>${i.client}</td>
+              <td>${(i.total).toFixed(2)}</td>
+            </tr>
+            `)
+          }
+          $('.tbodyclientsqty').html('')
+          for (let i of data.clientsqty){
+          $('.tbodyclientsqty').append(`
+            <tr>
+              <td>${i.client}</td>
+              <td>${i.quantity}</td>
+            </tr>
+            `)
+          }
+          $('.tbodyclientsavoirs').html('')
+          for (let i of data.clientsavoirs){
+          $('.tbodyclientsavoirs').append(`
+            <tr>
+              <td>${i.client}</td>
+              <td>${i.quantity}</td>
+            </tr>
+            `)
+          }
+          months_data=data.outbymonth
+          const canvas = document.getElementById('outbymonth');
+          const ctx = canvas.getContext('2d');
+          months=months_data.map(row => row.month)
+          counts=months_data.map(row => row.count)
+          // Check if there's an existing chart and destroy it
+          if (window.myChart) {
+              window.myChart.destroy();
+          }
+          window.myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    data: counts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Example color
+                    borderColor: 'rgba(54, 162, 235, 1)', // Example color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: 'black',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value) => {
+                            return value;
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        display: false // Hide y-axis
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        }
+        $('.pdctdaterepport').toggleClass('blurred');
+      })
+
+    }
+    function getpdctdata(event, pdctref){
+      $('.pdctdaterepport').toggleClass('blurred')
+      $('.pdctcategorybody tr').css('background', 'none')
+      $(event.target).parent().css('background', 'yellowgreen')
+      $('html, body').animate({ scrollTop: 0 }, 'slow');
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+    }
+    function difffob(event, id){
+      foban= parseFloat($(event.target).parent().parent().find(`.foban`).val())
+      fobnv= parseFloat($(event.target).parent().parent().find(`.fobnv`).val())
+      $(`.difffob${id}`).text((fobnv-foban).toFixed(2))
+    }
+    $('.categoryselect').on('change', function(){
+      $('.pdctcategorybody').html('<div class="spinner-border" role="status"></div>')
+      if(!$(this).val()==""){
+        $.get('/products/pdctscategoryrepport', {'categoryid':$(this).val()}, (data)=>{
+
+          $('.pdctcategorybody').html('')
+          //minstock is used to indeicate arrivage
+          for (i of data.pdctdata){
+            $('.pdctcategorybody').append(`
+            <tr >
+              <td ondblclick="getpdctdata(event, '${i.ref}')">${i.ref.toUpperCase()}</td>
+              <td>${i.name}</td>
+              <td><input style="width:100%;" class="foban" value="${(i.devise).toFixed(2)}" onkeyup="difffob(event, ${i.id})"></span></td>
+              <td><input style="width:100%;" class="fobnv" value="0.00" onkeyup="difffob(event, ${i.id})"></span></td>
+              <td class="difffob difffob${i.id}"></td>
+              <td><input style="width:100%;" value="${i.arrivage}" onchange="$('.arrivage${i.id}').text($(this).val()), minstockpdct(event, '${i.id}')"><span class="arrivage${i.id}">${i.arrivage}</span></td>
+              <td style="background: #baf9c7;">${i.totalqtyin}</td>
+              <td style="background: #f3d5d0;">${i.totalqtyout}</td>
+              <td style="background: #5f9ea08a;">${i.stocktotal}</td>
+              <td><input style="width:100%;" value="${i.qtycommande}" onchange="$('.qty${i.id}').text($(this).val()), commandpdct(event, '${i.id}')"><span class="qty${i.id}">${i.qtycommande}</span></td>
+            </tr>
+            `)
+          }
+          $('.excelfile').removeClass('d-none')
+
+        })
+      }
+    })
+    // minstock is arrivage
+    function minstockpdct(event, pdctid){
+      $.get('/products/minstockpdct', {
+        'pdctid':pdctid,
+        'qty':$(event.target).val()
+      }, (data)=>{
+      })
+    }
+    function commandpdct(event, pdctid){
+      $.get('/products/commandpdct', {
+        'pdctid':pdctid,
+        'qty':$(event.target).val()
+      }, (data)=>{
+      })
+    }
+    $('.select2').select2({
+
+
+      ajax: {
+        type:'get',
+        dataType: 'json',
+        url: '/products/searchproduct?target={{target}}',
+        data: function (params) {
+          var query = {
+            term: params.term,
+          }
+          // Query parameters will be ?search=[term]&type=public
+          return query;
+        },
+        proccessresults: function (data) {
+            return {
+              results:data.results
+            }
+        },
+        cache:true
+      },
+      minimumInputLength: 1,
+      placeholder:'Chercher Produits',
+      templateResult: formatRepo,
+      templateSelection: formatRepoSelection,
+    });
+    function formatRepo (repo) {
+      if (repo.loading) {
+        return repo.text;
+      }
+
+      var $container = $(
+        `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+        );
+
+
+
+        return $container;
+    }
+    // IF YOU HAVE MORE THN ONE SELECT2, THE ONE THAT'S SIMPLE NEEDS TO BE THE LAST ONE
+    $('.categoryselect').select2();
+    function formatRepoSelection (repo) {
+      return repo.text;
+    }
+    $('.select2').on('change', function(){
+      $('.pdctdaterepport').toggleClass('blurred')
+
+      var [pdctref, name, dp, stock, stockfacture, pdctid, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+    })
+
+
+    $('.inputref').on('change', function (){
+      $('.pdctdaterepport').toggleClass('blurred')
+      pdctref=$(this).val()
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+
+          // Once both functions are finished, remove blur class
+
+
+
+    })
+  </script>
+</body>

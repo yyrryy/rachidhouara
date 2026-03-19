@@ -1,0 +1,12 @@
+{% load global_tags %}
+{% for order in bons %}
+  <tr class="ord" orderid="{{order.code}}" ondblclick="ajaxpage('avoirsupp{{order.id}}', 'avoirsupp {{order.no}}', '/products/avoirsuppdetails/{{order.id}}')">
+    <td>{{ order.no }}</td>
+    <td>{{ order.date|date:'d/m/Y' }}</td>
+    <td>{%if order.avoirfacture %} FC {% else %} BL {% endif %}</td>
+    <td>{{ order.supplier.name }}</td>
+    <td>{{ order.total|floatformat:2|intspace}}</td>
+    <td>{{ order.supplier.rest|floatformat:2|intspace }}</td>
+
+  </tr>
+{% endfor %}

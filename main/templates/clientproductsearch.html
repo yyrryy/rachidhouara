@@ -1,0 +1,116 @@
+{% for i in products %}
+			
+			
+			
+			  <div class="border rounded product-card col-12">
+				<div class="product-card__image">
+				  <div class="image image--type--product text-center">
+					{% if i.image %}
+					<img  src="{{i.image.url}}" alt="{{ i.name }}" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+					{% endif %}
+					
+				  </div>
+				  
+				  <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+				  </div>
+				</div>
+				<div class="product-card__info p-2">
+				  
+				  <div class="product-card__name">
+					<div class="d-flex">
+					  <div style="margin-right: 3px;">
+						<strong style="font-size: 25px;">
+						  {{ i.ref.upper }} 
+						</strong>
+						<div>
+						  <strong>
+							{{i.refeq1}}
+						  </strong> <br>
+						  <strong>
+							{{i.refeq2}}
+						  </strong>
+						</div>
+						{% if i.stocktotal %}
+						  {% if i.stocktotal <= 0 %}
+						  <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+						  {% elif i.stocktotal <= 5 %}
+						  <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+						  {% else %}
+							  <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+							  </div>
+						  {% endif %}
+						{% else %}
+						  <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+						  </div>
+						{% endif %}
+  
+						
+						  {% if i.isnew %}
+					  
+						<div id="blinking-text" class="blink">
+						  <img src="/media/new.jpg" width="40" style="width: 40px;">
+						</div>
+						{% endif %}
+						<div style="color:#00538c;">
+						  {{i.diametre}}
+						</div>
+						<div class="d-flex justify-content-end mt-2">
+							{% if i.mark.image %}
+						  <img src="{{i.mark.image.url}}" width="70" style="width:70px;"><br>
+							{% endif %}
+							{% if i.carlogos.image %}
+						  <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+							{% endif %}
+						</div>
+					  </div>
+					  <div>
+						{% for car in i.getcars %}
+						<div>
+						  {{car}}
+						</div>
+						{% endfor %}
+					  </div>
+					  
+					</div>
+  
+					
+				  </div>
+				  
+				  
+				</div>
+				<div class="product-card__footer d-flex flex-column">
+				  <div class="bg-darkblue text-white w-100 text-center rounded mt-2">
+					<strong>REF: {{i.ref.upper}} </strong>
+				  </div>
+				  <div class="product-card__prices p-2 border w-100 mt-2">
+					<div class="d-flex justify-content-between align-items-center w-100">
+					  {% if i.remise != 0 %}
+					  <div style="font-size: 12px;">
+						
+						{{i.sellprice|floatformat:2}} 
+					  </div>
+					  <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+					  {% else %}
+					  <div style="font-size: 12px;">
+						{{i.sellprice|floatformat:2}}
+					  </div>
+					  <div class="text-danger" style="font-size: 12px;">(NET)</div>
+					  {% endif %}
+					</div>
+  
+				  </div>
+				  <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="{%if i.min|floatformat:-2%}{{i.min|floatformat:-2}}{%else%}1{%endif%}" value="{%if i.min|floatformat:-2%}{{i.min|floatformat:-2}}{%else%}1{%endif%}"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+			  <button class="btn btn-primary cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{{i.image}}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+  
+			  <button class="btn btn-info mt-2 d-none anullercmnd w-100" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+				Anuller
+			  </button>
+			  
+			  {% if i.checkprice %}
+			  Prix cheque: {{i.checkprice|floatformat:2}} Net
+			  {% endif %}
+				</div>
+				
+			  </div>
+		  
+		  {% endfor %}

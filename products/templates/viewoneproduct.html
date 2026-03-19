@@ -1,0 +1,992 @@
+{% load global_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Example</title>
+    <style>
+      @media print {
+         .livraison-holder {
+             height: 27.5cm; /* Slightly less than the maximum printable height */
+             width: 21cm; /* Full width of A4 */
+             border: 1px solid black; /* For debugging and visibility */
+             page-break-after: always; /* Ensures each div starts on a new page */
+             box-sizing: border-box; /* Include padding and border in the element's total width and height */
+         }
+
+         /* Reset margins and paddings for printing */
+         body {
+             margin: 0;
+             padding: 0;
+         }
+         td > div{
+           margin:4px;
+         }
+
+         /* Optional: If you need to adjust margins more precisely */
+         @page {
+             margin: 0; /* Remove any default margins */
+         }
+     }
+    </style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquerySpellingNumber.js"></script>
+    <link href="/static/css/minified.css" rel="stylesheet" />
+</head>
+<body>
+<style>
+    /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 23px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.switch input:checked + .slider {
+  background-color: #8ec73b;
+}
+
+.switch input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+.switch input:checked + .slider:before {
+  -webkit-transform: translateX(15px);
+  -ms-transform: translateX(15px);
+  transform: translateX(15px);
+}
+
+/* Rounded sliders */
+.switch .slider.round {
+  border-radius: 34px;
+}
+
+.switch .slider.round:before {
+  border-radius: 50%;
+}
+</style>
+
+<div class="row">
+    <!-- <div class="col-2">
+        <div class="bg-white p-2 position-fixed" style="width: inherit;">
+            <div class="btn-group-vertical w-100 text-left">
+                <a href="#info" type="button" class="btn btn-outline-secondary text-start border-bottom active">Info stock</a>
+                <a href="#mouvement" type="button" class="btn btn-outline-secondary text-start border-bottom">Movement de stock</a>
+                <a href="#tarif" type="button" class="btn btn-outline-secondary text-start border-bottom">Tarif</a>
+            </div>
+
+        </div>
+    </div> -->
+    <div class="12">
+        <div class="card mb-2" id="info">
+            <div class="card-header">
+                <strong>
+                    Article info
+                </strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="w-100">
+                        {% endif %}
+                        <table style="font-size: 12px;" class="table border-top">
+                            <tr>
+                                <td>
+                                    Cout Moyen
+                                </td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frcoutmoyen|floatformat:2}}
+                                    {% else %}
+                                    {{product.coutmoyen|floatformat:2}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Prix Achat
+                                </td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frbuyprice|floatformat:2}}
+                                    {% else %}
+                                    {{product.buyprice|floatformat:2}}
+                                    {% endif %}
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Remise 1</td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frremise1}}
+                                    {% else %}
+                                    {{product.remise1}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Remise 2</td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frremise2}}
+                                    {% else %}
+                                    {{product.remise2}}
+                                    {% endif %}
+                                </td>
+                            </tr><tr>
+                                <td>Remise 3</td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frremise3}}
+                                    {% else %}
+                                    {{product.remise3}}
+                                    {% endif %}
+                                </td>
+                            </tr><tr>
+                                <td>Remise 4</td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frremise4}}
+                                    {% else %}
+                                    {{product.remise4}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Prix achat net</td>
+                                <td>
+                                    {% if target == "f" %}
+                                    {{product.frnetbuyprice|floatformat:2}}
+                                    {% else %}
+                                    {{product.netbuyprice|floatformat:2}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <!-- <tr>
+
+                                <td>
+                                    Prix Vente net
+                                </td>
+                                <td>
+                                    {{product.prixnet|floatformat:2}}
+                                </td>
+                            </tr> -->
+                            <tr>
+                                {% if target == "f" %}
+                                <!-- <td>
+                                    Stock Farah
+                                </td>
+                                <td class="stocktotal{{product.id}} d-flex">
+                                    
+                                    {{product.stocktotalfarah}}
+                                    
+                                </td> -->
+                                {% elif target == 'o' %}
+                                <td>
+                                    Stock Orgh
+                                </td>
+                                <td class="stocktotal{{product.id}} d-flex">
+                                    
+                                    {{product.stocktotalorgh}}
+                                    
+                                </td>
+                                {% else %}
+                                <!-- <td>
+                                    Stock farah
+                                </td>
+                                <td class="stocktotal{{product.id}} d-flex">
+                                    
+                                    {{product.stocktotalfarah}}
+                                    
+                                </td> -->
+                                <td>
+                                    Stock orgh
+                                </td>
+                                <td class="stocktotal{{product.id}} d-flex">
+                                    
+                                    {{product.stocktotalorgh}}
+                                    
+                                </td>
+                                {% endif %}
+
+                            </tr>
+                            <!-- <
+                             -->
+                            <!-- <tr style="background: #ffaa76;">
+                                <td>
+                                    Stock bon
+                                </td>
+                                <td>
+                                    {{product.stockbon}}
+                                </td>
+                            </tr> -->
+
+                        </table>
+                        <!-- <div class="mb-2 d-flex">
+                            <div>
+                                Status:
+                            </div>
+                            {{product.isactive}}
+                            <div style="width: 15px; height: 15px;" class="status{{product.id}}  rounded bg-{% if product.isactive %}success{% else %}danger{% endif %}"></div>
+                        </div> -->
+                        <!-- {% if product.isactive %}
+                        <button class="mb-2 w-100 btn btn-danger" onclick="desactiverproduct({{product.id}})">
+                            Desactiver
+                        </button>
+                        {% else %}
+                        <button class="mb-2 w-100 btn btn-success" onclick="activerproduct({{product.id}})">
+                            Activer
+                        </button>
+                        {% endif %} -->
+                        <!-- <button class="mb-2 w-100 btn btn-success" onclick="activerproduct({{product.id}})">
+                            Activer
+                        </button>
+                        <button class="mb-2 w-100 btn btn-danger" onclick="desactiverproduct({{product.id}})">
+                            Desactiver
+                        </button> -->
+                        <hr>
+                        <!-- duplicate -->
+                        <div class="text-center p-2 bg-dark text-white">duplicate</div>
+                        <div class="border p-2">
+                            <strong>reference* :</strong>
+                            <input type="text" class="form-control ref">
+                            <strong>marque* :</strong>
+                            <select name="" id="" class="form-control mark">
+                                <option value="">--</option>
+                                {% for i in marques %}
+                                <option value="{{i.id}}">{{i.name.upper}}</option>
+                                {% endfor %}
+                            </select>
+                            <strong>min. stock:</strong>
+                            <input type="text" class="form-control stock">
+                            <button class="btn btn-success mt-2 w-100" onclick="duplicate(event, '{{product.id}}')">Creer</button>
+                        </div>
+
+
+                        <!-- replace -->
+                        {% if not target == "s" %}
+                         <div class="mt-3 border p-2">
+                            <strong>Le reference correct:</strong>
+                            <select class="form-control ref refreplace"></select>
+
+                            <button class="w-100" onclick="replaceproduct()">Remplacer</button>
+                         </div>
+                        {% endif %}
+                        <!-- <div class="damagedpdctsholder">
+                          <strong>
+                            Les produits Damagés
+                          </strong>
+
+                          <input type="text" class="form-control mb-2 qty" placeholder="Quantité default">
+                          <button class="btn btn-info w-100"onclick="showhiddenpartindamaged(event)">+</button>
+                          <div class="hiddenpart mt-5 d-none">
+                            <input type="text" class="form-control mb-2 password" placeholder="Mot de pass">
+                            <button class="btn btn-warning w-100" onclick="setdamagedqty(event, '{{product.id}}')">Confirmé</button>
+                          </div>
+                        </div> -->
+
+                        <!-- <button class="mt-5 mb-2 w-100 btn btn-success" onclick="activerproduct({{product.id}})">
+                            New
+                        </button>
+                        <button class="mb-2 w-100 btn btn-danger" onclick="desactiverproduct({{product.id}})">
+                            Anuller new
+                        </button> -->
+                    </div>
+                    <div class="col-9">
+                        <!-- update info -->
+                        <form action="{% url 'products:updateproduct' %}" class="p-2 border shadow rounded" method="post" id="updatepdct{{product.id}}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="productid" value="{{product.id}}">
+
+                            <div class="row">
+                                <div class="col-3">
+                                    <small>Image</small>
+                                    <input type="file" name="image" id="image" class="form-control">
+
+                                </div>
+                                <div class="col-3">
+                                    <small>Ref</small>
+                                    <input type="text" class="form-control mb-3" name="ref" value="{{product.ref.upper}}">
+
+
+                                </div>
+                                <div class="col-3">
+                                    <small>Diametre</small>
+                                    <input type="text" class="form-control mb-3" name="diametre" value="{%if product.diametre%}{{product.diametre}}{%endif%}">
+                                </div>
+                                <div class="col-3">
+                                    <small>Min. stock</small>
+                                    <input type="text" class="form-control mb-3" name="minstock" value="{%if product.minstock%}{{product.minstock}}{%endif%}">
+                                </div>
+                                <!-- <div class="col-3">
+                                    <small for="name">Voiture logo. </small> <br>
+                                    <select name="updatepdctlogo" id="" class="select2" style="width:100%;">
+                                        <option value="{{product.carlogos.id}}">
+                                            {{product.carlogos.name.upper}}
+                                        </option>
+                                        {% for i in carlogos %}
+                                        <option value="{{i.id}}">{{i.name.upper}}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                </div> -->
+                            </div>
+
+
+                            <div class="row">
+
+
+
+                                <div class="mb-3 col-3">
+                                    <small>Category</small> <br>
+                                    <select name="category" class="select2 form-select" style="width:100%;">
+                                        <option value="{{product.category.id}}">{{product.category.name.upper}}</option>
+                                        {% for i in categories %}
+                                        <option value="{{i.id}}">{{i.name.upper}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="mb-3 col-3">
+                                    <small>Marque</small> <br>
+                                    <select name="marque" class="select2 form-select mb-3" style="width:100%;">
+                                        <option value="{{product.mark.id}}">{{product.mark.name.upper}}</option>
+                                        {% for i in marques %}
+                                        <option value="{{i.id}}">{{i.name.upper}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- <div class="col-3">
+                                    <small>
+                                        Representant price
+                                    </small>
+                                    <div class="col-12">
+                                        <input style="background: #ffa600bc;" type="number" name="updaterepprice" value="{{product.representprice}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-3">
+                                    <small>
+                                        Representant remise
+                                    </small>
+                                    <div class="col-12">
+                                        <input style="background: #ffa600bc;" type="number" name="updaterepremise" value="{{product.representremise}}" class="form-control">
+                                    </div>
+                                </div> -->
+
+                                <div class="col-3">
+                                    <small>
+                                        Classement
+                                    </small>
+                                    <div class="col-12">
+                                        <input type="text" name="updatecode" value="{{product.code}}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <small>Quantité jeux</small>
+                                    <input type="text" class="form-control mb-3" name="qtyjeu" value="{%if product.qtyjeu%}{{product.qtyjeu}}{%endif%}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                
+                                <div class="col-3">
+                                    <small>Remise</small>
+                                    <input type="text" class="form-control mb-3" name="remise" value="{%if isfarah%}{{product.frremisesell}}{%else%}{{product.remisesell}}{%endif%}">
+                                </div>
+
+                                <div class="col-3">
+                                    <small for="name">Prix vente brut</small>
+                                    <input type="text" class="form-control mb-3"name="sellprice" value="{%if isfarah%}{{product.frsellprice}}{%else%}{{product.sellprice}}{%endif%}">
+                                </div>
+                                <div class="col-3">
+                                    <small for="name">block</small>
+                                    <input type="text" class="form-control mb-3"name="block" value="{{product.block}}">
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center">
+
+                                <div class="col-6">
+                                    <small>Nom</small>
+                                    <input type="text" class="form-control mb-3" name="name" value="{{product.name}}">
+
+                                </div>
+
+                                <!-- <div class="d-flex col-6">
+                                    <div>
+                                        R1
+                                        <input type="text" class="col-6" style="background: greenyellow;" name="refeq1" value="{% if product.refeq1 %}{{product.refeq1}}{% endif %}">
+                                    </div>
+                                    <div>
+                                        R2
+                                        <input type="text" class="col-6" style="background: greenyellow;" name="refeq2" value="{% if product.refeq2 %}{{product.refeq2}}{% endif %}">
+                                    </div>
+                                    <div>
+                                        R3
+                                        <input type="text" class="col-6" style="background: greenyellow;" name="refeq3" value="{% if product.refeq3 %}{{product.refeq3}}{% endif %}">
+                                    </div>
+                                    <div>
+                                        R4
+                                        <input type="text" class="col-6" style="background: greenyellow;" name="refeq4" value="{% if product.refeq4 %}{{product.refeq4}}{% endif %}">
+                                    </div>
+                                </div> -->
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-12">
+
+                                </div>
+                                <div class="col-3">
+                                    <div class="accordion w-100" id="accordionreps" style="right: 0;">
+
+                  <!-- <button class="btn w-100" type="button" data-toggle="collapse" data-target="#collapsreps" aria-expanded="true" aria-controls="collapsreps">
+                    <div>
+                      Representants
+                    </div>
+
+                  </button> -->
+
+                <div id="collapsreps" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreps">
+                  <select name="updatereps" class="form-select updatereps" multiple="multiple" >
+                        {% for i in reps %}
+                            <option value="{{ i.id }}" {% if i.id|stringformat:"s" in repswithprice %}selected{% endif %}>{{ i.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+            </div>
+                                    <!--<small>
+                                        Representants
+                                    </small>
+
+                                    <select name="updatereps" class="form-select updatereps" multiple="multiple" >
+                                        {% for i in reps %}
+                                            <option value="{{ i.id }}" {% if i.id|stringformat:"s" in repswithprice %}selected{% endif %}>{{ i.name }}</option>
+                                        {% endfor %}
+                                    </select>-->
+                                </div>
+                                <!-- <div class="col-4">
+                                    <label for="switch">new:</label>
+                                    {% if product.isnew %}
+                                    <input type="radio" name="switch" value="on" checked> On
+                                    <input type="radio" name="switch" value="off"> Off
+                                    {% else %}
+                                    <input type="radio" name="switch" value="on"> On
+                                    <input type="radio" name="switch" value="off" checked> Off
+                                    {% endif %}
+                                </div>
+                                <div class="col-4">
+                                    <label for="nearswitch">Arrivage:</label>
+                                    {% if product.near %}
+                                    <input type="radio" name="nearswitch" value="on" checked> On
+                                    <input type="radio" name="nearswitch" value="off"> Off
+                                    {% else %}
+                                    <input type="radio" name="nearswitch" value="on"> On
+                                    <input type="radio" name="nearswitch" value="off" checked> Off
+                                    {% endif %}
+                                </div>
+                                <div class="col-3">
+                                    <small>
+                                        Code
+                                    </small>
+                                    <div class="col-12">
+                                        <input type="text" name="updatecoderef" value="{{product.coderef}}" class="form-control">
+                                    </div>
+                                </div> -->
+                            </div>
+                            <!-- <div class="d-flex justify-content-between">
+                                <div>
+                                    <small>Designations</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success" onclick="addcarsinput(event)">+</button>
+                                </div>
+                            </div> -->
+
+                            <!-- <div class="carsholder">
+                                {% for i in cars %}
+                                <div class="d-flex mb-3">
+                                    <input type="text" class="form-control" name="cars" value="{{i}}" style="background: greenyellow;">
+                                    <button class="btn btn-danger" onclick="deletecarinput(event)">-</button>
+                                </div>
+                                {% endfor %}
+                            </div> -->
+                            <small for="name">Ref equiv.</small>
+                            <textarea type="text" class="form-control mb-3" name="equivalent" value="" style="height: 15em">{{product.equivalent}}</textarea>
+                            <small for="name">Voitures.</small>
+                            <textarea type="text" class="form-control mb-3" name="cars" value="" style="height: 15em">{{product.cars}}</textarea>
+                            {% if not target == 's' %}
+                            <button class="border btn btn-success mt-2 w-100" style="    position: sticky;
+                            bottom: 0;" onclick="updateproductdata(event, '{{product.id}}')">
+                                Enregistrer
+                            </button>
+                            {% endif %}
+                        </form>
+
+
+
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+
+        <div class="card mb-2" id="mouvement">
+            <div class="card-header d-flex">
+                <div class="col-6">
+                    <strong>
+                        Movement stock
+                    </strong>
+                </div>
+
+                <div class="col-6 d-flex justify-content-between align-items-center">
+                    <div class="d-flex">
+                        <div class="me-2">
+                          Du <br>
+                          <input type="date" class="pdctdatefrompdct{{product.id}}" value="{{today|date:'Y-m-d'}}">
+                        </div>
+                        <div>
+                          Au <br>
+                          <input type="date" class="pdctdatetopdct{{product.id}}" value="{{today|date:'Y-m-d'}}">
+                        </div>
+                        <button class="btn btn-outline-secondary" onclick="datepdct({{product.id}})">
+                            Filtrer
+                        </button>
+                    </div>
+                    <div class="ml-2">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body row">
+                <div class="col-6">
+                    <button class="btn btn-success w-100">
+                        Entrée
+                    </button>
+                    <input style="width: 20em;
+                    background: #80808038;
+                    border-radius: 11px;
+                    margin-bottom: 9px;" type="text" name="" id="" placeholder="Recherche" onkeyup="searchentrepdct(event, '{{product.id}}')">
+                    <table style="font-size: 12px;" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Date
+                                </td>
+                                <td>
+                                    N° Bon
+                                </td>
+                                <td>
+                                    Fournisseur
+                                </td>
+                                <td>
+                                    Quantité
+                                </td>
+                                <td>
+                                    Prix
+                                </td>
+                                <td>
+                                    total
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody class="pdctsinbody{{product.id}}">
+                          <!-- <tr>
+                            <td>01/01/2024</td>
+                            <td>inventaire 2023</td>
+                            <td>stock inital</td>
+                            <td>{%if isfarah%}{{product.frstockinitial}}{%else%}{{product.stockinitial}}{%endif%}</td>
+                            <td>{%if isfarah%}{{product.frpriceinitial|floatformat:2}}{%else%}{{product.priceinitial|floatformat:2}}{%endif%}</td>
+                          </tr> -->
+                          {% for entry in product.stockin_set.all %}
+                          {% endfor %}
+                          <!-- 
+                            {% if not entry.isinventaire %} onclick="ajaxpage('bonachat{{entry.nbon.id}}', 'Bon achat {{entry.nbon.nbon}}', '/products/bonachatdetails/{{entry.nbon.id}}')" {%endif%}
+                          -->
+                            {% for entry in entries %}
+                            <tr >
+                                <td>
+                                    {{entry.date|date:"d/m/Y"}}
+                                </td>
+                                <td>
+                                    {% if entry.isfacture %}FC - {{entry.facture.facture_no}}{% else %}BL - {{entry.nbon.nbon}}{% endif %}
+                                </td>
+                                <td>
+                                    {{entry.supplier.name}}
+                                </td>
+                                <td>
+                                    {{entry.quantity}} {% if entry.nbon.ismanual %}(*){% endif %}
+                                </td>
+                                <td>
+                                    {{entry.price}}
+                                </td>
+                                <td>
+                                    {{entry.total|floatformat:2|intspace}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% for i in avoirs %}
+                            <tr style="color:red;">
+                                <td>
+                                    {{i.avoir.date|date:"d/m/Y"}}
+                                </td>
+                                <td>
+                                    {{i.avoir.no}}
+                                </td>
+                                <td>
+                                    {{i.avoir.client.name}}
+                                </td>
+                                <td>
+                                    {{i.quantity}}
+                                </td>
+                                <td>
+                                    {{i.price}}
+                                </td>
+                                <td>
+                                    {{i.total}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <td></td>
+                            <td></td>
+                            <td ></td>
+                            <td style="background: yellowgreen;">{{totalqtyin}}</td>
+                            <td ></td>
+                            <td style="background: yellowgreen;">{{totalcout|floatformat:2}}</td>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-danger w-100">
+                        Sorties
+                    </button>
+                    <input style="width: 20em;
+                    background: #80808038;
+                    border-radius: 11px;
+                    margin-bottom: 9px;" type="text" name="" id="" placeholder="Recherche" onkeyup="searchsortipdct(event, '{{product.id}}')">
+                    <div style="height: 230px; overflow-y: scroll;">
+                        <table style="font-size: 12px;" class="table table-bordered sortipdcttable">
+                            <thead style="position: sticky; background: white;top: 0;">
+                                <tr>
+                                    <td>
+                                        Date
+                                    </td>
+                                    <td>
+                                        N° Bon
+                                    </td>
+                                    <td>
+                                        Client
+                                    </td>
+                                    <td>
+                                        Quantité
+                                    </td>
+                                    <td>
+                                        Prix
+                                    </td>
+                                    <td>
+                                        Remise
+                                    </td>
+                                    <td>
+                                        total
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody class="pdctsoutbody{{product.id}}">
+                                {% for i in outs %}
+                                <tr>
+                                    <td>
+                                       {% if i.1 == 'outbl' %} {{i.0.date|date:"d/m/Y"}} {% else %} {{i.0.facture.date|date:"d/m/Y"}} {% endif %}
+                                    </td>
+                                    <td>
+                                      {% if i.0.isinventaire %}Inventaire {% endif %}
+                                       {% if i.1 == 'outbl' %} {{i.0.bon.bon_no}}  {% else %} {{i.0.facture.facture_no}}{% endif %}
+                                    </td>
+                                    <td>
+                                       {% if i.1 == 'outbl' %} {{i.0.bon.client.name}} {% else %} {{i.0.facture.client.name}} {% endif %}
+                                    </td>
+                                    <td>
+                                        {{i.0.qty}}
+                                    </td>
+                                    <td>
+                                        {{i.0.price}}
+                                    </td>
+                                    <td>
+                                        {{i.0.remise}}
+                                    </td>
+                                    <td>
+                                        {{i.0.total}}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% for i in avoirsupp %}
+                                <tr style="color:red;">
+                                    <td>
+                                       {{i.avoir.date|date:"d/m/Y"}}
+                                    </td>
+                                    <td>
+                                       {{i.avoir.no}}
+                                    </td>
+                                    <td>
+                                       {{i.avoir.supplier.name}}
+                                    </td>
+                                    <td>
+                                        {{i.qty}}
+                                    </td>
+                                    <td>
+                                        {{i.price}}
+                                    </td>
+                                    <td>
+                                        --
+                                    </td>
+                                    <td>
+                                        {{i.total}}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <thead style="position: sticky; background: white; bottom: 0;">
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td style="background: yellowgreen;">
+                                        {{totalqtyout}}
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td style="background: yellowgreen;">
+                                        {{totalcoutout}}
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="card mb-2" id="mouvement">
+            <div class="card-header d-flex">
+                <div class="col-6">
+                    <strong>
+                        Client reliquat
+                    </strong>
+                </div>
+
+            </div>
+            <div class="card-body row">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <td>Date</td>
+                    <td>N° commande</td>
+                    <td>Client</td>
+                    <td>Quantité</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in thisproductreliquat %}
+                  <tr>
+                    <td>
+                      {{i.date|date:'d/m/y'}}
+                    </td>
+                    <td>
+                      {{i.order.order_no}}
+                    </td>
+                    <td>
+                      {{i.order.client}}
+                    </td>
+                    <td>
+                      {{i.qty}}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+        </div> -->
+
+    </div>
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'js/select2.min.js'%}"></script>
+    <script src="{% static 'js/type.min.js'%}"></script>
+    <script src="{% static 'js/number.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/alertify.min.js'%}"></script>
+<script>
+    function duplicate(event, productid){
+        var parent=$(event.target).parent();
+        ref=parent.find('.ref').val();
+        mark=parent.find('.mark').val();
+        minstock=parent.find('.minstock').val();
+        if (ref=='' || mark==''){
+          alertify.error('Veuillez remplir tous les champs');
+          return;
+        }
+        $.get('/products/duplicate', {'productid':productid, 'ref':ref, 'mark':mark, 'minstock':minstock}, function(data){
+          if(data.success){
+            alertify.success('Produit dupliqué');
+            parent.find('.ref').val('');
+            parent.find('.mark').val('');
+            parent.find('.minstock').val('');
+          }else{
+            alertify.error(data.message);
+          }
+        })
+      }
+      
+    function replaceproduct(){
+        productid=$('.refreplace').val().split('§')[5]
+        if (productid==null){
+            alertify.error('No product selected')
+            return
+        }
+        alertify.prompt( 'Confirmer', 'Mot de pass', '****', function(evt, value) { 
+          if (value=='ORGHAD'){
+            $.get('/products/replaceproduct', {'replacewith':productid, 'producttoreplace':'{{product.id}}', 'target':'{{target}}'}, (data)=>{
+                // close the current window
+                if (data.success){
+                  alertify.success('Produit remplacé')
+                    window.close()
+                }else{
+                    alertify.error(data.message)
+                }
+
+                //ajaxpage('addpdct2', 'Produit zzg', '/products/viewoneproduct/'+productid+'?target={{target}}')
+            })
+          }else{
+            alertify.error('Mot de passe')
+          } }
+          , function() { alertify.error('Cancel') 
+
+        });
+        
+    }
+    $('.refreplace').select2({
+
+
+        ajax: {
+        type:'get',
+        dataType: 'json',
+        url: '/products/searchproduct?target={{target}}',
+        data: function (params) {
+            var query = {
+            term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+        },
+        proccessresults: function (data) {
+            return {
+                results:data.results
+            }
+        },
+        cache:true
+        },
+        minimumInputLength: 2,
+        placeholder:'Chercher Produits',
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection,
+        });
+        function formatRepo (repo) {
+        if (repo.loading) {
+            return repo.text;
+        }
+
+        console.log('>>> repo', repo)
+        var $container = $(
+            `<strong>${repo.text}</strong> `
+            );
+
+
+            return $container;
+        }
+
+        function formatRepoSelection (repo) {
+        return repo.text;
+        }
+
+    function updateproductdata(event, id){
+        event.preventDefault()
+        console.log('updatebtn', id)
+        console.log('sending')
+        ref=$(`#updatepdct${id}`).find('[name="ref"]')
+        console.log('>> ref', ref)
+        if (ref.val()==""){
+          ref.addClass('border-danger')
+          alertify.error('REF Vide!')
+          return
+        }
+        ref.removeClass('border-danger')
+        var formData = new FormData($(`#updatepdct${id}`)[0]);
+        formData.append('stock', `stocktotal${id}`);
+        formData.append('target', '{{target}}');
+        console.log(formData)
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updateproduct" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                if(data.success){
+                    window.close()
+                    alertify.success('Modifier');
+
+                    ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
+                }else{
+                    alertify.error(data.error)
+                }
+
+            })
+        })
+    }
+
+</script>
+</body>

@@ -1,0 +1,178 @@
+{% extends 'fcadminbase.html' %}
+
+{% block content %}
+<div class="">
+    <div class=" position-relative">
+
+      <!-- nav -->
+
+      <!-- cards -->
+      <div >
+
+        <div class="row mb-2">
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addpducts', 'ARTICLES FC', '/products/stock?fc=1')">
+
+                <i class="bi bi-list-task h1">
+
+                </i>
+                <div>
+                    Articles
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addclientstab', 'CLIENTS', '/products/clientspage?facture=1')">
+
+                <i class="bi bi-people-fill h1">
+
+                </i>
+                <div>
+                  CLIENTS
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addlistbonachat', 'BON ACHAT', '/products/listbonachat?facture=1')">
+
+                <i class="bi bi-folder-symlink h1">
+
+                </i>
+                <div>
+                  List Bon Achat
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addavoircl', 'AVOIR CLIENT', '/products/listavoirclient?facture=1')">
+                <i class="bi bi-folder-x h1">
+                </i>
+                <div>
+                  List Avoir client
+                </div>
+            </div>
+
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('avoirsupp', 'AOIR FOURNISSEUR', '/products/listavoirsupplier?facture=1')">
+
+                <i class="bi bi-folder h1">
+
+                </i>
+                <div>
+                  List Avoir Fournisseur
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/etatfcclients' target='_blank'>
+
+                <i class="bi bi-card-checklist  h1">
+
+                </i>
+                <div>
+                  Etat Client FC
+                </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-2" onclick="ajaxpage('addlistfactures', 'FACTURES', '/products/listfactures')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+              <i class="bi bi-receipt h1"></i>
+              <div>
+                List Factures
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="ajaxpage('addfacture', '+ FACTURE', '/products/facture')">
+              <i class="bi bi-plus h1"></i>
+              <div>
+                Facture
+              </div>
+            </div>
+          </div>
+          <div class="col-2" onclick="ajaxpage('addlistreglementfc', 'REGLEMENT FACTURE CLIENT', '/products/listreglementfc')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+              <i class="bi bi-cash h1"></i>
+              <div>
+                Reglements Factures
+              </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addsituationclfc', 'Sit.CLFC', 'products/situationclfc')">
+              <i class="bi bi-calculator h1"></i>
+              <div>
+                Situation CL. FC
+              </div>
+
+
+
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addjournalventefc', 'JOURNAL VENTE FACTURE', '/products/journalventefc')">
+
+              <i class="bi bi-newspaper h1"></i>
+              <div>
+                Journal Vente FC
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addjournalachatfc', 'JOURNAL ACHAT FACTURE', '/products/journalachatfc')">
+
+              <i class="bi bi-newspaper h1"></i>
+              <div>
+                Journal Achat FC
+              </div>
+
+            </div>
+          </div>
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/excelecheaces' target='_blank'>
+
+                <i class="bi bi-check2-square  h1">
+
+                </i>
+                <div>
+                  Bank
+                </div>
+
+            </a>
+          </div>
+
+        </div>
+        <hr class="mt-5 mb-5" style="height: 8px;">
+
+
+
+
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+  // $.get('/products/echeancetoday', (data)=>{
+  //   if (data.length > 0){
+  //     $('.echeanceindex').removeClass('d-none').text(data.length)
+  //     //alertify.confirm('Echenaces', data.length+' ECHEANES AUJOURD HUI', function(){
+  //     //  ajaxpage('echeancetab', 'Echeances', '/products/listecheance')
+  //     //}, ()=>{
+
+  //     //})
+  //   }
+  // })
+  
+
+</script>
+{% endblock %}

@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="row">
+    <div class="col-3">
+        <div class="bg-white p-2 position-fixed" style="width: inherit;">
+            <div class="btn-group-vertical w-100 text-left">
+                <a href="#info" type="button" class="btn btn-outline-secondary text-start border-bottom active">Info stock</a>
+                <a href="#mouvement" type="button" class="btn btn-outline-secondary text-start border-bottom">Movement de stock</a>
+                <a href="#tarif" type="button" class="btn btn-outline-secondary text-start border-bottom">Tarif</a>
+            </div>
+            
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="card mb-2" id="info">
+            <div class="card-header">
+                <strong>
+                    Article info
+                </strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="w-100">
+                        {% endif %}
+                        
+                    </div>
+                    <div class="col-9 row">
+                        <!-- update info -->
+                        <form action="{% url 'products:updateproduct' %}" class="p-2 border shadow rounded col-9" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{product.id}}">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <small>Image</small>
+                                    <input type="file" name="image" id="image" class="form-control">
+
+                                </div>    
+                                <div class="col-4">
+                                    <small>Ref</small>
+                                    <input type="text" class="form-control mb-3" name="ref" value="{{product.ref.upper}}">
+                                    
+                                    
+                                </div>
+                                <div class="col-4">
+                                    <small>Diametre</small>
+                                    <input type="text" class="form-control mb-3" name="diametre" value="{{product.diametre}}">
+                                </div>
+                            </div>
+
+                            
+                            <div class="row">
+                                <div class="col-4">
+                                    <small for="name">Ref equiv.</small>
+                                    <input type="text" class="form-control mb-3"name="equivalent" value="{{product.equivalent}}">
+                                </div>
+                                    
+                                
+                                <div class="mb-3 col-4">
+                                    <small>Category</small>
+                                    <select name="category" class="select2 form-select">
+                                        <option value="{{product.category.id}}">{{product.category.name.upper}}</option>
+                                        {% for i in categories %}
+                                        <option value="{{i.id}}">{{i.name.upper}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 col-4">
+                                    <small>Marque</small>
+                                    <select name="marque" class="select2 form-select mb-3">
+                                        <option value="{{product.mark.id}}">{{product.mark.name.upper}}</option>
+                                        {% for i in marques %}
+                                        <option value="{{i.id}}">{{i.name.upper}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                
+                                    
+                                
+                                
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <small>Remise</small>
+                                    <input type="text" class="form-control mb-3" name="remise" value="{{product.remise}}">
+                                </div>
+                                    
+                                <div class="col-6">
+                                    <small for="name">Prix vente brut</small>
+                                    <input type="text" class="form-control mb-3"name="sellprice" value="{{product.sellprice}}">
+                                </div>
+                                
+                            </div>
+
+                            <div class="">
+                                <small>Nom</small>
+                                <input type="text" class="form-control mb-3" name="name" value="{{product.name}}">
+
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small>Designations</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success" onclick="addcarsinput(event)">+</button>
+                                </div>
+                            </div>
+                            <div class="carsholder">
+                                {% for i in cars %}
+                                <div class="d-flex mb-3">
+                                    <input type="text" class="form-control" name="cars[]" value="{{i}}">
+                                    <button class="btn btn-danger" onclick="deletecarinput(event)">-</button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                                <button class="border btn btn-outline-secondary mt-2 w-100 updateproductbtn" id="{{i.id}}">
+                                    Enregistrer
+                            </button>
+                        </form>
+                        
+                        
+                        <div class="col-3">
+                            <table class="table border-top">
+                                <tr>
+                                    <td>
+                                        Prix Vente net
+                                    </td>
+                                    <td>
+                                        {{product.prixnet|floatformat:2}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Stock
+                                    </td>
+                                    <td>
+                                        {{product.stocktotal}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Stock pricnipal
+                                    </td>
+                                    <td>
+                                        {{product.stockprincipal}}
+                                    </td>
+                                </tr>
+                                <tr style="background: #ffaa76;">
+                                    <td>
+                                        Stock depot
+                                    </td>
+                                    <td>
+                                        {{product.stockdepot}}
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                
+            </div>
+        </div>
+
+        <div class="card mb-2" id="mouvement">
+            <div class="card-header d-flex">
+                <div class="col-6">
+                    <strong>
+                        Movement stock
+                    </strong>
+                </div>
+                
+                <div class="col-6 d-flex">
+                    <div class="" id="reportrange" style="cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                        <span class="filterdate"></span> <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="ml-2">
+                        <button class="btn btn-outline-secondary">
+                            Filtrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body row">
+                <div class="col-6">
+                    <button class="btn btn-success w-100">
+                        Entrée
+                    </button>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Date
+                                </td>
+                                <td>
+                                    N° Bon
+                                </td>
+                                <td>
+                                    Fournisseur
+                                </td>
+                                <td>
+                                    Quantité
+                                </td>
+                                <td>
+                                    Prix
+                                </td>
+                                <td>
+                                    total
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in product.stockin_set.all %}
+                            <tr>
+                                <td>
+                                    {{entry.date|date:"d/m/Y"}}
+                                </td>
+                                <td>
+                                    {% if entry.nbon %}
+                                    {{entry.nbon.nbon}}
+                                    {% else %}
+                                    Stock initial
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{entry.supplier.name}}
+                                </td>
+                                <td>
+                                    {{entry.quantity}}
+                                </td>
+                                <td>
+                                    {{entry.price}}
+                                </td>
+                                <td>
+                                    {{entry.total}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-danger w-100">
+                        Sorties
+                    </button>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Date
+                                </td>
+                                <td>
+                                    N° Bon
+                                </td>
+                                <td>
+                                    Client
+                                </td>
+                                <td>
+                                    Quantité
+                                </td>
+                                <td>
+                                    Prix
+                                </td>
+                                <td>
+                                    total
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in product.orderitems_set.all %}
+                            <tr>
+                                <td>
+                                    {{entry.date|date:"d/m/Y"}}
+                                </td>
+                                <td>
+                                    {{entry.nbon}}
+                                </td>
+                                <td>
+                                    {{entry.client.name}}
+                                </td>
+                                <td>
+                                    {{entry.quantity}}
+                                </td>
+                                <td>
+                                    {{entry.price}}
+                                </td>
+                                <td>
+                                    {{entry.total}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-2">
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $('.updateproductbtn').on('click', function(e){
+        e.preventDefault()
+        id=$(this).attr('id')
+        $.post("{% url 'products:updateproduct' %}", {'id':id}, (data)=>{
+            $(`#pdct${id}`).html(data.html)
+        })
+    })
+    const deletecarinput = (e)=>{
+        e.preventDefault();
+        var input = $(e.target).parent().find('input');
+        if (input.val().length > 0){
+            input.css('border', '1px solid red');
+        }
+        else{
+            $(e.target).parent().remove();
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,162 @@
+<div class="row">
+    <div class="col-3 shadow rounded p-2">
+        <h5>
+            Situation Client FC
+        </h5>
+        <select name="clientsituationfcselectfc" id="" class="form-select notempty clientsituationfcselect clientsituationselect" style="width: 100%;">
+
+        </select>
+
+        <div class="mt-2">
+            <div>
+                <small>Du</small>
+                <input type="date" name="situationfccldatefrom" class="form-control notempty situationfccldatefrom situationcldatefrom" value="{{today|date:'Y-m-d'}}">
+            </div>
+            <div>
+                <small>Au</small>
+                <input type="date" name="situationfccldateto" class="form-control notempty situationfccldateto situationcldateto" value="{{today|date:'Y-m-d'}}">
+            </div>
+        </div>
+
+        <button class="btn btn-success w-100 mt-2 genererrelveclfc bg-orange">Relevé</button>
+        <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationfc('clientid', 'startdate', 'enddate')">Imprimer relev. Facture</button>
+    </div>
+
+    <div class="col-9 releveclfcholder" id="releveclfcholder">
+
+    </div>
+</div>
+<script>
+    $(function(){
+      $('.clientsituationfcselect').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+    function printsituationfc(id){
+
+        parentdiv=$(event.target).parent()
+
+        clientid=parentdiv.find(".clientsituationselect").val()
+        datefrom=parentdiv.find(".situationcldatefrom").val()
+        dateto=parentdiv.find(".situationcldateto").val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevfcprint?clientid='+clientid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+
+          myWindow.focus();
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1500);
+    }
+    /*function printsituationfc(id) {
+        var printContents = document.getElementById(id).innerHTML;
+
+        // Create a new window
+        var printWindow = window.open('', '_blank');
+
+        // Set the content of the new window
+        printWindow.document.write('<html><head><link href="/static/css/minified.css" rel="stylesheet" /><title>Print</title></head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('<button onclick="window.print()">Print</button>');
+        printWindow.document.write('</body></html>');
+
+        // Style the content in the new window
+        var styles = `
+            <style>
+                table { font-size: 13px; }
+                body { font-family: serif; }
+                table > tbody > tr > td { padding: 0; }
+            </style>
+        `;
+        printWindow.document.write(styles);
+
+        // Close the document of the new window
+        printWindow.document.close();
+
+    }*/
+
+// Create a new Date object for today
+    // var today = new Date();
+
+    // // Get the current date in the "yyyy-mm-dd" format
+    // var yyyy = today.getFullYear();
+    // var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+    // var dd = String(today.getDate()).padStart(2, '0');
+
+    // // Format the date as "yyyy-mm-dd"
+    // var currentDate = yyyy + '-' + mm + '-' + dd;
+
+    // // Set the value of the date input to today's date
+    // dateInput.value = currentDate;
+    // datetoInput.value = currentDate;
+    $('.genererrelveclfc').on('click', function(){
+        parentdiv=$(this).parent()
+        console.log(parentdiv)
+        // check notempty
+        // var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        //     if (isAnyEmpty){
+        //         let emptyInputs = parentdiv.find('notempty').filter(function() {
+        //             return !this.value.trim();
+        //         });
+
+        //         // Add a red border to all empty input elements
+        //         alertify.error('Veuillez remplir tous les champs obligatoires')
+        //         emptyInputs.css('border', '1px solid red');
+        //         parentdiv.find('notempty').not(emptyInputs).css('border', '');
+        //         $(this).attr('disabled', false)
+        //         return
+        //     }
+        clientid=parentdiv.find('select[name="clientsituationfcselectfc"]').val()
+        datefrom=parentdiv.find('input[name="situationfccldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationfccldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclientfc',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+            },
+            success: function(data){
+                $('.loadingscreen').addClass('d-none')
+                $('.releveclfcholder').html(data.html)
+            }
+        })
+    })
+
+</script>

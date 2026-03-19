@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <title>Print Barcodes</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .print-area {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        }
+        /* Define label size based on your thermal printer */
+        .label {
+             /* 20% for 5 items per row with gap */
+            min-width: 38mm; /* Adjust to match your label size */
+            height: 21.2mm; /* Adjust to match your label size */
+            overflow: hidden;
+            /* display: flex;
+            flex-direction: column;
+            align-items: center; */
+            /* margin-bottom: 1mm; */
+            /*page-break-after: always;  Ensures each label is printed separately */
+        }
+
+        /* Ensure barcode images fit properly */
+        .barcode-img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Hide everything except the barcodes when printing */
+        
+          
+    </style>
+</head>
+<body id="printbody">
+    <div class="emptyspaceholder d-flex">
+        <input type="number" class="emtyspaces"><button onclick="addspaces()">+</button><button class="bi bi-download" onclick="print()">X</button>
+    </div>
+    {% for barcode in barcodes %}
+    <div class="print-area" style="padding:11mm 10mm 10mm 10mm; {% if not forloop.counter == barcodes|length %}min-height: 29.7cm;{%endif%}width: 21cm;">
+        <!-- Example: Loop over barcode images -->
+        {% for i in  barcode%}
+            <!-- <div class="label d-flex justify-content-between border position-relative"> -->
+            <div class="label px-2" style="font-size: 10px;">
+                <!-- <div class="label d-flex justify-content-between border position-relative"> -->
+                <div class=""  style="font-size: 10px;text-align: center;">
+                    <!-- <div class=""  style="font-size: 10px;position: relative;margin-bottom: 15px;margin-top: 5px;"> -->
+                    <strong>{{i.0.upper}}</strong>
+                    <!-- <strong style="position: absolute;">{{i.0.upper}}</strong> -->
+                </div>
+                <div class="d-flex justify-content-between">
+                    <strong>
+                        {{i.4}}000{{i.2|floatformat:-2}}
+                    </strong>
+                    <strong>
+                        {{i.5}}
+                    </strong>
+                </div>
+                <div class="d-flex">
+                <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                <div class="col-4">
+                    <img class="barcode-img" src="data:image/png;base64,{{i.3}}" alt="Barcode" style="margin-top: auto;">
+                </div>
+                <div style="font-size: 10px; margin-left: 3px;">{{i.1}}</div>
+                </div>
+                <!-- <div class="col-4"> -->
+                <!-- <div style="position: absolute; top: 0;right: 0; width: 30%;"> -->
+                <!-- <div style="font-size: 12px; padding-left: 17px; margin-top: -5px;">{{text}}</div> -->
+                <!-- <div style="font-size: 12px;">{{text}}</div> -->
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+<script src="/static/js/jquery.min.js"></script>
+<script>
+    function print() {
+        $('.emptyspaceholder').addClass('d-none');
+        
+    }
+    function addspaces() {
+        let spaces = $('.emtyspaces').val();
+        let holder = $('.print-area');
+        for (let i = 0; i < spaces; i++) {
+            holder.prepend('<div class="label"></div>');
+        }
+    }
+</script>
+</body>
+</html>

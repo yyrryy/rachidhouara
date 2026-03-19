@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" src="{% static 'css/owl.carousel.min.js'%}">
+<style>
+
+
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<div style="background: orange" class="d-flex justify-content-between">
+	<div class="col-2 mb-2 p-2">
+		<input type="text" class="repinput form-control" style="border-radius: 3em;height: 40px;" placeholder="Rechesssrche REPEXPERT" onchange="searchrepexpert()">
+
+	<img src="/media/repxpert.svg" class="btn text-white mt-2" onclick="searchrepexpert()" style="width: 19em">
+	</div>
+
+	<div class="row" style="width: 60%">
+		{% for i in arrivage %}
+		<a class="col-6 mt-2 mb-2">
+			<img src={{i.image.url}} class="rounded" style="width: 100%">
+		</a>
+		{% endfor %}
+
+	</div>
+
+	<div class="col-2 mb-2 p-2 me-5 text-center">
+		<input type="text" class="vinrepinput form-control" style="border-radius: 3em;height: 40px;" placeholder="W0LGM6EJ0B1071492" onchange="searchvinrepexpert()">
+		<button class="btn bg-darkblue rounded text-white w-100 mt-2 " onclick="searchvinrepexpert()">
+			Recherche
+		</button>
+		<strong>
+			Recherche par CARTE GRISE
+		</strong>
+	</div>
+
+</div>
+<div class="position-relative">
+
+	<!-- products holder -->
+
+	<div class="block-split__item block-split__item-content col-auto">
+	  <div class="block">
+		<div class="products-view p-2">
+		  <div>
+		  <!-- title holder -->
+
+		  <div>
+			<!-- <div class="col-3 shadow" style="position: sticky; top: 0;">
+			  <div class="bg-white">
+
+				<img src="" alt="" style="width: 100%;" class="shadow-lg">
+
+
+				<div class="bg-orange p-2">
+					<div class="m-auto">
+						<input type="text" class="repinput form-control" style="border-radius: 2em;height: 27px;" placeholder="Recherche REPEXPERT">
+
+						<button class="btn bg-darkblue text-white mt-2 w-100" onclick="searchrepexpert()" style="border-radius: 2em;">
+							REPEXPERT
+						</button>
+					</div>
+					<hr class="bg-white" style="opacity:1; height: 5px;">
+					<input type="text" name="" id="" placeholder="Recherche" class="searchinputcategories mb-2 form-control mt-2" style="border-radius: 2em;height: 27px;">
+					<div style="height:30vh; overflow-y: scroll">
+
+						<ul class="list-group" style="font-size: 14px; border-radius: 2em;">
+
+							{% for i in categories %}
+							<a href="/categories/products/{{i.id}}" class="list-group-item cat{{i.id}} ctglist" >
+
+									<b type="button" class="categoriesbtn" data-catgoryid="{{i.id}}">
+
+											{{i.name}} ({{i.produit_set.all.count}})
+
+									</b>
+							</a>
+							{% endfor %}
+
+						</ul>
+					</div>
+					<div class="mt-2">
+						<h3 class="text-white">Les marques</h3>
+						<input type="text" name="" id="" placeholder="Recherche" class="searchinputmarks form-control mb-2" style="border-radius: 2em; height: 27px;">
+						<div style="height:30vh; overflow-y: scroll">
+
+							<ul class="list-group" style="font-size: 14px; border-radius: 2em;">
+
+								{% for i in marques %}
+								<a href="/marques/products/{{i.id}}" class="list-group-item cat{{i.id}} mrklist" >
+									<b type="button" class="marquesbtn" data-catgoryid="{{i.id}}">
+
+											{{i.name}} ({{i.produit_set.all.count}})
+
+									</b>
+								</a>
+								{% endfor %}
+
+							</ul>
+						</div>
+					</div>
+				</div>
+
+
+			  </div>
+			</div> -->
+
+
+			<div>
+				<!-- search results
+				<div class="searchresults">
+
+				</div>-->
+				<div id="container">
+					<div class="card">
+						<div class="">
+							NOUVEAU ARRIVAGE
+						</div>
+						<div class="">
+							<div class="owl-carousel">
+								{% for i in newproducts %}
+								<div class="card rounded bg-white d-flex flex-column" style="border: 3px solid; height: 27.5em">
+									<a href="/product/{{i.id}}" class="d-flex flex-column border p-2">
+										<img src="{% if i.image %}{{i.image.url}} {% endif %}" alt="" class="rounded" />
+									</a>
+								  <div class="p-2">
+								  	<div class="d-flex justify-content-between mb-2">
+
+								    <strong class="text-darkblue">{{i.ref.upper}}</strong>
+								    <img src='{%if i.mark.image %}{{i.mark.image.url}} {%endif%}' style="width: 70px">
+								  	</div>
+								    <p class="card-text text-darkblue">{{i.name}}</p>
+								    <!-- <strong class="text-darkblue">{{i.sellprice}} ({% if i.remise > 0 %}{{i.remise}}{%else%}NET{%endif%})</strong> -->
+
+								  </div>
+								    <a href="/product/{{i.id}}" class="btn btn-primary w-100 mt-auto">Nouveau</a>
+								</div>
+
+								{% endfor %}
+							</div>
+						</div>
+					  </div>
+
+
+					<!-- Each image is 350px by 233px -->
+					<div class="card">
+						<div class="">
+							promotions
+						</div>
+						<div class="">
+							<div class="owl-carousel mt-5">
+								{% for i in promotions %}
+								<img src="{% if i.image %}{{i.image.url}} {% endif %}" alt="" />
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+				<!-- {% for i in products %}
+
+
+
+			  <div class="border rounded product-card shadow col-12">
+				<div class="product-card__image">
+				  <div class="image image--type--product text-center">
+					{% if i.image %}
+					<img  src="{{i.image.url}}" alt="{{ i.name }}" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+					{% endif %}
+
+				  </div>
+
+				  <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+				  </div>
+				</div>
+				<div class="product-card__info p-2">
+
+				  <div class="product-card__name">
+					<div class="d-flex">
+					  <div style="margin-right: 3px;">
+						<strong style="font-size: 25px;">
+						  {{ i.ref.upper }}
+						</strong>
+						<div>
+						  <strong>
+							{{i.refeq1}}
+						  </strong> <br>
+						  <strong>
+							{{i.refeq2}}
+						  </strong>
+						</div>
+						{% if i.stocktotal %}
+						  {% if i.stocktotal <= 0 %}
+						  <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+						  {% elif i.stocktotal <= 5 %}
+						  <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+						  {% else %}
+							  <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+							  </div>
+						  {% endif %}
+						{% else %}
+						  <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+						  </div>
+						{% endif %}
+
+
+						  {% if i.isnew %}
+
+						<div id="blinking-text" class="blink">
+						  <img src="/media/new.jpg" width="40" style="width: 40px;">
+						</div>
+						{% endif %}
+						<div style="color:#00538c;">
+						  {{i.diametre}}
+						</div>
+						<div class="d-flex justify-content-end mt-2">
+							{% if i.mark.image %}
+						  <img src="{{i.mark.image.url}}" width="70" style="width:70px;"><br>
+							{% endif %}
+							{% if i.carlogos.image %}
+						  <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+							{% endif %}
+						</div>
+					  </div>
+					  <div>
+						{% for car in i.getcars %}
+						<div>
+						  {{car}}
+						</div>
+						{% endfor %}
+					  </div>
+
+					</div>
+
+
+				  </div>
+
+
+				</div>
+				<div class="product-card__footer d-flex flex-column">
+				  <div class="bg-darkblue text-white w-100 text-center rounded mt-2">
+					<strong>REF: {{i.ref.upper}} </strong>
+				  </div>
+				  <div class="product-card__prices p-2 border w-100 mt-2">
+					<div class="d-flex justify-content-between align-items-center w-100">
+					  {% if i.remise != 0 %}
+					  <div style="font-size: 12px;">
+
+						{{i.sellprice|floatformat:2}}
+					  </div>
+					  <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+					  {% else %}
+					  <div style="font-size: 12px;">
+						{{i.sellprice|floatformat:2}}
+					  </div>
+					  <div class="text-danger" style="font-size: 12px;">(NET)</div>
+					  {% endif %}
+					</div>
+
+				  </div>
+				  <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="{%if i.min|floatformat:-2%}{{i.min|floatformat:-2}}{%else%}1{%endif%}" value="{%if i.min|floatformat:-2%}{{i.min|floatformat:-2}}{%else%}1{%endif%}"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+			  <button class="btn btn-primary cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{{i.image}}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+
+			  <button class="btn btn-info mt-2 d-none anullercmnd w-100" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+				Anuller
+			  </button>
+
+			  {% if i.checkprice %}
+			  Prix cheque: {{i.checkprice|floatformat:2}} Net
+			  {% endif %}
+				</div>
+
+			  </div>
+
+		  {% endfor %} -->
+		</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+
+
+
+{% endblock %}
+
+{% block js %}
+
+<script src="{% static 'js/catalog.js' %} "></script>
+
+<script src="{% static 'js/owl.min.js'%}"></script>
+<script>
+	$(document).ready(function(){
+
+	$(".owl-carousel").owlCarousel({
+		center: true,
+            loop:true,
+            margin:30,
+            nav:false,
+            dots:true,
+            autoplay: true,
+            slideTransition: 'linear',
+            autoplayTimeout: 3000,
+            autoplaySpeed: 3000,
+            autoplayHoverPause: true,
+            responsive:{
+                0:{
+                    items:1
+                },
+                600:{
+                    items:5
+                },
+                1000:{
+                    items:5
+                }
+            }
+	})
+	})
+	$('.searchinputcategories').on('input', function() {
+         var filter = $(this).val().toUpperCase();
+         $('.ctglist').each(function() {
+            var categoryName = $(this).text().toUpperCase();
+            if (categoryName.indexOf(filter) > -1) {
+               $(this).show();
+            } else {
+               $(this).hide();
+            }
+         });
+      });
+	$('.searchinputmarks').on('input', function() {
+         var filter = $(this).val().toUpperCase();
+         $('.mrklist').each(function() {
+            var categoryName = $(this).text().toUpperCase();
+            if (categoryName.indexOf(filter) > -1) {
+               $(this).show();
+            } else {
+               $(this).hide();
+            }
+         });
+      });
+	// $('.searchpc').on('change', ()=>{
+	// 	var searchpc = $('.searchpc').val()
+	// 	if(searchpc.length > 0){
+	// 		$.get('/client/searchglobal', {term: searchpc}, (data)=>{
+	// 			$('.searchresults').html(data.html)
+	// 			$('.cmnd').each((i, el)=>{
+	// 				$(el).on('click', ()=>{
+	// 					// id=$(el).attr('pdct');
+	// 					$(el).addClass('d-none')
+	// 					$(el).parent().find('.anullercmnd').removeClass('d-none')
+	// 					$(el).attr('disabled', true)
+	// 					ref=$(el).attr('pdctref')
+	// 					name=$(el).attr('pdctname')
+	// 					ctg=$(el).attr('pdctcategory')
+	// 					pr=$(el).attr('pdctpr')
+	// 					id=$(el).attr('pdctid')
+	// 					img=$(el).attr('pdctimg')
+	// 					//min is remise
+	// 					min=$(el).attr('pdctremise')
+	// 					// get nearest item
+	// 					let qty = $(el).parent().find('.input-number > .input-number__input').val()
+	// 					// add new row to coommand table
+	// 					addcmnd(name, ctg, ref, qty, pr, id, img, min)
+	// 					// update total
+
+	// 				})
+	// 			})
+	// 		})
+	// 	} else {
+	// 		$('.searchresults').html('')
+	// 	}
+	// })
+
+	function searchrepexpert(){
+		let inpval=$('.repinput').val()
+		if (inpval==''){
+			return
+		}
+		let url='https://www.repxpert.ma/fr/search/results?q='+inpval
+		window.open(url, '_blank')
+
+	}
+	function searchvinrepexpert(){
+		let inpval=$('.vinrepinput').val()
+		if (inpval==''){
+			return
+		}
+		let url='https://auto3n.ru/catalogs/-vehicles?ident_string='+inpval+'&ft=findVehicle&c='
+		window.open(url, '_blank')
+
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+<div class="d-flex justify-content-between">
+    <div>
+        <strong>
+            avance N° {{avance.id}} 
+        </strong>
+        <button class="bi bi-download" onclick="printavanceclient('{{avance.id}}')"></button>
+    </div>    
+    
+        
+</div>
+
+<div class="col-3">
+    
+    
+    <div class="">
+        <small>Date de avance:</small> <br>
+        <input type="date" class="w-100 notempty mb-2 regldate" value="{{avance.date|date:'Y-m-d'}}">
+    </div><br>
+    
+    <input name="avanceid" hidden>
+    <small>Client: <strong class="client">{{avance.client.name.upper}}</strong></small><br>
+    
+    <!-- <small>Sold Bl Client: <span class="soldblinupdatereglbl text-danger" style="margin-left: 10px;">{{avance.client.soldbl}}</span></small><br> -->
+    <!-- <div class="mt-5">
+        <input type="password" class="passworddeletereglbl form-control">
+        <button class="btn btn-danger deletereglblbtn w-100" reglid="" onclick="deletereglbl(event)">Supprimer</button>
+    </div> -->
+
+</div>
+
+<div class="avancebonsholderinupdate col-9 border position-relative">
+
+    <div class="inputsholder">
+
+        
+        <div class="row align-items-center">
+            <div class="col-4">
+                <small>Mantant:</small> <br>
+                <input type="number" name="mantant" class="w-100 notempty" placeholder="Mantant" value="{{avance.amount}}">
+            </div>
+            <div class="col-4">
+                <small>N° piece:</small> <br>
+                <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece" value="{{avance.npiece}}">
+            </div>
+            <div class="col-4">
+                <small>Mode Paiment:</small> <br>
+                <select name="mode" class="w-100 notempty" onchange="checkmodeavance(event)">
+                    <option value="{{avance.mode}}">{{avance.mode}}</option>
+                    <option value="cheque">Cheque</option>
+                    <option value="effet">effet</option>
+                    <option value="espece">espece</option>
+                    <option value="verement">verement</option>
+                    <option value="versement">versement</option>
+                    <option value="carte">carte banquaire</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <small>Echeance:</small> <br>
+                <input type="date" name="echeance" class="w-100 notempty" value="{{avance.echance|date:'Y-m-d'}}">
+            </div>
+            <div class="col-4">
+                <small>Bank:</small> <br>
+                <input type="text" name="bank" class="w-100" value="{{avance.bank}}">
+            </div>
+            <div class="col-4">
+                <small>Note:</small> <br>
+                <input type="text" name="note" class="w-100" value="{%if avance.note%}{{avance.note}}{%endif%}">
+            </div>
+            <div class="col-4">
+                <small>Bon:</small> <br>
+                <input type="text" name="bonofavance" class="w-100" value="{%if avance.bonofavance%}{{avance.bonofavance}}{%endif%}">
+            </div>
+            <div class="col-4">
+                {% if avance.inreglement %}
+                    <div class="" style="text-align: center; background: rgb(179, 255, 0);">
+                        Reglement
+                    </div>
+                    {% else %}
+                    <button class="btn btn-success" onclick="updateavanceclient(event, '{{avance.id}}')">Modifier</button>
+                    {% endif %}
+            </div>
+        </div>
+
+        {% for i in otherregl %}
+        <!-- <div class="row align-items-center">
+            <div class="col-4">
+                <small>Mantant:</small> <br>
+                <input type="number" name="mantant" class="w-100 notempty" placeholder="Mantant" value="{{i.amount}}">
+            </div>
+            <div class="col-4">
+                <small>N° piece:</small> <br>
+                <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece" value="{{i.npiece}}">
+            </div>
+            <div class="col-4">
+                <small>Mode Paiment:</small> <br>
+                <select name="mode" class="w-100 notempty" onchange="checkmodeavance(event)">
+                    <option value="{{i.mode}}">{{i.mode}}</option>
+                    <option value="cheque">Cheque</option>
+                    <option value="effet">effet</option>
+                    <option value="espece">espece</option>
+                    <option value="verement">verement</option>
+                    <option value="versement">versement</option>
+                    <option value="carte">carte banquaire</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <small>Echeance:</small> <br>
+                <input type="date" name="echeance" class="w-100 notempty" value="{{i.echance|date:'Y-m-d'}}">
+            </div>
+            <div class="col-4">
+                <small>Bank:</small> <br>
+                <input type="text" name="bank" class="w-100" value="{{i.bank}}">
+            </div>
+            <div class="col-4">
+                <button class="w-100 btn btn-primary" onclick="updatereglclient('{{i.id}}')">Modifier</button>
+            </div>
+        </div> -->
+        {% endfor %}
+
+    </div>
+
+
+
+    
+    <!-- <div class="mb-2">
+        <small>Facture</small>
+        <select name="addavancebons disabled" id="" class="select2 form-select " multiple="multiple">
+
+        </select>
+    </div>
+
+    <select name="addavancefactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+    </select> -->
+
+</div>
+

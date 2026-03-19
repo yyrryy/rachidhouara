@@ -1,0 +1,21 @@
+{% for i in products %}
+
+<tr>
+    <td>
+        {{product.ref}}
+    </td>
+    <td>
+        {{product.category.name}}
+    </td>
+    <td>
+        <input type="number" name="qtycommand" class="calculate" value="{{product.qtycommand}}">
+    </td>
+    <td>
+        <input type="number" name="price" class="calculate" value="{{product.price}}">
+    </td>
+    <td class="totalproduct">
+        
+    </td>
+</tr>
+
+{% endfor %}

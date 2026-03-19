@@ -1,0 +1,3 @@
+{% for i in bons %}
+<tr class="blreglrow" clientid="{{i.client.id}}"><td>{{i.date|date:"d/m/Y"}}</td><td>{{i.bon_no}}</td><td>{{i.total}}</td> <td><input type="checkbox" value="{{i.id}}" name="bonstopay" total={{i.total}} onchange="checkreglementbox(event)"></td></tr>
+{% endfor %}

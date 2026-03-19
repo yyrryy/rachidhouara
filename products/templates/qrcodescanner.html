@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Scanner Input</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      padding: 24px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    p {
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .scanner-box {
+      margin-top: 20px;
+      padding: 18px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .scanner-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .scanner-input:focus {
+      border-color: #111827;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      background: #111827;
+      color: white;
+    }
+
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+    }
+
+    .label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      word-break: break-word;
+      font-size: 16px;
+      color: #111827;
+      min-height: 24px;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>QR Code Scanner Device Input</h1>
+    <p>
+      This version is for a physical QR code scanner device that behaves like a keyboard. Click the input, then scan a QR code. Most scanners automatically send an Enter key after the scan.
+    </p>
+
+    <div class="scanner-box">
+      <input
+        id="scannerInput"
+        class="scanner-input"
+        type="text"
+        autocomplete="off"
+        autofocus
+        placeholder="Click here and scan with the device"
+      />
+      <div class="hint">
+        Keep this field focused so the scanner can type into it.
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="focusBtn">Focus Input</button>
+      <button id="clearBtn" class="secondary">Clear</button>
+    </div>
+
+    <div class="result">
+      <div class="label">Scanned Result</div>
+      <div class="value" id="resultText">No scan received yet.</div>
+      <div class="status" id="statusText">Waiting for scanner input.</div>
+    </div>
+  </div>
+
+  <script>
+    const scannerInput = document.getElementById('scannerInput');
+    const resultText = document.getElementById('resultText');
+    const statusText = document.getElementById('statusText');
+    const focusBtn = document.getElementById('focusBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function handleScan(value) {
+      const cleaned = value.trim();
+      if (!cleaned) return;
+
+      resultText.textContent = cleaned;
+      statusText.textContent = 'QR code received from scanner device.';
+      scannerInput.value = '';
+      scannerInput.focus();
+    }
+
+    scannerInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleScan(scannerInput.value);
+      }
+    });
+
+    scannerInput.addEventListener('blur', () => {
+      statusText.textContent = 'Input lost focus. Click Focus Input before scanning again.';
+    });
+
+    scannerInput.addEventListener('focus', () => {
+      statusText.textContent = 'Ready to receive scanner input.';
+    });
+
+    focusBtn.addEventListener('click', () => {
+      scannerInput.focus();
+      statusText.textContent = 'Input focused. You can scan now.';
+    });
+
+    clearBtn.addEventListener('click', () => {
+      scannerInput.value = '';
+      resultText.textContent = 'No scan received yet.';
+      statusText.textContent = 'Waiting for scanner input.';
+      scannerInput.focus();
+    });
+
+    window.addEventListener('load', () => {
+      scannerInput.focus();
+    });
+  </script>
+</body>
+</html>

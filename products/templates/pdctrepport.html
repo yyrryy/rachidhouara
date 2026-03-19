@@ -1,0 +1,633 @@
+<html>
+<head>
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/jquerySpellingNumber.js"></script>
+  <link href="/static/css/minified.css" rel="stylesheet" />
+  <script src="/static/js/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="/static/js/xlsx.full.min.js"></script>
+
+</head>
+<style media="screen">
+  .blurred{
+    filter:blur(8px);
+  }
+  table input{
+    width:65px;
+  }
+  table {
+    border-color: black;
+  }
+</style>
+<body style="background: #e3e3e3; font-family: monospace;">
+  <div class="p-2">
+      <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+          <div>
+            {{title}}
+          </div>
+        </div>
+      <div class="container">
+
+        <div class="row bg-white rounded shadow p-2">
+          <!-- <input type="text" name="" placeholder="Refernce" class="inputref"> -->
+          <select class="select2" name="">
+
+          </select>
+
+        </div>
+
+
+        <!-- I want to add something new here -->
+
+        <div class="row mt-5 pdctdaterepport position-relative">
+          <div class="row bg-white rounded shadow p-2">
+            <div class="col-4">
+              <img class="pdctimg" src="/media/default.jpg" alt="" style="width:9em;">
+            </div>
+            <div class="col-8">
+              <strong class="pdctname">--</strong>
+              <div class="row mt-3">
+                <div class="col-3">
+                  <div class="bg-primary rounded text-white text-center">
+                    <strong class="totalqtyin"></strong> <br>
+                    <strong>QTY Frns</strong>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="bg-primary rounded text-white text-center">
+                    <strong class="totalqtyout"></strong> <br>
+                    <strong>QTY Sortie</strong>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="bg-danger rounded text-white text-center">
+                    <strong class="totalqtyavoirs"></strong> <br>
+                    <strong>QTY Avoirs</strong>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="bg-primary rounded text-white text-center">
+                    <strong class="pdctstock"></strong> <br>
+                    <strong>Stock</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-5" >
+            <div class="col-6">
+
+              <div class="bg-white rounded shadow p-2">
+                <strong class="underline">Entrée Frns</strong>
+                <!-- <canvas id="inbymonth"></canvas> -->
+
+                <table class="table table-hover table-bordered mt-3">
+                  <thead style="position:sticky; top:0; background:#f7ce9a;">
+                    <tr>
+                      <td>Date</td>
+                      <td>Frn.</td>
+                      <td>Qty</td>
+                      <td>prix</td>
+                      <td>devise</td>
+                      <td>Total</td>
+                    </tr>
+                  </thead>
+                  <tbody class="tbodyinsrepport">
+
+                  </tbody>
+                </table>
+
+                <hr>
+                <div class="alert alert-warning text-dark" role="alert">
+                  <strong>Avoirs</strong>
+                  <table class="table table-hover table-bordered mt-3">
+                    <thead style="position:sticky; top:0; background:#f7ce9a;">
+                      <tr>
+                        <td>Client</td>
+                        <td>Avoirs</td>
+                      </tr>
+                    </thead>
+                    <tbody class="tbodyclientsavoirs">
+
+                    </tbody>
+                  </table>
+                </div>
+
+                <hr>
+                <strong>Top client</strong>
+                <table class="table table-hover table-bordered mt-3">
+                  <thead style="position:sticky; top:0; background:#f7ce9a;">
+                    <tr>
+                      <td>Client</td>
+                      <td>Qty</td>
+                    </tr>
+                  </thead>
+                  <tbody class="tbodyclientsqty">
+
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="bg-white rounded shadow p-2">
+                <strong class="">Sortie de stock</strong>
+                <canvas id="outbymonth"></canvas>
+                <div class="" style="height:15em; position:relative; overflow: scroll;">
+                  <table class="table table-hover table-bordered mt-3">
+                    <thead style="position:sticky; top:0; background:#f7ce9a;">
+                      <tr>
+                        <td>Date</td>
+                        <!-- <td>N°</td> -->
+                        <td style="width:4em; text-align:center;">Qty</td>
+                        <td>prix</td>
+                        <td>remise</td>
+                        <td>client</td>
+                        <td>Total</td>
+                      </tr>
+                    </thead>
+                    <tbody class="tbodyoutsrepport">
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-5 bg-white rounded shadow">
+            <select class="categoryselect" name="">
+              <option value="">--</option>
+              {% for i in categories %}
+              <option value="{{i.id}}">{{i.name}}</option>
+              {% endfor %}
+            </select>
+            <div class="mt-3 d-flex justify-content-between">
+              <button type="button" class="btn btn-success" onclick="exportcommand()">Export</button>
+              <input placeholder="Recherche" oninput="searchpdctcategory(event)">
+              <div class="excelfile d-none d-flex flex-row">
+                <strong>Excel: </strong>
+                <input type="file" id="upload" class="form-control" style="width:12em;" />
+                <div class="referr">
+
+                </div>
+              </div>
+
+            </div>
+            <div class="mt-5" style="position:relative; overflow: scroll;">
+
+              <table class="table table-bordered table-hover pdctcategorytable" id="pdctcategorytable">
+                <thead style="position:sticky; top:0; background:#f7ce9a;">
+                  <tr>
+                    <td onclick="sorttable(event)">REF</td>
+                    <td>Designation</td>
+                    <td>Prix AN</td>
+                    <td>Prix NV</td>
+                    <td onclick="intsorttable(event)">Diff Prix</td>
+                    <td onclick="intsorttable(event)">Arrivage</td>
+                    <td onclick="intsorttable(event)">Entré</td>
+                    <td onclick="intsorttable(event)">Sortie</td>
+                    <td onclick="intsorttable(event)">Stock</td>
+                    <td onclick="intsorttable(event)" >Quantité</td>
+                  </tr>
+                </thead>
+                <tbody class="pdctcategorybody">
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+
+
+      </div>
+
+  </div>
+  <script src="/static/js/select2.min.js"></script>
+  <script>
+    document.getElementById('upload').addEventListener('change', handleFile, false);
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    // do the work...
+    const sorttable=(event) => {
+      th=event.target
+        const table = th.closest('table').querySelector('tbody');
+        Array.from(table.querySelectorAll('tr'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr) );
+    };
+    function handleFile(e) {
+        var files = e.target.files;
+        var i, f;
+        for (i = 0, f = files[i]; i !== files.length; ++i) {
+            var reader = new FileReader();
+            var name = f.name;
+            reader.onload = function(e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {type: 'binary'});
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                matchData(excelData);
+            };
+            reader.readAsBinaryString(f);
+        }
+    }
+
+    function matchData(excelData) {
+        referr=''
+        $('table#pdctcategorytable tbody tr').each(function() {
+            var ref = $(this).find('td').eq(0).text().trim();
+            var id=$(this).attr('pdctid')
+            var excelRow = excelData.find(row => row[0] == ref);
+
+            if (excelRow) {
+                var excelarrivage = excelRow[1]; // assuming devise is in the 5th column (index 4) of the excel row
+                var exceldevise = excelRow[2]; // assuming exceldevise is in the 5th column (index 4) of the excel row
+                diff=$(this).find('.difffob')
+                var fobNvInput = $(this).find('.fobnv');
+                var fobNvInput = $(this).find('.fobnv');
+                var arrivageInput = $(this).find('.arrivage');
+                var fobanInputval = parseFloat($(this).find('.foban').val());
+                // // the exceldevise need to be after
+                // //var fobNvValue = parseFloat(fobNvInput.val()) || 0;
+                diff.text((parseFloat(exceldevise)-fobanInputval).toFixed(2))
+                if ((parseFloat(exceldevise)-fobanInputval) > 0){
+                  diff.addClass('bg-danger')
+                }
+                fobNvInput.val(parseFloat(exceldevise));
+                arrivageInput.val(excelarrivage);
+                //newfob(exceldevise, id)
+                //newarrivageexcel(excelarrivage, id)
+            }
+
+        });
+        excelData.forEach(function(row) {
+
+          var excelRef = row[0].trim();
+          var refFound = $('table#pdctcategorytable tbody tr').filter(function() {
+              return $(this).find('td').eq(0).text().trim() === excelRef;
+          }).length > 0;
+
+          if (!refFound) {
+              console.log(row[0], row[1], row[2]);
+              $('.pdctcategorybody').append(`
+              <tr style="background:#85b4fb;">
+                <td>${row[0].toUpperCase()}</td>
+                <td>--</td>
+                <td><input class="foban" value="--" readonly></td>
+                <td><input class="fobnv" value="${row[2].toFixed(2)}"></td>
+                <td class="difffob">${row[2].toFixed(2)} </td>
+                <td><input class="arrivage text-danger" value="${row[1]}"><span>${row[1]}</span></td>
+                <td style="background: #baf9c7;">--</td>
+                <td style="background: #f3d5d0;">--</td>
+                <td style="background: #5f9ea08a;">--</td>
+                <td><input value="--" readonly></td>
+              </tr>
+              `)
+          }
+      });
+
+    }
+    function intcomparer(idx, asc) {
+  	  return function(a, b) {
+  	    function getintCellValue(row, idx) {
+  	      const value = row.cells[idx].innerText || row.cells[idx].textContent;
+  	      return value.trim().replace(' ', '');
+  	    }
+
+  	    const v1 = getintCellValue(asc ? a : b, idx);
+  	    const v2 = getintCellValue(asc ? b : a, idx);
+
+  	    if (v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)) {
+  	      return v1 - v2;
+  	    } else {
+  	      return v1.toString().localeCompare(v2);
+  	    }
+  	  }
+  	}
+    function intsorttable(event){
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(intcomparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+    function searchpdctcategory(event) {
+      // Get the values from all filter input fields
+          var filterValue = $(event.target).val().toLowerCase();
+
+          // Split the filter value into individual terms based on the '&' sign
+          var filterTerms = filterValue.split('+').map(function(term) {
+              return term.trim();
+          });
+
+          // Iterate through the table rows
+          $(".pdctcategorybody tr").each(function() {
+              var rowText = $(this).text().toLowerCase();
+              var showRow = true;
+
+              // Check if all filter terms are present in the row text
+              $.each(filterTerms, function(index, term) {
+                  if (term !== '' && rowText.indexOf(term) === -1) {
+                      showRow = false;
+                      return false; // Exit the loop early if a mismatch is found
+                  }
+              });
+
+              // Toggle the visibility of the row based on the filter criteria
+              $(this).toggle(showRow);
+          });
+    }
+    function exportcommand(){
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable tr').each(function() {
+          $(this).find('td:eq(2)').remove();
+      });
+      $('.pdctcategorytable').find('input').remove()
+      table = document.getElementById('pdctcategorytable')
+    	var uri = 'data:application/vnd.ms-excel;base64,'
+        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+      	var ctx = {worksheet:'commande_category', table: table.innerHTML}
+        window.location.href = uri + base64(format(template, ctx))
+        setTimeout(()=>location.reload(), 2500)
+    }
+
+    function getpdctins(pdctref){
+      $.get('/products/getpdctins', {'ref':pdctref}, (data)=>{
+        $('.tbodyinsrepport').html('')
+        $('.totalqtyin').html(data.totalqtyin)
+        if (data.success){
+          for (let i of data.pdctins){
+            $('.tbodyinsrepport').append(`
+            <tr>
+              <td>${i.date}</td>
+              <td>${i.supplier}</td>
+              <td style="background:yellowgreen;">${i.quantity}</td>
+              <td>${i.price}</td>
+              <td>${parseFloat(i.devise).toFixed(2)}</td>
+              <td>${(i.total).toFixed(2)}</td>
+            </tr>
+            `)
+          }
+        }
+
+      })
+    }
+    function getpdctouts(pdctref){
+      $.get('/products/getpdctouts', {'ref':pdctref}, (data)=>{
+        $('.totalqtyout').html('data.totalqtyout')
+        $('.totalqtyout').html(data.totalqtyout)
+        $('.pdctstock').html('')
+        $('.pdctstock').html(data.pdctstock)
+        $('.pdctimg').attr('src', '')
+        $('.pdctimg').attr('src', data.pdctimg)
+        $('.pdctname').html('')
+        $('.pdctname').html(data.pdctname)
+        $('.totalqtyavoirs').html('')
+        $('.totalqtyavoirs').html(data.totalqtyavoirs)
+        $('.tbodyoutsrepport').html('')
+        if (data.success){
+          //<td>${i.no}</td>
+          for (let i of data.pdctouts){
+            $('.tbodyoutsrepport').append(`
+            <tr>
+              <td>${i.date}</td>
+
+              <td style="text-align:center;">${i.quantity}</td>
+              <td>${i.price}</td>
+              <td style="text-align:center;">${i.remise}%</td>
+              <td>${i.client}</td>
+              <td>${(i.total).toFixed(2)}</td>
+            </tr>
+            `)
+          }
+          $('.tbodyclientsqty').html('')
+          for (let i of data.clientsqty){
+          $('.tbodyclientsqty').append(`
+            <tr>
+              <td>${i.client}</td>
+              <td>${i.quantity}</td>
+            </tr>
+            `)
+          }
+          $('.tbodyclientsavoirs').html('')
+          for (let i of data.clientsavoirs){
+          $('.tbodyclientsavoirs').append(`
+            <tr>
+              <td>${i.client}</td>
+              <td>${i.quantity}</td>
+            </tr>
+            `)
+          }
+          months_data=data.outbymonth
+          const canvas = document.getElementById('outbymonth');
+          const ctx = canvas.getContext('2d');
+          months=months_data.map(row => row.month)
+          counts=months_data.map(row => row.count)
+          // Check if there's an existing chart and destroy it
+          if (window.myChart) {
+              window.myChart.destroy();
+          }
+          window.myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    data: counts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Example color
+                    borderColor: 'rgba(54, 162, 235, 1)', // Example color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: 'black',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value) => {
+                            return value;
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        display: false // Hide y-axis
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        }
+        $('.pdctdaterepport').toggleClass('blurred');
+      })
+
+    }
+    function getpdctdata(event, pdctref){
+      $('.pdctdaterepport').toggleClass('blurred')
+      $('.itemrow').css('background', 'none')
+      $(event.target).parent().css('background', 'yellowgreen')
+      $('html, body').animate({ scrollTop: 0 }, 'slow');
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+    }
+    function difffob(event, id){
+      foban= parseFloat($(event.target).parent().parent().find(`.foban`).val())
+      fobnv= parseFloat($(event.target).parent().parent().find(`.fobnv`).val())
+      $(`.difffob${id}`).text((fobnv-foban).toFixed(2))
+      newfob(fobnv, id)
+    }
+    $('.categoryselect').on('change', function(){
+      $('.pdctcategorybody').html('<div class="spinner-border" role="status"></div>')
+      if(!$(this).val()==""){
+        console.log('start sending')
+        $.get('/products/pdctscategoryrepport', {'categoryid':$(this).val()}, (data)=>{
+          console.log(data)
+          $('.pdctcategorybody').html('')
+          //minstock is used to indeicate arrivage
+          for (i of data.pdctdata){
+            var difference = i.newfob - i.devise;
+            var diffClass = difference > 0 ? 'bg-danger' : ''; // Conditionally add bg-danger class
+            $('.pdctcategorybody').append(`
+            <tr pdctid="${i.id}" class="itemrow">
+              <td ondblclick="getpdctdata(event, '${i.ref}')">${i.ref.toUpperCase()}</td>
+              <td>${i.name}</td>
+              <td><input class="foban" value="${(i.devise).toFixed(2)}" onkeyup="difffob(event, ${i.id})"></span></td>
+              <td><input class="fobnv" value="${i.newfob}" onkeyup="difffob(event, ${i.id})"></span></td>
+              <td class="difffob difffob${i.id} ${diffClass}">${(i.newfob-i.devise).toFixed(2)} </td>
+              <td><input class="arrivage text-danger" value="${i.arrivage}" onchange="$('.arrivage${i.id}').text($(this).val()), minstockpdct(event, '${i.id}')"><span class="arrivage${i.id}">${i.arrivage}</span></td>
+              <td style="background: #baf9c7;">${i.totalqtyin}</td>
+              <td style="background: #f3d5d0;">${i.totalqtyout}</td>
+              <td style="background: #5f9ea08a;">${i.stocktotal}</td>
+              <td><input value="${i.qtycommande}" onchange="$('.qty${i.id}').text($(this).val()), commandpdct(event, '${i.id}')"><span class="qty${i.id}">${i.qtycommande}</span></td>
+            </tr>
+            `)
+          }
+          $('.excelfile').removeClass('d-none')
+
+        })
+      }
+    })
+    // minstock is arrivage
+    function minstockpdct(event, pdctid){
+      $.get('/products/minstockpdct', {
+        'pdctid':pdctid,
+        'qty':$(event.target).val()
+      }, (data)=>{
+      })
+    }
+    function newarrivageexcel(qty, pdctid){
+      $.get('/products/minstockpdct', {
+        'pdctid':pdctid,
+        'qty':qty
+      }, (data)=>{
+      })
+    }
+    function newfob(qty, pdctid){
+      if (!qty==''){
+        $.get('/products/newfob', {
+          'pdctid':pdctid,
+          'qty':qty
+        }, (data)=>{
+        })
+      }
+
+    }
+    function commandpdct(event, pdctid){
+      $.get('/products/commandpdct', {
+        'pdctid':pdctid,
+        'qty':$(event.target).val()
+      }, (data)=>{
+      })
+    }
+    $('.select2').select2({
+
+
+      ajax: {
+        type:'get',
+        dataType: 'json',
+        url: '/products/searchproduct?target={{target}}',
+        data: function (params) {
+          var query = {
+            term: params.term,
+          }
+          // Query parameters will be ?search=[term]&type=public
+          return query;
+        },
+        proccessresults: function (data) {
+            return {
+              results:data.results
+            }
+        },
+        cache:true
+      },
+      minimumInputLength: 1,
+      placeholder:'Chercher Produits',
+      templateResult: formatRepo,
+      templateSelection: formatRepoSelection,
+    });
+    function formatRepo (repo) {
+      if (repo.loading) {
+        return repo.text;
+      }
+
+      var $container = $(
+        `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+        );
+
+
+
+        return $container;
+    }
+    // IF YOU HAVE MORE THN ONE SELECT2, THE ONE THAT'S SIMPLE NEEDS TO BE THE LAST ONE
+    $('.categoryselect').select2();
+    function formatRepoSelection (repo) {
+      return repo.text;
+    }
+    $('.select2').on('change', function(){
+      $('.pdctdaterepport').toggleClass('blurred')
+
+      var [pdctref, name, dp, stock, stockfacture, pdctid, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+    })
+
+
+    $('.inputref').on('change', function (){
+      $('.pdctdaterepport').toggleClass('blurred')
+      pdctref=$(this).val()
+      getpdctins(pdctref)
+      getpdctouts(pdctref)
+
+          // Once both functions are finished, remove blur class
+
+
+
+    })
+  </script>
+</body>

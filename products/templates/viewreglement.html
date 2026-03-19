@@ -1,0 +1,34 @@
+<div class="container">
+    <table style="font-size: 12px;" class="table table-bordered text-center">
+        <thead style="background: rgba(99, 98, 98, 0.301);">
+            <tr>
+                <td>
+                    Date
+                </td>
+                <td>
+                    mantant
+                </td>
+                <td>
+                    N° Bon
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {{reglement.date|date:"d/m/Y"}}
+                </td>
+                <td>
+                    {{reglement.amount}}
+                </td>
+                <td>
+                    {% if reglfc %}
+                    {% for facture in reglement.factures.all %}{{ facture.facture_no }} <br>{% endfor %}
+                    {% else %}
+                    {% for bon in reglement.bons.all %}{{ bon.bon_no }} <br>{% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

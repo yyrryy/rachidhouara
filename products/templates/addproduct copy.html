@@ -1,0 +1,297 @@
+
+<div class="bg-white rounded p-2 shadow">
+    <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button>
+        <div>
+          {{title}}
+        </div>
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
+      </div>
+    <form action="{% url 'products:addoneproduct' %}" autocomplete="off" method="post" class="addoneproductform container margin-auto" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="alert alert-danger existerror d-none">
+            <strong>Erreur!</strong> Cette reference existe deja dans cette categorie
+        </div>
+        <div class="row mb-5">
+            <div class="col-2">
+                <small>REF (*)</small>
+                <input type="text" class="form-control checkref" name="refinadd" placeholder="" required>
+            </div>
+            <div class="col-2">
+                <small>Nom Article(*)</small>
+                <input type="text" class="form-control" name="nameinadd">
+            </div>
+            <div class="col-2">
+                <small>Categorie</small>
+                <select name="categoryinadd" class="form-select select" required>
+                    {% for i in categories %}
+                    <option value="{{i.id}}">
+                        {{i.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <small>Marque</small> <br>
+                <select name="marqueinadd" class="form-select select" required style="width:100%;">
+                    <option value="">--</option>
+                    {% for i in marques %}
+                    <option value="{{i.id}}">
+                        {{i.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <small>Logo</small> <br>
+                <select name="logoinadd" class="form-select select" required style="width:100%;">
+                    <option value="">--</option>
+                    {% for i in carlogos %}
+                    <option value="{{i.id}}">
+                        {{i.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-2">
+                <small>Image</small>
+                <input type="file" class="form-control" name="imageinadd" accept="image/jpeg, image/jpg" required>
+            </div>
+            <div class="col-2">
+                <small>Classement</small>
+                <input type="text" class="form-control" name="codeinadd">
+            </div>
+            <div class="col-2">
+                <small>Prix vents brut</small>
+                <input type="number" step="0.01" class="form-control" name="sellpriceinadd" required>
+            </div>
+            <div class="col-2">
+                <small>Remise</small>
+                <input type="number" step="0.01" name="remiseinadd" class="form-control">
+            </div>
+            <!-- <div class="col-2">
+                <small>Fournisseur</small>
+                <select name="supplier" class="form-select select2">
+                    {% for i in suppliers %}
+                    <option value="{{i.id}}">
+                        {{i.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div> -->
+        </div>
+        <!-- <div class="row mb-5">
+            <div class="col-2">
+                <small>Stock principal</small>
+                <input type="number" class="form-control" name="stock1" required>
+            </div>
+            <div class="col-2">
+                <small>Stock depot</small>
+                <input type="number" name="stock2" class="form-control">
+            </div>
+            <div class="col-2">
+                <small>Minimum stock</small>
+                <input type="number" class="form-control" name="minstock">
+            </div>
+        </div> -->
+        <div class="row mb-5">
+            
+            <!-- <div class="col-2">
+                <small>Prix achat</small>
+                <input type="number" step="0.01" class="form-control" name="buyprice" required>
+            </div> -->
+            
+            
+        </div>
+
+
+        <div class="row mb-5">
+            <div class="col-2">
+                <small>Block</small>
+                <input type="text" class="form-control" name="blockinadd">
+            </div>
+            <div class="col-2">
+                <small>Diametre</small>
+                <input type="text" class="form-control" name="diametreinadd">
+            </div>
+            <div class="col-2">
+                <small>Repr. Prix</small>
+                <input type="number" name="reppriceinadd" class="form-control" step="0.01">
+            </div>
+            <div class="col-2">
+                <small>Ref equiv.</small>
+                <input type="text" class="form-control" name="equivinadd">
+                    
+                
+            </div>
+            
+        </div>
+
+
+        <div class="row mb-5">
+            
+            <div class="col-4">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <small>Designation</small>
+                    </div>
+                    <div>
+                        <button class="btn btn-success" onclick="addcarsinput(event)">+</button>
+                    </div>
+                </div>
+                <div class="carsholder">
+
+                    <div class="d-flex mb-2">
+                        <input type="text" class="form-control" name="carsinadd"><button class="btn btn-danger" onclick="deletecarinput(event)">-</button>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-2">
+                <small>Representants</small>
+                <select class="select" name="commercialsprixinadd" multiple="multiple" style="width:100%;">
+                    {% for i in commercials %}
+                    <option value="{{i.id}}">
+                        {{i.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <small>Code</small>
+                <input type="text" class="form-control" name="coderefinadd">
+            </div>
+            
+        </div>
+
+        <button class="btn btn-primary disabled submitbtn">
+            + Ajouter
+        </button>
+    </form>
+</div>
+
+{% block js %}
+<script>
+    $(function(){
+     $('.select').select2()
+    })
+    $('.submitbtn').on('click', function(e) {
+        e.preventDefault();
+        if ($('[name="refinadd"]').val()=='' || $('[name="nameinadd"]').val()=='' || $('[name="marqueinadd"]').val()=='' || $('[name="categoryinadd"]').val()==''){
+            alertify.error('Veuillez remplir les champs obligatoires');
+            return
+        }
+        var formData = new FormData($('.addoneproductform')[0]);
+        console.log($('[name="commercialsprixinadd"]').val())
+        $.ajax({
+            url: '{% url "products:addoneproduct" %}',
+            type: 'POST',
+            /*data: {
+                'ref':$('[name="refinadd"]').val(),
+                'name':$('[name="nameinadd"]').val(),
+                'category':$('[name="categoryinadd"]').val(),
+                'marque':$('[name="marqueinadd"]').val(),
+                'block':$('[name="blockinadd"]').val(),
+                'code':$('[name="codeinadd"]').val(),
+                'coderef':$('[name="coderefinadd"]').val(),
+                'image':$('[name="imageinadd"]').val(),
+                'sellprice':$('[name="sellpriceinadd"]').val(),
+                'remise':$('[name="remiseinadd"]').val(),
+                'commercialsprix':JSON.stringify($('[name="commercialsprixinadd"]').val()),
+                'repprice':$('[name="reppriceinadd"]').val(),
+                'diametre':$('[name="diametreinadd"]').val(),
+                'equiv':$('[name="equivinadd"]').val(),
+                'cars':$('[name="carsinadd"]').val(),
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+
+            },*/
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                console.log(data);
+                if (data.success) {
+                    
+                    alertify.success('Produit ajouté avec success');
+                    alertify.success('Ajouter le Produit dans le server');
+                    $.ajax({
+                        url: 'http://167.99.39.116:8000/products/addoneproduct',
+                        type: 'GET',
+                        /*data: {
+                            'ref':$('[name="refinadd"]').val(),
+                            'name':$('[name="nameinadd"]').val(),
+                            'category':$('[name="categoryinadd"]').val(),
+                            'marque':$('[name="marqueinadd"]').val(),
+                            'block':$('[name="blockinadd"]').val(),
+                            'code':$('[name="codeinadd"]').val(),
+                            'coderef':$('[name="coderefinadd"]').val(),
+                            'image':$('[name="imageinadd"]').val(),
+                            'sellprice':$('[name="sellpriceinadd"]').val(),
+                            'remise':$('[name="remiseinadd"]').val(),
+                            'commercialsprix':JSON.stringify($('[name="commercialsprixinadd"]').val()),
+                            'repprice':$('[name="reppriceinadd"]').val(),
+                            'diametre':$('[name="diametreinadd"]').val(),
+                            'equiv':$('[name="equivinadd"]').val(),
+                            'cars':$('[name="carsinadd"]').val(),
+
+                        },*/
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        crossDomain: true,
+                        success: function(data) {
+                            console.log(data);
+                            if (data.success) {
+                                
+                                alertify.success('Produit ajouté avec success');
+                                alertify.success('Ajouter le Produit dans le server');
+                                deletetab('add')
+                                ajaxpage('addpducts', 'Articles', '/products/stock')
+                            }
+                        }
+                    })
+                    
+                } else {
+                    alertify.error(data.error);
+                }
+            },
+            error: function(data){
+                console.log(data)
+            }
+        });
+    });
+    $('.checkref').on('change', function() {
+        $('.loadingscreen').toggleClass('d-none')
+        var ref = $(this).val();
+        var category = $('[name="categoryinadd"]').val();
+        $.ajax({
+            url: '{% url "products:checkref" %}',
+            type: 'POST',
+            data: {
+                'ref': ref,
+                'category': category,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data) {
+                console.log(data);
+                $('.loadingscreen').toggleClass('d-none')
+                if (data.exist) {
+                    $('.existerror').removeClass('d-none');
+                    $('.submitbtn').addClass('disabled');
+                } else {
+                    $('.existerror').addClass('d-none');
+                    $('.submitbtn').removeClass('disabled');
+                }
+            }
+        });
+    });
+    
+    $(document).ready(function() {
+        
+        
+    });
+
+</script>
+{% endblock %}

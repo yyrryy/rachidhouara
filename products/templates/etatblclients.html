@@ -1,0 +1,141 @@
+
+{% load global_tags %}
+<html>
+<script src="/static/js/jquery.min.js"></script>
+<link href="/static/css/minified.css" rel="stylesheet" />
+<body>
+<div class="container d-flex justify-content-between">
+	<div>
+		Du <input type="date" class="monthtostart" style="border-radius:5px; border:1px solid; width: 165px" value="{{monthtostart}}">
+		Du <input type="date" class="monthtoend" style="border-radius:5px; border:1px solid; width: 165px" value="{{monthtoend}}">
+		<button class="btn btn-dark" onclick="genereretatbl(event)">Generer</button>
+	</div>
+	<input class="col-6" placeholder="recherche" onkeyup="searchtableetat(event)">
+	<button class="btn btn-primary" onclick="tabletoexcel()">Excel</button>
+	<button class="btn btn-info bi bi-download" onclick="printetat()"></button>
+</div>
+
+<div class="mt-5 printetat" id="printetat">
+	<div class="text-center border" {% if etatfacture %}style="background: orange;"{%endif%}>
+		{{title}}
+	</div>
+	<table class="table table-bordered table-hover" style="font-size: 12px; border-color: black;" id="etattable">
+		<thead class="bg-darkblue text-white">
+			<td style="width: 15%; white-space: nowrap;">Client</td>
+			<td style="text-align: center; width: 5%;">Code</td>
+			<td style="text-align: center; width: 5%">Ville</td>
+			<td style="text-align: center; width: 5%">Region</td>
+			<td style="text-align: center; width: 5%">Repr.</td>
+			{% for i in months %}
+			<td style="text-align: center" onclick="intsorttable(event)">{{i}}</td>
+			{% endfor %}
+			<td onclick="intsorttable(event)">Situation</td>
+		</thead>
+		<tbody>
+		{% for i in data %}
+			<tr>
+			<td>{{i.client_name}}</td>
+			<td style="text-align: center">{{i.client_code}}</td>
+			<td style="text-align: center">{{i.client_city}}</td>
+			<td style="text-align: center">{{i.client_region}}</td>
+			<td style="text-align: center">{{i.client_represent}}</td>
+			{% for a in i.monthly_data %}
+			<td style="text-align: center">
+				{{a.situation|floatformat:2|intspace}}
+			</td>
+			{% endfor %}
+			<td>{{i.totalsituation|intspace}}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+
+	</table>
+</div>
+<script>
+function printetat(){
+	var printContents = document.getElementById('printetat').innerHTML;
+	var originalContents = document.body.innerHTML;
+	document.body.innerHTML = printContents;
+ //  $('.bgavoir').css({
+ //   "position": "absolute !important",
+ //   "right": "26em",
+ //   "opacity": "0.18",
+ //   "top": "23em",
+ //  })
+ // $('body').addClass('d-flex flex-column vh-100')
+	//$('.avitems').css({'font-size': '19px','font-family':'serif'})
+
+	window.print();
+	document.body.innerHTML = originalContents;
+}
+	function searchtableetat(event) {
+	    const query = $(event.target).val().toLowerCase();
+	    const terms = query.split('+');
+		console.log('>>>>>>', query)
+
+	    $('#etattable tbody tr').each(function() {
+	        const row = $(this);
+	        let match = true;
+
+	        terms.forEach(term => {
+	            if (row.text().toLowerCase().indexOf(term.trim()) === -1) {
+	                match = false;
+	            }
+	        });
+
+	        if (match) {
+	            row.removeClass('d-none');
+	        } else {
+	            row.addClass('d-none');
+	        }
+	    });
+	}
+	function intcomparer(idx, asc) {
+	  return function(a, b) {
+	    function getintCellValue(row, idx) {
+	      const value = row.cells[idx].innerText || row.cells[idx].textContent;
+	      return value.trim().replace(' ', '');
+	    }
+
+	    const v1 = getintCellValue(asc ? a : b, idx);
+	    const v2 = getintCellValue(asc ? b : a, idx);
+
+	    if (v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)) {
+	      return v1 - v2;
+	    } else {
+	      return v1.toString().localeCompare(v2);
+	    }
+	  }
+	}
+function genereretatbl(event){
+	monthtostart=$('.monthtostart').val()
+	monthtoend=$('.monthtoend').val()
+	if (monthtostart==''||monthtoend==''){
+		monthtostart==''?$('.monthtostart').addClass('border-danger'):$('.monthtoend').addClass('border-danger')
+		monthtoend==''?$('.monthtoend').addClass('border-danger'):$('.monthtostart').addClass('border-danger')
+	}else{
+		window.location.href =`/products/etatblclients?monthtostart=${monthtostart}&monthtoend=${monthtoend}`
+	}
+}
+function intsorttable(event){
+    th=event.target
+      const table = th.closest('table').querySelector('tbody');
+      Array.from(table.querySelectorAll('tr'))
+          .sort(intcomparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+          .forEach(tr => table.appendChild(tr) );
+  };
+function tabletoexcel(){
+	monthtostart=$('.monthtostart').val()
+	monthtoend=$('.monthtoend').val()
+	table = document.getElementById('etattable')
+	console.log('>>excel')
+	var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  	var ctx = {worksheet:'Etat_Client_bl_moi'+monthtostart+'_'+monthtoend, table: table.innerHTML}
+    window.location.href = uri + base64(format(template, ctx))
+}
+</script>
+</body>
+</html>

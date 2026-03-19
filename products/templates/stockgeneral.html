@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock general {% if target == "f" %}Farah{%else%} Orgh {%endif%}</title>
+    <link href="/static/css/minified.css" rel="stylesheet" />
+
+</head>
+<body class="p-5" style="font-family: sans-serif;">
+    <h4>Stock general {% if target == "f" %}Farah{%else%} Orgh {%endif%}</h4>
+    <strong class="text-danger">{{lenproducts}} produits</strong>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>REF</th>
+                <th>Designation</th>
+                <th>mark</th>
+                <!-- <th>stock initial</th> -->
+                <th>qte achat</th>
+                <th>avoir achat</th>
+                <th>qty ventes</th>
+                <th>avoir client</th>
+                <th>Stock</th>
+                <th>Prix achat moyen HT</th>
+                <th>TVA</th>
+                <th>Prix achat moyen TTC</th>
+                <th>Valeur HT</th>
+                <th>Valeur TTC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{product.ref.upper}}</td>
+                    <td>{{product.name.upper}}</td>
+                    <!-- <td>{% if target == "f" %}{{product.stocktotalfarah}}{%else%} {{product.stocktotalorgh}} {%endif%}</td> -->
+                    <td>{{product.mark.name}}</td>
+                    <!-- <td>{% if target == "f" %}{{product.frstockinitial}}{%else%} {{product.stockinitial}} {%endif%}</td> -->
+                    <td>{{product.qtyachat}}</td>
+                    <td>{{product.avoirachat}}</td>
+                    <td>{{product.qtyventes}}</td>
+                    <td>{{product.avoirventes}}</td>
+                    <td>{% if target == "f" %}{{product.stocktotalfarah}}{%else%} {{product.stocktotalorgh}} {%endif%}</td>
+                    {% with cm=product.coutmoyenorgh %}
+                    <td>
+                        {% if target == "f" %}
+                            {{ product.coutmoyenfarahtva }}
+                        {% else %}
+                            {{ cm.coutttc }}
+                        {% endif %}
+                    </td>
+                    <td>20%</td>
+                    <td>{% if target == "f" %}{{product.coutmoyenfarah}}{%else%} {{ cm.cout}} {%endif%}</td>
+
+                    
+                    <td>
+                        {% if target == "f" %}
+                        {{ product.coutmoyenfarahtva }}
+                        {% else %}
+                        {{ cm.coutstockttc }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if target == "f" %}
+                            {{ product.coutmoyenfarahtva }}
+                        {% else %}
+                            {{ cm.coutstock }}
+                        {% endif %}
+                    </td>
+                {% endwith %}
+
+                    
+                </tr>
+            {% endfor %}
+        </tbody>
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <!-- <th>stock initial</th> -->
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>{{total_coutstockttc}}</th>
+                <th>{{total_coutstock}}</th>
+            </tr>
+        </thead>
+    </table>
+</body>
+</html>

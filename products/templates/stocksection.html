@@ -1,0 +1,495 @@
+<div class="row">
+    <div class="col-2 p-0" style="background: rgb(241, 241, 241);">
+      <div class="sectionitem bg-white text-success border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addpducts', 'List produits', '/products/stock?target={{target}}')">Stock</div>
+
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/addproductspage?target={{target}}')">
+        + Article
+      </div>
+      
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/categoriespage?target={{target}}')">
+        Families
+      </div>
+      
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/marquespage?target={{target}}')">
+        Marques
+      </div>
+      
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('alert', 'Alert stock', '/products/alertstock?target={{target}}')">
+        Alert Stock
+      </div>
+
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/produits?target={{target}}')">
+        Produits
+      </div>
+      <!-- <div class="sectionitem bg-white border-bottom p-2 btn w-100 text-start" onclick="ajaxpage('add', '+ Article', '/products/addproductspage')">+ Article</div> -->
+      
+      
+    </div>
+    <div class="col-10" id="maintab">
+        
+
+<!-- <div class="text-white p-2 rounded h3 text-center" style="background: black;">
+{{title}}
+</div> -->
+<div class="exportpdctsholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
+    <div class="d-flex">
+      <select name="exportcategory">
+        <option value="0">
+          Tous
+        </option>
+        {% for i in categories %}
+        <option value="{{i.id}}">
+          {{i.name}}
+        </option>
+        {% endfor %}
+      </select>
+      <div>
+  
+        <button class="btn btn-success" onclick="exportcategory()">
+          Copie Exc.
+        </button>
+        <button class="btn btn-success" onclick="exportinventaire()">
+          INVANTAIRE
+        </button>
+  
+      </div>
+    </div>
+    <button class="btn btn-secondary" onclick="$('.productstable tbody span.percentage').toggleClass('invisible')">
+    </button>
+    <button class="btn btn-danger" onclick="$('.exportpdctsholder').css('top', '-10vh')"></button>
+  </div>
+  <div class="row" >
+    <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+      <div>
+        {{title}}
+      </div>
+      <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addpducts', 'List produits', '/products/stock?target={{target}}')">↻</button>
+    </div>
+    <div class="d-flex justify-content-between">
+  
+      <button class="btn p-0 bi bi-arrow-left" onclick="(expendproducts())"></button>
+      <input style="width:25em;height: 1.7em;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistproducts rounded">
+  
+  
+      <div class="d-flex justify-content-between" style="width: 12em;">
+        <button class="btn btn-info btn-sm" style="height: 15px;" onclick="$('.productstable tbody span.stockfacture').toggleClass('invisible')"></button>
+      <!-- <button class="btn btn-danger btn-sm" style="height: 15px;" onclick="showdeactivated()"></button>
+      <button class="btn bi bi-download text-white" onclick="$('.exportpdctsholder').css('top', '10vh')"
+      style="width: 2.7em;
+      background: #df691a;
+      height: 21px;
+      border-radius: 11px;"></button> -->
+    </div>
+    
+    <!-- <div class="d-flex" > -->
+    <div class="d-none" >
+      <input type="file" class="form-control excelfile">
+      <button class="btn-success btn-sm" onclick="excelpdcts(event)" style="
+        height: 36px;
+      ">Excel</button>
+  
+    </div>
+  </div>
+      <div class="col-2 categoriesholder">
+         <div class="rounded shadow p-2" style="background: orange; height: 74vh; overflow-y: scroll;">
+          <input style="
+              border-radius: 11px;
+              margin-bottom: 9px;
+              width:100%;
+          " type="text" name="" id="" placeholder="Recherche" class="searchinputcategories">
+          <!-- <input type="text" class="form-control searchref mb-5" placeholder="Chercher REF stock"> -->
+          <!-- <hr> -->
+          <ul class="list-group" style="font-size: 14px;">
+  
+              {% for i in categories %}
+              <li class="list-group-item cat{{i.id}}" onclick="getproductsbycategory('{{i.id}}', '{{i.name}}', 'cat{{i.id}}')" style="background: #676767; color:white;">
+                  <b type="button" class="categoriesbtn" data-catgoryid="{{i.id}}">
+  
+                          {{i.name}} ({{i.produit_set.all.count}})
+  
+                  </b>
+              </li>
+              {% endfor %}
+  
+            </ul>
+         </div>
+      </div>
+  
+  
+      <div class="col-10 expendproducts">
+  
+  
+        <div class="listproductsholder" style="height: 74vh; overflow: scroll;">
+          <table class="table table-bordered table-advance table-hover productstable item-table" style="font-size: 12px;" id="productstable">
+              <thead class="bg-darkblue text-white" style="position: sticky;top: 0;">
+                <tr class="text-center">
+                  <td style="width: 9%"  onclick="sorttable(event)">Ref</td>
+                  <td style="width:30%;"  onclick="sorttable(event)">Designation</td>
+                  <td  onclick="intsorttable(event)">Prix achat</td>
+                  <td  onclick="intsorttable(event)">Prix vente</td>
+                  <td  onclick="intsorttable(event)">Remise</td>
+                  <td  onclick="intsorttable(event)">Prix net</td>
+                  <td  onclick="sorttable(event)">Stock</td>
+                  <td class="text-center"  onclick="sorttable(event)">Q</td>
+                  <td  onclick="sorttable(event)">Diametre</td>
+                  <td class=""  onclick="sorttable(event)">block</td>
+                  <td  onclick="sorttable(event)">Code</td>
+                  <td  onclick="sorttable(event)">Coutmoyen</td>
+                  <td  onclick="sorttable(event)">Ref 1</td>
+                  <td  onclick="sorttable(event)">Ref 2</td>
+                  <td  onclick="sorttable(event)">Ref 3</td>
+                  <td  onclick="sorttable(event)">Marque</td>
+                  <td  onclick="sorttable(event)">order</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody class="product-table-body">
+  
+                {% for i in products %}
+                  <!--
+                  -->
+                  <!-- style="background:{% if not i.isactive %}#f3d6d694;{% endif %}" -->
+                  <tr ondblclick="ajaxpage('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}?target={{target}}')"
+                  
+                  data-product-id="{{ i.id }}" class="product-row ">
+                      <td style="padding: 5px; font-weight: bold;" class="pe-2">
+                          {{i.ref.upper}}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;">
+                          {{i.name}}
+                      </td>
+  
+                      <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
+                         {% if i.buyprice %} {{i.buyprice|floatformat:2}} {% else %} 0 {% endif %}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;" class="text-center">
+                         {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold; font-size: 14px; color: var(--orange);" class="text-center">
+                          {{i.remise}}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;" class="text-center">
+                          {{i.prixnet|floatformat:2}}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
+                          {% if target == 'f' %} {{i.stocktotalfarah}} {% else %} {{i.stocktotalorgh}} {% endif %}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;" class="text-center stockfacture" style="color: blue;">
+                        <span class="stockfacture invisible">
+                          {% if target == 'f' %} {{i.stockfacturefarah}} {% else %} {{i.stockfactureorgh}} {% endif %}
+                        </span>
+                    </td>
+  
+                      <td style="padding: 5px; font-weight: bold;">
+                        {{i.diametre}}
+                    </td>
+                      <td style="padding: 5px; font-weight: bold;" class="text-success">
+                        {{i.block}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                      {{i.coderef}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                      {%if i.coutmoyen%}{{i.coutmoyen}}{%endif%}
+                  </td>
+                      <td style="padding: 5px; font-weight: bold;">
+                          {{i.getequivalent.0}}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;">
+                          {{i.getequivalent.1}}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;">
+                          {{i.getequivalent.2}}
+                      </td>
+                      <td style="padding: 5px; font-weight: bold;">
+                        {{i.mark.name}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                      {{i.code}}
+                  </td>
+  
+  
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                    <span class="percentage invisible">
+                      {{i.getpercentage|floatformat:2}}
+                    </span>
+                  </td>
+  
+                  </tr>
+                {% endfor %}
+  
+  
+              </tbody>
+              <tfoot style="background: rgb(231, 231, 231); position: sticky; bottom: 0;" class="tfootlistproduct">
+                <tr>
+  
+                  <td></td>
+                  <td class="text-end text-center" style="background: yellowgreen;">B</td>
+                  <td class="totalprachstock text-center" style="background: yellowgreen;">{{totalbuyprice}}</td>
+                  <td></td>
+                  <td class="text-end text-center" style="background: yellowgreen;">F</td>
+                  <td class="totalprachstockfc text-center" style="background: yellowgreen;">{{totalprixnet}} </td>
+                  <td class="totalstock text-danger text-center" style="background: yellowgreen;">{{stocktotal}}</td>
+                  <td class="totalstockfacture text-center" style="background: yellowgreen;color: blue;">{{stockfacture}}</td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-success"></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                  </td>
+                  <td></td>
+                </tr>
+              </tfoot>
+          </table>
+        </div>
+  
+      </div>
+  </div>
+  <script>
+    function makepdctnew(pdctid){
+      $.get('/products/makepdctnew', {'pdctid':pdctid}, (data)=>{
+        console.log(data)
+      })
+    }
+    function cancelpdctnew(pdctid){
+      $.get('/products/cancelpdctnew', {'pdctid':pdctid}, (data)=>{
+        console.log(data)
+      })
+    }
+    $('.searchinputcategories').on('input', function() {
+           var filter = $(this).val().toUpperCase();
+           $('.list-group-item').each(function() {
+              var categoryName = $(this).text().toUpperCase();
+              if (categoryName.indexOf(filter) > -1) {
+                 $(this).show();
+              } else {
+                 $(this).hide();
+              }
+           });
+        });
+    function expendproducts(){
+      let ctgholder=$('.categoriesholder')
+      let productsholder = $('.expendproducts')
+      if (ctgholder.hasClass('d-none')){
+        ctgholder.removeClass('d-none')
+        productsholder.removeClass('col-12')
+        productsholder.addClass('col-10')
+        // productsholder.removeClass('col-12')
+      }else{
+        ctgholder.addClass('d-none')
+        productsholder.removeClass('col-10')
+        productsholder.addClass('col-12')
+      }
+    }
+    function showdeactivated(){
+      $.get('/products/showdeactivated', (data)=>{
+        $('.product-table-body').html('')
+        $('.product-table-body').html(data.trs)
+      })
+    }
+  
+    function exportinventaire(){
+      console.log('>> exportinventaire')
+      window.open('/products/exportinventaire', '')
+  
+    }
+    function exportcategory(){
+      let categoryid = $('select[name="exportcategory"]').val();
+      let url = '/products/exportproducts?categoryid=' + categoryid;
+  
+      // Create a hidden iframe to trigger the file download
+      var iframe = $('<iframe>', {
+          id: 'download-frame',
+          src: url,
+          style: 'display: none;',
+      }).appendTo('body');
+  
+      // Remove the iframe after download
+      iframe.on('load', function () {
+          iframe.remove();
+      });
+    }
+    function loadMoreRecords (term, notactive)  {
+      console.log('term', term)
+      loadingproducts = true;
+      $.get(`/products/loadstock/?target={{target}}&page=${currentPage}&term=${term}&notactive=${notactive}`, (data)=>{
+  
+        const tbody = $('.product-table-body');
+        tbody.append(data.trs);
+  
+        console.log('products loaded')
+        loadingproducts = false;
+        totalsproductslist()
+  
+            if (!data.has_more) {
+  
+                // Remove the scroll event listener when there are no more records
+                $('.listproductsholder').off('scroll', handleScroll);
+            }
+          })
+  
+  
+          // Append the new records to your table or update the DOM as needed
+      };
+  
+      function handleScroll () {
+        console.log('scrolling')
+        const container = $('.listproductsholder')[0]; // Get the native DOM element
+  
+        const lastRow = document.querySelector('.product-row:last-child');
+        const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+  
+        const containerBottom = container.scrollTop + container.clientHeight;
+        if (containerBottom+900 >= lastRowOffset && !loadingproducts) {
+            currentPage++;
+            term=$('.searchinputlistproducts').val() || 0
+            notactive=$('.product-row:last-child').hasClass('notactive')?1:0
+            loadMoreRecords(term, notactive);
+        }
+      };
+  
+      // Attach the scroll event listener
+      $('.listproductsholder').on('scroll', handleScroll)
+    function excelpdcts(event){
+          let parentdiv=$(event.target).parent().parent()
+          excelfile=parentdiv.find('.excelfile')
+          // send excel file data in a ajax request
+          let formData = new FormData();
+  
+          // Append the Excel file to the FormData object
+          formData.append('excelFile', excelfile[0].files[0]);
+          formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        // Make an AJAX request to send the file data
+          $('.loadingscreen').removeClass('d-none')
+          $.ajax({
+            //url: '/products/excelpdcts', // to get products to databese
+            url: '/products/updatestockinv', // Replace with your server endpoint
+            type: 'POST', // Use POST or other HTTP method as needed
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+              // Handle the success response from the server
+              $('.loadingscreen').addClass('d-none')
+              alertify.success('File uploaded successfully')
+              updatetab('pducts', '/products/stock')
+  
+            },
+            error: function(xhr, status, error) {
+              $('.loadingscreen').addClass('d-none')
+              // Handle errors if the AJAX request fails
+              alertify.error('Error uploading file');
+            }
+          });
+      }
+  
+    function totalsproductslist(){
+      // let totalstock=0
+      // $('.stock').each(function(){
+      //   totalstock+=parseFloat($(this).text())
+      // })
+      // $('.totalstock').text(totalstock)
+      // let totalstockfacture=0
+      // $('.stockfacture').each(function(){
+      //   totalstockfacture+=parseFloat($(this).text())
+      // })
+      // $('.totalstockfacture').text(totalstockfacture)
+      let totalprachstock=0
+      $('.prachat').each(function(i, v){
+        totalprachstock+=parseFloat($(this).text())*parseFloat($($('.stock')[i]).text())
+      })
+      $('.totalprachstock').text(totalprachstock.toFixed(2))
+      let totalprachstockfc=0
+      $('.prachat').each(function(i, v){
+        totalprachstockfc+=parseFloat($(this).text())*parseFloat($($('.stockfacture')[i]).text())
+      })
+      $('.totalprachstockfc').text(totalprachstockfc.toFixed(2))
+    }
+    totalsproductslist()
+    $('.searchinputlistproducts').on("change", function() {
+      $('.listproductsholder').css('filter', 'blur(3px)')
+      // Get the values from all filter input fields
+      var filterValue = $(this).val().toLowerCase();
+      loadingproducts=false
+      currentPage=1
+      $('.listproductsholder').on('scroll', handleScroll);
+      // Split the filter value into individual terms based on the '&' sign
+      // var filterTerms = filterValue.split('+').map(function(term) {
+      //     return term.trim();
+      // });
+      if (filterValue==""){
+          ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
+      }else
+        {$.get('/products/searchproductsforstock?target={{target}}', {'term':filterValue.trim()}, (data)=>{
+  
+                $(".productstable tbody").html('')
+                $(".productstable tbody").html(data.trs)
+                $('.totalstock').text(data.stocktotal)
+                $('.totalstockfacture').text(data.stockfacture)
+                $('.listproductsholder').css('filter', 'blur(0)')
+  
+                    // var rowText = $(this).text().toLowerCase();
+                    // var showRow = true;
+  
+                    // // Check if all filter terms are present in the row text
+                    // $.each(filterTerms, function(index, term) {
+                    //     if (term !== '' && rowText.indexOf(term) === -1) {
+                    //         showRow = false;
+                    //         return false; // Exit the loop early if a mismatch is found
+                    //     }
+                    // });
+  
+                    // // Toggle the visibility of the row based on the filter criteria
+                    // $(this).toggle(showRow);
+                });
+              // Iterate through the table rows
+              }
+    });
+  
+    // new Tabulator("#productstable", {
+    //   height:"70vh",
+    //   layout:"fitColumns",
+    //   columns:[
+    //     {title:"Ref", field:"Ref", width:80, headerFilter:"input"},
+    //     {title:"Designation", field:"Designation", width:220, headerFilter:"input"},
+    //   ]
+    // });
+      // Add event listener for the column search inputs
+      $('.column-search').on('keyup', function() {
+          var columnIndex = $(this).data('column');
+          dataTable.column(columnIndex).search(this.value).draw();
+      });
+    //   $(".searchtableinput").on("keyup", function() {
+    //   var value = $(this).val().toLowerCase();
+    //   $(".productstable tbody tr").filter(function() {
+    //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    //   });
+    // });
+      function getproductsbycategory(categoryid, categoryname, classname){
+        $(`.${classname}`).addClass('active').siblings().removeClass('active')
+          $('.loadingscreen').addClass('d-block').removeClass('d-none')
+          $('.categorynameholder').text(categoryname)
+          $('.product_search_result').html('')
+      $.ajax({
+      url: "/products/getproductsbycategory?target={{target}}",
+      type: "GET",
+      data: {
+          'category': categoryid,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      success: function (data) {
+        console.log(data)
+          $('.loadingscreen').addClass('d-none').removeClass('d-block')
+          $('.product-table-body').html(data.data)
+          $('.totalstock').text(data.stocktotal)
+          $('.totalstockfactire').text(data.stockfacture)
+          // editproduct()
+          // displayimage()
+      }
+  })
+  
+  }
+    </script>  
+    </div>
+</div>

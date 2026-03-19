@@ -1,0 +1,344 @@
+<html>
+<head>
+  <script src="/static/js/jquery.min.js"></script>
+  <link href="/static/css/minified.css" rel="stylesheet" />
+  <script src="/static/js/select2.min.js"></script>
+  <script src="/static/js/chart.js"></script>
+  <script src="/static/js/xlsx.full.min.js"></script>
+  <title>{{title}}</title>
+</head>
+<style media="screen">
+  .blurred{
+    filter:blur(8px);
+  }
+  table {
+    border-color: black;
+  }
+</style>
+<body style="background: white; font-family: monospace;">
+  <div class="p-2">
+    <div class="bg-darkblue p-2 rounded text-white text-center d-flex">
+      <div>{{title}}</div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <select class="productsearch" style="width: 100%;" id=""></select>
+        <div class="">
+          <div>
+            <input type="number" class="form-control systemstock" placeholder="stock" readonly/>
+          </div>
+          <div>
+            <input type="number" class="form-control inventaireqty" placeholder="Quantity" />
+          </div>
+          <!-- <div>
+            <input type="number" class="form-control inventaireprix" placeholder="prix" />
+          </div> -->
+          <div class="row mt-2">
+            <button class="col-6 btn btn-outline-danger p-3 bi bi-box-arrow-up-right" style="font-size: 27px;" onclick="setinventairout(event)">Sortie</button>
+            <button class="col-6 btn btn-outline-success p-3 bi bi bi-box-arrow-in-up-right" style="font-size: 27px;" onclick="setinventairin(event)">Entree</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-9">
+        <!-- items to sortie -->
+        <div class="rounded shadow p-2 tableholder mt-2">
+            
+          <div class="col-5">
+            <input type="text" class="searchbonlivraisoncreation" placeholder="Search..." />
+          </div>
+          <table class="table table-bordered text-center bonlivraisoncreation">
+            <thead style="background: orange; color:#091b27;">
+                <tr>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                </tr>
+            </thead>
+            <tbody class="itemstosortie">
+              {% for i in itemstosortie %}
+                <tr class="itemrow">
+                  <input type="hidden" value="{{i.id}}" class="bonitem">
+                    <td class="ref" onclick="removelineupdatebl(event, '{{livraison.id}}', '{{i.id}}')">{{i.ref}}</td>
+                    <td class="name">{{i.name}}</td>
+                    <td>{{i.buyprice}}</td>
+                    <td>{%if target == f %}{{i.stocktotalfarah}}{%else%}{{i.stocktotalorgh}}{%endif%}</td>
+                    <td class="clientprice">{{i.clientprice}}</td>
+                    <td><input type="number" class="calculate qty" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="qty" value="{%if target == f %}{{i.inventaireoutfarah}}{%else%}{{i.inventaireoutorgh}}{%endif%}"></td>
+                    <td><input type="number" class="calculate price" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="price" value="{{i.price}}"></td>
+                    <td><input type="number" class="calculate remise" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="remise" value="{{i.remise}}"></td>
+                    <td class="netprice">{{i.prixnet}}</td>
+                    <td class="total">{{i.total}}</td>
+                    <input type="hidden" name="productid" value="{{i.id}}">
+                    <input type="hidden" name="coutmoyen" value="{{i.coutmoyen}}" achatids="{{i.achatids}}" remainqties="{{i.remainqties}}" oldqties="{{i.oldqties}}">
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
+              <button class="btn btn-success submitbonlivraison" style="border-radius: 10px;">
+                    Valider
+              </button>
+              
+              <b class="totalbon text-danger totalbonlivraison">
+                0.00
+              </b>
+          </div>
+        </div>
+        <!-- items to sortie -->
+        <div class="rounded shadow p-2 tableholder mt-2">
+          <div class="col-5">
+            <input type="text" class="searchbonlivraisoncreation" placeholder="Search..." />
+          </div>
+          <table class="table table-bordered text-center bonlivraisoncreation">
+            <thead style="background: orange; color:#091b27;">
+                <tr>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                </tr>
+            </thead>
+            <tbody class="itemstoenter">
+              {% for i in itemstoenter %}
+                <tr class="itemrow">
+                  <input type="hidden" value="{{i.id}}" class="bonitem">
+                    <td class="ref" onclick="removelineupdatebl(event, '{{livraison.id}}', '{{i.id}}')">{{i.ref}}</td>
+                    <td class="name">{{i.name}}</td>
+                    <td>{{i.buyprice}}</td>
+                    <td>{%if target == f %}{{i.stocktotalfarah}}{%else%}{{i.stocktotalorgh}}{%endif%}</td>
+                    <td class="clientprice">{{i.clientprice}}</td>
+                    <td><input type="number" class="calculate qty" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="qty" value="{%if target == f %}{{i.inventaireinfarah}}{%else%}{{i.inventaireinorgh}}{%endif%}"></td>
+                    <td><input type="number" class="calculate price" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="price" value="{{i.price}}"></td>
+                    <td><input type="number" class="calculate remise" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="remise" value="{{i.remise}}"></td>
+                    <td class="netprice">{{i.prixnet}}</td>
+                    <td class="total">{{i.total}}</td>
+                    <input type="hidden" name="productid" value="{{i.id}}">
+                    <input type="hidden" name="coutmoyen" value="{{i.coutmoyen}}" achatids="{{i.achatids}}" remainqties="{{i.remainqties}}" oldqties="{{i.oldqties}}">
+
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
+              <button class="btn btn-success submitbonlivraison" style="border-radius: 10px;">
+                    Valider
+              </button>
+              
+              <b class="totalbon text-danger totalbonlivraison">
+                0.00
+              </b>
+          </div>
+        </div>
+      </div>
+  </div>
+  <script>
+    let systemstock=$('.systemstock')
+    let inventaireqty=$('.inventaireqty')
+    // let inventaireprix=$('.inventaireprix')
+    $('.productsearch').select2({
+
+
+      ajax: {
+      type:'get',
+      dataType: 'json',
+      url: '/products/searchproduct?target={{target}}',
+      data: function (params) {
+          var query = {
+          term: params.term,
+          }
+          // Query parameters will be ?search=[term]&type=public
+          return query;
+      },
+      proccessresults: function (data) {
+          return {
+              results:data.results
+          }
+      },
+      cache:true
+      },
+      minimumInputLength: 2,
+      placeholder:'Chercher Produits',
+      templateResult: formatRepo,
+      templateSelection: formatRepoSelection,
+    });
+      function formatRepo (repo) {
+      if (repo.loading) {
+          return repo.text;
+      }
+
+      var $container = $(
+          `<div class="row"><strong class="col-10" style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div class="col-2"><img src="${repo.image}" style="width:100%;">${repo.mark}</div></div>`
+          );
+          return $container;
+      }
+
+      function formatRepoSelection (repo) {
+      return repo.text;
+      }
+      
+      $('.productsearch').on('change', function(){
+          console.log($(this).val())
+          parentdiv=$(this).parent().parent()
+          if ($(this).val()==''){
+              return
+          }
+          var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+          console.log(stock)
+          systemstock.val(stock)
+          
+          let selected = $(this).find(':selected')
+          // selected.remove()
+          // delect selected option
+      })
+
+      
+//populateyears()
+    function calculatelivraison(e, id){
+      let target = $(e.target)
+      let tr = target.closest('tr')
+      let qty = tr.find('.qty').val()
+      let price = tr.find('.price').val()
+      let netprice = tr.find('.netprice')
+      let remise = tr.find('.remise').val()
+      let total = tr.find('.total')
+      let totalbon = target.parent().parent().parent().parent().parent().find('.totalbonlivraison')
+      let net=(parseFloat(price)-(parseFloat(price)*parseFloat(remise)/100)).toFixed(2)
+      netprice.text(net)
+      let totalbonval = parseFloat(totalbon.text())
+      let totalrow = parseFloat(qty*price*(1-remise/100))
+      console.log(totalrow)
+      total.text(totalrow.toFixed(2))
+      totals=tr.parent().find('.total')
+      //console.log('totals in modifier', totalbon, totals)
+      let totalrowsval = 0
+      totals.each(function(){
+        totalrowsval+=parseFloat($(this).text()||0)
+      })
+      totalbon.text(totalrowsval.toFixed(2))
+    }
+    function calculatetotal(event){
+      price=$(event.target).val()
+      qty=$(event.target).parent().parent().find('.diff').text()
+      total=parseFloat(price)*parseFloat(qty)
+      $(event.target).parent().parent().find('.total').text(total.toFixed(2))
+    }
+    function setinventairout(event)
+    {
+      var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $('.productsearch').val().split('§');
+      qty=$('.inventaireqty').val()
+      if (qty || qty>0){
+        $.get('/products/setinventairout', {'id':id, 'qty':qty, 'target':'{{target}}'}, function(data){
+          $('tbody.itemstosortie').append(
+            `
+            <tr class="itemrow">
+                  <input type="hidden" value="${id}" class="bonitem">
+                    <td class="ref">${ref}</td>
+                    <td class="name">${name}</td>
+                    <td></td>
+                    <td>${stock}</td>
+                    <td class="clientprice"></td>
+                    <td><input type="number" class="calculate qty" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="qty" value="${inventaireqty.val()}"></td>
+                    <td><input type="number" class="calculate price" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="price" value=""></td>
+                    <td><input type="number" class="calculate remise" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="remise"></td>
+                    <td class="netprice"></td>
+                    <td class="total"></td>
+                    <input type="hidden" name="productid" value="${id}">
+                    
+                </tr>
+            `
+          )
+        })
+        qty.val('')
+      }
+    }
+    function setinventairin(event)
+    {
+      var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $('.productsearch').val().split('§');
+      qty=$('.inventaireqty').val()
+      if (qty || qty>0){
+        $.get('/products/setinventairin', {'id':id, 'qty':qty, 'target':'{{target}}'}, function(data){
+          $('tbody.itemstoenter').append(
+            `
+            <tr class="itemrow">
+                  <input type="hidden" value="${id}" class="bonitem">
+                    <td class="ref">${ref}</td>
+                    <td class="name">${name}</td>
+                    <td></td>
+                    <td>${stock}</td>
+                    <td class="clientprice"></td>
+                    <td><input type="number" class="calculate qty" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="qty" value="${inventaireqty.val()}"></td>
+                    <td><input type="number" class="calculate price" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="price" value=""></td>
+                    <td><input type="number" class="calculate remise" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="remise"></td>
+                    <td class="netprice"></td>
+                    <td class="total"></td>
+                    <input type="hidden" name="productid" value="${id}">
+                    
+                </tr>
+            `
+          )
+        })
+        qty.val('')
+      }
+    }
+  function excelpdcts(event){
+        let parentdiv=$(event.target).parent().parent()
+        excelfile=$('.excelfile')
+        // send excel file data in a ajax request
+        let formData = new FormData();
+
+        // Append the Excel file to the FormData object
+        formData.append('excelFile', excelfile[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      // Make an AJAX request to send the file data
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+          //url: '/products/excelpdcts', // to get products to databese
+          url: '/products/updatestockinv', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(data) {
+            // Handle the success response from the server
+            $('.loadingscreen').addClass('d-none')
+            if (data.success){
+              console.log(data.difftracker)
+              console.log(data.referrors)
+              $('.entries').text('Nombre des reference: '+data.entries)
+              difftrackerhtml=''
+              for (i of data.difftracker){
+                difftrackerhtml+=`${i}`
+              }
+              $('.difftracker').html(`<strong>Differences</strong><table class="table table-bordered"><tbody><tr><td>ref</td><td>stock system</td><td>inventaire</td><td>difference</td></tr>${difftrackerhtml}</tbody></table>`)
+              referrorshtml='<strong>ERRORS</strong>'
+              for (i of data.referrors){
+                referrorshtml+=`<div>${i}</div>`
+              }
+              $('.referrors').html(referrorshtml)
+              //alertify.success('File uploaded successfully')
+            }else{
+              $('.referrors').text(data.error)
+            }
+
+          },
+          error: function(xhr, status, error) {
+            $('.loadingscreen').addClass('d-none')
+            // Handle errors if the AJAX request fails
+            //alertify.error('Error uploading file');
+          }
+        });
+    }
+  </script>
+</body>

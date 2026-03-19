@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+<style>
+  .active {
+    border-left: 4px solid blue;
+    color: blue;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="text-white p-2 rounded h3 text-center" style="background: black;">
+{{title}}
+</div>
+<div class="row">
+    <div class="col-2">
+       <div class="bg-white rounded shadow p-2">
+        <input type="text" class="form-control searchref mb-5" placeholder="Chercher REF stock">
+        <!-- <div class="accordion" id="accordionExample">
+            <div class="card">
+              <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                  <button class="btn btn-link btn-block d-flex justify-content-between w-100" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <div>
+                        Liste des Categories
+                    </div>
+                    <div class="">+</div>
+                  </button>
+                </h2>
+              </div>
+          
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body border">
+                  <form action="createcategory" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input name="name" type="text" class="form-control" placeholder="Categorie" required>
+                    <strong>Image</strong>
+                    <input name="image" type="file" class="form-control" required>
+                    <button class="btn btn-success mt-2">Ajouter</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div> -->
+        <hr>
+        <ul class="list">
+          
+            {% for i in categories %}
+            <li class="list-group-item cat{{i.id}}" onclick="getproductsbycategory({{i.id}}, '{{i.name}}', 'cat{{i.id}}')">
+                <b type="button" class="categoriesbtn" data-catgoryid="{{i.id}}">
+                   
+                        {{i.name}} ({{i.produit_set.all.count}})
+                    
+                </b>
+            </li>
+            {% endfor %}
+            
+          </ul>
+       </div> 
+    </div>
+
+    <div class="col-10">
+        <div class="bg-white rounded shadow p-2">
+          <span>
+            Chercher dans
+          <small class="categorynameholder">
+            </small>
+          </span>
+            <input type="search" class="form-control searchtableinput mb-2 w-50" placeholder="">
+            <table class="mb-5 table table-bordered table-advance table-hover tablesearch item-table">
+                    
+              <thead style="background: rgb(231, 231, 231);">
+                <td>Ref</td>
+                <td>Designation</td>
+                <td>Category</td>
+                <td>Prix achat</td>
+                <td>Prix vente</td>
+                <td>Remise</td>
+                <td>Prix net</td>
+                <td>Stock</td>
+                <td>Stock Fctr.</td>
+                <td>Marque</td>
+                <td>Diametre</td>
+                <td>Ref 1</td>
+                <td>Ref 2</td>
+                <td>Ref 3
+
+                </td>
+              </thead>
+              <tbody class="product-table-body">
+                
+                {% for i in products %}
+
+                <tr onclick="openProductDetailsInNewTab('/products/viewoneproduct/{{i.id}}')">
+                    <td>
+                        {{i.ref}}
+                    </td>
+                    <td>
+                        {{i.name}}
+                    </td>
+                    <td>
+                        {{i.category.name}}
+                    </td>
+                    <td class="text-center">
+                        {{i.buyprice|floatformat:2}}
+                    </td>
+                    <td class="text-center">
+                        {{i.sellprice|floatformat:2}}
+                    </td>
+                    <td class="text-center">
+                        {{i.remise}}
+                    </td>
+                    <td class="text-center">
+                        {{i.prixnet|floatformat:2}}
+                    </td>
+                    <td class="text-center text-danger">
+                        {{i.stocktotal}}
+                    </td>
+                    <td class="text-center" style="color: blue;">
+                      {{i.stockfacture}}
+                  </td>
+                    <td>
+                        {{i.mark.name}}
+                    </td>
+                    <td>
+                        {{i.diametre}}
+                    </td>
+                    <td>
+                        {{i.getequivalent.0}}
+                    </td>
+                    <td>
+                        {{i.getequivalent.1}}
+                    </td>
+                    <td>
+                        {{i.getequivalent.2}}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+
+              </tbody>
+            </table>
+        </div>    
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+  function openProductDetailsInNewTab(url) {
+        const newTab = window.open(url, '_blank');
+        newTab.focus();
+  }
+    function getproductsbycategory(categoryid, categoryname, classname){
+      $(`.${classname}`).addClass('active').siblings().removeClass('active')
+        $('.loadingscreen').addClass('d-block').removeClass('d-none')
+        $('.categorynameholder').text(categoryname)
+        $('.product_search_result').html('')
+    $.ajax({
+    url: "{% url 'products:getproductsbycategory' %}",
+    type: "POST",
+    data: {
+        'category': categoryid,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    },
+    success: function (data) {
+        $('.loadingscreen').addClass('d-none').removeClass('d-block')
+        $('.product-table-body').html(data.data)
+        // editproduct()
+        // displayimage()
+    }
+})
+
+}
+</script>
+{% endblock %}

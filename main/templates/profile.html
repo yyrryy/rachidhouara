@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap">
+  <div class="bg-white shadow-lg rounded p-3 vw-30">
+    <strong>Username:</strong> {{ user.username }}
+    <!-- create to inputs one for the password and the other for password confirmation -->
+    <form action=" {% url 'updatepassword' %} " method="post">
+      {% csrf_token %}
+      <div class="form-group mb-3 mt-4">
+        <label for="">modifier le mot de passe</label>
+        <input type="password" class="form-control" name="pass">
+      </div>
+      <div class="form-group mb-3">
+        <label for="">confirmer le mot de passe</label>
+        <input type="password" class="form-control" name="cpass">
+      </div>
+      <button class="btn btn-lg btn-primary passbtn" disabled>Envoyer</button>
+    </form>
+  </div>
+
+
+  <div class="bg-white shadow-lg rounded p-3 vw-65">
+    <strong>Modifier les informations commerciaux</strong>
+    <!-- create to inputs one for the password and the other for password confirmation -->
+    <form action=" {% url 'editinfoclient' %} " method="post">
+      {% csrf_token %}
+      <div class="form-group mb-3 mt-4">
+        <label for="">Nom dans la facture</label>
+        <input required type="text" name="name" class="form-control" value=" {{request.user.client.name}} ">
+      </div>
+      <div class="form-group mb-3">
+        <label for="">Ville</label>
+        <input required type="text" name="city" class="form-control" value=" {{request.user.client.city}} ">
+      </div>
+      <div class="form-group mb-3">
+        <label for="">Adresse</label>
+        <input required type="text" name="address" class="form-control" value=" {{request.user.client.address}} ">
+      </div>
+      <div class="form-group mb-3">
+        <label for="">Phone</label>
+        <input required type="text" name="phone" class="form-control" value=" {{request.user.client.phone}} ">
+      </div>
+      <button class="btn btn-primary">Envoyer</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+  $(document).ready(function() {
+    $($('input[name="cpass"]')).on('input', function() {
+      if ($('input[name="pass"]').val() == $('input[name="cpass"]').val()) {
+        $('input[name="cpass"]').removeClass('border-danger')
+        $('.passbtn').removeAttr('disabled');
+      } else {
+        $('input[name="cpass"]').addClass('border-danger')
+        $('.passbtn').attr('disabled', 'disabled');
+      }
+    });
+  });
+  </script>
+{% endblock %}

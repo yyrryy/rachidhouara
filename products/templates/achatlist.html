@@ -1,0 +1,19 @@
+{% for order in bons %}
+<tr class="ord" orderid="{{order.id}}" ondblclick="ajaxpage('bonachat{{order.id}}', 'Bon achat {{order.nbon}}', '/products/bonachatdetails/{{order.id}}')">
+    <td>{{ order.nbon }}</td>
+    <td>{{ order.date|date:'d/m/Y' }}</td>
+    <td>{{ order.supplier.name }}</td>
+    <td>{{ order.total}}</td>
+    <td>{{ order.supplier.city }}</td>
+    <td>{{ order.supplier.rest|floatformat:2 }}</td>
+    <td class="d-flex">
+      {% if order.ispaid %}
+      R0<div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
+      
+      {% else %}
+      N1<div style="width:15px; height:15px; border-radius:50%; background:red;" ></div>
+      {% endif %}
+    </td>
+      
+  </tr>
+{% endfor %}

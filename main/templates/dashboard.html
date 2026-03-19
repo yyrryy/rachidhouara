@@ -1,0 +1,85 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+
+
+<!-- tabs holder -->
+<div class="tabsholder expended container">
+  <!-- tabs s -->
+  <div class="">
+    <div class=" position-relative">
+
+      <!-- nav -->
+
+      <!-- cards -->
+      <div >
+
+        <div class="row mb-2">
+          <!-- <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="location.href='/products/ste1'">
+
+                <i class="bi bi-list-task h1">
+
+                </i>
+                <div>
+                    Farah
+                </div>
+            </div>
+          </div> -->
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="location.href='/products/ste2'">
+
+                <i class="bi bi-people-fill h1">
+
+                </i>
+                <div>
+                  ORGH
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="location.href='/products/pointdevente'">
+
+                <i class="bi bi-globe h1">
+
+                </i>
+                <div>
+                  Ventes
+                </div>
+            </div>
+          </div>
+
+          
+          
+
+        </div>
+
+        
+      </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+  $.get('/products/echeancetoday', (data)=>{
+    if (data.length > 0){
+      $('.echeanceindex').removeClass('d-none').text(data.length)
+      //alertify.confirm('Echenaces', data.length+' ECHEANES AUJOURD HUI', function(){
+      //  ajaxpage('echeancetab', 'Echeances', '/products/listecheance')
+      //}, ()=>{
+
+      //})
+    }
+  })
+  // $.get('/products/boncommandes', (data)=>{
+  //   $('.boncmndindex').removeClass('d-none').text(data.length)
+
+  // })
+
+</script>
+{% endblock %}

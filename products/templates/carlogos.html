@@ -1,0 +1,92 @@
+
+<h1 class="text-center">List des Voitures</h1>
+
+<div class="row">
+    <div class="col-3">
+        <div class="bg-white rounded shadow p-2">
+            <form action="/products/createlogo" method="post" enctype="multipart/form-data" id="createlogo">
+                {% csrf_token %}
+                <input name="logoname" type="text" class="form-control mb-2" placeholder="voiture" required>
+                <strong>Image</strong>
+                <input name="logoimage" type="file" class="form-control" required>
+                <button class="btn btn-success mt-2 createlogobtn">Ajouter</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-9">
+        <input type="text" class="form-control" placeholder="Chercher" id="searchbox">
+        <div class="bg-white border p-2">
+            <div class="row">
+                {% for i in categories %}
+                <div class="col-4 mb-2 searchcards">
+                    <p hidden>
+                        {{i.name}}
+                    </p>
+                    <div class="bg-white rounded shadow p-2">
+                        <form action="{% url 'products:updatelogo' %}" method="post" enctype="multipart/form-data" id="updateform{{i.id}}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.id}}">
+                            {{i.id}}
+                            {% if i.image %}
+                            <img class="text-center w-100 mb-2" src="{{i.image.url}}" alt="">
+                            {% endif %}
+                            <input type="file" name="updatelogoimage" class="form-control imageinp">
+                            <small>logo</small>
+                            <input type="text" name="updatelogoname" class="form-control nameinp mb-2" value="{{i.name}}">
+                            <button class="btn btn-sm btn-success w-100 updatelogobtn" id="{{i.id}}">Mise à jour</button>
+                        </form>
+                    </div>
+                </div>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script>
+    $('.updatelogobtn').on('click', function(event){
+        event.preventDefault()
+        name=$(event.target).parent().find('input')[3]
+        id=$(event.target).attr('id')
+        form=$(event.target).parent()
+        name=$($(event.target).parent().find('input')[3]).val()
+        if (name==""){
+            $($(event.target).parent()[0]).css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($(event.target).parent()[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updatelogo" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                $(`#carlogo`).html(data.html)
+            })
+        })
+        
+    
+    })
+    $('.createlogobtn').on('click', function(event){
+        event.preventDefault()
+        console.log('sending')
+        if ($('[name="logoname"]').val()==""){
+            $('#createlogo').css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($('#createlogo')[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:createlogo" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                alertify.success('OK')
+                ajaxpage('addpducts', 'ARTICLES', '/products/carlogospage?target=s')
+            })
+        })
+    })
+ </script>

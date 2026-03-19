@@ -1,0 +1,1073 @@
+
+<style>
+    .autocomplete {
+  position: relative;
+  width: 300px; /* Adjust as needed */
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px;
+}
+
+#suggestion-list {
+  position: absolute;
+  list-style: none;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+</style>
+<!-- <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('')">x</button>
+  <div>
+    {{title}}
+  </div>
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
+</div> -->
+
+  <div class="bonsortieparentdiv">
+         <div class="bg-white rounded border p-2 mb-3 data d-flex justify-content-between">
+            <div class="col-5 row">
+                <div class="mb-2 clientselectblholder">
+                    <div class="alert alert-danger p-2 oldbonswarning d-none">
+                      
+                    </div>
+                    <small>Clients:
+                    </small>
+                    <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+
+                    <select name="client" id="" style="width:100%;" class="select2 clientselectbl form-select notemptylivraison select2client">
+                        <!-- <option value="">---</option>
+                        {% for i in clients %}
+                        <option value="{{i.id}}">{{i.name}} | {{i.code}} | {{i.city}} | {{i.region}} | {{i.represent}} </option>
+                        {% endfor %} -->
+                    </select>
+                  </div>
+                <!-- <div class="mb-2 cerpselectholder">
+                    <small>Representant:</small> <strong class="text-danger repblname"></strong>
+                    <select name="representant" id="" style="width:100%;" class="select2 repsselectsbl form-select notemptylivraison">
+                        <option value="">---</option>
+                        {% for i in commercials %}
+                        <option value="{{i.id}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div> -->
+                <div class="mb-2 col-4">
+                    <input type="date" class="form-control datebonbl" name="datebon" placeholder="Date bon">
+                </div>
+                <div class="mb-2 col-4">
+                  <input placeholder="transport" type="text" class="form-control transport" name="transport">
+                </div>
+                <div class="mb-2 col-4">
+                    <input type="text" class="form-control note" name="note" placeholder="Note">
+                </div>
+                <select id="cars" name="cars" class="select2 cars">
+                  {% for i in cars %}
+                  <option value="{{i.name}}">{{i.name}}</option>
+                  {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-7 row productsholder d-none">
+              <div class="col-12 d-flex">
+                <!-- <button class="btn bg-darkblue text-white">+</button> -->
+                <select class="resultsholderbonsortie mb-2 form-select " style="width: 100%;" id="productsselect2">
+
+                </select>
+
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" onkeyup="checkmax(event)" placeholder="Quantité" name="addqty">
+                <div class="addstock text-danger"></div>
+                <div class="addstockfacture text-danger mt-2"></div>
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" placeholder="Prix" name="addprice">
+                <div class="addclientprice text-danger"></div>
+                <div class="addbyuprice text-danger"></div>
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" placeholder="Remise" name="addremise">
+              </div>
+              <div class="col-3">
+                <button class="btn addrowbtn valider" farah="0" onclick="addrowbonsortie(event)" style="border: 4px solid;
+                border-color: var(--darkblue);
+                border-radius: 10px;
+                height: 36px;
+                text-align: center;
+                background: #00800024;">Valider</button>
+              </div>
+              <input hidden readonly type="text" name="addname" class="form-control">
+              {% include 'accordionqtyprice.html' %}
+            </div>
+
+
+
+
+          </div>
+
+      <div class="d-flex">
+          <div class="bg-white rounded p-2 tableholder col-10 border">
+              <!-- <div>
+                  <small>
+                      Ref.
+                  </small>
+                  <input type="text" name="ref" class="form-control searchref">
+              </div> -->
+              <div class="d-flex justify-content-between">
+
+                  <div class="mb-3 col-5">
+
+                </div>
+
+            </div>
+            <div class="col-5">
+              <input type="text" class="searchbonsortiecreation" placeholder="Search..." />
+            </div>
+            <table class="table table-bordered text-center bonsortiecreation">
+              <thead style="background: orange; color:#091b27;">
+                  <tr>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                      <!-- <td style="padding: 2px 0; font-size: 13px;">Stock</td> -->
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                  </tr>
+              </thead>
+              <!-- <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>TOTAL</td>
+                  <td class="totalbon" style="background: orange; color:#091b27;">
+                      0.00
+                  </td>
+                </tr>
+              </tfoot> -->
+              <tbody class="bonsortiebody">
+
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
+                <button class="btn btn-success submitbonsortie valider" style="border-radius: 10px;">
+                      Valider
+                </button>
+                <button class="btn btn-danger" onclick="annulerbon('bonsortie', '/products/bonsortie?target=s')" style="border-radius: 10px;">
+                  Annuler
+                  </button>
+                <div>
+                  <b class="totalbon text-danger totalbonsortie">
+                    0.00
+                  </b>
+
+                </div>
+
+            </div>
+          </div>
+          <div class="col-2">
+            <!-- <strong>Payment</strong> -->
+            <!-- bordered box with title peyment, it will have input for the given amount and a div ta calculate the remaining amount -->
+            <div class="bg-white rounded p-2">
+              <div class="">
+                <div>
+                  <strong>Payment Espece</strong>
+                </div>
+              </div>
+              
+              <div class="">
+                <div>
+                  <input type="number" class="form-control payment" placeholder="Payment" value="0.00" onkeyup="paymentbon()">
+                </div>
+                <div class="mt-2 bg-dark p-2 text-white">
+                  <b>Caisse</b>
+                  <select class="form-select caissetarget" name="caissetarget">
+                    {% for i in caisses %}
+                    <option value="{{i.id}}">{{i.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div>
+                  Rondu: <strong class="rondu"></strong>
+                </div>
+                <div>
+                  Rest: <strong class="rest"></strong>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input remisecheck" type="checkbox" value="" id="remisecheck">
+                  <label class="form-check-label" for="remisecheck">
+                    Remise
+                  </label>
+                </div>
+              </div>
+
+
+          </div>
+      </div>
+
+  </div>
+
+  <script>
+    
+    $('.select2').select2()
+    function paymentbon(){
+      let total = parseFloat($('.totalbonsortie').text())
+      let payment = parseFloat($('.payment').val())
+      if (!isNaN(payment)){
+        if (payment<total){
+          $('.rondu').text('0.00')
+          let rest = total - payment
+          $('.rest').text(rest.toFixed(2))
+        }else{
+          let rondu = payment - total
+          $('.rondu').text(rondu.toFixed(2))
+          $('.rest').text('0.00')
+        }
+        
+      }
+      
+    }
+    $(function(){
+
+      $('.clientselectbl').select2({
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient?target=s',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher client',
+        templateResult: formatclient,
+        templateSelection: formatclientSelection,
+      });
+      function formatclient (client) {
+          if (client.loading) {
+            return client.text;
+          }
+
+          var $container = $(
+            `<strong>${client.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatclientSelection (client) {
+          return client.text;
+        }
+
+    })
+    
+    function removelinebl(event, id) {
+          let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+          clicksinbl++;
+
+          if (clicksinbl === requiredClicks) {
+              // User has clicked the element four times consecutively
+              // Add your code to run when there are four consecutive clicks here
+              alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+                console.log('delete'),
+                // remove element
+                $(event.target).parent().remove()
+                // remove id from localstorage
+
+                pdcts=JSON.parse(localStorage.getItem('pdctsinbonsortie'))
+                pdcts.splice(pdcts.indexOf(id.toString()), 1)
+                localStorage.setItem('pdctsinbonsortie', JSON.stringify(pdcts))
+                // update total
+                let totalbon = parseFloat(parentdiv.find('.totalbonsortie').text())
+                let totalrow = $('.total')
+                sum=0
+                totalrow.each(function() {
+                  sum += parseFloat($(this).text());
+                });
+                parentdiv.find('.totalbonsortie').html(sum)
+                // Reset the count
+                $('.producthistory').html('')
+                $('[name="addname"]').attr('data', '')
+                // resete select2
+                $('.resultsholderbonsortie').val('').trigger('change')
+                clicksinbl = 0;
+                removeinlocalstorage('bonsortie', id)
+
+              }
+                , function(){ alertify.error('Cancel')});
+              // Reset the count
+              clicksinbl = 0;
+          }
+      }
+
+  function addrowbonsortie(event){
+        let target=$(event.target)
+        farah=target.attr('farah')
+        parentdiv=target.parent().parent().parent().parent()
+        console.log(parentdiv)
+        // this reset the select2 value
+        // $('.resultsholderbonsortie').val('').trigger('change')
+        // ids of products in bon stored in localstorage
+        let bonachatbody = parentdiv.find('.bonsortiebody')
+        let addname=parentdiv.find('[name="addname"]')
+        let addqty=parentdiv.find('[name="addqty"]')
+        let max=addqty.attr('max')
+        let addprice=parentdiv.find('[name="addprice"]')
+        let addremise=parentdiv.find('[name="addremise"]')
+        let priceclient=parentdiv.find('.addclientprice ').text()
+        //|| addremise.val()==''
+        if (addqty.val()=='' || addprice.val()=='' || addqty.val()==0 || addprice.val()==0 || addname.attr('data')==''){
+          alertify.error('Veuillez remplir tous les champs')
+          return
+        }
+        // if (addqty.val()<0 || addqty.val()>max){
+        //   alertify.error('Qty invalid')
+          
+        // }
+        var [ref, name, dp, stockfarah, stockfacturefarah, stockorgh, stockfactureorgh, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
+        //console.log(ref, name, dp, stock, id, sellprice, remise, netprice, representprice)
+        pdcts=JSON.parse(localStorage.getItem('pdctsinbonsortie')) || []
+        console.log(id, pdcts, pdcts.includes(id))
+        // distinguished id will be an id to store in ids local
+        distid=farah=='1'?'f'+id:'o'+id
+        if (pdcts.includes(distid)){
+          parentdiv.find('.addstock').val('')
+          parentdiv.find('.addstockfacture').val('')
+          addqty.val('')
+          addname.val('')
+          addremise.val('')
+          addprice.val('')
+          $('.addstock').text('')
+          $('.addstockfacture').text('')
+          alertify.error('Ce produit est deja dans le bon')
+          $('.resultsholderbonsortie').select2('open')
+
+          return
+        }
+
+        // here is the case if qty is greater than stock
+        //console.log(addqty.val(), stock)
+        
+        // if (parseInt(addqty.val())>parseInt(stock)){
+        //   console.log('qty', addqty.val(), 'stock', stock, 'qty > stock', addqty>stock)
+
+        //   alertify.confirm('Quantité superieur au stock', 'Voulez vous continuer ?', function(){
+        //     if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
+        //       alertify.error('Veuillez remplir tous les champs')
+        //       return
+        //     }
+
+        //     if (pdcts.includes(id)){
+        //       parentdiv.find('.addstock').val('')
+        //       parentdiv.find('.addstockfacture').val('')
+        //       addqty.val('')
+        //       addname.val('')
+        //       addremise.val('')
+        //       addprice.val('')
+        //       alertify.error('Ce produit est deja dans le bon')
+        //       $('.resultsholderbonsortie').select2('open')
+        //       return
+        //     }
+        //     pdcts.push(id)
+        //     localStorage.setItem('pdctsinbonsortie', JSON.stringify(pdcts))
+        //     afterremise=parseFloat(addprice.val())*parseFloat(addremise.val())/100
+        //     let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100))
+        //     console.log(net)
+        //     let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+        //     // ${stock<=0? "text-danger":"" }
+        //     let tr = `
+        //     <tr class="itemrow" id=${id} farah=>
+        //         <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${ref}</td>
+        //         <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+        //         <td style="paddingpx 0; font-size: 13px;" class="dp">${dp}</td>
+        //         <td style="padding: 2px 0; font-size: 13px;" class="stock">${stock}</td>
+        //         <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
+        //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" readonly onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+        //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+        //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="remise" style="height:23px; width:100%;"></td>
+        //         <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
+        //         <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+        //         <input type="hidden" name="productid" value="${id}">
+
+        //     </tr>
+        //     `
+        //     item={
+        //       'id': id,
+        //       'qty': addqty.val(),
+        //       'price': addprice.val(),
+        //       'remise': addremise.val(),
+        //       'total': addtotal,
+        //       'name': name,
+        //       'ref': ref,
+        //       'dp': dp,
+        //       'stock': stock,
+        //       'clientprice': priceclient,
+        //       'netprice': netprice
+        //     }
+        //     // prepare item to be saved in localstorage
+            
+        //     bonachatbody.prepend(tr)
+        //     // delete selected option
+        //     parentdiv.find('.addstock').val('')
+        //     parentdiv.find('.addstockfacture').val('')
+        //     addqty.val('')
+        //     addname.val('')
+        //     addremise.val('')
+        //     addprice.val('')
+        //     var totalSum = 0;
+        //     parentdiv.find('.total').each(function() {
+        //       totalSum += parseFloat($(this).text());
+        //     });
+            
+        //     console.log('saving items')
+        //     savetolocalstorage(item, totalSum, 'bonsortie')
+        //     parentdiv.find('.totalbon').text(totalSum.toFixed(2))
+        //     parentdiv.find('.resultsholderbonsortie').select2('open')
+        //   }, function(){
+        //     alertify.error('Cancel')
+        //     parentdiv.find('.resultsholderbonsortie').select2('open')
+
+        //   }
+        //   );
+        //   return
+        // }
+        qtyprices=$('.qtyprices')
+      prices=0
+      qties=0
+      achatids=[]
+      // what remains from eaach achat
+      remainqties=[]
+      oldqties=[]
+      qty=parseFloat(addqty.val())
+      for (let i = 0; i < qtyprices.length; i++) {
+        
+        let current = $(qtyprices[i]); // get the jQuery object
+        oldqtyprice=current.text()
+        price=current.parent().find('.price')
+        let currentQty = parseFloat(current.text()); // if it's an input use .val(), if span/div use .text()
+        if (qty <= 0) {
+          console.log('Reached 0 or below, stopping.');
+          break; // stop the loop if qty is zero or less
+        }
+        achatids.push(current.attr('achatid'))
+        oldqties.push(currentQty)
+        if (qty>=currentQty){
+          prices+=currentQty*parseFloat(price.text())
+          qties+=currentQty
+          current.text(0)
+          remainqties.push(0)
+        }else{
+          newqtyprice=Math.abs(qty-currentQty)
+          //diff=oldqtyprice-newqtyprice
+          prices+=qty*parseFloat(price.text())
+          qties+=qty
+          current.text(newqtyprice)
+          remainqties.push(newqtyprice)
+        }
+        qty= qty-currentQty; // decrease qty
+          console.log('After item', i, 'qty is now:', qty);
+          
+      }
+      coutmoyen=prices/qties
+        pdcts.push(distid)
+        localStorage.setItem('pdctsinbonsortie', JSON.stringify(pdcts))
+        afterremise=parseFloat(addprice.val())*parseFloat(addremise.val())/100
+        console.log(afterremise)
+        let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100))
+        console.log(net)
+        let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+        // ${stock<=0? "text-danger":"" }"
+        let tr = `
+        <tr class="itemrow" productid=${id} farah=${farah}>
+            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${farah=='1'?'(FR)':'(OR)'} ${ref}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+            <td style="paddingpx 0; font-size: 13px;" class="dp">${dp}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" readonly onkeyup="calculate(event); checkmax(event); updateinlocalstorage(event, 'bonsortie', ${id})" max=${max} name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="remise" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+            <input type="hidden" name="productid" value="${id}">
+            <input type="hidden" name="coutmoyen" value="${coutmoyen}" achatids="${achatids}" remainqties="${remainqties}" oldqties="${oldqties}">
+
+        </tr>
+        `
+        item={
+          'farah':farah,
+          'id': id,
+          'qty': addqty.val(),
+          'max':max,
+          'price': addprice.val(),
+          'remise': addremise.val(),
+          'total': addtotal,
+          'name': name,
+          'ref': `${farah=='1'?'(FR)':'(OR)'} ${ref}`,
+          'dp': dp,
+          'stock': stockfarah,
+          'clientprice': priceclient,
+          'netprice': netprice,
+          'coutmoyen': coutmoyen,
+          'achatids': achatids,
+          'remainqties': remainqties,
+          'oldqties': oldqties
+        }
+        bonachatbody.prepend(tr)
+        // delete selected option
+        addqty.val('')
+        addname.val('')
+        addremise.val('')
+        addprice.val('')
+        parentdiv.find('.addstock').val('')
+        parentdiv.find('.addstockfacture').val('')
+        totals=parentdiv.find('.total')
+        totalbon=parentdiv.find('.totalbon')
+        var totalSum = 0;
+        totals.each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        
+        savetolocalstorage(item, totalSum, 'bonsortie')
+        totalbon.text(totalSum.toFixed(2))
+        // $('.resultsholderbonsortie').val('').trigger('change')
+        $('.resultsholderbonsortie').select2('open')
+
+        // let selected = $('.resultsholderbonsortie').find(':selected')
+        // selected.remove()
+
+      }
+
+
+    // finish
+    $('.repsselectsbl').on('change', function(){
+      if ($(this).val()==''||$('.clientselectbl').val()==''){
+        parentdiv.find('.productsholder').addClass('d-none')
+        return
+      }else{
+        parentdiv.find('.productsholder').removeClass('d-none')
+        //$.get('products/getclientrep/'+$(this).val(), function(data){
+        //  $('.repsselectsbl').val(data.id).trigger('change')
+        //})
+        $('#productsselect2').select2({
+
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproductbonsortie?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 2,
+        placeholder:'Chercher Produits',
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection,
+      });
+        function formatRepo (repo) {
+          if (repo.loading) {
+            return repo.text;
+          }
+          console.log('>>> repo', repo)
+          var $container = $(
+            `<div class="d-flex justify-content-between align-items-center"><strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div><img src="${repo.image}" style="width:13%;">${repo.mark}</div></div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatRepoSelection (repo) {
+          return repo.text;
+        }
+      
+      }//end else
+
+    })
+    $('.clientselectbl').on('change', function(){
+      parentdiv=$(this).parent().parent().parent()
+      parentdiv.find('.productsholder').removeClass('d-none')
+        console.log('check for old unpaid bons')
+        // will check plafon and sold
+        $.get('/products/checkplafon', {"clientid":$(this).val()}, (data)=>{
+          // if (data.exist){
+          // $('.oldbonswarning').removeClass('d-none')
+          // }else{
+          //   $('.oldbonswarning').addClass('d-none')
+          // }
+          $('.oldbonswarning').removeClass('d-none').text('Sold: '+data.soldtotal.toFixed(2)+' HD')
+        })
+        $('#productsselect2').select2({
+
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproductbonsortie?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 2,
+        placeholder:'Chercher Produits',
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection,
+      });
+      function formatRepo (repo) {
+          if (repo.loading) {
+            return repo.text;
+          }
+
+          console.log('>>> repo', repo)
+          var $container = $(
+            `<div class="row"><strong class="col-10" style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div class="col-2"><img src="${repo.image}" style="width:100%;">${repo.mark}</div></div>`
+            );
+
+
+            return $container;
+        }
+
+        function formatRepoSelection (repo) {
+          return repo.text;
+        }
+      
+        
+      // if ($(this).val()==''||$('.repsselectsbl').val()==''){
+      //   $.get('products/getclientrep/'+$(this).val(), function(data){
+      //     console.log(data)
+      //     $('.repblname').text(data.name)
+      //     //$('.repsselectsbl').val(data.id).trigger('change')
+      //   })
+      //   console.log('check for old unpaid bons')
+      //   $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+      //     if (data.exist){
+      //       $('.oldbonswarning').removeClass('d-none')
+      //     }else{
+      //       $('.oldbonswarning').addClass('d-none')
+      //     }
+      //   })
+      //   parentdiv.find('.productsholder').addClass('d-none')
+      //   return
+      // }else{
+      //   parentdiv.find('.productsholder').removeClass('d-none')
+      //   console.log('check for old unpaid bons')
+      //   $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+      //     if (data.exist){
+      //     $('.oldbonswarning').removeClass('d-none')
+      //     }else{
+      //       $('.oldbonswarning').addClass('d-none')
+      //     }
+      //   })
+      //   $('#productsselect2').select2({
+
+
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct?target={{target}}',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   },
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   templateResult: formatRepo,
+      //   templateSelection: formatRepoSelection,
+      // });
+      //   function formatRepo (repo) {
+      //     if (repo.loading) {
+      //       return repo.text;
+      //     }
+
+      //     var $container = $(
+      //       `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+      //       );
+
+
+
+      //       return $container;
+      //   }
+
+      //   function formatRepoSelection (repo) {
+      //     return repo.text;
+      //   }
+      //}end else
+
+    })
+    //localStorage.removeItem('pdctsinbonsortie')
+    //localStorage.setItem('pdctsinbonsortie', '[]')
+
+    $(document).ready(function(){
+      $('.clientselectbl').select2('open')
+      // get products from localstorage
+      pdcts=JSON.parse(localStorage.getItem('bonsortie')) || []
+      total=localStorage.getItem('totalbonsortie') || 0
+      parentdiv=$('.bonsortiebody')
+      for (let i=0; i<pdcts.length; i++){
+        item=pdcts[i]
+        let tr = `
+        <tr class="itemrow ${item.stock<=0? "text-danger":"" }" productid=${item.id} farah=${item.farah}>
+            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${item.id})">${item.ref}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${item.name}</td>
+            <td style="paddingpx 0; font-size: 13px;" class="dp">${item.dp}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${item.clientprice}</td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" readonly onkeyup="calculate(event); checkmax(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" max=${item.max} name="qty" value="${item.qty}" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" name="price" value="${item.price}" step=0.01 style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${item.remise}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" name="remise" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;" class="netprice">${item.netprice}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="total">${item.total}</td>
+            <input type="hidden" name="productid" value="${item.id}">
+            <input type="hidden" name="coutmoyen" value="${item.coutmoyen}" achatids="${item.achatids}" remainqties="${item.remainqties}" oldqties="${item.oldqties}">
+
+        </tr>
+        `
+        parentdiv.prepend(tr)
+      }
+      $('.totalbon').text(total)
+      
+      console.log(pdcts)
+
+    })
+        // fill today's date in .datebon input
+        var dateInput = document.querySelector('.datebonbl');
+
+// Create a new Date object for today
+        var today = new Date();
+
+        // Get the current date in the "yyyy-mm-dd" format
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Format the date as "yyyy-mm-dd"
+        var currentDate = yyyy + '-' + mm + '-' + dd;
+
+        // Set the value of the date input to today's date
+        dateInput.value = currentDate;
+
+
+      $('.resultsholderbonsortie').on('change', function(){
+          console.log('>cc>', $(this).val()=='' || $(this).val()==null)
+          parentdiv=$(this).parent().parent()
+          if ($(this).val()=='' || $(this).val()==null){
+              return
+          }
+          var [ref, name, dp, stocktotalfarah, stockfacturefarah, stocktotalorgh, stockfactureorgh, id, sellprice, remise, netprice, representprice, term] = $(this).val().split('§');
+          console.log('>> id', id)
+          let addname=$(this).parent().parent().find('input[name="addname"]')
+          let addprice=$(this).parent().parent().find('input[name="addprice"]')
+          let addremise=$(this).parent().parent().find('input[name="addremise"]')
+          let addqty=$(this).parent().parent().find('input[name="addqty"]')
+          if (term.startsWith('fr-')){
+            addqty.attr('max', stocktotalfarah)
+            // add a sign to addrowbtn to use it when adding row #sfefr435
+            // 1 means thsi product is a farah product
+            $('.addrowbtn').attr('farah', 1)
+          }else{
+            addqty.attr('max', stocktotalorgh)
+            $('.addrowbtn').attr('farah', 0)
+
+          }
+          let repswithprice=[]
+          
+          // display stock
+          // $(this).parent().parent().find('.addstock').text(stock)
+          // $(this).parent().parent().find('.addstockfacture').text(stockfacture)
+          addqty.val('')
+          addqty.focus()
+          addprice.val(0)
+          addremise.val(0)
+          // addremise.val(remise)
+          addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stocktotalfarah}§${stockfacturefarah}§${stocktotalorgh}§${stockfactureorgh}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
+          $.get('/products/getqtyprice',
+            {
+              'term':term,
+              'target':'s',
+              'id':id
+            },
+            function(data){
+              $('.producthistory').html(data)
+          })
+          // $('.addstock').text('Stock farah: '+stocktotalfarah)
+          $('.addstockfacture').text('Stock orgh: '+stocktotalorgh)
+          // we are getting ere list of reps that have price
+          
+          $.ajax({
+              url: "{% url 'products:getclientpricesortie' %}",
+              type: 'POST',
+              data: {
+                  'target':'bl',
+                  'id': id,
+                  'clientid': $('.clientselectbl').val(),
+                  'csrfmiddlewaretoken': '{{csrf_token}}',
+                  // term to use it in case it has fr- to get buyprice
+                  'term':term
+              },
+              success: function(data){
+                console.log(data)
+                parentdiv.find('.addclientprice').html((`${data.price} (${data.remise}%)`))
+                $('.addbyuprice').html(`pr. achat orgh: ${data.orbuyprice}(${data.orremise}%)`)
+                // $('.addbyuprice').html(`pr. achat farah: ${data.frbuyprice}(${data.frremise}%) <br> pr. achat orgh: ${data.orbuyprice}(${data.orremise}%)`)
+              }
+            })
+
+          let selected = $(this).find(':selected')
+          // selected.remove()
+          // delect selected option
+      })
+
+      $('.submitbonsortie').on('click', (e)=>{
+        parentdiv=$(e.target).parent().parent().parent().parent()
+        if (parentdiv.find('.clientselectbl').val()==null ||parentdiv.find('.clientselectbl').val()=='' || parentdiv.find('.datebonbl').val()=='' ){
+            parentdiv.find('.data').addClass('border border-danger')
+            return
+        }
+        parentdiv.find('.data').removeClass('border border-danger')
+        // check if .itemrow is exist
+        // if (parentdiv.find('.itemrow').length==0){
+        //     parentdiv.find('.tableholder').addClass('border border-danger')
+        //     return
+        // }
+        parentdiv.find('.tableholder').removeClass('border border-danger')
+          var isAnyEmpty = parentdiv.find('.notemptylivraison').filter(function() { return $(this).val() == ''; }).length > 0;
+            if (isAnyEmpty){
+                let emptyInputs = parentdiv.find('input.notemptylivraison').filter(function() {
+                    return !this.value.trim();
+                });
+
+                // Add a red border to all empty input elements
+                alertify.error('Veuillez remplir tous les champs obligatoires')
+                emptyInputs.css('border', '1px solid red');
+                parentdiv.find('input.notemptylivraison').not(emptyInputs).css('border', '');
+                $(this).attr('disabled', false)
+                return
+            }
+
+          
+          trs=parentdiv.find('.bonsortiebody tr')
+          let products = []
+          trs.each(function(){
+              let tr = $(this)
+              let qty = tr.find('.qty').val()
+              let name = tr.find('.name').text()
+              let ref = tr.find('.ref').text()
+              let price = tr.find('.price').val()
+              let remise = tr.find('.remise').val()
+              let total = tr.find('.total').text()
+              let clientprice= tr.find('.clientprice').text()
+              let productid = tr.find('input[name="productid"]').val()
+              let achatids= tr.find('input[name="coutmoyen"]').attr('achatids')
+              let remainqties= tr.find('input[name="coutmoyen"]').attr('remainqties')
+              let oldqties= tr.find('input[name="coutmoyen"]').attr('oldqties')
+              let coutmoyen = tr.find('input[name="coutmoyen"]').val()
+              let product = {
+                'farah':tr.attr('farah'),
+                'qty': qty,
+                'name': name,
+                'ref': ref,
+                'price': price,
+                'remise': remise,
+                'total': total,
+                'productid': productid,
+                'clientprice':clientprice,
+                'coutmoyen': coutmoyen,
+                'achatids':achatids,
+                'remainqties':remainqties,
+                'oldqties':oldqties
+              }
+              products.push(product)
+            })
+            console.log(products)
+          if (products.length==0){
+            alertify.error('NO PRODUCTS')
+            return
+          }
+          let clientid = parentdiv.find('.clientselectbl').val()
+          let repid = parentdiv.find('.repsselectsbl').val()
+          let datebon = parentdiv.find('.datebonbl').val()
+          let transport = parentdiv.find('.transport').val()
+          let note = parentdiv.find('.note').val()
+          let payment = parentdiv.find('.payment').val()
+          let totalbon=parseFloat(parentdiv.find('.totalbon').text())
+          console.log(products)
+          console.log(totalbon)
+          console.log('sending')
+          // data={
+          //     'totalbon': totalbon,
+          //     'clientid': clientid,
+          //     'repid':repid,
+          //     'transport':transport,
+          //     'datebon': datebon,
+          //     'note': note,
+          //     'products': JSON.stringify(products),
+          //     'csrfmiddlewaretoken': '{{csrf_token}}'
+          // },
+          // console.log(data)
+          isremise=$('.remisecheck').is(':checked')
+          if (parseFloat(payment)>0){
+            if (parseFloat(payment)<totalbon){
+              if (!isremise){
+                alertify.error('error payment avance/remise')
+                return
+              }
+            }
+          }
+          if (parseFloat(payment)>totalbon){
+            alertify.error('Payment superieur au total')
+            return
+          }
+          parentdiv.find('.submitbonsortie').addClass('disabled')
+          console.log(payment)
+          $.ajax({
+              url: "{% url 'products:addbonsortie' %}",
+              type: 'POST',
+              data: {
+                'remise':$('.remisecheck').is(':checked'),
+                'car':$('.cars').val(),
+                'caissetarget':$('.caissetarget').val(),
+                  'totalbon': totalbon,
+                  'clientid': clientid,
+                  'repid':repid,
+                  'transport':transport,
+                  'datebon': datebon,
+                  'note': note,
+                  'payment': payment,
+                  'products': JSON.stringify(products),
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
+              },
+              success: function(data){
+                console.log('sent')
+                  // remove list in localstorage
+                  localStorage.removeItem('pdctsinbonsortie')
+                  localStorage.removeItem('bonsortie')
+                  localStorage.removeItem('totalbonsortie')
+                  ajaxpage('addlistbonsortie', 'list bl', '/products/listbonsortie')
+
+
+              }
+          })
+
+        })
+      $('.searchbonsortiecreation').on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".bonsortiecreation tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+
+
+
+      // const selectElement = document.getElementById("my-select");
+
+      // selectElement.addEventListener("keydown", function(event) {
+      //     if (event.key === "Enter") {
+
+      //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+      //         let bonachatbody = $('.bonachatbody')
+      //         let tr = `
+      //         <tr>
+      //             <td class="ref">${ref}</td>
+      //             <td class="name">${name}</td>
+      //             <td>${dp}</td>
+      //             <td>${stock}</td>
+      //             <td>
+      //                 <select name"local" class="form-select local">
+      //                     <option value="principal">Principal</option>
+      //                     <option value="depot">Depot</option>
+      //                 </select>
+      //             </td>
+      //             <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="qty"></td>
+      //             <td><input type="number" class="form-control calculate price" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="price"></td>
+      //             <td><input type="number" class="form-control calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="remise"></td>
+      //             <td class="total"></td>
+      //             <input type="hidden" name="productid" value="${id}">
+      //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+      //         </tr>
+      //         `
+      //         bonachatbody.prepend(tr)
+      //         // delect selected option
+      //         selectElement.remove(selectElement.selectedIndex);
+      //     }
+      // });
+
+
+      // const addtobon=(e, ref, name, stock)=>{
+      //     let target = $(e.target)
+      //     console.log(target)
+      //     target.remove()
+      //     let bonachatbody = $('.bonachatbody')
+      //     let tr = `
+      //     <tr>
+      //         <td>${ref}</td>
+      //         <td>${name}</td>
+      //         <td>${stock}</td>
+
+      //         <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="qty"></td>
+      //         <td><input type="number" class="form-control calculate price" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="price"></td>
+      //         <td class="total"></td>
+      //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+      //     </tr>
+      //     `
+      //     bonachatbody.append(tr)
+      // }
+
+
+  </script>

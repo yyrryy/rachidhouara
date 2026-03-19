@@ -1,0 +1,717 @@
+{% load global_tags %}
+
+
+<!-- add one client model -->
+<!-- bon entree data holder -->
+<div class="bondataholder row d-none">
+    <div class="col-6" 
+        style="background: #0000006f;">
+    </div>
+    <div class="bg-white rounded shadow col-6 text-center bondata">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="bg-white rounded shadow col-md-3">
+        <button class="bi bi-arrow-left w-100" onclick="ajaxpage('ff', 'j', '/products/supplierspage?target={{target}}')">List fourniosseurs</button>
+            
+        <div>
+          {% if supplier.image %}
+            <img src="{{supplier.image.url}}" width="100%" height="200px" alt="supplier image" class="rounded">
+          {% endif %}
+            <table class="table table-bordered">
+                <tr>
+                    <td>Fournisseur</td>
+                    <td>{{supplier.name.upper}}</td>
+                </tr>
+                <tr>
+                    <td>phone</td>
+                    <td>{{supplier.phone}}</td>
+                </tr>
+                <tr>
+                    <td>Total bons</td>
+                    <td>{{totaltr|floatformat:2|intspace}} DH</td>
+                </tr>
+                <tr>
+                    <td>Total payements</td>
+                    <td>{{totalpayments|floatformat:2|intspace}} DH</td>
+                </tr>
+                <tr>
+                    <td>Avoirs</td>
+                    <td>{{ totalavoirs|floatformat:2|intspace }} DH</td>
+                </tr>
+                <tr>
+                    <td>avances</td>
+                    <td>{{ totalavances|floatformat:2|intspace }} DH</td>
+                </tr>
+                <tr>
+                    <td>Sold</td>
+                    
+                    <td>{% if target == 'f' %}{{ supplier.soldfarah|floatformat:2|intspace }}{%else%}{{ supplier.soldorgh|floatformat:2|intspace }}{%endif%} DH</td>
+                </tr>
+            </table>
+            <!-- <div class="mt-3">
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Link with href
+                  </a>
+                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Button with data-target
+                  </button>
+                </p>
+                
+                <div class="mb-3">
+                    <button class="btn btn-success w-100" type="button" data-toggle="collapse" data-target="#addreglsuppl{{supplierid}}" aria-expanded="false" aria-controls="collapseExample">
+                        + Reglement
+                    </button>
+                </div>
+                <div class="collapse" id="addreglsuppl{{supplierid}}">
+                    <div class="card card-body">
+                      
+                    </div>
+                  </div>
+                <div class="mt-3 row">
+                    <div class="col-6 p-2">
+                        <small>Du</small>
+                        <input type="date" class="form-control">
+                    </div>
+                    <div class="col-6 p-2">
+                        <small>Au</small>
+                        <input type="date" class="form-control">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary relvesupp w-100">
+                    Relevé
+                </button>
+            </div> -->
+            <!-- <h2 class="text-center">
+                {{supplier.name.upper}}
+            </h2>
+            <div>
+                <h2>
+                    <span class="totalholder">
+                    
+                    </span> DH
+                </h2>
+            </div> -->
+        </div>
+    </div>
+    <div class="row col-md-9">
+        <div>
+            <button class="btn border btnselect btn-dark active" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.bons').removeClass('d-none')">Bons</button>
+            <button class="btn border btnselect btn-dark" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.factures').removeClass('d-none')">Factures</button>
+            <button class="btn border btnselect btn-dark" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.avoirs').removeClass('d-none')">Avoirs</button>
+            <button class="btn border btnselect btn-dark" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.reglements').removeClass('d-none')">Reglement</button>
+            <button class="btn border btnselect btn-dark" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.avances').removeClass('d-none')">Avances</button>
+            <button class="btn border btnselect btn-dark" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.devis').removeClass('d-none')">Devis</button>
+            <button class="btn border btnselect btn-dark" style="
+            border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); $('.tables').addClass('d-none'); $('.commandes').removeClass('d-none')">Bon commande</button>
+        </div>
+        <!-- bons -->
+        <div class="bons tables">
+            <div class="bg-white shadow rounded p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>Bon</h4>
+                    <strong>
+                        {{nbrbons}}
+                    </strong>
+                </div>
+                <div style="height: 70vh; overflow: scroll;" class="listachatholder">
+                    <table class="listachattable table table-bordered table-hover table-striped achattable" style="font-size: 12px;" id="addbonlivraisonle">
+                      <thead style="position: sticky; top: 0; background: gray;">
+                        <tr>
+                          <td style="width: 8%;" onclick="sorttable(event)">N° bon</td>
+                          <td style="width: 8%;">Date</td>
+                          <td style="width: 12%;" onclick="sorttable(event)">Fournisseur</td>
+                          <td style="width: 5%;" onclick="intsorttable(event)">Total</td>
+                          <td style="width: 5%;" onclick="sorttable(event)">Facture</td>
+                          <td style="width: 5%;" onclick="sorttable(event)">Staus</td>
+                          <td style="width: 4%;"></td>
+                        </tr>
+                      </thead>
+                      <tbody class="listbachatbody">
+                        {% for order in bons %}
+                          <tr class="ord {% if loadmore %}achat-row{% endif %}" orderid="{{order.id}}" ondblclick="ajaxpage('bonachat{{order.id}}', 'Bon achat {{order.nbon}}', '/products/bonachatdetails/{{order.id}}?target={{target}}')">
+                            <td>{{ order.nbon }}</td>
+                            <td>{{ order.date|date:'d/m/Y' }}</td>
+                            <td>{{ order.supplier.name }}</td>
+                            <td>{{ order.total|floatformat:2|intspace}}</td>
+                            <td>{% if order.isfacture %} {{order.facture.facture_no}} {% endif %}</td>
+                            <td>
+                              {% if order.ispaid %}
+                              <div  style="text-align: center; background: lightgreen;">
+                                Reglé
+                              </div>
+                              
+                
+                              {% else %}
+                
+                                <div class="" style="text-align: center; background: yellow;">
+                                  En attend
+                                </div> 
+                              {% endif %}
+                            </td>
+                            <!-- <td>{{ order.supplier.rest|floatformat:2|intspace }}</td> -->
+                            
+                            <td>
+                              <button class="btn bi bi-download" onclick="printbonachat('{{order.id}}')"></button>
+                            </td>
+                
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                      <!-- <thead style="position: sticky; bottom: 0; background: white;">
+                        <tr>
+                          <td style="width: 8%;"></td>
+                          <td style="width: 8%;"></td>
+                          <td style="width: 12%;"></td>
+                          <td style="width: 5%; background: yellowgreen;" class="totalbbonachat">{{total|floatformat:2|intspace}}</td>
+                          <td style="width: 5%; background: yellowgreen;" class="totaltvabbonachat">{{totaltva|floatformat:2|intspace}}</td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 4%;"></td>
+                        </tr>
+                      </thead> -->
+                      <!-- <tfoot>
+                        <tr>
+                          <td>N° bon</td>
+                          <td>Date</td>
+                          <td>Client</td>
+                          <td>Code client</td>
+                          <td>Total</td>
+                          <td>Region</td>
+                          <td>Ville</td>
+                          <td>Solde cl.</td>
+                          <td>Repr</td>
+                          <td>Reglé</td>
+                          <td>Facturé</td>
+                          <td>Transport</td>
+                        </tr>
+                      </tfoot> -->
+                    </table>
+                  </div>
+                <!--  -->
+            </div>
+        </div>
+
+        <!-- payments -->
+        <div class="reglements tables d-none">
+            <div class="bg-white shadow rounded p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>Les paiments</h4>
+                    <strong>
+                        {{nbrpayments}}
+                    </strong>
+                </div>
+                <div style="height: 70vh; overflow: scroll;" class="listachatholder">
+                    <table style="font-size: 12px;" class="table table-bordered p-2">
+                        <thead class="bg-darkblue text-white">
+                            <tr>
+                                <th>Date</th>
+                                <th>Mode</th>
+                                <th>Montant</th>
+                                <th>Echeance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bon in payments %}
+                            <tr>
+                                <td>{{bon.date|date:'d/m/Y'}}</td>
+                                <td>{{bon.mode}}</td>
+                                <td>{{bon.amount|floatformat:2}}</td>
+                                <td>
+                                    {% if bon.mode == 'espece' %}
+                                    --
+                                    {% else %}
+                                    {{bon.echeance|date:'d/m/Y'}}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+                <!--  -->
+            </div>
+        </div>
+
+        <!-- avances -->
+        <div class="avances tables d-none">
+            <div class="bg-white shadow rounded p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>Les avances</h4>
+                    <!-- <strong>
+                        {{nbrpayments}}
+                    </strong> -->
+                </div>
+                <div style="height: 70vh; overflow: scroll;" class="listachatholder">                    
+                    <table style="font-size: 12px;" class="table table-bordered p-2">
+                        <thead class="bg-darkblue text-white">
+                            <tr>
+                                <th>Date</th>
+                                <th>Mode</th>
+                                <th>Montant</th>
+                                <th>Echeance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bon in avances %}
+                            <tr>
+                                <td>{{bon.date|date:'d/m/Y'}}</td>
+                                <td>{{bon.mode}}</td>
+                                <td>{{bon.amount|floatformat:2}}</td>
+                                <td>
+                                    {% if bon.mode == 'espece' %}
+                                    --
+                                    {% else %}
+                                    {{bon.echeance|date:'d/m/Y'}}}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+                
+                <!--  -->
+            </div>
+        </div>
+
+        <!-- avoirs -->
+        <div class="avoirs tables d-none">
+            <div class="bg-white rounded shadow p-2">
+                <div class="p-2 d-flex justify-content-between align-items-center">
+                    <h4>Les avoirs</h4>
+                    <strong>
+                        {{navoirs}}
+                    </strong>
+                </div>
+                <div style="height: 70vh; overflow: scroll;" class="listachatholder">
+                    <table style="font-size: 12px;" class="table table-bordered">
+                        <thead class="bg-darkblue text-white">
+                            <th>N°</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            {% for i in avoirs %}
+                            <tr>
+                                <td>{{i.no}} {%if i.ispaid%}(R){%endif%}</td>
+                                <td>{{i.date|date:'d/m/Y'}}</td>
+                                <td>{{i.total|floatformat:2}}</td>
+                                <!-- <td>
+                                    {{i.items}}
+                                </td> -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- factures -->
+        <div class="factures tables d-none">
+            <div class="bg-white rounded shadow p-2">
+                <div class="p-2 d-flex justify-content-between align-items-center">
+                    <h4>Les factures</h4>
+                    <strong>
+                        {{nfactures}}
+                    </strong>
+                </div>
+                <div class="listfcholder" style="height:70vh;overflow: scroll;">
+                    <table class="table table-bordered table-hover facturestable listfctable" style="font-size: 12px;" id="">
+                      <thead style="background: rgb(231, 231, 231); position: sticky;top: 0;">
+              
+                        <tr>
+                          <td  onclick="sorttable(event)">N° facture</td>
+                          <td  onclick="sorttable(event)">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <!-- <button class="btn btn-sm" style="font-size: 6px; background: #f06623; color: white;" onclick="sortupfc(event)">↑</button>  -->
+                              <div>Date</div>
+                              <!-- <button class="btn btn-sm" style="font-size: 6px; background: #f06623; color: white;" onclick="sortdownfc(event)">↓</button>  -->
+                            </div>
+                          </td>
+                          <td onclick="sorttable(event)">Total</td>
+                          <td onclick="sorttable(event)">TVA</td>
+                          <td onclick="sorttable(event)">Fourn.</td>
+                          <!-- <td onclick="sorttable(event)">Repr</td> -->
+                          <td onclick="sorttable(event)">Reglé</td>
+                          <td onclick="sorttable(event)">Notes</td>
+                          <!-- <td onclick="sorttable(event)">Reglements</td> -->
+                          <td onclick="sorttable(event)">N° Bon achat</td>
+                          <!-- <td style="width: 5%;" onclick="sorttable(event)">Comptablisé</td> -->
+                        </tr>
+                      </thead>
+                      <tbody class="listfcbody">
+                        {% for order in factures %}
+                          <tr class="ord {% if order.ispaid %}text-danger{% endif %} fc-row" orderid="{{order.code}}" ondblclick="ajaxpage('facture{{order.id}}', 'Facture {{order.facture_no}}', '/products/supplierfacturedetails/{{order.id}}?target={{target}}')"
+                            style="{% if order.bon %} color: blue {% endif %}"
+                          >
+                            <td>{{ order.facture_no }}</td>
+                            <td>{{ order.date|date:'d/m/Y' }}</td>
+                            <td>{{ order.total|floatformat:2|intspace}}</td>
+                            <td>{{ order.tva|floatformat:2|intspace}}</td>
+                            <td>{{ order.supplier.name }}</td>
+                            <!-- <td>{{ order.client.region }}</td> -->
+                            <!-- <td>{{ order.salseman }}</td> -->
+                            <td>
+                              {% if order.ispaid %}
+                              <div  style="text-align: center; background: lightgreen;">
+                                Payé
+                              </div>
+                
+                              {% else %}
+                              <div class="" style="text-align: center; background: rgb(255, 77, 0);">
+                                Non payé
+                              </div>
+                              {% endif %}
+                            </td>
+              
+                            <td>
+                              {{order.note}}
+                            </td>
+                            
+                              <td>
+                                {% if order.bon %}
+                                  {{ order.bon.nbon }}
+                                {% else %}
+                                <div class="accordion" id="accordionbons{{order.id}}">
+              
+                                  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{order.id}}" aria-expanded="true" aria-controls="collapsbon{{order.id}}">
+              
+              
+                                  </button>
+              
+                                  <div id="collapsbon{{order.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{order.id}}">
+                                      {% for bon in order.bons.all %}
+                                      -{{ bon.nbon }} <br>
+                                      {% endfor %}
+              
+              
+                                  </div>
+                              </div>
+                                {% endif %}
+                              </td>
+                              <td class="d-flex">
+                                {% if order.isaccount %}
+                                <i class="bi bi-check h3"></i>c
+                                {% endif %}
+                                <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{order.id}}')"></button>
+                              </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                      <!--<thead style="background: rgb(231, 231, 231); position: sticky;bottom: 0;">
+              
+                        <tr>
+                          <td style="width: 8%;"></td>
+                          <td style="width: 8%;"></td>
+                          <td style="width: 5%; background: yellowgreen;" class="totalfc">{{total|floatformat:2|intspace}}</td>
+                          <td style="width: 5%;" class="totalfctva">{{totaltva|floatformat:2|intspace}}</td>
+                          <td style="width: 12%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                          <td style="width: 5%;"></td>
+                        </tr>
+                      </thead>
+                       <tfoot>
+                        <tr>
+                          <td>N° bon</td>
+                          <td>Date</td>
+                          <td>Client</td>
+                          <td>Code client</td>
+                          <td>Total</td>
+                          <td>Region</td>
+                          <td>Ville</td>
+                          <td>Solde cl.</td>
+                          <td>Repr</td>
+                          <td>N° bon</td>
+                          <td>Facturé</td>
+                          <td>Transport</td>
+                        </tr>
+                      </tfoot> -->
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- devis -->
+        <div class="devis tables d-none">
+            <div class="bg-white rounded shadow p-2">
+                <div class="p-2 d-flex justify-content-between align-items-center">
+                    <h4>Les devis</h4>
+                    <!-- <strong>
+                        {{nfactures}}
+                    </strong> -->
+                </div>
+                <div class="listfcholder" style="height:70vh;overflow: scroll;">
+                    <table class="table table-bordered table-hover table-striped listbltable" style="font-size: 12px;" id="addbonlivraisonle">
+                        <thead style="position: sticky; top: 0;">
+                          <tr style="background: #676767; color: white;">
+                            <td style="width:12%;" onclick="sorttable(event)">N° bon</td>
+                            <td style="width:10%;" class="">
+                              <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                                <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortupbl(event)">↑</button>  -->
+                                <div>Date</div>
+                                <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortdownbl(event)">↓</button>  -->
+                              <!-- </div> -->
+                            </td>
+                            <td style="width:10%;"  onclick="sorttable(event)">Fournisseur</td>
+                            <td style="width:10%;"  onclick="intsorttable(event)">Total</td>
+                            <td style="width:10%;"  onclick="sorttable(event)">Bon cmnd</td>
+                            <td style="width:10%;"  onclick="sorttable(event)">Bon Achat</td>
+                            <td style="width:15%;"  onclick="sorttable(event)">Notes</td>
+                            <td style="width:10%;"  onclick="sorttable(event)">User</td>
+                            <td style="width:10%;" ></td>
+                          </tr>
+                        </thead>
+                        <tbody class="listblbody">
+                          <!-- {% if order.generated %}  lightgreen;{% endif %} {% if i.isfacture%} color:blue;{%endif%} {% if order.ispaid %} text-danger{% endif %} -->
+                          {% for order in devis %}
+                            <tr class="ord bl-row" orderid="{{order.code}}" ondblclick="ajaxpage('bons{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/supplierdevidetails?id={{order.id}}&&target={{target}}')" style="background:" >
+                              <td >{{ order.bon_no }}</td>
+                              <td >{{ order.date|date:'d/m/Y' }}</td>
+                              <td >{{ order.supplier.name }}</td>
+                              <td style="color: blue;">{{ order.total|floatformat:'2'|intspace}}
+                              </td>
+                              
+                              <td class="">
+                                {% if order.generatedbc %}
+                                {{order.bc.bon_no}}
+                                {% endif %}
+                              </td>
+                  
+                              <td class="">
+                                {% if order.generatedbl %}
+                                {{order.bl.nbon}}
+                                {% endif %}
+                              </td>
+                              
+                              <td>
+                                {% if order.note %} {{order.note}} {% endif %}
+                              </td>
+                              <td>
+                                {% if order.user %} {{order.user.username}} {% endif %}
+                              </td>
+                              <td class="d-flex">
+                                <!-- <button class="btn btn-sm btn-info" onclick="makedelivered('{{order.id}}', event)"></button> -->
+                                <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}', '{{target}}')"></button>
+                              </td>
+                            
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                        <!-- <thead style="position: sticky; bottom: 0; background: white;">
+                          <tr>
+                            <td style="width: 8%;"></td>
+                            <td style="width: 8%;"></td>
+                            <td style="width: 12%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%; background: yellowgreen;" class="totalbons" onclick="$('.hidebltotal').toggleClass('fade')">
+                              <div class="hidebltotal fade">{{total|floatformat:'2'|intspace}}</div>
+                            </td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 4%;"></td>
+                            <td style="width: 4%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td></td>
+                          </tr>
+                        </thead> -->
+                        <!-- <tfoot>
+                          <tr>
+                            <td>N° bon</td>
+                            <td>Date</td>
+                            <td>Client</td>
+                            <td>Code client</td>
+                            <td>Total</td>
+                            <td>Region</td>
+                            <td>Ville</td>
+                            <td>Solde cl.</td>
+                            <td>Repr</td>
+                            <td>Reglé</td>
+                            <td>Facturé</td>
+                            <td>Transport</td>
+                          </tr>
+                        </tfoot> -->
+                      </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- commandes -->
+        <div class="commandes tables d-none">
+            <div class="bg-white rounded shadow p-2">
+                <div class="p-2 d-flex justify-content-between align-items-center">
+                    <h4>Les commandes</h4>
+                    <!-- <strong>
+                        {{nfactures}}
+                    </strong> -->
+                </div>
+                <div class="listfcholder" style="height:70vh;overflow: scroll;">
+                    <table class="table table-bordered table-hover table-striped listbltable" style="font-size: 12px;" id="addbonlivraisonle">
+                        <thead style="position: sticky; top: 0;">
+                          <tr style="background: #676767; color: white;">
+                            <td style="width:12%;" onclick="sorttable(event)">N° bon</td>
+                            <td style="width:10%;" class="">
+                              <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                                <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortupbl(event)">↑</button>  -->
+                                <div>Date</div>
+                                <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortdownbl(event)">↓</button>  -->
+                              <!-- </div> -->
+                            </td>
+                            <td style="width:10%;"  onclick="sorttable(event)">Fournisseur</td>
+                            <td style="width:10%;"  onclick="intsorttable(event)">Total</td>
+                            <td style="width:10%;"  onclick="sorttable(event)">Bon achat</td>
+                            <td style="width:10%;"  onclick="sorttable(event)">N° Devis</td>
+                            <td style="width:15%;"  onclick="sorttable(event)">Notes</td>
+                            <td style="width:10%;"  onclick="sorttable(event)">Useer</td>
+                            <td style="width:10%;" ></td>
+                          </tr>
+                        </thead>
+                        <tbody class="listblbody">
+                          <!-- {% if order.generated %}  lightgreen;{% endif %} {% if i.isfacture%} color:blue;{%endif%} {% if order.ispaid %} text-danger{% endif %} -->
+                          {% for order in commandes %}
+                            <tr class="ord bl-row" orderid="{{order.code}}" ondblclick="ajaxpage('bons{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/supplierboncommanddetails?id={{order.id}}&&target={{target}}')" style="background:" >
+                              <td >{{ order.bon_no }}</td>
+                              <td >{{ order.date|date:'d/m/Y' }}</td>
+                              <td >{{ order.supplier.name }}</td>
+                              <td style="color: blue;">{{ order.total|floatformat:'2'|intspace}}
+                              </td>
+                              
+                              <td class="">
+                                {% if order.generatedbl %}
+                                {{order.bl.nbon}}
+                                {% endif %}
+                              </td>
+                  
+                              <td class="">
+                                {% if order.devi %}
+                                {{order.devi.bon_no}}
+                                {% endif %}
+                              </td>
+                  
+                              
+                              
+                              <td>
+                                {% if order.note %} {{order.note}} {% endif %}
+                              </td>
+                              <td>
+                                {% if order.user %} {{order.user.username}} {% endif %}
+                              </td>
+                              <td class="d-flex">
+                                <!-- <button class="btn btn-sm btn-info" onclick="makedelivered('{{order.id}}', event)"></button> -->
+                                <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}', '{{target}}')"></button>
+                              </td>
+                            
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                        <!-- <thead style="position: sticky; bottom: 0; background: white;">
+                          <tr>
+                            <td style="width: 8%;"></td>
+                            <td style="width: 8%;"></td>
+                            <td style="width: 12%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%; background: yellowgreen;" class="totalbons" onclick="$('.hidebltotal').toggleClass('fade')">
+                              <div class="hidebltotal fade">{{total|floatformat:'2'|intspace}}</div>
+                            </td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 4%;"></td>
+                            <td style="width: 4%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td style="width: 5%;"></td>
+                            <td></td>
+                          </tr>
+                        </thead> -->
+                        <!-- <tfoot>
+                          <tr>
+                            <td>N° bon</td>
+                            <td>Date</td>
+                            <td>Client</td>
+                            <td>Code client</td>
+                            <td>Total</td>
+                            <td>Region</td>
+                            <td>Ville</td>
+                            <td>Solde cl.</td>
+                            <td>Repr</td>
+                            <td>Reglé</td>
+                            <td>Facturé</td>
+                            <td>Transport</td>
+                          </tr>
+                        </tfoot> -->
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        
+    </div>
+</div>
+<div class="mt-2">
+    
+</div>
+<script>
+    // function avoirsupdata(id){
+    //     $('.bondataholder').removeClass('d-none')
+    //     $.post(`/product/avoirsupdata/`,{
+    //         'id':id,
+    //         'csrfmiddlewaretoken':'{{csrf_token}}'
+    //     }, 
+    //     function(data){
+    //         $('.bondata').html(data.data)
+    //     })
+    // }
+    // $('.relvesupp').on('click', ()=>{
+        
+    // })
+    // const bondata=(id)=>{
+    //     $('.bondataholder').removeClass('d-none')
+    //     $.post(`/product/bonentree/${id}`,{
+    //         'csrfmiddlewaretoken':'{{csrf_token}}'
+    //     }, 
+    //     function(data){
+    //         $('.bondata').html(data.data)
+    //     })
+    // }
+    
+// serch in tables instead of sending ajax request
+       
+    // $(function() {
+    // $('input[name="daterange"]').daterangepicker({
+    //     opens: 'left',
+    //     locale: {
+    //         format: 'D/MM/Y'
+    //     }
+    // }, function(start, end, label) {
+    //     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    // });
+    // });
+ 
+
+</script>

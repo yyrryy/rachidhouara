@@ -1,0 +1,191 @@
+<script src="/static/js/jquery.min.js"></script>
+<link href="/static/css/minified.css" rel="stylesheet">
+<div class="row">
+    <div class="col-3 shadow rounded p-2" style="z-index: 999">
+        <div class="d-flex justify-content-between">
+          <h5>
+              Situation Client
+          </h5>
+        </div>
+        <select readonly name="clientsituationselect" id="" class="clientsituationselect form-select notempty" style="width: 100%;">
+          <<option value="{{clientid}}">{{clientname}}</option>
+        </select>
+
+        <div class="mt-2">
+            <div>
+                <small>Du</small>
+                <input type="date" name="situationcldatefrom" class="situationcldatefrom form-control notempty" value="2024-01-01">
+            </div>
+            <div>
+                <small>Au</small>
+                <input type="date" name="situationcldateto" class="situationcldateto form-control notempty" value="{{today|date:'Y-m-d'}}">
+            </div>
+        </div>
+
+        <button class="btn btn-info w-100 mt-2" onclick="genererrelvecl(event)">Relevé</button>
+        <!-- <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationbl('releveclblholder')">Imprimer</button> -->
+        <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationbl('clientid', 'startdate', 'enddate')">Imprimer</button>
+
+        <button class="btn btn-primary w-100 mt-2 printrelvebl" onclick="$('.relvlogo').toggleClass('invisible');localStorage.getItem('showenteterelv') === 'true'?localStorage.setItem('showenteterelv','false'):localStorage.setItem('showenteterelv','true')">Entette</button>
+        <!-- <button class="btn btn-primary w-100 mt-2 printrelvebl" onclick="$('.relvlogo').toggleClass('invisible')">Entette</button> -->
+        <strong class="soldfcinrelvbl text-danger"></strong>
+        <h5 class="mt-5">
+            Situation Client FC
+        </h5>
+        <button class="btn btn-success w-100 mt-2 bg-orange" onclick="relvclfcinbl(event)">Relevé Facture</button>
+        <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationfc('clientid', 'startdate', 'enddate')">Imprimer relev. Facture</button>
+
+        <!-- <select name="clientsituationselect" id="" class="form-select notempty clientsituationfcselect" style="width: 100%;">
+
+        </select> -->
+
+
+    </div>
+
+    <div class="col-9 releveclblholder" id="releveclblholder" >
+        <div class="d-flex flex-column align-items-center justify-content-center loader position-fixed d-none"
+        style="height: 100%;background:#171717bc ; width: 100%; z-index: 9999;"
+        >
+            <div class="spinner-border text-white" role="status">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    // the same function relv client facture in bl
+    function relvclfcinbl(event){
+
+        parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationcldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclientfc',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+            },
+            success: function(data){
+                $('.loadingscreen').addClass('d-none')
+                $('.releveclblholder').html(data.html)
+                if (localStorage.getItem('showenteterelv') === 'true'){
+                  $('.relvlogo').removeClass('invisible')
+                }
+            }
+        })
+    }
+    function genererrelvecl(event){
+        parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationcldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loader').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclient',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+            },
+            success: function(data){
+                $('.loader').addClass('d-none')
+                $('.releveclblholder').html(data.html)
+                $('.soldfcinrelvbl').text('Sold Facture: '+(data.soldfc).toFixed(2))
+                // dateInput.value = currentDate;
+            }
+        })
+    }
+
+    function printsituationbl(id){
+        /*var printContents = document.getElementById(id).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+
+        parentdiv.find('table').css('font-size', '13px')
+        parentdiv.find('body').css('font-family', 'serif')
+        parentdiv.find("table > tbody > tr > td").css('padding', '0px');
+        parentdiv.find("table > thead > tr").css('background','gray');
+        // $('body').addClass('d-flex flex-column vh-100 p-3')
+        window.print();
+        document.body.innerHTML = originalContents;
+        forceupdatetab('addsituationcl', 'products/situationcl')
+        */
+        parentdiv=$(event.target).parent()
+
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationcldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevblprint?clientid='+clientid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+
+          myWindow.focus();
+          setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000);
+
+    }
+    function printsituationfc(id){
+        /*var printContents = document.getElementById(id).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+
+        parentdiv.find('table').css('font-size', '13px')
+        parentdiv.find('body').css('font-family', 'serif')
+        parentdiv.find("table > tbody > tr > td").css('padding', '0px');
+        parentdiv.find("table > thead > tr").css('background','gray');
+        // $('body').addClass('d-flex flex-column vh-100 p-3')
+        window.print();
+        document.body.innerHTML = originalContents;
+        forceupdatetab('addsituationcl', 'products/situationcl')
+        */
+        parentdiv=$(event.target).parent()
+
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationcldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevfcprint?clientid='+clientid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+
+          myWindow.focus();
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000);
+    }
+</script>

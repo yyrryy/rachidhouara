@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% block css %}
+<style>
+    
+</style>
+{% endblock %}
+{% block content %}
+
+<button class="btn btn-primary" onclick="Printorder('avances')">
+  Telecharger
+</button>
+<div id="avances">
+  <div class="">
+    <div class="card">
+      <div class="card-header d-flex flex-column">
+        <div class="d-lg-flex d-block justify-content-between">
+          <h5>Bon de Commande: #{{order.id}}</h5>
+        <p>
+          paiment: {{order.modpymnt.upper}}
+        </p>
+        <p>
+          mode de livraison: {{ order.modlvrsn.upper}}
+        </p>
+        </div>
+        <div class="">
+          <h5>Client: {{order.client.name.upper}}</h5>
+          <p>
+            {{order.client.phone}} <br> {{order.client.address}} - {{order.client.city}}
+          </p>
+          <p>
+            
+          </p>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-table">
+        <div class="table-responsive-sm">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Representant</th>
+                <th>Total</th>
+                <!-- <th>Total Remise</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ order.date|date:"d/m/Y" }}</td>
+                <td>{{ order.salseman }}</td>
+                <td>{{ order.total}}</td>
+                <!-- <td>{{ order.totalremise}}</td> -->
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+  
+    </div>
+  
+  </div>
+  
+  <div class="orderitems mt-3 bg-white rounded p-2">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ref</th>
+          <th>Article</th>
+          <th>qty</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in items %}
+              <tr>
+                  <td>
+                      {{i.ref.upper}}
+                  </td>
+                  <td>
+                    {{i.name.upper}}
+                </td>
+                <td>
+                  {{i.qty}}
+              </td>
+                  {% empty %}
+                  <td>
+                      none
+                  </td>
+  
+              </tr>
+              {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% if user.groups.all.0.name == 'accounting' %}
+<div class="fixed-bottom">
+  {% if order.isdelivered and order.ispaied %}
+  <button class="btn w-100 disabled"  type="submit">Confirmé et payé</button>
+  {%elif not order.isdelivered %}
+  <form action="/dilevered/{{order.id}}" method="POST">
+    {%csrf_token%}
+    <button class="btn btn-primary w-100"  type="submit">Confirmer</button>
+  </form>
+  {% else %}
+  <form action="/paied/{{order.id}}" method="POST">
+    {%csrf_token%}
+    <button class="btn btn-success w-100"  type="submit">Payé</button>
+  </form>
+  {%endif%}
+
+</div>
+{%endif%}
+<!-- {% if user.groups.all.0.name == 'clients' %}
+<div class="bg-white mt-2">
+
+
+
+  <div class="row mb-5">
+    
+    <div class="col-6 fitscreen">
+      <p class="card-header sticky-top">
+        Commandes
+      </p>
+      <table class="table table-hover table-striped table-borded tablecommande">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Repr</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="ord {% if order.isdelivered%}bg-primary{%endif%}" orderid="{{order.id}}">
+            <td>{{ order.date|date:'d/m/Y' }}</td>
+            <td>{{ order.client }}</td>
+            <td>{{ order.salseman}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-6 fitscreen details orderitems position-relative">
+      
+    </div>
+
+    
+  </div>
+  <hr>
+  
+
+
+</div> -->
+{%endif%}
+{% endblock %}
+{% block js %}
+<script>
+  function Printorder(divName){
+         var printContents = document.getElementById(divName).innerHTML;
+         var originalContents = document.body.innerHTML;
+         document.body.innerHTML = printContents;
+         $('body').css('font-size', '12px')
+         $('table').css('font-size', '9px');
+         $("table > thead > tr > th").css('padding', '0px');
+         $("table > tbody > tr > td").css('padding', '0px');
+         $('body').addClass('d-flex flex-column vh-100 p-3')
+         window.print();
+         document.body.innerHTML = originalContents;
+    }
+  </script>
+{% endblock %}

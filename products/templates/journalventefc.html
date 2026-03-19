@@ -1,0 +1,216 @@
+<div class="row position-relative">
+    <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('journalventefc')">x</button>
+        <div>
+          {{title}}
+        </div>
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('journalventefc', '/products/journalventefc')">↻</button>
+    </div>
+    <div class="d-flex">
+        <div>
+            <input type="date" name="jvfcdatefrom" class="form-control notempty jvfcdatefrom" value="{{today|date:'Y-m-d'}}">
+        </div>
+        <div>
+            <input type="date" name="jvfcdateto" class="form-control notempty jvfcdateto" value="{{today|date:'Y-m-d'}}">
+        </div>
+        <button class="btn btn-sm-success bg-darkblue text-white" onclick="getdatefilterjvfc()">Filtrer</button>
+    </div>
+    <div class="d-flex justify-content-between">
+        <input style="width:20em; border-radius: 10em;" type="text" name="" id="" placeholder="Recherche" class="searchinputjournalvfc">
+        <select onchange="getjvfcdatayear(event)" class="jvfcyear populateyears disabled" hidden style="width:9em; border-radius: 10em;">
+            <!-- <option value="0">----</option>
+            <option value="2024">2024</option> -->
+
+        </select>
+    </div>
+
+
+
+    <div style="height: 70vh; overflow: scroll;" class="journalvfctableholder">
+        <table style="font-size: 12px;" class="table table-bordered journalvfctable table-hover">
+            <thead style="position: sticky; top: 0; background: rgb(199, 199, 199);">
+                <tr>
+                    <td>Date</td>
+                    <td>N° bon</td>
+                    <td>REf</td>
+                    <td>Product</td>
+                    <td>Prix vente</td>
+                    <td>Prix Net</td>
+                    <td>Cout moyen</td>
+                    <td>D. prix achat</td>
+                    <td class="text-danger">Qté</td>
+                    <td>Total</td>
+                    <td>Total moy.</td>
+                    <td>Client</td>
+                    <td>Code</td>
+                    <td>Rep.</td>
+                    <td class="text-success">Marge</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- (prix vente net - cout moyen)*qty=la marge -->
+                {% for i in items %}
+                <tr class="journalventefc-row">
+                    <td>{{i.date|date:"d/m/Y"}}</td>
+                    <td>{{i.facture.facture_no}}</td>
+                    <td>{{i.product.ref}}</td>
+                    <td>{{i.product.name}}</td>
+                    <td>{{i.price}}</td>
+                    <td class="prnetjvfc">{{i.product.prixnet}}</td>
+                    <td style="color:blue" class="coutmoyenjvfc">{% if i.product.coutmoyen %} {{i.product.coutmoyen|floatformat:2}} {%else%}0{%endif%}</td>
+                    <td class="text-danger prachatjvfc">{{i.product.buyprice|floatformat:2}}</td>
+                    <td class="text-danger qtyjvfc">{{i.qty}}</td>
+                    <td class="totalbonsjvfc">{{i.total}}</td>
+                    <td class="totalmoyenjvfc"></td>
+                    <td>{{i.facture.client.name}}</td>
+                    <td>{{i.facture.client.code}}</td>
+                    <td>{{i.facture.salseman.name}}</td>
+                    <td class="text-success margejvfc">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <thead style="position: sticky; bottom: 0; background: white;">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-danger totalqtyjvfc">{{totalqty}}</td>
+                    <td class="totaljvfc" style="background: yellowgreen; padding: 3px;">{{total}}</td>
+                    <td class="totalmoyjvfc" style="background: yellowgreen; padding: 3px;"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-success totalmargejvfc" style="background: yellowgreen; padding: 3px;"></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<script>
+  populateyears()
+  currentPagejournalventefc=1
+  calculatetotalsjvfc()
+
+    function calculatetotalsjvfc(){
+        $('.margejvfc').each(function(){
+            var prnet=$(this).parent().find('.prnetjvfc').text()
+            var prachat=$(this).parent().find('.prachatjvfc').text()
+            var qty=$(this).parent().find('.qtyjvfc').text()
+            var marge=(parseFloat(prnet)-parseFloat(prachat))*parseFloat(qty)
+            $(this).text(marge.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+        })
+        var totalmarge=0
+
+        $('.margejvfc').each(function(){
+            totalmarge+=parseFloat($(this).text().replace(' ', ''))
+        })
+        $('.totalmargejvfc').text(totalmarge.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+    }
+
+    function getdatefilterjvfc(){
+
+        datefrom=$('.jvfcdatefrom').val()
+        dateto=$('.jvfcdateto').val()
+        $.get('products/filterjvfcdate', {'datefrom':datefrom, 'dateto':dateto}, (data)=>{
+
+            $('.journalvfctable tbody').html(data.trs)
+            $('.totaljvfc').text(data.total?data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '):0)
+            $('.totalqtyjvfc').text(data.totalqty?data.totalqty:0)
+            calculatetotalsjvfc()
+        })
+    }
+    function getjvfcdatayear(event){
+        currentPagejournalventefc=1
+        loadingjournalventefc=false
+        $('.journalvfctableholder').on('scroll', handleScrolljvfc);
+        year=$(event.target).val()
+        if (year != '0'){
+            $.get('products/yeardatajournalvfc', {'year':year}, (data)=>{
+
+                $('.journalvfctable tbody').html(data.trs)
+                $('.totaljvfc').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalqtyjvfc').text(data.totalqty)
+                $('.totalmargejvfc').text(data.totalmarge)
+            })
+        }
+    }
+
+
+    function loadMorejvfc (term, year, startdate, enddate){
+      console.log('>> loading more page: ',currentPagejournalventefc)
+        loadingjournalventefc = true;
+        $.get(`/products/loadjournalventefc/?page=${currentPagejournalventefc}&term=${term}&year=${year}&startdate=${startdate}&enddate=${enddate}`, (data)=>{
+
+        const tbody = $('.journalvfctable tbody');
+        tbody.append(data.trs);
+        calculatetotalsjvfc()
+        loadingjournalventefc = false;
+
+
+            if (!data.has_more) {
+              console.log('>>> stop handle scroll')
+                // Remove the scroll event listener when there are no more records
+                $('.journalvfctableholder').off('scroll', handleScrolljvfc);
+            }
+            })
+
+            console.log('>> loaded')
+            console.log('>> last row', document.querySelector('.journalventefc-row:last-child'))
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrolljvfc () {
+      const container = $('.journalvfctableholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.journalventefc-row:last-child');
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+      let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
+      let startdate=lastRow.getAttribute('startdate')?lastRow.getAttribute('startdate'):0
+      let enddate=lastRow.getAttribute('enddate')?lastRow.getAttribute('enddate'):0
+      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
+      const containerBottom = container.scrollTop + container.clientHeight;
+      if (containerBottom+900 >= lastRowOffset && !loadingjournalventefc) {
+          currentPagejournalventefc++;
+          loadMorejvfc(term, year, startdate, enddate);
+      }
+    };
+
+    // Attach the scroll event listener
+    $('.journalvfctableholder').on('scroll', handleScrolljvfc)
+
+    $('.searchinputjournalvfc').on("change", function() {
+        var filterValue = $(this).val().toLowerCase();
+        let year=$('.jvfcyear').val()
+        $.get('/products/searchforjvfc', {'term':filterValue.trim(), 'year':year}, (data)=>{
+            $('.journalvfctable tbody').html(data.trs)
+            $('.totaljvfc').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+            $('.totalqtyjvfc').text(data.totalqty)
+            currentPagejournalventefc=1
+            loadingjournalventefc=false
+            $('.journalvfctableholder').on('scroll', handleScrolljvfc)
+            calculatetotalsjvfc()
+        })
+    });
+
+
+
+    // $('.marge').each(function(){
+    //     var prnetfc=$(this).parent().find('.prnetfc').text()
+    //     var coutmoyenfc=$(this).parent().find('.coutmoyenfc').text()
+    //     var qty=$(this).parent().find('.qty').text()
+    //     var marge=(parseFloat(prnetfc)-parseFloat(coutmoyenfc))*parseFloat(qty)
+    //     $(this).text(marge.toFixed(2))
+    // })
+    // $('.totalmoyenfc').each(function(){
+    //     var coutmoyenfc=$(this).parent().find('.coutmoyenfc').text()
+    //     var qty=$(this).parent().find('.qty').text()
+    //     var totalmoyen=parseFloat(coutmoyenfc)*parseFloat(qty)
+    //     $(this).text(totalmoyen.toFixed(2))
+    // })
+</script>

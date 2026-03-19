@@ -1,0 +1,629 @@
+<style>
+  .autocomplete {
+position: relative;
+width: 300px; /* Adjust as needed */
+}
+
+#search-input {
+width: 100%;
+padding: 10px;
+}
+
+#suggestion-list {
+position: absolute;
+list-style: none;
+background-color: white;
+border: 1px solid #ccc;
+max-height: 200px;
+overflow-y: auto;
+width: 100%;
+padding: 0;
+margin: 0;
+}
+</style>
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button>
+  <div>
+    {{title}}
+  </div>
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
+</div>
+
+<div class="">
+       <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
+          <div class="col-5">
+            <select name="mode" id="" style="width:100%;" class="form-select notemptylivraison modeselectav{{avoir.id}}" hidden>
+
+
+              <option value="bl">BL</option>
+              <option value="facture" {% if avoir.avoirfacture %} selected {% endif %}>Facture</option>
+            </select>
+              <div class="mb-2">
+                <small>Client: {{avoir.client.name}}</small>
+
+                  <select name="client" id="" style="width:100%;" class="select2 clientselectavoir{{avoir.id}} form-select notemptyavoir{{avoir.id}}">
+
+                  </select>
+              </div>
+              <div class="mb-2" hidden>
+                  <small>Representant:</small>
+                  <select name="representant" id="" style="width:100%;" class="select2 repsselectsavoir{{avoir.id}} form-select">
+                      <option value="{{avoir.representant.id}}">{{avoir.representant.name}}</option>
+                      {% for i in commercials %}
+                      <option value="{{i.id}}">{{i.name}}</option>
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="mb-2">
+                <small>Date:</small>
+
+                  <input type="date" class="form-control datebonavoir{{avoir.id}}" name="datebonavoir{{avoir.id}}" value="{{avoir.date|date:'Y-m-d'}}" placeholder="Date bon">
+              </div>
+              <div class="mb-2" hidden>
+                <small>N° avoir:</small>
+                  <input type="text" class="form-control ordernoavoir{{avoir.id}}" name="ordernoavoir{{avoir.id}}" value="{{avoir.no}}">
+              </div>
+
+          </div>
+
+          <div class="col-7 row">
+            <div class="col-12">
+
+              <select class="productsavoir{{avoir.id}} mb-2 form-select" style="width: 100%;">
+                <!-- <option value="">----</option>
+                {% for i in products %}
+                <option value="{{i.ref}},{{i.name}},{{i.buyprice}},{{i.stocktotal}},{{i.id}},{{i.sellprice}},{{i.remise}},{{i.prixnet}},{{i.representprice}}" class="p-2">{{i.ref}} |          {{i.name}} | {{i.code}} | {{i.mark.name}} |         {{i.getequivalent.0}} | {{i.getequivalent.1}} |           {{i.getequivalent.2}}</option>
+
+                {% empty %}
+                <option value="">Aucun produit</option>
+
+                {% endfor %} -->
+              </select>
+            </div>
+            <div class="col-4">
+              <input type="number" class="form-control" placeholder="Quantité" name="addqty">
+              <div class="addstock text-danger"></div>
+            </div>
+            <div class="col-4">
+              <input type="number" class="form-control" placeholder="Prix" name="addprice">
+              <div class="addclientprice text-danger"></div>
+            </div>
+            <div class="col-4">
+              <input type="number" class="form-control" placeholder="Remise" name="addremise">
+            </div>
+            <div class="col-12">
+              <input hidden readonly type="text" name="addname" class="form-control">
+            </div>
+            <div class="col-12">
+              <button class="btn btn-outline-secondary" onclick="addrowupdateavoir(event, '{{avoir.id}}')">Ajouter</button>
+            </div>
+          </div>
+
+
+
+
+        </div>
+
+    <div>
+        <div class="bg-white rounded shadow p-2 tableholder">
+            <!-- <div>
+                <small>
+                    Ref.
+                </small>
+                <input type="text" name="ref" class="form-control searchref">
+            </div> -->
+            <div class="d-flex justify-content-between">
+
+                <div class="mb-3 col-5">
+
+              </div>
+
+          </div>
+          <div class="col-5">
+            <input type="text" class="searchbonavoircreation{{avoir.id}}" placeholder="Search..." />
+          </div>
+          <table class="table table-bordered text-center bonavoircreation{{avoir.id}}" style="font-size: 12px;">
+            <thead style="background: orange; color:#091b27;">
+                <tr>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                    <!-- <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td> -->
+                    <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                </tr>
+            </thead>
+            <!-- <tfoot>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>TOTAL</td>
+                <td class="totalbon" style="background: orange; color:#091b27;">
+                    0.00
+                </td>
+              </tr>
+            </tfoot> -->
+            <tbody class="avoirbodyupdate{{avoir.id}}">
+              {% for i in items %}
+              <tr class="itemrow">
+                  <td class="ref" onclick="removelineupdateavoircl(event, '{{avoir.id}}', '{{i.product.id}}')">{{i.product.ref}}</td>
+                  <td class="name">{{i.product.name}}</td>
+                  <td>{{i.product.buyprice}}</td>
+                  <td>{{i.product.stocktotal}}</td>
+                  <td class="clientprice">{{i.clientprice}}</td>
+                  <td><input type="number" class="calculate qty" onkeyup="calculate(event)" name="qty" value="{{i.quantity}}"></td>
+                  <td><input type="number" class="calculate price" onkeyup="calculate(event)" name="price" value="{{i.price}}"></td>
+                  <td><input type="number" class="calculate remise" onkeyup="calculate(event)" name="remise" value="{{i.remise1}}"></td>
+                  <!-- <td>{{i.product.prixnet}}</td> -->
+                  <td class="total">{{i.total}}</td>
+                  <input type="hidden" name="productid" value="{{i.product.id}}">
+              </tr>
+
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between">
+              <button class="btn btn-success submitbonavoir{{avoir.id}}">
+                    Valider
+              </button>
+              <div>
+                <b class="totalbonavoir{{avoir.id}} totalbon text-danger border p-2" style="color: #dc3545 !important;">
+                  {{avoir.total}}
+                </b>
+
+              </div>
+          </div>
+        </div>
+    </div>
+    {{avoir.id}}
+    <div class="reglementbonsholder border position-relative mt-5">
+
+      <div class="inputsholder">
+          <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button>
+          <strong class="totalreglblfields">0.00</strong>
+              <div class="d-flex align-items-center justify-content-between">
+                    <div class="">
+                        <small>Mantant:</small> <br>
+
+                    </div>
+                    <div class="">
+                        <small>N° piece:</small> <br>
+
+                    </div>
+                    <div class="">
+                        <small>Mode Paiment:</small> <br>
+
+                    </div>
+                    <div class="">
+                      <small>Echeance:</small> <br>
+
+                  </div>
+                  <div class="">
+                    <small>Bank:</small> <br>
+
+                </div>
+                </div>
+              <div class="reglements">
+                <div class="d-flex justify-content-between align-items-center mt-2"><div class=""> <input type="number" name="mantantreglementclient" onkeyup="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant"></div><div class=""> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class=""> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"></div><div class="d-flex"><div><input type="text" name="bank" class="w-100" placeholder="Nom bank"></div>
+                </div></div>
+              </div>
+          </div>
+    </div>
+</div>
+
+<script>
+  function removelineupdateavoircl(event, blid, id) {
+      let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+      clicksinupdateavcl++;
+
+      if (clicksinupdateavcl === requiredClicks) {
+          // User has clicked the element four times consecutively
+          // Add your code to run when there are four consecutive clicks here
+          alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+            console.log('delete'),
+            // remove element
+            // remove id from localstorage
+            $(event.target).parent().remove()
+            pdcts=JSON.parse(localStorage.getItem('pdctsinbonavoir{{avoir.id}}'))
+            pdcts.splice(pdcts.indexOf(id), 1)
+            localStorage.setItem('pdctsinbonavoir{{avoir.id}}', JSON.stringify(pdcts))
+            // update total
+            let totalbon = parseFloat(parentdiv.find('.totalbon').text())
+            let totalrow = parseFloat($(event.target).parent().find('.total').text())
+            let totalbonvalue = (totalbon-totalrow).toFixed(2)
+            parentdiv.find('.totalbon').html(totalbonvalue)
+            // Reset the count
+            clicksinupdateavcl = 0;
+
+          }
+            , function(){ alertify.error('Cancel')});
+          // Reset the count
+          clicksinupdateavcl = 0;
+      }
+  }
+  $(function(){
+    $('.clientselectavoir{{avoir.id}}').select2({
+        minimumInputLength:1,
+        placeholder: 'Select un client',
+        ajax: {
+          url: "{% url 'products:searchclient' %}",
+          type: 'GET',
+          dataType: 'json',
+          data: function (params) {
+            return {
+              'term': params.term,
+            }
+          },
+          processResults: function (data) {
+            return {
+              results: data.results
+            };
+          },
+          cache: true
+        }
+      })
+      $('.productsavoir{{avoir.id}}').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproduct?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+  localStorage.removeItem('pdctsinbonavoir{{avoir.id}}')
+  var productIds = [];
+  {% for i in items %}
+  productIds.push('{{ i.product.id }}');
+  {% endfor %}
+  localStorage.setItem('pdctsinbonavoir{{avoir.id}}', JSON.stringify(productIds));
+
+  function addrowupdateavoir(event, avoirid) {
+    let target=$(event.target)
+    parentdiv=target.parent().parent().parent().parent()
+    // this reset the select2 value
+    // parentdiv.find('.resultsholderbonlivraison').val('').trigger('change')
+    // ids of products in bon stored in localstorage
+    let bonachatbody = parentdiv.find('tbody')
+    let addname=parentdiv.find('[name="addname"]')
+    let addqty=parentdiv.find('[name="addqty"]')
+    let addprice=parentdiv.find('[name="addprice"]')
+    let addremise=parentdiv.find('[name="addremise"]')
+    let priceclient=parentdiv.find('.addclientprice ').text()
+
+    if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
+      alertify.error('Veuillez remplir tous les champs')
+      return
+    }
+    var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
+    pdcts=JSON.parse(localStorage.getItem(`pdctsinbonavoir${avoirid}`)) || []
+    console.log(id, pdcts, pdcts.includes(id), `pdctsinbonavoir${avoirid}`)
+    if (pdcts.includes(id)){
+      addqty.val('')
+      addname.val('')
+      addremise.val('')
+      addprice.val('')
+      alertify.error('Ce produit est deja dans le bon')
+      $('.productsavoir{{avoir.id}}').select2('open')
+
+      return
+    }
+    pdcts.push(id)
+    localStorage.setItem(`pdctsinbonavoir${avoirid}`, JSON.stringify(pdcts))
+    let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100))
+    let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+    let tr = `
+    <tr class="itemrow">
+        <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelineupdateavoircl(event, '{{avoir.id}}', ${id})">${ref}</td>
+        <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+        <td style="paddingpx 0; font-size: 13px;">${dp}</td>
+        <td style="padding: 2px 0; font-size: 13px;">${stock}</td>
+        <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+        <input type="hidden" name="productid" value="${id}">
+
+    </tr>
+    `
+
+    bonachatbody.prepend(tr)
+    // delete selected option
+    addqty.val('')
+    addname.val('')
+    addremise.val('')
+    addprice.val('')
+    totals=parentdiv.find('.total')
+    totalbon=parentdiv.find('.totalbon')
+    var totalSum = 0;
+    totals.each(function() {
+        totalSum += parseFloat($(this).text());
+    });
+    totalbon.text(totalSum.toFixed(2))
+    $('.productsavoir{{avoir.id}} ').select2('open')
+
+  }
+
+  $(document).ready(function(){
+    $('.clientselecta voir{{avoir.id}}').select2('open')
+  })
+
+
+
+    $('.productsavoir{{avoir.id}}').on('change', function(){
+      parent=$(this).parent().parent().parent()
+      console.log('prent', parent)
+
+        if ($(this).val()==''){
+            return
+        }
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+        let repswithprice=[]
+        let addname=parent.find('input[name="addname"]')
+        let addprice=parent.find('input[name="addprice"]')
+        let addremise=parent.find('input[name="addremise"]')
+        let addqty=parent.find('input[name="addqty"]')
+        parent.find('.addstock').text(stock)
+        addqty.val('')
+        addremise.val('')
+        addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
+        // we are getting ere list of reps that have price
+        // $.ajax({
+        //     url: "{% url 'products:getrepswithprice' %}",
+        //     type: 'POST',
+        //     data: {
+        //         'id': id,
+        //
+        //         'csrfmiddlewaretoken': '{{csrf_token}}'
+        //     },
+        //     success: function(data){
+        //       repswithprice=data.repswithprice
+        //       let repid=$('.repsselectsavoir{{avoir.id}}').val()
+        //       if (repswithprice.includes(repid)){
+        //         console.log('rep with price')
+        //         addprice.val(representprice)
+        //       }
+        //       else{
+        //         addprice.val(sellprice)
+        //       }
+        //     }
+        //   })
+
+        console.log('getting client price', id)
+        $.ajax({
+            url: "{% url 'products:getclientprice' %}",
+            type: 'POST',
+            data: {
+                'id': id,
+                'clientid': $('.clientselectavoir{{avoir.id}}').val()?$('.clientselectavoir{{avoir.id}}').val():'{{avoir.client.id}}',
+                'target':$('.modeselectav{{avoir.id}}').val(),
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data){
+              if (data.price==0){
+
+                alertify.error('Prix de client n\'est pas encore défini')
+                addprice.val(0)
+                addremise.val(0)
+              }else{
+
+                addprice.val(data.price)
+                addremise.val(data.remise)
+              }
+            }
+          })
+
+        let selected = $(this).find(':selected')
+        // selected.remove()
+        // delect selected option
+    })
+
+    $('.submitbonavoir{{avoir.id}}').on('click', (e)=>{
+      let parentdiv=$(e.target).parent().parent().parent().parent()
+      if ($('.datebonavoir{{avoir.id}}').val()==''){
+          parentdiv.find('.data').addClass('border border-danger')
+          return
+      }
+      parentdiv.find('.data').removeClass('border border-danger')
+      // check if .itemrow is exist
+      if (parentdiv.find('.itemrow').length==0){
+          parentdiv.find('.tableholder').addClass('border border-danger')
+          return
+      }
+      parentdiv.find('.tableholder').removeClass('border border-danger')
+        var isAnyEmpty = $('.notemptyavoir{{avoir.id}}').filter(function() { return $(this).val() == ''; }).length > 0;
+          if (isAnyEmpty){
+              let emptyInputs = $('input.notemptyavoir{{avoir.id}}').filter(function() {
+                  return !this.value.trim();
+              });
+
+              // Add a red border to all empty input elements
+              alertify.error('Veuillez remplir tous les champs obligatoires')
+              emptyInputs.css('border', '1px solid red');
+              $('input.notemptyavoir{{avoir.id}}').not(emptyInputs).css('border', '');
+              $(this).attr('disabled', false)
+              return
+          }
+
+        
+        trs=$('.avoirbodyupdate{{avoir.id}} tr')
+        let avclproducts = []
+        trs.each(function(){
+            let tr = $(this)
+            let qty = tr.find('.qty').val()
+            let name = tr.find('.name').text()
+            let ref = tr.find('.ref').text()
+            let price = tr.find('.price').val()
+            let remise = tr.find('.remise').val()
+            let total = tr.find('.total').text()
+            let productid = tr.find('input[name="productid"]').val()
+            let product = {
+                'qty': qty,
+                'name': name,
+                'ref': ref,
+                'price': price,
+                'remise': remise,
+                'total': total,
+                'productid': productid,
+            }
+            avclproducts.push(product)
+        })
+        console.log('')
+
+        let mode = $('.modeselectav{{avoir.id}}').val()
+        let clientid = $('.clientselectavoir{{avoir.id}}').val()?$('.clientselectavoir{{avoir.id}}').val():'{{avoir.client.id}}'
+        let repid = $('.repsselectsavoir{{avoir.id}}').val()
+        let datebon = $('.datebonavoir{{avoir.id}}').val()
+        let orderno = $('.ordernoavoir{{avoir.id}}').val()
+        let totalbon=parseFloat($('.totalbonavoir{{avoir.id}}').text())
+        if (parseFloat($('.totalreglblfields').text())>0 && parseFloat($('.totalreglblfields').text())!=totalbon){
+          alertify.error('Total payement doit etre egale au total bon')
+          return
+        }
+        mantant=parentdiv.find('[name="mantantreglementclient"]').map(function() {
+              return parseFloat(this.value);
+          }).get();
+          mode=parentdiv.find('[name="modereglementclient"]').map(function() {
+              return this.value;
+          }).get();
+          npiece=parentdiv.find('[name="npiece"]').map(function() {
+              return this.value;
+          }).get();
+          bank=parentdiv.find('[name="bank"]').map(function() {
+              return this.value;
+          }).get();
+          echeance=parentdiv.find('[name="echeance"]').map(function() {
+              return this.value;
+          }).get();
+        $('.submitbonavoir{{avoir.id}}').addClass('disabled')
+        console.log(totalbon)
+        console.log('sending')
+        localStorage.removeItem('pdctsinbonavoir{{avoir.id}}')
+        console.log(avclproducts)
+        $.ajax({
+            url: "{% url 'products:updatebonavoir' %}",
+            type: 'POST',
+            data: {
+              'mantant':JSON.stringify(mantant),
+              'mode':JSON.stringify(mode),
+              'npiece':JSON.stringify(npiece),
+              'echeance':JSON.stringify(echeance),
+              'bank':JSON.stringify(bank),
+              'target':'{{target}}',
+              'bonid': '{{avoir.id}}',
+              'totalbon': totalbon,
+              'clientid': clientid,
+              'repid':repid,
+              'datebon': datebon,
+              'orderno': orderno,
+              'products': JSON.stringify(avclproducts),
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            success: function(data){
+              if (data.success){
+                alertify.success('Bon avoir modifié')
+                // delerte this tab
+                deletetab('addmodifieravoir{{avoir.id}}')
+                ajaxpage('avoircl', 'AvoirCL', '/products/listavoirclient?target={{target}}')
+              }
+              else{
+                alertify.error('ERROR')
+              }
+              console.log('sent')
+                // $('#addbonavoir').html('')
+                // $('#addbonavoir').html(data.html)
+                // $('.select2').select2()
+            }
+        })
+    })
+    $('.searchbonavoircreation{{avoir.id}}').on("keyup", function() {
+
+      var value = $(this).val().toLowerCase();
+      $(".avoirbodyupdate{{avoir.id}} tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+  });
+
+
+
+    // const selectElement = document.getElementById("my-select");
+
+    // selectElement.addEventListener("keydown", function(event) {
+    //     if (event.key === "Enter") {
+
+    //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+    //         let bonachatbody = $('.bonachatbody')
+    //         let tr = `
+    //         <tr>
+    //             <td class="ref">${ref}</td>
+    //             <td class="name">${name}</td>
+    //             <td>${dp}</td>
+    //             <td>${stock}</td>
+    //             <td>
+    //                 <select name"local" class="form-select local">
+    //                     <option value="principal">Principal</option>
+    //                     <option value="depot">Depot</option>
+    //                 </select>
+    //             </td>
+    //             <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+    //             <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+    //             <td><input type="number" class="form-control calculate remise" onkeyup="calculate(event)" name="remise"></td>
+    //             <td class="total"></td>
+    //             <input type="hidden" name="productid" value="${id}">
+    //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+    //         </tr>
+    //         `
+    //         bonachatbody.prepend(tr)
+    //         // delect selected option
+    //         selectElement.remove(selectElement.selectedIndex);
+    //     }
+    // });
+
+
+    // const addtobon=(e, ref, name, stock)=>{
+    //     let target = $(e.target)
+    //     console.log(target)
+    //     target.remove()
+    //     let bonachatbody = $('.bonachatbody')
+    //     let tr = `
+    //     <tr>
+    //         <td>${ref}</td>
+    //         <td>${name}</td>
+    //         <td>${stock}</td>
+
+    //         <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+    //         <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+    //         <td class="total"></td>
+    //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+    //     </tr>
+    //     `
+    //     bonachatbody.append(tr)
+    // }
+
+
+</script>

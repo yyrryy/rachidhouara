@@ -1,0 +1,839 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" src="{% static 'css/owl.carousel.min.js'%}">
+<style>
+	*:focus {
+  outline: 1px dotted blue;
+}
+
+.tabs > ul {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 0;
+}
+.tabs > ul .indicator {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 20%;
+  background: #1E88E5;
+  transform: translateZ(0) translateX(0);
+  transition: all 0.3s ease;
+}
+.tabs > ul li {
+  display: inline-block;
+  font-size: 14px;
+  width: 20%;
+}
+.tabs > ul li a {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  transition: all 0.3s ease 0.4s;
+}
+.tabs > ul li a:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: #1E88E5;
+  transform: translateZ(0) translateY(100%);
+  transition: all 0.3s ease 0.3s;
+  z-index: -1;
+}
+.tabs > ul li a[aria-selected] {
+  color: white;
+}
+.tabs > ul li a[aria-selected]:before {
+  transform: translateZ(0) translateY(0);
+}
+.tabs > section[aria-hidden=true] {
+  display: none;
+}
+	.commandholder{
+		transition: all .6s ease-in;
+		z-index: 9999;
+	}
+	.opencommandholder{
+		right: 0;
+	}
+
+	.closecommandholder{
+		right: -99em;
+	}
+	
+.layout {
+  display: grid;
+  
+  overflow: hidden;
+  grid-template-rows: 50px 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+input[type=radio] {
+  display: none;
+}
+
+label.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-bottom: 2px solid #8e44ad;
+  background: #ecf0f1;
+  user-select: none;
+  transition: all 0.4s, padding-left 0.2s;
+  padding-left: 0;
+}
+input[type=radio]:checked + .page + label.nav {
+  background: var(--darkblue);
+  color: #ffffff;
+  padding-left: 20px;
+}
+input[type=radio]:checked + .page + label.nav span {
+  padding-left: 20px;
+}
+input[type=radio]:checked + .page + label.nav svg {
+  opacity: 1;
+}
+label.nav span {
+  padding-left: 0px;
+  position: relative;
+}
+label.nav svg {
+  left: 0;
+  top: -3px;
+  position: absolute;
+  width: 15px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.page {
+  grid-column-start: 1;
+  grid-row-start: 2;
+  grid-column-end: span 3;
+  padding: 0px 20px;
+}
+
+.page-contents > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+input[type=radio] + .page {
+  transition: transform 0.2s;
+  transform: translateX(100%);
+}
+
+input[type=radio]:checked + .page {
+  transform: translateX(0%);
+}
+input[type=radio]:checked + .page .page-contents > * {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+/* Container DIV - automatically generated */
+.simply-scroll-container { 
+	position: relative;
+}
+
+/* Clip DIV - automatically generated */
+.simply-scroll-clip { 
+	position: relative;
+	overflow: hidden;
+}
+
+/* UL/OL/DIV - the element that simplyScroll is inited on
+Class name automatically added to element */
+.simply-scroll-list { 
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+	
+.simply-scroll-list li {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+	
+.simply-scroll-list li img {
+	border: none;
+	display: block;
+}
+
+/* Custom class modifications - adds to / overrides above
+
+.simply-scroll is default base class */
+
+/* Container DIV */
+.simply-scroll { 
+	width: 576px;
+	height: 200px;
+	margin-bottom: 1em;
+}
+
+/* Clip DIV */
+.simply-scroll .simply-scroll-clip {
+	width: 576px;
+	height: 200px;
+}
+	
+/* Explicitly set height/width of each list item */	
+.simply-scroll .simply-scroll-list li {
+	float: left; /* Horizontal scroll only */
+	width: 290px;
+	height: 200px;
+}
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- add csfr token -->
+{% csrf_token %}
+<div class="row">
+	<!--<div class="col-3">
+		<input type="text" name="" id="" placeholder="Recherche" class="searchinputcategories mb-2 form-control mt-2" style="border-radius: 2em;height: 27px;">
+
+		<div style="height:30vh; overflow-y: scroll">
+						<ul class="list-group" style="font-size: 14px; border-radius: 2em;">
+			
+				{% for i in categories %}
+				<a href="/categories/products/{{i.id}}" class="list-group-item cat{{i.id}} ctglist" >
+					
+						<b type="button" class="categoriesbtn" data-catgoryid="{{i.id}}">
+						
+								{{i.name}} ({{i.produit_set.all.count}})
+							
+						</b>
+				</a>
+				{% endfor %}
+				
+			</ul>
+		</div>
+		<div class="mt-2">
+			<h3 class="text-white">Les marques</h3>
+			<input type="text" name="" id="" placeholder="Recherche" class="searchinputmarks form-control mb-2" style="border-radius: 2em; height: 27px;">
+			<div style="height:30vh; overflow-y: scroll">
+				
+				<ul class="list-group" style="font-size: 14px; border-radius: 2em;">
+				
+					{% for i in marques %}
+					<a href="/marques/products/{{i.id}}" class="list-group-item cat{{i.id}} mrklist" >
+						<b type="button" class="marquesbtn" data-catgoryid="{{i.id}}">
+						
+								{{i.name}} ({{i.produit_set.all.count}})
+							
+						</b>
+					</a>
+					{% endfor %}
+					
+				</ul>
+			</div>
+		</div>
+	</div>-->
+	<div class="col-12">
+		<div class="row mb-3">
+			<!-- <div class="search__body col-9">
+				<div class="search__shadow"></div>
+				<input class="search__input searchrefglobal" type="text" placeholder="Enter Keyword or Part Number">
+		
+				<button class="search__button search__button--end" type="submit">
+				  <span class="search__button-icon">
+					<svg width="20" height="20">
+					  <path d="M19.2,17.8c0,0-0.2,0.5-0.5,0.8c-0.4,0.4-0.9,0.6-0.9,0.6s-0.9,0.7-2.8-1.6c-1.1-1.4-2.2-2.8-3.1-3.9C10.9,14.5,9.5,15,8,15
+		  c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4c1.1,0.8,2.5,2,4,3.1C20,16.8,19.2,17.8,19.2,17.8z M8,3C5.2,3,3,5.2,3,8
+		  c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5C13,5.2,10.8,3,8,3z"></path>
+					</svg>
+				  </span>
+				</button>
+				<div class="search__box"></div>
+				<div class="search__decor">
+				  <div class="search__decor-start"></div>
+				  <div class="search__decor-end"></div>
+				</div>
+				<div class="search__dropdown search__dropdown--suggestions suggestions" style="height: 50vh; overflow-y: scroll;">
+				  <div class="suggestions__group">
+					<div class="suggestions__group-title">Products</div>
+					<div class="suggestions__group-content searchresults">
+					  
+					</div>
+				  </div>
+				  
+				</div>
+			</div> -->
+			<div class="col-6 m-auto">
+				<input type="text" class="repinput form-control">
+				<button class="btn btn-success w-100" onclick="searchrepexpert()">
+					REPEXPERT
+				</button>
+			</div>
+		</div>
+		<div class="layout">
+			<input name="nav" type="radio" class="nav home-radio" id="home" checked="checked" />
+			<div class="page home-page bg-darkblue">
+			  <div class="page-contents">
+				<div class="categories-list categories-list--layout--columns-4-sidebar">
+				<input type="text" class="searchboxctg form-control mt-2 mb-2 shadow"  placeholder="Chercher les categories..." >
+				<ul class="categories-list__body">
+				{% for i in categories %}
+				{% if user.groups.all.0.name == 'clients' %}
+				{% if not i.masqueclients %}
+				<li class="categories-list__item ctgcards">
+					<a href="/categories/products/{{i.id}}">
+					  <div class="image image--type--category">
+						<div class="image__body">
+							{% if i.image %}
+						  <img class="image__tag" src="{{i.image.url}}" alt="">
+							{% endif %}
+						</div>
+					  </div>
+					  <div class="categories-list__item-name">{{i.name}}</div>
+					</a>
+					<!-- conmmenting because the number includes also inactive products -->
+					<div class="categories-list__item-products">{{i.total_products}} Products</div>
+				</li>
+				{% endif %}
+				{% elif user.groups.all.0.name == 'salsemen' %}
+				
+					{% if not request.user.represent in i.excludedrep.all %}
+						<li class="categories-list__item ctgcards">
+							<a href="/categories/products/{{i.id}}">
+					  		<div class="image image--type--category">
+								<div class="image__body">
+									{% if i.image %}
+						  				<img class="image__tag" src="{{i.image.url}}" alt="">
+									{% endif %}
+								</div>
+					  		</div>
+					  		<div class="categories-list__item-name">{{i.name}}</div>
+							</a>
+							<div class="categories-list__item-products">{{i.total_products}} Products</div>
+						</li>
+					{% endif %}
+				{% else %}
+				<li class="categories-list__item ctgcards">
+					<a href="/categories/products/{{i.id}}">
+					  <div class="image image--type--category">
+						<div class="image__body">
+							{% if i.image %}
+						  <img class="image__tag" src="{{i.image.url}}" alt="">
+							{% endif %}
+						</div>
+					  </div>
+					  <div class="categories-list__item-name">{{i.name}}</div>
+					</a>
+					<div class="categories-list__item-products">{{i.total_products}} Products</div>
+				</li>
+				{% endif %}
+				{% endfor %}
+				</ul>
+			  </div>
+			  </div>
+			</div>
+			<label class="nav" for="home">
+			  <span>
+				<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+				Categories
+			  </span>
+			</label>
+		  
+			<input name="nav" type="radio" class="about-radio" id="about" />
+			<div class="page about-page bg-darkblue">
+				<div class="page-contents">
+					<div class="categories-list categories-list--layout--columns-4-sidebar">
+					<input type="text" class="searchboxmarks form-control mt-2 mb-2 shadow"  placeholder="Chercher les Marques...">
+					<ul class="categories-list__body">
+					{% for i in marques %}
+					{% if user.groups.all.0.name == 'clients' %}
+						{% if not i.masqueclients %}
+						<li class="categories-list__item markscards">
+							<a href="/marques/products/{{i.id}}">
+							  <div class="image image--type--category">
+								<div class="image__body">
+									{% if i.image %}
+								  <img class="image__tag" src="{{i.image.url}}" alt="">
+									{% endif %}
+								</div>
+							  </div>
+							  <div class="categories-list__item-name">{{i.name}}</div>
+							</a>
+							<div class="categories-list__item-products">{{i.total_products}} Products</div>
+						</li>
+						{% endif %}
+					{% elif user.groups.all.0.name == 'salsemen' %}
+						{% if not request.user.represent in i.excludedrep.all %}
+						<li class="categories-list__item markscards">
+							<a href="/marques/products/{{i.id}}">
+							  <div class="image image--type--category">
+								<div class="image__body">
+									{% if i.image %}
+								  <img class="image__tag" src="{{i.image.url}}" alt="">
+									{% endif %}
+								</div>
+							  </div>
+							  <div class="categories-list__item-name">{{i.name}}</div>
+							</a>
+							<div class="categories-list__item-products">{{i.total_products}} Products</div>
+						</li>
+						{% endif %}
+					{% else %}
+					<li class="categories-list__item markscards">
+						<a href="/marques/products/{{i.id}}">
+						  <div class="image image--type--category">
+							<div class="image__body">
+								{% if i.image %}
+							  <img class="image__tag" src="{{i.image.url}}" alt="">
+								{% endif %}
+							</div>
+						  </div>
+						  <div class="categories-list__item-name">{{i.name}}</div>
+						</a>
+						<div class="categories-list__item-products">{{i.total_products}} Products</div>
+					</li>
+					{% endif %}
+					{% endfor %}
+					</ul>
+				  </div>
+				  </div>
+			</div>
+		
+			<label class="nav" for="about">
+				<span>
+				<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12" y2="17"></line></svg>
+				Marques
+			  </span>
+			  </label>
+			  <label class="nav" >
+				<!-- <a href="/allproducts"> -->
+				<a href="/categories/products/{{firstctg.id}}">
+				<span>
+				Catalogue
+				</span>
+				</a>
+			  </label>
+		  </div>
+	</div>
+</div>
+	
+	<!-- <div class="tabs container mt-5">
+		<ul>
+		  <li><a href="#section1">Marques</a></li>
+		  <li><a href="#section2">Categories</a></li>
+		</ul>
+		<section id="section1">
+			<div class="block block-categories">
+				
+				<div class="block-categories__body">
+				  <div class="decor block-categories__body-decor decor--type--bottom">
+					<div class="decor__body">
+					  <div class="decor__start"></div>
+					  <div class="decor__end"></div>
+					  <div class="decor__center"></div>
+					</div>
+				  </div>
+				  <div class="p-2">
+					<div class="mb-2 d-flex justify-content-between">
+						
+						<input type="text" placeholder="Marque" aria-describedby="button-addon1" class="form-control border bg-light" id="searchboxmarks">
+						<svg xmlns="http://www.w3.org/2000/svg" id="b2448b99-d97f-419e-8dc3-d5510f0392fe" data-name="Layer 1" width="72" height="47" viewBox="0 0 709.53268 558.59384" class="injected-svg ClassicGrid__ImageFile-sc-td9pmq-4 fNAcXv grid_media" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M664.81368,212.24945a135.01972,135.01972,0,1,0,7.65509,199.4028L838.08687,551.4a12.44209,12.44209,0,0,0,16.06592-19.00287l-.01831-.01544L688.51631,392.63391A135.02729,135.02729,0,0,0,664.81368,212.24945ZM654.13692,379.17712a101.15765,101.15765,0,1,1-12.0766-142.54788l.00006,0A101.15764,101.15764,0,0,1,654.13692,379.17712Z" transform="translate(-245.23366 -170.70308)" fill="#3f3d56"></path></svg>
+					</div>
+					<div class="block-categories__list">
+					  
+					  {% for i in cc %}
+					  <a href="/marks/products/{{i.id}}" class="block-categories__item category-card category-card--layout--classic products-list__item markscards">
+						<div class="category-card__body">
+						  <div class="category-card__content align-items-center">
+							<div class="category-card__image image image--type--category">
+							  <div class="image__body">
+								<img class="image__tag" src="{{i.image}}" alt="">
+							  </div>
+							</div>
+							<strong>
+								<b>
+									{{i.name.upper}}
+								</b>
+								<br>
+								{{i.total_products}} Produits<br>
+								{% if i.has_promotion %}
+								(Promotion)
+								{% endif %}
+							</strong>
+						  </div>
+						</div>
+					  </a>
+					  {% endfor %}
+					</div>
+				  </div>
+				</div>
+			</div>
+		</section>
+		<section id="section2">
+			<div class="block block-categories">
+				
+				<div class="block-categories__body">
+				  <div class="decor block-categories__body-decor decor--type--bottom">
+					<div class="decor__body">
+					  <div class="decor__start"></div>
+					  <div class="decor__end"></div>
+					  <div class="decor__center"></div>
+					</div>
+				  </div>
+				  <div class="p-2">
+					<div class="mb-2 d-flex justify-content-between">
+						
+						<input type="text" placeholder="Categories" aria-describedby="button-addon1" class="form-control border bg-light" id="searchboxctg">
+						<svg xmlns="http://www.w3.org/2000/svg" id="b2448b99-d97f-419e-8dc3-d5510f0392fe" data-name="Layer 1" width="72" height="47" viewBox="0 0 709.53268 558.59384" class="injected-svg ClassicGrid__ImageFile-sc-td9pmq-4 fNAcXv grid_media" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M664.81368,212.24945a135.01972,135.01972,0,1,0,7.65509,199.4028L838.08687,551.4a12.44209,12.44209,0,0,0,16.06592-19.00287l-.01831-.01544L688.51631,392.63391A135.02729,135.02729,0,0,0,664.81368,212.24945ZM654.13692,379.17712a101.15765,101.15765,0,1,1-12.0766-142.54788l.00006,0A101.15764,101.15764,0,0,1,654.13692,379.17712Z" transform="translate(-245.23366 -170.70308)" fill="#3f3d56"></path></svg>
+					</div>
+					<div class="block-categories__list">
+					  
+					  {% for i in categories %}
+					  <a href="categories/products/{{i.id}}" class="block-categories__item category-card category-card--layout--classic products-list__item ctgcards">
+						<div class="category-card__body">
+						  <div class="category-card__content align-items-center">
+							<div class="category-card__image image image--type--category">
+							  <div class="image__body">
+								<img class="image__tag" src="{{i.image}}" alt="">
+							  </div>
+							</div>
+							<strong>
+								<b>
+									{{i.title.upper}}
+								</b>
+								<br>
+								{{i.total_products}} Produits<br>
+								{% if i.has_promotion %}
+								(Promotion)
+								{% endif %}
+							</strong>
+						  </div>
+						</div>
+					  </a>
+					  {% endfor %}
+					</div>
+				  </div>
+				</div>
+			</div>
+		</section>
+		
+	  </div> -->
+	
+	<!-- <div class="block block-categories">
+		<div class="container">
+		  <div class="block-categories__header">
+			<div class="block-categories__title">Marques <div class="decor block-categories__title-decor decor--type--center">
+				<div class="decor__body">
+				  <div class="decor__start"></div>
+				  <div class="decor__end"></div>
+				  <div class="decor__center"></div>
+				</div>
+			  </div>
+			</div>
+			
+		  </div>
+		</div>
+		<div class="block-categories__body">
+		  <div class="decor block-categories__body-decor decor--type--bottom">
+			<div class="decor__body">
+			  <div class="decor__start"></div>
+			  <div class="decor__end"></div>
+			  <div class="decor__center"></div>
+			</div>
+		  </div>
+		  <div class="container">
+			<div class="mb-2 d-flex justify-content-between">
+				
+				<input type="text" placeholder="Marque" aria-describedby="button-addon1" class="form-control border bg-light" id="searchbox">
+				<svg xmlns="http://www.w3.org/2000/svg" id="b2448b99-d97f-419e-8dc3-d5510f0392fe" data-name="Layer 1" width="72" height="47" viewBox="0 0 709.53268 558.59384" class="injected-svg ClassicGrid__ImageFile-sc-td9pmq-4 fNAcXv grid_media" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M664.81368,212.24945a135.01972,135.01972,0,1,0,7.65509,199.4028L838.08687,551.4a12.44209,12.44209,0,0,0,16.06592-19.00287l-.01831-.01544L688.51631,392.63391A135.02729,135.02729,0,0,0,664.81368,212.24945ZM654.13692,379.17712a101.15765,101.15765,0,1,1-12.0766-142.54788l.00006,0A101.15764,101.15764,0,0,1,654.13692,379.17712Z" transform="translate(-245.23366 -170.70308)" fill="#3f3d56"></path></svg>
+			</div>
+			<div class="block-categories__list">
+			  
+			  {% for i in cc %}
+			  <a href="/marks/products/{{i.id}}" class="block-categories__item category-card category-card--layout--classic products-list__item">
+				<div class="category-card__body">
+				  <div class="category-card__content align-items-center">
+					<div class="category-card__image image image--type--category">
+					  <div class="image__body">
+						<img class="image__tag" src="{{i.image}}" alt="">
+					  </div>
+					</div>
+					<strong>
+						<b>
+							{{i.name.upper}}
+						</b>
+						<br>
+						{{i.total_products}} Produits<br>
+						{% if i.has_promotion %}
+						(Promotion)
+						{% endif %}
+					</strong>
+				  </div>
+				</div>
+			  </a>
+			  {% endfor %}
+			</div>
+		  </div>
+		</div>
+	</div> -->
+	<!-- Button trigger modal -->
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/owl.min.js'%}"></script>
+<script src="{% static 'js/catalog.js'%}"></script>
+
+<script src="https://logicbox.net/jquery/simplyscroll/jquery.simplyscroll.min.js"></script>
+<script>
+	$('.searchinputcategories').on('input', function() {
+		var filter = $(this).val().toUpperCase();
+		$('.ctglist').each(function() {
+		var categoryName = $(this).text().toUpperCase();
+		if (categoryName.indexOf(filter) > -1) {
+			$(this).show();
+		} else {
+			$(this).hide();
+		}
+		});
+	});
+	$('.searchinputmarks').on('input', function() {
+		var filter = $(this).val().toUpperCase();
+		$('.mrklist').each(function() {
+		var categoryName = $(this).text().toUpperCase();
+		if (categoryName.indexOf(filter) > -1) {
+			$(this).show();
+		} else {
+			$(this).hide();
+		}
+		});
+	});
+	
+	$(document).ready(function(){
+		
+		$("#scroller").simplyScroll({
+			customClass: 'vert',
+			orientation: 'vertical',
+			speed:5
+		});
+		$(".owl-carousel").owlCarousel({
+			items:5,
+			rewind: true,
+				autoplay:true,
+				autoPlayTimeout:100,
+				autoplaySpeed:6000,
+				autoHeight:true,
+				autoplayHoverPause:false,
+				loop:true,
+				// smartSpeed:1000,
+				margin:5,
+				
+		});
+		
+	});
+</script>
+<script>
+	let typingTimer;               
+	let typeInterval = 500;
+	let searchInput = document.querySelector('.searchboxmarks');
+	let ctgsearchInput = document.querySelector('.searchboxctg');
+	// search in products
+	let cards = document.querySelectorAll('.markscards')
+	let ctgcards = document.querySelectorAll('.ctgcards')
+
+	function liveSearch(e) {
+		for (var i = 0; i < cards.length; i++) {
+			if(cards[i].textContent.toLowerCase()
+					.includes(e.target.value.toLowerCase())) {
+						cards[i].classList.remove("d-none");
+			} else {
+				cards[i].classList.add("d-none");
+			}
+		}
+	}
+
+	function ctgliveSearch(e) {
+		for (var i = 0; i < ctgcards.length; i++) {
+			if(ctgcards[i].textContent.toLowerCase()
+					.includes(e.target.value.toLowerCase())) {
+						ctgcards[i].classList.remove("d-none");
+			} else {
+				ctgcards[i].classList.add("d-none");
+			}
+		}
+	}
+	searchInput.addEventListener('keyup', (e) => {
+		clearTimeout(typingTimer);
+		typingTimer = setTimeout(liveSearch(e), typeInterval);
+	});
+	ctgsearchInput.addEventListener('keyup', (e) => {
+		clearTimeout(typingTimer);
+		typingTimer = setTimeout(ctgliveSearch(e), typeInterval);
+	});
+	function searchrepexpert(){
+		let inpval=$('.repinput').val()
+		if (inpval==''){
+			return
+		}
+		let url='https://www.repxpert.ma/fr/search/results?q='+inpval
+		window.open(url, '_blank')
+		
+	}
+	var Tabs = function($) {
+  return {
+    
+    init: function() {
+      this.cacheDom();
+      this.setupAria();
+      this.appendIndicator();
+      this.bindEvents();
+    },
+    
+    cacheDom: function() {
+      this.$el = $('.tabs');
+      this.$tabList = this.$el.find('ul');
+      this.$tab = this.$tabList.find('li');
+      this.$tabFirst = this.$tabList.find('li:first-child a');
+      this.$tabLink = this.$tab.find('a');
+      this.$tabPanel = this.$el.find('section');
+      this.$tabPanelFirstContent = this.$el.find('section > *:first-child');
+      this.$tabPanelFirst = this.$el.find('section:first-child');
+      this.$tabPanelNotFirst = this.$el.find('section:not(:first-of-type)');
+    },
+    
+    bindEvents: function() {
+      this.$tabLink.on('click', function(){
+        this.changeTab();
+      }.bind(this));
+      this.$tabLink.on('keydown', function() {
+        this.changeTabKey();
+      }.bind(this));
+    },
+    
+    changeTab: function() {
+      var self = $(event.target);
+      event.preventDefault();
+      this.removeTabFocus();
+      this.setSelectedTab(self);
+      this.hideAllTabPanels();
+      this.setSelectedTabPanel(self);
+    },
+    
+    
+    
+    appendIndicator: function() {
+      this.$tabList.append('<div class="indicator"></div>');
+    },
+    
+    changeTabKey: function() {
+      var self = $(event.target),
+        $target = this.setKeyboardDirection(self, event.keyCode);
+      
+      if ($target.length) {
+        this.removeTabFocus(self);
+        this.setSelectedTab($target);
+      }
+      this.hideAllTabPanels();
+      this.setSelectedTabPanel($(document.activeElement));
+    },
+    
+    hideAllTabPanels: function() {
+      this.$tabPanel.attr('aria-hidden', 'true');
+    },
+    
+    removeTabFocus: function(self) {
+      var $this = self || $('[role="tab"]');
+      
+      $this.attr({
+        'tabindex': '-1',
+        'aria-selected': null
+      });
+    },
+    
+    selectFirstTab: function() {
+      this.$tabFirst.attr({
+        'aria-selected': 'true',
+        'tabindex': '0'
+      });
+    },
+    
+    setupAria: function() {
+      this.$tabList.attr('role', 'tablist');
+      this.$tab.attr('role', 'presentation');
+      this.$tabLink.attr({
+        'role': 'tab',
+        'tabindex': '-1'
+      });
+      this.$tabLink.each(function() {
+        var $this = $(this);
+        
+        $this.attr('aria-controls', $this.attr('href').substring(1));
+      });
+      this.$tabPanel.attr({
+        'role': 'tabpanel'
+      });
+      this.$tabPanelFirstContent.attr({
+        'tabindex': '0'
+      });
+      this.$tabPanelNotFirst.attr({
+        'aria-hidden': 'true'
+      });
+      this.selectFirstTab();
+    },
+    
+    setKeyboardDirection: function(self, keycode) {
+      var $prev = self.parents('li').prev().children('[role="tab"]'),
+          $next = self.parents('li').next().children('[role="tab"]');
+      
+      switch (keycode) {
+        case 37:
+          return $prev;
+          break;
+        case 39:
+          return $next;
+          break;
+        default:
+          return false;
+          break;
+      }
+    },
+    
+    setSelectedTab: function(self) {
+      self.attr({
+        'aria-selected': true,
+        'tabindex': '0'
+      }).focus();
+    },
+    
+    setSelectedTabPanel: function(self) {
+      $('#' + self.attr('href').substring(1)).attr('aria-hidden', null);
+    },
+    
+  };
+}(jQuery);
+
+Tabs.init();
+</script>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% for i in reglements %}
+                    <tr>
+                            <td>
+                                REGLFOURN#{{i.id}}
+                            </td>
+                            <td>
+                                {{i.mode}}
+                            </td>
+                            <td>
+                                {{i.npiece}}
+                            </td>
+                            <td>
+                                {{i.amount}}
+                            </td>
+                            <td>
+                                {{i.date|date:"d/m/Y"}}
+                            </td>
+                            <td>
+                                {{i.supplier.name}}
+                            </td>
+                            <td>
+                                {{i.echeance|date:"d/m/Y"}}
+                            </td>
+                            <td class="d-flex justify-content-between">
+        
+                                <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.bons.all %}{{ bon.nbon }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                                </button> -->
+        
+                                <button class="btn btn-success btn-sm" onclick="updatereglementsupp('{{i.id}}')">✐</button>
+                                {% if not i.ispaid %}
+                                {% if i.mode == 'effet' or i.mode == 'cheque' %}
+                                    <button reglid="{{i.id}}" reglmode="{{i.mode}}" rglnpiece="{{i.npiece}}" onclick="selectregl('{{i.id}}', '{{i.mode}}', '{{i.npiece}}', '{{i.amount}}')" class="btn btn-dark bi bi-arrow-right"></button>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                    </tr>
+                    {% endfor %}

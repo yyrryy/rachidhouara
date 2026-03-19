@@ -1,0 +1,887 @@
+
+<style>
+    .autocomplete {
+  position: relative;
+  width: 300px; /* Adjust as needed */
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px;
+}
+
+#suggestion-list {
+  position: absolute;
+  list-style: none;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+</style>
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+  <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('')">x</button> -->
+  <div>
+    {{title}}
+  </div>
+  <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button> -->
+</div>
+  <div class="bondeviparentdiv">
+         <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
+            <div class="col-5">
+                <div class="mb-2 clientselectblholder">
+                    <div class="alert alert-danger p-2 d-none oldbonswarning">
+                      CLIENT ANCIEN BONS/FACTURE
+                    </div>
+                    <small>Clients:
+                    </small>
+                    <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+
+                    <select name="client" id="" style="width:100%;" class="select2 clientselectbl form-select notemptylivraison select2client">
+                        <!-- <option value="">---</option>
+                        {% for i in clients %}
+                        <option value="{{i.id}}">{{i.name}} | {{i.code}} | {{i.city}} | {{i.region}} | {{i.represent}} </option>
+                        {% endfor %} -->
+                    </select>
+                </div>
+                <!-- <div class="mb-2 cerpselectholder">
+                    <small>Representant:</small> <strong class="text-danger repblname"></strong>
+                    <select name="representant" id="" style="width:100%;" class="select2 repsselectsbl form-select notemptylivraison">
+                        <option value="">---</option>
+                        {% for i in commercials %}
+                        <option value="{{i.id}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div> -->
+                <div class="mb-2">
+                    <input type="date" class="form-control datebonbl" name="datebon" placeholder="Date bon">
+                </div>
+                <div class="mb-2">
+                  <input placeholder="transport" type="text" class="form-control transport" name="transport">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control note" name="note" placeholder="Note">
+                </div>
+            </div>
+
+            <div class="col-7 row productsholder d-none">
+              <div class="col-12">
+
+                <select class="resultsholderbondevi mb-2 form-select " style="width: 100%;" id="productsselect2">
+
+                </select>
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" placeholder="Quantité" name="addqty">
+                <div class="addstock text-danger"></div>
+                <div hidden class="addstockfacture text-danger mt-2"></div>
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" placeholder="Prix" name="addprice">
+                <div class="addclientprice text-danger"></div>
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" placeholder="Remise" name="addremise">
+              </div>
+              <div class="col-3">
+                <button class="btn" onclick="addrowbondevi(event)" style="border: 4px solid;
+                border-color: var(--darkblue);
+                border-radius: 10px;
+                height: 36px;
+                text-align: center;
+                background: #00800024;">Valider</button>
+              </div>
+              <input hidden readonly type="text" name="addname" class="form-control">
+            </div>
+
+
+
+
+          </div>
+
+      <div>
+          <div class="bg-white rounded shadow p-2 tableholder">
+              <!-- <div>
+                  <small>
+                      Ref.
+                  </small>
+                  <input type="text" name="ref" class="form-control searchref">
+              </div> -->
+              <div class="d-flex justify-content-between">
+
+                  <div class="mb-3 col-5">
+
+                </div>
+
+            </div>
+            <div class="col-5">
+              <input type="text" class="searchbondevicreation" placeholder="Search..." />
+            </div>
+            <table class="table table-bordered text-center bondevicreation">
+              <thead style="background: orange; color:#091b27;">
+                  <tr>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                  </tr>
+              </thead>
+              <!-- <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>TOTAL</td>
+                  <td class="totalbon" style="background: orange; color:#091b27;">
+                      0.00
+                  </td>
+                </tr>
+              </tfoot> -->
+              <tbody class="bondevibody">
+
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
+                <button class="btn btn-success submitbondevi" style="border-radius: 10px;">
+                      Valider
+                </button>
+                <b class="totalbon text-danger totalbondevi">
+                  0.00
+                </b>
+            </div>
+          </div>
+      </div>
+
+  </div>
+
+  <script>
+    $(function(){
+
+      $('.clientselectbl').select2({
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher client',
+        templateResult: formatclient,
+        templateSelection: formatclientSelection,
+      });
+      function formatclient (client) {
+          if (client.loading) {
+            return client.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${client.diver>0?"red":""};">${client.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatclientSelection (client) {
+          return client.text;
+        }
+
+    })
+    function removelinebl(event, id) {
+          let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+          clicksinbl++;
+
+          if (clicksinbl === requiredClicks) {
+              // User has clicked the element four times consecutively
+              // Add your code to run when there are four consecutive clicks here
+              alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+                console.log('delete'),
+                // remove element
+                $(event.target).parent().remove()
+                // remove id from localstorage
+
+                pdcts=JSON.parse(localStorage.getItem('pdctsinbondevi'))
+                pdcts.splice(pdcts.indexOf(id.toString()), 1)
+                localStorage.setItem('pdctsinbondevi', JSON.stringify(pdcts))
+                // update total
+                let totalbon = parseFloat(parentdiv.find('.totalbondevi').text())
+                let totalrow = parseFloat($(event.target).parent().find('.total').text())
+                let totalbonvalue = (totalbon-totalrow).toFixed(2)
+                parentdiv.find('.totalbondevi').html(totalbonvalue)
+                // Reset the count
+                clicksinbl = 0;
+                removeinlocalstorage('bondevi', id)
+
+              }
+                , function(){ alertify.error('Cancel')});
+              // Reset the count
+              clicksinbl = 0;
+          }
+      }
+
+  function addrowbondevi(event){
+        let target=$(event.target)
+        parentdiv=target.parent().parent().parent().parent()
+        console.log(parentdiv)
+        // this reset the select2 value
+        // $('.resultsholderbondevi').val('').trigger('change')
+        // ids of products in bon stored in localstorage
+        let bonachatbody = parentdiv.find('.bondevibody')
+        let addname=parentdiv.find('[name="addname"]')
+        let addqty=parentdiv.find('[name="addqty"]')
+        let addprice=parentdiv.find('[name="addprice"]')
+        let addremise=parentdiv.find('[name="addremise"]')
+        let priceclient=parentdiv.find('.addclientprice ').text()
+        if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
+          alertify.error('Veuillez remplir tous les champs')
+          return
+        }
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
+        console.log(ref, name, dp, stock, id, sellprice, remise, netprice, representprice)
+        pdcts=JSON.parse(localStorage.getItem('pdctsinbondevi')) || []
+        console.log(id, pdcts, pdcts.includes(id))
+        if (pdcts.includes(id)){
+          parentdiv.find('.addstock').val('')
+          parentdiv.find('.addstockfacture').val('')
+          addqty.val('')
+          addname.val('')
+          addremise.val('')
+          addprice.val('')
+          alertify.error('Ce produit est deja dans le bon')
+          $('.resultsholderbondevi').select2('open')
+
+          return
+        }
+
+        // here is the case if qty is greater than stock
+        console.log(addqty.val(), stock)
+        
+        if (parseInt(addqty.val())>parseInt(stock)){
+          console.log('qty', addqty.val(), 'stock', stock, 'qty > stock', addqty>stock)
+
+          alertify.confirm('Quantité superieur au stock', 'Voulez vous continuer ?', function(){
+            if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
+              alertify.error('Veuillez remplir tous les champs')
+              return
+            }
+
+            if (pdcts.includes(id)){
+              parentdiv.find('.addstock').val('')
+              parentdiv.find('.addstockfacture').val('')
+              addqty.val('')
+              addname.val('')
+              addremise.val('')
+              addprice.val('')
+              alertify.error('Ce produit est deja dans le bon')
+              $('.resultsholderbondevi').select2('open')
+              return
+            }
+            pdcts.push(id)
+            localStorage.setItem('pdctsinbondevi', JSON.stringify(pdcts))
+            afterremise=parseFloat(addprice.val())*parseFloat(addremise.val())/100
+            let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100))
+            console.log(net)
+            let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+            let tr = `
+            <tr class="itemrow ${stock<=0? "text-danger":"" }" id=${id}>: 2
+                <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${ref}</td>
+                <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+                <td style="paddingpx 0; font-size: 13px;" class="dp">${dp}</td>
+                <td style="padding: 2px 0; font-size: 13px;" class="stock">${stock}</td>
+                <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
+                <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+                <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+                <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="remise" style="height:23px; width:100%;"></td>
+                <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
+                <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+                <input type="hidden" name="productid" value="${id}">
+
+            </tr>
+            `
+            item={
+              'id': id,
+              'qty': addqty.val(),
+              'price': addprice.val(),
+              'remise': addremise.val(),
+              'total': addtotal,
+              'name': name,
+              'ref': ref,
+              'dp': dp,
+              'stock': stock,
+              'clientprice': priceclient,
+              'netprice': netprice
+            }
+            // prepare item to be saved in localstorage
+            
+            bonachatbody.prepend(tr)
+            // delete selected option
+            parentdiv.find('.addstock').val('')
+            parentdiv.find('.addstockfacture').val('')
+            addqty.val('')
+            addname.val('')
+            addremise.val('')
+            addprice.val('')
+            var totalSum = 0;
+            parentdiv.find('.total').each(function() {
+              totalSum += parseFloat($(this).text());
+            });
+            
+            console.log('saving items')
+            parentdiv.find('.totalbon').text(totalSum.toFixed(2))
+            parentdiv.find('.resultsholderbondevi').select2('open')
+          }, function(){
+            alertify.error('Cancel')
+            parentdiv.find('.resultsholderbondevi').select2('open')
+
+          }
+          );
+          return
+        }
+
+        pdcts.push(id)
+        localStorage.setItem('pdctsinbondevi', JSON.stringify(pdcts))
+        afterremise=parseFloat(addprice.val())*parseFloat(addremise.val())/100
+        console.log(afterremise)
+        let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(addremise.val())/100))
+        console.log(net)
+        let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
+        let tr = `
+        <tr class="itemrow ${stock<=0? "text-danger":"" }">: 2
+            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${ref}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+            <td style="paddingpx 0; font-size: 13px;" class="dp">${dp}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="stock">${stock}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="remise" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+            <input type="hidden" name="productid" value="${id}">
+
+        </tr>
+        `
+        item={
+          'id': id,
+          'qty': addqty.val(),
+          'price': addprice.val(),
+          'remise': addremise.val(),
+          'total': addtotal,
+          'name': name,
+          'ref': ref,
+          'dp': dp,
+          'stock': stock,
+          'clientprice': priceclient,
+          'netprice': netprice
+        }
+        bonachatbody.prepend(tr)
+        // delete selected option
+        addqty.val('')
+        addname.val('')
+        addremise.val('')
+        addprice.val('')
+        parentdiv.find('.addstock').val('')
+          parentdiv.find('.addstockfacture').val('')
+        totals=parentdiv.find('.total')
+        totalbon=parentdiv.find('.totalbon')
+        var totalSum = 0;
+        totals.each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        
+        savetolocalstorage(item, totalSum, 'bondevi')
+        totalbon.text(totalSum.toFixed(2))
+        // $('.resultsholderbondevi').val('').trigger('change')
+        $('.resultsholderbondevi').select2('open')
+
+        // let selected = $('.resultsholderbondevi').find(':selected')
+        // selected.remove()
+
+      }
+
+
+    // finish
+    $('.repsselectsbl').on('change', function(){
+      if ($(this).val()==''||$('.clientselectbl').val()==''){
+        parentdiv.find('.productsholder').addClass('d-none')
+        return
+      }else{
+        parentdiv.find('.productsholder').removeClass('d-none')
+        //$.get('products/getclientrep/'+$(this).val(), function(data){
+        //  $('.repsselectsbl').val(data.id).trigger('change')
+        //})
+        $('#productsselect2').select2({
+
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproduct?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher Produits',
+        // templateResult: formatRepo,
+        // templateSelection: formatRepoSelection,
+      });
+        function formatRepo (repo) {
+          if (repo.loading) {
+            return repo.text;
+          }
+
+          var $container = $(
+            `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+            );
+
+
+
+            return $container;
+        }
+
+        function formatRepoSelection (repo) {
+          return repo.text;
+        }
+      }//end else
+
+    })
+    $('.clientselectbl').on('change', function(){
+      parentdiv=$(this).parent().parent().parent()
+      parentdiv.find('.productsholder').removeClass('d-none')
+        console.log('check for old unpaid bons')
+        $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+          if (data.exist){
+          $('.oldbonswarning').removeClass('d-none')
+          }else{
+            $('.oldbonswarning').addClass('d-none')
+          }
+        })
+        $('#productsselect2').select2({
+
+
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproduct?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        },
+        minimumInputLength: 1,
+        placeholder:'Chercher Produits',
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection,
+      });
+        
+      // if ($(this).val()==''||$('.repsselectsbl').val()==''){
+      //   $.get('products/getclientrep/'+$(this).val(), function(data){
+      //     console.log(data)
+      //     $('.repblname').text(data.name)
+      //     //$('.repsselectsbl').val(data.id).trigger('change')
+      //   })
+      //   console.log('check for old unpaid bons')
+      //   $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+      //     if (data.exist){
+      //       $('.oldbonswarning').removeClass('d-none')
+      //     }else{
+      //       $('.oldbonswarning').addClass('d-none')
+      //     }
+      //   })
+      //   parentdiv.find('.productsholder').addClass('d-none')
+      //   return
+      // }else{
+      //   parentdiv.find('.productsholder').removeClass('d-none')
+      //   console.log('check for old unpaid bons')
+      //   $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+      //     if (data.exist){
+      //     $('.oldbonswarning').removeClass('d-none')
+      //     }else{
+      //       $('.oldbonswarning').addClass('d-none')
+      //     }
+      //   })
+      //   $('#productsselect2').select2({
+
+
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct?target={{target}}',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   },
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   templateResult: formatRepo,
+      //   templateSelection: formatRepoSelection,
+      // });
+      //   function formatRepo (repo) {
+      //     if (repo.loading) {
+      //       return repo.text;
+      //     }
+
+      //     var $container = $(
+      //       `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
+      //       );
+
+
+
+      //       return $container;
+      //   }
+
+      //   function formatRepoSelection (repo) {
+      //     return repo.text;
+      //   }
+      //}end else
+
+    })
+    //localStorage.removeItem('pdctsinbondevi')
+    //localStorage.setItem('pdctsinbondevi', '[]')
+
+    $(document).ready(function(){
+      $('.clientselectbl').select2('open')
+      // get products from localstorage
+      pdcts=JSON.parse(localStorage.getItem('bondevi')) || []
+      total=localStorage.getItem('totalbondevi') || 0
+      parentdiv=$('.bondevibody')
+      for (let i=0; i<pdcts.length; i++){
+        item=pdcts[i]
+        let tr = `
+        <tr class="itemrow ${item.stock<=0? "text-danger":"" }" id=${item.id}>
+            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${item.id})">${item.ref}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${item.name}</td>
+            <td style="paddingpx 0; font-size: 13px;" class="dp">${item.dp}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="stock">${item.stock}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${item.clientprice}</td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${item.id})" name="qty" value="${item.qty}" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${item.id})" name="price" value="${item.price}" step=0.01 style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${item.remise}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${item.id})" name="remise" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;" class="netprice">${item.netprice}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="total">${item.total}</td>
+            <input type="hidden" name="productid" value="${item.id}">
+
+        </tr>
+        `
+        parentdiv.prepend(tr)
+      }
+      $('.totalbon').text(total)
+      
+      console.log(pdcts)
+
+    })
+        // fill today's date in .datebon input
+        var dateInput = document.querySelector('.datebonbl');
+
+// Create a new Date object for today
+        var today = new Date();
+
+        // Get the current date in the "yyyy-mm-dd" format
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Format the date as "yyyy-mm-dd"
+        var currentDate = yyyy + '-' + mm + '-' + dd;
+
+        // Set the value of the date input to today's date
+        dateInput.value = currentDate;
+
+
+      $('.resultsholderbondevi').on('change', function(){
+          console.log($(this).val())
+          parentdiv=$(this).parent().parent()
+          if ($(this).val()==''){
+              return
+          }
+          var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+          let repswithprice=[]
+          let addname=$(this).parent().parent().find('input[name="addname"]')
+          let addprice=$(this).parent().parent().find('input[name="addprice"]')
+          let addremise=$(this).parent().parent().find('input[name="addremise"]')
+          let addqty=$(this).parent().parent().find('input[name="addqty"]')
+          console.log('qty of change',addqty)
+          $(this).parent().parent().find('.addstock').text(stock)
+          $(this).parent().parent().find('.addstockfacture').text(stockfacture)
+          addqty.val('')
+          addprice.val(sellprice)
+          addremise.val(remise)
+          addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
+          // we are getting ere list of reps that have price
+          $.ajax({
+              url: "{% url 'products:getrepswithprice' %}",
+              type: 'POST',
+              data: {
+                  'id': id,
+
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
+              },
+              success: function(data){
+                addqty.focus()
+                repswithprice=data.repswithprice
+                let repid=$('.repsselectsbl').val()
+                if (repswithprice.includes(repid)){
+                  console.log('rep with remise')
+                  // uin rep we only need remise
+                  // if (representprice==0){
+                  //   addprice.val(sellprice)
+                  //
+                  // }else{
+                  //   addprice.val(representprice)
+                  // }
+                  if (data.representremise==0){
+                    addremise.val(remise)
+                  }else{
+                    addremise.val(data.representremise)
+                  }                }
+                else{
+                  //addprice.val(sellprice)
+                  addremise.val(remise)
+                }
+              }
+            })
+
+          console.log('getting client price')
+          $.ajax({
+              url: "{% url 'products:getclientprice' %}",
+              type: 'POST',
+              data: {
+                  'target':'bl',
+                  'id': id,
+                  'clientid': $('.clientselectbl').val(),
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
+              },
+              success: function(data){
+                console.log(data.price)
+                parentdiv.find('.addclientprice').text((data.price).toFixed(2))
+              }
+            })
+
+          let selected = $(this).find(':selected')
+          // selected.remove()
+          // delect selected option
+      })
+
+      $('.submitbondevi').on('click', (e)=>{
+        parentdiv=$(e.target).parent().parent().parent().parent()
+        if (parentdiv.find('.clientselectbl').val()==null ||parentdiv.find('.clientselectbl').val()=='' || parentdiv.find('.datebonbl').val()=='' ){
+            parentdiv.find('.data').addClass('border border-danger')
+            return
+        }
+        parentdiv.find('.data').removeClass('border border-danger')
+        // check if .itemrow is exist
+        // if (parentdiv.find('.itemrow').length==0){
+        //     parentdiv.find('.tableholder').addClass('border border-danger')
+        //     return
+        // }
+        parentdiv.find('.tableholder').removeClass('border border-danger')
+          var isAnyEmpty = parentdiv.find('.notemptylivraison').filter(function() { return $(this).val() == ''; }).length > 0;
+            if (isAnyEmpty){
+                let emptyInputs = parentdiv.find('input.notemptylivraison').filter(function() {
+                    return !this.value.trim();
+                });
+
+                // Add a red border to all empty input elements
+                alertify.error('Veuillez remplir tous les champs obligatoires')
+                emptyInputs.css('border', '1px solid red');
+                parentdiv.find('input.notemptylivraison').not(emptyInputs).css('border', '');
+                $(this).attr('disabled', false)
+                return
+            }
+
+          parentdiv.find('.submitbondevi').addClass('disabled')
+          trs=parentdiv.find('.bondevibody tr')
+          let products = []
+          trs.each(function(){
+              let tr = $(this)
+              let qty = tr.find('.qty').val()
+              let name = tr.find('.name').text()
+              let ref = tr.find('.ref').text()
+              let price = tr.find('.price').val()
+              let remise = tr.find('.remise').val()
+              let total = tr.find('.total').text()
+              let clientprice= tr.find('.clientprice').text()
+              let productid = tr.find('input[name="productid"]').val()
+              let product = {
+                  'qty': qty,
+                  'name': name,
+                  'ref': ref,
+                  'price': price,
+                  'remise': remise,
+                  'total': total,
+                  'productid': productid,
+                  'clientprice':clientprice
+              }
+              products.push(product)
+          })
+          let clientid = parentdiv.find('.clientselectbl').val()
+          let repid = parentdiv.find('.repsselectsbl').val()
+          let datebon = parentdiv.find('.datebonbl').val()
+          let transport = parentdiv.find('.transport').val()
+          let note = parentdiv.find('.note').val()
+          let totalbon=parseFloat(parentdiv.find('.totalbon').text())
+          console.log(products)
+          console.log(totalbon)
+          console.log('sending')
+          data={
+              'totalbon': totalbon,
+              'clientid': clientid,
+              'repid':repid,
+              'transport':transport,
+              'datebon': datebon,
+              'note': note,
+              'products': JSON.stringify(products),
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+          },
+          console.log(data)
+          console.log(products)
+          $.ajax({
+              url: "{% url 'products:createdevi' %}",
+              type: 'POST',
+              data: {
+                  'target': '{{target}}',
+                  'totalbon': totalbon,
+                  'clientid': clientid,
+                  'repid':repid,
+                  'transport':transport,
+                  'datebon': datebon,
+                  'note': note,
+                  'products': JSON.stringify(products),
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
+              },
+              success: function(data){
+                console.log('sent')
+                  // remove list in localstorage
+                  localStorage.removeItem('pdctsinbondevi')
+                  localStorage.removeItem('bondevi')
+                  localStorage.removeItem('totalbondevi')
+                  deletetab('addbondevi')
+                  ajaxpage('addlistbondevi', 'list bl', '/products/listdevi?target={{target}}')
+
+
+              }
+          })
+
+        })
+      $('.searchbondevicreation').on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".bondevicreation tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+
+
+
+      // const selectElement = document.getElementById("my-select");
+
+      // selectElement.addEventListener("keydown", function(event) {
+      //     if (event.key === "Enter") {
+
+      //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+      //         let bonachatbody = $('.bonachatbody')
+      //         let tr = `
+      //         <tr>
+      //             <td class="ref">${ref}</td>
+      //             <td class="name">${name}</td>
+      //             <td>${dp}</td>
+      //             <td>${stock}</td>
+      //             <td>
+      //                 <select name"local" class="form-select local">
+      //                     <option value="principal">Principal</option>
+      //                     <option value="depot">Depot</option>
+      //                 </select>
+      //             </td>
+      //             <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="qty"></td>
+      //             <td><input type="number" class="form-control calculate price" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="price"></td>
+      //             <td><input type="number" class="form-control calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="remise"></td>
+      //             <td class="total"></td>
+      //             <input type="hidden" name="productid" value="${id}">
+      //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+      //         </tr>
+      //         `
+      //         bonachatbody.prepend(tr)
+      //         // delect selected option
+      //         selectElement.remove(selectElement.selectedIndex);
+      //     }
+      // });
+
+
+      // const addtobon=(e, ref, name, stock)=>{
+      //     let target = $(e.target)
+      //     console.log(target)
+      //     target.remove()
+      //     let bonachatbody = $('.bonachatbody')
+      //     let tr = `
+      //     <tr>
+      //         <td>${ref}</td>
+      //         <td>${name}</td>
+      //         <td>${stock}</td>
+
+      //         <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="qty"></td>
+      //         <td><input type="number" class="form-control calculate price" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${id})" name="price"></td>
+      //         <td class="total"></td>
+      //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+      //     </tr>
+      //     `
+      //     bonachatbody.append(tr)
+      // }
+
+
+  </script>

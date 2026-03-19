@@ -1,0 +1,560 @@
+<div class="products-view__list products-list products-list--grid--4 position-relative" data-layout="list" data-with-features="false">
+
+  {% if user.represent.slides %}
+  <div class="products-list__content p-3 owl-carousel">
+    {% if category.affichage == 'double' %}
+    {% for items in products %}
+      <div class="d-flex flex-wrap">
+      {% for i in items %}
+
+      <div class="col-6 mb-2 p-1">
+        <div class="bg-white shadow p-2" style="height: 17.5em;">
+
+          <div class="d-flex justify-content-between">
+            <div class="" style="width:170px;">
+              {% if i.image %}
+              <img src="{{i.image.url}}" alt="" style="width: 320px;max-height: 106px;">
+              {% endif %}
+            </div>
+            <div class="">
+              <div class="mb-2 d-flex">
+                <strong class="bg-darkblue p-2 text-white">
+                  {{i.ref}}
+                </strong>
+                <div class="ms-3">
+                  {% if i.stocktotal %}
+                    {% if i.stocktotal <= 0 %}
+                    <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+                    {% elif i.stocktotal <= 5 %}
+                    <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+                    {% else %}
+                        <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+                        </div>
+                    {% endif %}
+                  {% else %}
+                    <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+                    </div>
+                  {% endif %}
+                  </div>
+              </div>
+              <div class="text-orange">
+                <strong>
+                  {{i.refeq1}}
+                </strong><br>
+                <strong>
+                  {{i.refeq2}}
+                </strong>
+                <br>
+                <strong style="color: red; font-size: 27px">
+                  {{i.refeq3}}
+                </strong>
+              </div>
+
+
+
+              <div style="color: #28a8ff;
+              margin-top: 6px;
+              font-size: 20px;">
+                {{i.diametre}}
+              </div>
+              <div class="mt-3">
+              <strong style="padding: 5px; color: red; margin-top: 7px;">
+                {{i.refeq4}}
+              </strong>
+              </div>
+            </div>
+            <div><!--price and cmnd-->
+              <div style="margin-right: 20px;">
+                {% if i.remise != 0 %}
+                      <div style="font-size: 12px;">
+                        <strong class="text-danger">
+                          {{i.sellprice|floatformat:2}}
+                        </strong>
+                        <span class="text-danger" style="font-size: 12px;">({{i.remise}}%)</span>
+                      </div>
+                      {% else %}
+                      <div style="font-size: 12px;">
+                        <strong class="text-danger">
+                          {{i.sellprice|floatformat:2}}
+                        </strong>
+                        <span class="text-danger" style="font-size: 12px;">(NET)</span>
+                      </div>
+		      {% endif %}
+              </div>
+              <div class="d-flex flex-column">
+                {% if i.sellprice > 0 %}
+                <div>
+                  <div class="cart-table__quantity input-number" style="width: 8vw;"><input style="height: 2.5em;" class="form-control input-number__input qty border-0" type="number" min="1" value="1"><div class="input-number__add" style="width:60px;"></div><div class="input-number__sub" style="width:60px;"></div></div>
+                </div>
+                <button class="btn btn-primary cmnd" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+
+                <button class="btn btn-info mt-2 d-none anullercmnd" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+                  Anuller
+                </button>
+                {% endif %}
+              </div>
+              {% if i.isnew %}
+
+              <div id="blinking-text" class="blink mt-3">
+                <img src="/media/new.jpg" width="40" style="width: 40px;">
+              </div>
+              {% endif %}
+            </div><!--price and cmnd-->
+          </div> <!--photo and equiv-->
+          <div class="row">
+            <div class="col-10" style="height: 6em; overflow-y: scroll;">
+              {% for a in i.getcars %}
+              {{a}} <br>
+              {% endfor %}
+            </div>
+            <div class="col-2">
+              {% if i.mark.image %}
+              <img src="{{i.mark.image.url}}" class="mb-3" width="70" style="width:70px;">
+              {% endif %}
+              {% if i.carlogos.image %}
+              <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+              {% endif %}
+            </div>
+          </div> <!--design and mark auto-->
+
+        </div> <!--holder-->
+        </div>
+    {% endfor %}
+    {% if forloop.counter == products|length %}
+    <div class="d-flex justify-content-between">
+      <button {% if previousctg%}onclick="window.location.href='/categories/products/{{previousctg.id}}'"{% endif %} class="btn btn-success" style="width:10em; height:8em; position:absolute; bottom:56px; left:0;">
+        << precedent
+      </button>
+      <button {% if nextctg%}onclick="window.location.href='/categories/products/{{nextctg.id}}'"{% endif %} class="btn btn-success" style="width:10em; height:8em; position:absolute; bottom:56px; right:0;">
+        Suivant>>
+      </button>
+    </div>
+    {% endif %} <!--end if forloop.counter == products|length -->
+  </div>
+    {% endfor %}
+    {% else %}
+      {% for items in products %}
+      <div >
+      {% for i in items %}
+
+      <div class="col-12 mb-2">
+        <div class="border rounded product-card" style="margin: auto; height: 315px">
+	      {% if i.sellprice > 0 %}
+          <div class="product-card__image">
+            <div class="image image--type--product text-center">
+              {% if i.image %}
+              <img  src="{% if i.image %} {{i.image.url}} {% endif %}" alt="{{ i.name }}" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+              {% endif %}
+
+            </div>
+
+            <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+            </div>
+          </div>
+          <div class="product-card__info p-2 d-flex flex-column">
+
+            <div class="product-card__name">
+              <div class="d-flex flex-column">
+                <div style="margin-right: 3px;">
+                  <div class="d-flex justify-content-between">
+
+                    <div class="d-flex">
+                      <strong style="font-size: 25px; margin-right: 7px;">
+                          {{ i.ref.upper }}
+                      </strong>
+
+                          {% if i.stocktotal %}
+                            {% if i.stocktotal <= 0 %}
+                   <div class="status indisponible"></div>
+                  {% elif i.stocktotal <= 5 %}
+                  <div class="status soon"></div>
+                  {% else %}
+                      <div class="status disponible">
+                      </div>
+                  {% endif %}
+                {% else %}
+                  <div class="status indisponible">
+                  </div>
+                          {% endif %}
+                    </div>
+                    <div class="d-flex">
+
+
+
+                      <div class="d-flex justify-content-between align-items-center w-100">
+			      {% if i.remise != 0 %}
+                        <div class="text-danger" style="font-size: 23px;">
+                          {{i.sellprice|floatformat:2}}
+                        </div>
+                        <div class="text-danger" style="font-size: 16px;">({{i.remise}}%)</div>
+                        {% else %}
+                        <div class="text-danger" style="font-size: 18px;">
+                          {{i.sellprice|floatformat:2}}
+                        </div>
+                        <div class="text-danger" style="font-size: 12px;">(NET)</div>
+			{% endif %}
+                      </div>
+                      <button data-toggle="modal" data-target="#pdctdatamodal" class="pdctdatabtn btn bi bi-list border" onclick="pdctdata('{{i.id}}')">
+                      </button>
+                    </div>
+                  </div>
+                    <div class="d-flex justify-content-between">
+                    <div class="text-orange">
+                      <strong style="font-size: 23px; color: red;">
+                        {{i.refeq1}}
+                      </strong> <br>
+                      <strong style="font-size: 23px">
+                        {{i.refeq2}}
+                      </strong> <br>
+                      <strong style="color: red; font-size: 27px">
+                        {{i.refeq3}}
+                      </strong> <br>
+
+                    </div>
+                    {% if i.carlogos.image %}
+                      <img src="{{i.carlogos.image.url}}" width="40" style="width:70px; margin-right: 20px;">
+                  {% endif %}
+                    {% if i.mark.image %}
+                    <img src="{{i.mark.image.url}}" style="width: 15%;height: 42%;">
+                    {% endif %}
+
+                  </div>
+
+
+
+
+
+                  <div style="color: #0097ff;
+                  font-weight: bold;
+                  font-size: 18px;">
+                    {{i.diametre}}
+                  </div>
+                  <div style="height: 8em; overflow-y: scroll;line-height: 30px;">
+                    {% for car in i.getcars %}
+                    <div style="font-size: 20px;">
+                      {{car}}
+                    </div>
+                    {% endfor %}
+                  </div>
+
+
+                </div>
+
+
+              </div>
+
+
+            </div>
+            <div class="product-card__footer d-flex mt-auto flex-row justify-content-between">
+              <div style="width: 70px;">
+                {% if i.isnew %}
+
+                <div id="blinking-text" class="blink">
+                  <img src="/media/new.jpg" width="40" >
+                </div>
+                {% endif %}
+              </div>
+               <button style="width: 9em; height: 3em; border-radius:10px;" class="btn btn-success" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}" onclick="repcmnd(event)">
+		{% if i.stocktotal > 0 %}Cmnd{% else %}Reliquat {%endif%}
+              </button>
+
+
+              <div class="cart-table__quantity input-number" style="width: 19em;">
+                <input class="form-control input-number__input qty border-0" style="font-size: 27px; font-weight: bold;" type="number" min="1" value="1"><div class="input-number__add" style="
+text-align: center;display: flex;
+width: 111px;
+font-size: 49px;
+border: 2px solid orange;
+border-radius: 22px;
+height: 60px;
+margin-top: -21px;
+flex-direction: column;
+justify-content: center;
+">+</div><div class="input-number__sub" style="
+text-align: center;display: flex;
+width: 111px;
+font-size: 81px;
+border: 2px solid orange;
+border-radius: 22px;
+height: 60px;
+margin-top: -21px;
+flex-direction: column;
+justify-content: center;
+">-</div>
+              </div>
+
+	                    <button style="width: 9em;" class="btn btn-info d-none anullercmnd " data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+                Anuller
+              </button>
+
+
+            </div>
+
+          </div>
+
+
+	{% endif %}
+        </div>
+      </div>
+    {% endfor %}
+    {% if forloop.counter == 1 %}
+      		<button {% if previousctg%}onclick="window.location.href='/categories/products/{{previousctg.id}}'"{% endif %} class="btn btn-success" style="width:10em; height:8em; position:absolute; bottom:56px; left:0;opacity:.4;">
+        	<< precedent
+      	</button>
+    {% endif %}
+    {% if forloop.counter == products|length %}
+          <button {% if nextctg%}onclick="window.location.href='/categories/products/{{nextctg.id}}'"{% endif %} class="btn btn-success" style="width:10em; height:8em; position:absolute; bottom:56px; right:0;opacity:.4;">
+        Suivant>>
+      </button>
+
+    {% endif %} <!--end if forloop.counter == products|length -->
+  </div>
+    {% endfor %}
+    {% endif %} <!--end category affichage-->
+  </div>
+  {% else %} <!--end if slides-->
+  <div class="products-list__content p-3">
+
+    <div class="row">
+    <!-- <div class="bg-dark rounded text-white">{{target}}</div> -->
+    {% if category.affichage == 'full' %}
+    {% for i in products %}
+    <div class="col-12 mb-2">
+      <div class="border rounded product-card">
+        <div class="product-card__image">
+          <div class="image image--type--product text-center">
+                        <img  src="{% if i.image %}{{i.image.url}}{% else %}/media/default.png{% endif %}" alt="{{ i.name }}" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+
+
+          </div>
+
+          <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+          </div>
+        </div>
+        <div class="product-card__info p-2">
+
+          <div class="product-card__name">
+            <div class="d-flex">
+              <div style="margin-right: 3px;">
+                <strong style="font-size: 25px;">
+                  {{ i.ref.upper }}
+                </strong>
+                <div>
+                  <strong>
+                    {{i.refeq1}}
+                  </strong> <br>
+                  <strong>
+                    {{i.refeq2}}
+                  </strong>
+                  <br>
+                  <strong style="color: red; font-size: 27px">
+                    {{i.refeq3}}
+                  </strong>
+                </div>
+                {% if i.stocktotal %}
+                   {% if i.stocktotal <= 0 %}
+                   <div class="status indisponible"></div>
+                  {% elif i.stocktotal <= 5 %}
+                  <div class="status soon"></div>
+                  {% else %}
+                      <div class="status disponible">
+                      </div>
+                  {% endif %}
+                {% else %}
+                  <div class="status indisponible">
+                  </div>
+              {% endif %}
+
+
+                  {% if i.isnew %}
+
+                <div id="blinking-text" class="blink">
+                  <img src="/media/new.jpg" width="40" style="width: 40px;">
+                </div>
+                {% endif %}
+                <div style="color:#00538c;">
+                  {{i.diametre}}
+                </div>
+
+              </div>
+              <div>
+                {% for car in i.getcars %}
+                <div>
+                  {{car}}
+                </div>
+                {% endfor %}
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+        <div class="product-card__footer d-flex flex-column">
+          <div class="bg-darkblue text-white w-100 text-center rounded mt-2">
+            <strong>REF: {{i.ref.upper}} </strong>
+          </div>
+          <div class="product-card__prices p-2 border w-100 mt-2">
+            <div class="d-flex justify-content-between align-items-center w-100">
+             {% if i.remise != 0 %}
+              <div style="font-size: 12px;">
+
+                {{i.sellprice|floatformat:2}}
+              </div>
+              <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+              {% else %}
+              <div style="font-size: 12px;">
+                {{i.sellprice|floatformat:2}}
+              </div>
+              <div class="text-danger" style="font-size: 12px;">(NET)</div>
+              {% endif %}
+            </div>
+
+          </div>
+          <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty border-0" type="number" min="1" value="1"><div class="input-number__add" style="width: 60px; height: 70px;margin-top: -15px; border:1px solid;"></div><div class="input-number__sub" style="width: 60px; height: 70px;margin-top: -15px; border:1px solid;"></div></div>
+      <button class="btn btn-primary w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+
+      <button class="btn btn-info mt-2 d-none anullercmnd w-100" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+        Anuller
+      </button>
+
+      <div class="d-flex justify-content-end mt-2">
+        {% if i.mark.image %}
+        <img src="{{i.mark.image.url}}" width="70" style="width:70px;">
+        {% endif %}
+        {% if i.carlogos.image %}
+        <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+        {% endif %}
+      </div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+    <!-- end full affichage -->
+    {% else %}
+    {% for i in products %}
+    <div class="col-6 mb-2">
+    <div class="bg-white shadow p-2" style="height: 17.5em;">
+
+      <div class="d-flex justify-content-between">
+        <div class="" style="width:170px;">
+          {% if i.image %}
+          <img src="{{i.image.url}}" alt="" style="max-width: 275px;max-height: 176px;">
+          {% endif %}
+        </div>
+        <div class="">
+          <div class="mb-2 d-flex">
+            <strong class="bg-darkblue p-2 text-white">
+              {{i.ref}}
+            </strong>
+            <div class="ms-3">
+              {% if i.stocktotal %}
+                {% if i.stocktotal <= 0 %}
+                <div class="status indisponible"></div>
+                  {% elif i.stocktotal <= 5 %}
+                  <div class="status soon"></div>
+                  {% else %}
+                      <div class="status disponible">
+                      </div>
+                  {% endif %}
+                {% else %}
+                  <div class="status indisponible">
+              {% endif %}
+              </div>
+          </div>
+          <div class="text-orange">
+            <strong>
+              {{i.refeq1}}
+            </strong><br>
+            <strong>
+              {{i.refeq2}}
+            </strong><br>
+            <strong style="color: red; font-size: 27px">
+              {{i.refeq3}}
+            </strong>
+          </div>
+
+
+
+          <div style="color: #28a8ff;
+          margin-top: 6px;
+          font-size: 20px;">
+            {{i.diametre}}
+          </div>
+          <div class="mt-3">
+          <strong style="padding: 5px; color: red; margin-top: 7px;">
+            {{i.refeq4}}
+          </strong>
+          </div>
+        </div>
+        <div><!--price and cmnd-->
+          <div style="margin-right: 20px;">
+            {% if i.remise != 0 %}
+                  <div style="font-size: 12px;">
+                    <strong class="text-danger">
+                      {{i.sellprice|floatformat:2}}
+                    </strong>
+                    <span class="text-danger" style="font-size: 12px;">({{i.remise}}%)</span>
+                  </div>
+                  {% else %}
+                  <div style="font-size: 12px;">
+                    <strong class="text-danger">
+                      {{i.sellprice|floatformat:2}}
+                    </strong>
+                    <span class="text-danger" style="font-size: 12px;">(NET)</span>
+                  </div>
+		  {% endif %}
+          </div>
+          <div class="d-flex flex-column">
+            <div>
+            <div class="cart-table__quantity input-number" style="width: 8vw;"><input style="height: 2.5em;" class="form-control input-number__input qty border-0" type="number" min="1" value="1"><div class="input-number__add" style="width: 60px; height: 70px;margin-top: -15px; border:1px solid;"></div><div class="input-number__sub" style="width: 60px; height: 70px;margin-top: -15px; border:1px solid;"></div></div>
+          </div>
+          <button class="btn btn-primary cmnd" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+
+          <button class="btn btn-info mt-2 d-none anullercmnd" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+            Anuller
+          </button>
+          </div>
+          {% if i.isnew %}
+
+          <div id="blinking-text" class="blink mt-3">
+            <img src="/media/new.jpg" width="40" style="width: 40px;">
+          </div>
+          {% endif %}
+        </div><!--price and cmnd-->
+      </div> <!--photo and equiv-->
+      <div class="row">
+        <div class="col-10" style="height: 6em; overflow-y: scroll;">
+          {% for a in i.getcars %}
+          {{a}} <br>
+          {% endfor %}
+        </div>
+        <div class="col-2">
+          {% if i.mark.image %}
+          <img src="{{i.mark.image.url}}" class="mb-3" width="70" style="width:70px;">
+          {% endif %}
+          {% if i.carlogos.image %}
+          <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+          {% endif %}
+        </div>
+      </div> <!--design and mark auto-->
+
+    </div> <!--holder-->
+    </div>
+
+    {% endfor %}
+    {% endif %}
+  </div>
+  {% endif %}
+  </div>
+<script>
+  window.addEventListener('beforeunload', function (e) {
+        // Cancel the event
+        e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+        // Chrome requires returnValue to be set
+        e.returnValue = '';
+      });
+</script>

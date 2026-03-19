@@ -1,0 +1,75 @@
+<!-- old catalog filter -->
+<div class="d-flex justify-content-between">
+    <div class="fitscreen bg-white shadow rounded px-2" style="width: 57%;">
+        <div class="bg-white p-2 sticky-top d-flex border-end rounded-top sticky-top  align-items-center">
+        
+            <!-- category filter -->
+            <div class="d-flex col-8">
+                <div class="col-7">
+                    <div class="filter-vehicle">
+                        <select name="category" id="" class="form-control form-control-select2">
+                            <option value="0">Category</option>
+                            {% for category in cc %}
+                                {% if category.has_promotion %}
+                                <option value="{{ category.id }}">{{ category.title }} (promotion)</option>
+                                {% else %}
+                                <option value="{{ category.id }}">{{ category.title }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        
+                    </div>
+                </div>
+                <!-- <button class="btn btn-primary btn-sm filterbtn">Filter</button>	 -->
+            </div>
+
+            <!-- search table input -->
+            <div class="col-4">
+                <input type="text" class="form-control" id="myInput" placeholder="Search" onkeyup="searchtable()">
+            </div>
+        </div>
+        <table class="table table-striped table-hover table-bordered thistable" id="myTable">
+            <thead>
+                <tr>
+                <th >#</th>
+                <th >Name</th>
+                <th>Prix</th>
+                <th>Offre</th>
+                <th>Min</th>
+                <th style="width: 5%;">Qty</th>
+                </tr>
+            </thead>
+            <tbody class="prdctslist">
+                
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="col-5 fitscreen bg-white shadow rounded px-2">
+        <div class="sticky-top card-header text-center d-flex justify-content-between align-items-center">
+            <small>
+                Commande
+            </small>
+            <!-- a button to clear commande -->
+            <button class="btn clearcommande" onclick="clearcommande()">
+                X
+            </button>
+        </div>
+        
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th >ref</th>
+                <th >article</th>
+                <th style="width: 5%;">Qty</th>
+                <th style="width: 5%;">total</th>
+            </tr>
+            </thead>
+            <tbody class="commande-table">
+                
+            </tbody>
+        </table>
+        
+    </div>
+</div>

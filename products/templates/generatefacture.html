@@ -1,0 +1,296 @@
+<style>
+    .autocomplete {
+  position: relative;
+  width: 300px; /* Adjust as needed */
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px;
+}
+
+#suggestion-list {
+  position: absolute;
+  list-style: none;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+</style>
+<div class="text-white rounded h3 text-center" style="background: #1a6a9b;">
+    <div>
+      {{title}}
+    </div>
+  </div>
+<!-- check if bon already generer-->
+{% if livraison.isfacture %}
+Facturé
+{% else %}
+  <div class="">
+         <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
+            <div class="col-5">
+              <div class="mb-2">
+                <small>N° BL: {{livraison.bon_no}}</small> 
+                
+              </div>
+              <div>
+                
+              </div>
+            <div class="mb-2">
+              <small>Client: {{livraison.client.name}}</small>
+              
+          </div>
+                <div class="mb-2">
+                    <small>Date Facture</small>
+                    <input type="date" class="form-control datebonfacture" value="{{today|date:'Y-m-d'}}" name="datebonfacture{{livraison.id}}" placeholder="Date Facture">
+                    <p class="text-danger">
+                  dernier date: {{lastdate|date:'d/m/y'}}
+                </p>
+                </div>
+                <div class="mb-2">
+                  <small>N° Facture: </small>
+                  <input type="text" class="form-control orderno" name="factureno" value="{{receipt_no}}">
+                </div>
+                
+            </div>
+
+           
+  
+            
+            
+          </div> 
+  
+      <div>
+          <div class="bg-white rounded shadow p-2 tableholderfacture{{livraison.id}}">
+              <!-- <div>
+                  <small>
+                      Ref.
+                  </small>
+                  <input type="text" name="ref" class="form-control searchref">
+              </div> -->
+              <div class="d-flex justify-content-between">
+                
+                  <div class="mb-3 col-5">
+                      
+                </div>
+                
+            </div>
+            <div class="col-5">
+              <input type="text" class="searchbonlivraisoncreation" placeholder="Search..." />
+            </div>
+            <table class="table table-bordered text-center bonlivraisoncreation" style="font-size: 12px;">
+              <thead style="background: orange; color:#091b27;">
+                  <tr>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Stock Fact.</td>
+                      <!-- <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td> -->
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Total</td>
+                  </tr>
+              </thead>
+              <!-- <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>TOTAL</td>
+                  <td class="totalbon" style="background: orange; color:#091b27;">
+                      0.00
+                  </td>
+                </tr>
+              </tfoot> -->
+              <tbody class="facture{{livraison.id}}body">
+                  {% for i in items %}
+                    {% if i.product.stockfacture >= i.qty %}
+                    <tr class="itemrow">
+                        <td class="ref">{{i.product.ref}}</td>
+                        <td class="name">{{i.product.name}}</td>
+                        <td>{{i.product.buyprice}}</td>
+                        <td>{{i.product.stocktotal}}</td>
+                        <td>{{i.product.stockfacture}}</td>
+                        <!-- <td>{{i.product.sellprice}}</td> -->
+                        <td><input readonly type="number" class="calculate qty " onkeyup="calculate(event)" name="qty" value="{{i.qty}}"></td>
+                        <td><input readonly type="number" class="calculate price " onkeyup="calculate(event)" name="price" value="{{i.price}}"></td>
+                        <td><input readonly type="number" class="calculate remise " onkeyup="calculate(event)" name="remise" value="{{i.remise}}"></td>
+                        <td class="total">{{i.total}}</td>
+                        <input type="hidden" name="productid" value="{{i.product.id}}">
+                    </tr>
+                    {% endif %}
+                        <!-- <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td> -->
+                  {% endfor %}
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-success submitfacture{{livraison.id}} ">
+                      Valider
+                </button>
+                <b class="totalbon totalfacture{{livraison.id}} text-danger">
+                    0.00
+                </b>
+            </div>
+          </div>    
+      </div>
+  </div>
+{% endif %}
+  <script class="addbonlivraison">
+    // calculate total first time
+    trs=$('.facture{{livraison.id}}body tr')
+    totals=trs.find('.total')
+    totalbon=0
+    totals.each(function(){
+        totalbon+=parseFloat($(this).text())
+    })
+    $('.totalfacture{{livraison.id}}').text(totalbon.toFixed(2))
+    // $('.select2').select2()
+    
+        // fill today's date in .datebon input
+        
+
+    
+      $('.submitfacture{{livraison.id}}').on('click', (e)=>{
+        parentdiv=$(e.target).parent().parent().parent().parent()
+        if (parentdiv.find('tbody').find('tr').length==0){
+          $('.tableholderfacture{{livraison.id}}').addClass('border border-danger')
+          $(e.target).addClass('disabled')
+          alertify.error('NO products')
+          return
+        }
+        $('.tableholderfacture{{livraison.id}}').removeClass('border border-danger')
+          $('.submitfacture{{livraison.id}}').addClass('disabled')
+          trs=$('.facture{{livraison.id}}body tr')
+          let products = []
+          trs.each(function(){
+              let tr = $(this)
+              let qty = tr.find('.qty').val()
+              let name = tr.find('.name').text()
+              let ref = tr.find('.ref').text()
+              let price = tr.find('.price').val()
+              let remise = tr.find('.remise').val()
+              let total = tr.find('.total').text()
+              let productid = tr.find('input[name="productid"]').val()
+              let product = {
+                  'qty': qty,
+                  'name': name,
+                  'ref': ref,
+                  'price': price,
+                  'remise': remise,
+                  'total': total,
+                  'productid': productid
+              }
+              products.push(product)
+          })
+          let orderno=parentdiv.find('.orderno').val()
+          let datebonfacture=parentdiv.find('.datebonfacture').val()
+          let totalbon=parseFloat(parentdiv.find('.totalbon').text())
+          $.get('/products/checkfactureno', {'no':orderno, 'id':'{{livraison.id}}'}, (data)=>{
+              if (data.exist){
+                $('.loadingscreen').removeClass('d-flex').addClass('d-none')
+                $('.submitfacture{{livraison.id}}').removeClass('disabled')
+                alertify.error('CE NUMERO EST DEJA EXISTE')
+              }
+              else{
+                $('.submitfacture{{livraison.id}}').addClass('disabled')
+                $.ajax({
+                    url: "{% url 'products:createfacture' %}",
+                    type: 'POST',
+                    data: {
+                        'bon':'{{livraison.id}}',
+                        'totalbon': totalbon,
+                        'datefacture': datebonfacture,
+                        'orderno': orderno,
+                        'products': JSON.stringify(products),
+                        'csrfmiddlewaretoken': '{{csrf_token}}'
+                    },
+                    success: function(data){
+                      if (data.success){
+                        // $('.facture{{livraison.id}}body').html('')
+                        $('.submitfacture{{livraison.id}}').addClass('disabled')
+                        deletetab('generatefacturetab{{livraison.id}}')
+                        ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+                        alertify.success('Facture créée avec succès')
+                      }
+                    }
+                })
+              }
+          })
+            
+      })
+
+      $('.searchbonlivraisoncreation').on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $(".bonlivraisoncreation tbody tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      
+      
+      
+      // const selectElement = document.getElementById("my-select");
+  
+      // selectElement.addEventListener("keydown", function(event) {
+      //     if (event.key === "Enter") {
+              
+      //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+      //         let bonachatbody = $('.bonachatbody')
+      //         let tr = `
+      //         <tr>
+      //             <td class="ref">${ref}</td>
+      //             <td class="name">${name}</td>
+      //             <td>${dp}</td>
+      //             <td>${stock}</td>
+      //             <td>
+      //                 <select name"local" class="form-select local">
+      //                     <option value="principal">Principal</option>
+      //                     <option value="depot">Depot</option>
+      //                 </select>
+      //             </td>
+      //             <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+      //             <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+      //             <td><input type="number" class="form-control calculate remise" onkeyup="calculate(event)" name="remise"></td>
+      //             <td class="total"></td>
+      //             <input type="hidden" name="productid" value="${id}">
+      //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+      //         </tr>
+      //         `
+      //         bonachatbody.prepend(tr)
+      //         // delect selected option
+      //         selectElement.remove(selectElement.selectedIndex);
+      //     }
+      // });
+      
+      
+      // const addtobon=(e, ref, name, stock)=>{
+      //     let target = $(e.target)
+      //     console.log(target)
+      //     target.remove()
+      //     let bonachatbody = $('.bonachatbody')
+      //     let tr = `
+      //     <tr>
+      //         <td>${ref}</td>
+      //         <td>${name}</td>
+      //         <td>${stock}</td>
+              
+      //         <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+      //         <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+      //         <td class="total"></td>
+      //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+      //     </tr>
+      //     `
+      //     bonachatbody.append(tr)
+      // }
+      
+
+  </script>

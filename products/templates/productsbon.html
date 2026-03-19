@@ -1,0 +1,9 @@
+{% for i in products %}
+<option value="{{i.ref}},{{i.name}},{{i.buyprice}},{{i.stocktotal}},{{i.id}}" class="p-2">{{i.ref}} - {{i.name}}</option>
+{% empty %}
+<div class="d-flex p-2 border-bottom">
+    <div>
+        Aucun produit
+    </div>
+</div>
+{% endfor %}

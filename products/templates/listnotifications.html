@@ -1,0 +1,102 @@
+
+<div class="bg-white shadow rounded">
+  <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
+  </div>
+  <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistconnected">
+  <div class="row">
+    <div class="col-6">
+      <div class="rounded shadow">
+        <textarea style="height: 5em;" class="form-control addnotificationtextarea"></textarea>
+        <button class="btn bg-darkblue text-white w-100" onclick="addnotification()">
+          +Ajouter
+        </button>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="rounded shadow">
+        <div style="height: 70vh; overflow: scroll;" class="">
+          <table class="table table-bordered table-hover table-striped connectedtable" style="font-size: 12px;" id="addbonlivraisonle">
+            <thead style="position: sticky; top: 0; background: gray;">
+              <tr>
+                <td>Notification</td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in notifications %}
+              <tr>
+                <td>
+                  <textarea style="height: 5em;" class="updatenotificationtextarea{{i.id}} form-control">{{i.notification}}</textarea>
+                  <button class="btn btn-success w-100" onclick="updatenotification('{{i.id}}')">
+                    Modifier
+                  </button>
+                </td>
+                
+              </tr>
+              {% endfor %}
+              
+            </tbody>
+            
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+  function addnotification(){
+    let notification = $('.addnotificationtextarea').val()
+    $.get('/products/addnotification', {'notification':notification}, (data)=>(
+      updatetab('notificationstab', '/products/listnotifications')
+    ))
+  }
+
+  function updatenotification(id){
+    let notification = $(`.updatenotificationtextarea${id}`).val()
+    $.get('/products/updatenotification', {'notification':notification, 'notificationid':id}, (data)=>(
+      updatetab('notificationstab', '/products/listnotifications')
+    ))
+  }
+
+$('.searchinputlistconnected').on("keyup", function() {
+    // Get the values from all filter input fields
+    var filterValue = $(this).val().toLowerCase();
+    
+    // Split the filter value into individual terms based on the '&' sign
+    var filterTerms = filterValue.split('+').map(function(term) {
+        return term.trim();
+    });
+    
+    // Iterate through the table rows
+    $(".connectedtable tbody tr").each(function() {
+        var rowText = $(this).text().toLowerCase();
+        var showRow = true;
+        
+        // Check if all filter terms are present in the row text
+        $.each(filterTerms, function(index, term) {
+            if (term !== '' && rowText.indexOf(term) === -1) {
+                showRow = false;
+                return false; // Exit the loop early if a mismatch is found
+            }
+        });
+
+        // Toggle the visibility of the row based on the filter criteria
+        $(this).toggle(showRow);
+    });
+    total=0
+    $('.connectedtable tbody tr:visible').each(function(){
+      total+=parseFloat($(this).find('td:nth-child(4)').text())
+    })
+    $('.totalbbonachat').text(total.toFixed(2))
+});
+
+
+</script>

@@ -1,0 +1,123 @@
+<!--  -->
+{% load global_tags %}
+{% for grandtotal, items in grouped_data.items %}
+    {% for i in items %}
+        <tr code="{{i.id}}">
+
+          <td>
+              <input onclick="onetotal(event, '{{i.id}}')" type="checkbox" class="checkboxgroup" id={{i.id}}>
+          </td>
+          <td style="background:blue;">
+              <input onclick="movetodate(event, '{{i.id}}')" type="checkbox" class="checkboxmovetodate" id={{i.id}}>
+          </td>
+            <td style="width:5%;">
+                <input value="{% if i.npiece %}{{ i.npiece }}{% endif %}" onchange="getnpiecedata(event)"="getnpiecedata(event)" class="npieceinput" style="width:7em;">
+            </td>
+            <td class="mode">{{ i.mode }}</td>
+            <td class="echeance">{{ i.echeance }}</td>
+            <td class="client">{{ i.client }}</td>
+            <td>
+                <input onchange="calculatetva(event)" value="{% if i.amount %}{{ i.amount|floatformat:2 }}{% endif %}" class="amount" style="width:7em; {% if i.ispaid %}background:skyblue;{% endif %}">
+            </td>
+            <td class="tva">{{ i.tva }}</td>
+            <td>
+                <input value="{% if i.note %}{{ i.note|upper }}{% endif %}" class="nomde w-100  text-danger">
+            </td>
+            <td>
+                <input {% if i.ispaid %}checked{% endif %} type="checkbox" class="regle" onclick="makethisregle(event, id)">
+            </td>
+            <td {% if i.isimpye %}class="bg-danger"{% endif %}>
+                <input {% if i.isimpye %}checked{% endif %} type="checkbox" class="impye" onclick="makethisimpye(event, id)">
+            </td>
+            <td>
+                <input {% if i.ispointage %}checked{% endif %} type="checkbox" class="pointage" onclick="makethipointage(event, id)">
+            </td>
+            <td class="codeclient" style="{% if i.ispointage %}background:skyblue;{% endif %}">{{ i.clientcode }}</td>
+
+            <td>
+                <!-- {% if not i.ispointage and i.isempty %}ondblclick="getfacturedata(event)"{% endif %} -->
+                <input ondblclick="getfacturedata(event)" style="width:20em; background:{% if i.isempty %}yellowgreen;{% endif %}" value="{% if i.factures %}{{ i.factures }}{% endif %}" class="factures col-10 {% if i.iscontable %}bg-warning{% endif %}" isempty='{{ i.isempty }}'>
+                {% if not i.isprinted %}<button class="btn btn-sm bi bi-download" onclick="makethisprint(event, '{{i.id}}', '{{i.factures}}')"></button>{% endif %}
+                <button class="btn btn-success btn-sm" title="Reglement" onclick="reglementech(event)"></button>
+                <!-- this to make facture comptabilisé -->
+                {% if i.ispaid and not i.facturesaccount %}
+                <button class="btn border btn-sm" title="Comptabite" onclick="comptabilise(event, {{i.id}})">C</button>
+                {% endif %}
+                <!-- this to know that ther is more than one facture -->
+                {% if i.factures|length > 8 %}
+                <div class="accordion" id="accordionbons{{i.id}}">
+
+                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{i.id}}" aria-expanded="true" aria-controls="collapsbon{{i.id}}">
+
+
+                    </button>
+
+                    <div id="collapsbon{{i.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{i.id}}">
+
+                      {% for item in i.factures|split:"," %}
+                      {{item}} <button class="btn btn-sm bi bi-download" onclick="makethisprint(event, '{{i.id}}', '{{item}}')"></button> <br>
+                      {% endfor %}
+
+
+                    </div>
+                </div>
+
+                {% endif %}
+            </td>
+            <td>
+            <input {% if i.iscontable %}checked{% endif %} type="checkbox" class="comptable" onclick="makethicomptacle(event, '{{i.id}}')">
+            </td>
+            {% if forloop.first %}
+                <td rowspan="{{ items|length }}" style="vertical-align:middle;">
+                    {% if grandtotal %}
+                    <strong>
+                      {{ grandtotal }}
+                    </strong>
+                    {% endif %}
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endfor %}
+
+<!-- INITIAL TR -->
+<!-- code is id -->
+<tr code="{{code}}">
+  <td>
+    <input onclick="onetotal(event, '{{code}}')" type="checkbox" class="checkboxgroup" id={{code}}>
+  </td>
+  <td style="background:blue;">
+      <input onclick="movetodate(event, '{{code}}')" type="checkbox" class="checkboxmovetodate" id={{code}}>
+  </td>
+  <td style="width:5%;">
+    <input onchange="getnpiecedata(event)"="getnpiecedata(event)" class="npieceinput" style="width:7em;">
+  </td>
+  <td class="mode"></td>
+  <td class="echeance"></td>
+  <td class="client"></td>
+  <td>
+    <input onchange="calculatetva(event)" class="amount" style="width:7em;">
+  </td>
+  <td class="tva"></td>
+  <td> <input class="nomde w-100 text-danger"> </td>
+  <td>
+    <input type="checkbox" class="regle" onclick="makethisregle(event, id)">
+  </td>
+  <td>
+  <input type="checkbox" class="impye" onclick="makethisimpye(event)">
+  </td>
+  <td>
+      <input type="checkbox" class="pointage" onclick="makethipointage(event, id)">
+  </td>
+  <td class="codeclient"></td>
+  <!-- isempty to indicate if regl has no factures, it's used to mark lines with no factures -->
+  <td class="d-flex justify-content-between">
+    <input style="font-size:20px;" class="factures w-100" isempty='False'>
+    <!-- <button class="btn btn-sm bi bi-download" onclick="makethisprint('{{code}}')"></button> -->
+
+  </td>
+  <td>
+  <input type="checkbox" class="comptable" onclick="makethicomptacle(event, '{{code}}')">
+  </td>
+  <td></td>
+</tr>

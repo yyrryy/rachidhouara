@@ -1,0 +1,676 @@
+<style>
+  .autocomplete {
+position: relative;
+width: 300px; /* Adjust as needed */
+}
+
+#search-input {
+width: 100%;
+padding: 10px;
+}
+
+#suggestion-list {
+position: absolute;
+list-style: none;
+background-color: white;
+border: 1px solid #ccc;
+max-height: 200px;
+overflow-y: auto;
+width: 100%;
+padding: 0;
+margin: 0;
+}
+</style>
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+  <button class="btn bg-orange bi bi-arrow-left" style="border:1px solid var(--orange);" onclick="ajaxpage('avoirsupp3', 'avoirsupp {{avoir.no}}', '/products/avoirsuppdetails/{{avoir.id}}?target={{target}}')"></button>
+  <div>
+    {{title}}
+  </div>
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
+</div>
+
+<div class="">
+       <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
+          <div class="col-5 row">
+
+            <select hidden name="mode" id="" style="width:100%;" class="form-select notemptylivraison modeselectavsupp{{avoir.id}}">
+              <option value="bl">BL</option>
+              <option value="facture" {% if avoir.avoirfacture %} selected {% endif %}>Facture</option>
+            </select>
+              <div class="mb-2">
+                <small>Fournisseur: {{avoir.supplier.name}}</small>
+                  <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectsupp(event)">↻</button>
+                  <select name="supplier" id="" style="width:100%;" class="select2 suppselectavoir{{avoir.id}} form-select notemptyavoirsupp{{avoir.id}} suppslect2">
+                    <option value="{{avoir.supplier.id}}" selected>{{avoir.supplier.name}}</option>
+                  </select>
+              </div>
+
+              <div class="mb-2 col-6">
+                <small>Date:</small>
+
+                  <input type="date" class="form-control datebonavoirsupp{{avoir.id}}" name="datebonavoirsupp{{avoir.id}}" value="{{avoir.date|date:'Y-m-d'}}" placeholder="Date bon">
+              </div>
+              <div class="mb-2 col-6">
+                <small>N° avoir:</small>
+                  <input type="text" class="form-control ordernoavoirsupp{{avoir.id}}" name="ordernoavoirsupp{{avoir.id}}" value="{{avoir.no}}">
+              </div>
+              <div class="mb-2">
+                <small>Note</small>
+                <textarea name="" class="noteavoir form-control" id="">{%if avoir.note%}{{avoir.note}}{%endif%}</textarea>
+                </div>
+
+          </div>
+
+          <div class="col-7 row">
+            <div class="col-12">
+
+              <select class="productsavoirsupp{{avoir.id}} form-select" style="width: 100%;">
+                <!-- <option value="">----</option>
+                {% for i in products %}
+                <option value="{{i.ref}},{{i.name}},{{i.buyprice}},{{i.stocktotal}},{{i.id}},{{i.sellprice}},{{i.remise}},{{i.prixnet}},{{i.representprice}}" class="p-2">{{i.ref}} |          {{i.name}} | {{i.code}} | {{i.mark.name}} |         {{i.getequivalent.0}} | {{i.getequivalent.1}} |           {{i.getequivalent.2}}</option>
+
+                {% empty %}
+                <option value="">Aucun produit</option>
+
+                {% endfor %} -->
+              </select>
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Quantité" name="addqty">
+              <div class="addstockavsupp text-danger"></div>
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Prix" name="addprice">
+              <div class="addclientprice text-danger"></div>
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Remise1" name="addremise1">
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Remise2" name="addremise2">
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Remise3" name="addremise3">
+            </div>
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Remise4" name="addremise4">
+            </div>
+            <div class="col-3">
+              <button class="btn btn-primary" onclick="addrowupdateavoirsupp(event, '{{avoir.id}}')">Ajouter</button>
+            </div>
+            <div class="col-12">
+              <input hidden readonly type="text" name="addnameavsupp" class="form-control">
+            </div>
+            <div class="col-12 tabeldata" style="height: 11em;
+              overflow: scroll;">
+                
+              </div>
+          </div>
+
+
+
+
+        </div>
+
+    <div>
+        <div class="bg-white rounded shadow p-2 tableholderupdateavsupp">
+            <!-- <div>
+                <small>
+                    Ref.
+                </small>
+                <input type="text" name="ref" class="form-control searchref">
+            </div> -->
+            <div class="d-flex justify-content-between">
+
+                <div class="mb-3 col-5">
+
+              </div>
+
+          </div>
+          <div class="col-5">
+            <input type="text" class="searchbonavoirsuppcreation{{avoir.id}}" placeholder="Search..." />
+          </div>
+          <table class="table table-bordered text-center bonavoircreation{{avoir.id}}" style="font-size: 12px;">
+            <thead style="background: orange; color:#091b27;">
+                <tr>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
+                    <td style="padding: 2px 0; font-size: 13px;">Article</td>
+                    <!-- <td style="padding: 2px 0; font-size: 13px; width: 9%;" hidden>Dernier Pr.</td>
+                    <td style="padding: 2px 0; font-size: 13px;" hidden>Stock</td>
+                    <td style="padding: 2px 0; font-size: 13px; width: 9%;" hidden>Dernier Pr. cli</td> -->
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Remise1</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Remise2</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Remise3</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Remise4</td>
+                    <!-- <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td> -->
+                    <td style="padding: 2px 0; font-size: 13px; width: 6%;">Total</td>
+                </tr>
+            </thead>
+            <!-- <tfoot>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>TOTAL</td>
+                <td class="totalbon" style="background: orange; color:#091b27;">
+                    0.00
+                </td>
+              </tr>
+            </tfoot> -->
+            <tbody class="avoirsuppbodyupdate{{avoir.id}}">
+              {% for i in items %}
+              <tr class="itemrow">
+                  <td class="ref" onclick="removelineupdateavoirsupp(event, '{{avoir.id}}', '{{i.product.id}}')">{{i.product.ref}}</td>
+                  <td class="name">{{i.product.name}}</td>
+                  <!-- <td hidden>{{i.product.buyprice}}</td>
+                  <td hidden>{{i.product.stocktotal}}</td>
+                  <td class="clientprice" hidden>{{i.clientprice}}</td> -->
+                  <td><input style="width: 100%;" type="number" class="calculate qty" onkeyup="calculatebonachat(event)" name="qty" value="{{i.qty}}"></td>
+                  <td><input style="width: 100%;" type="number" class="calculate price" onkeyup="calculatebonachat(event)" name="price" value="{{i.price}}"></td>
+                  <td><input style="width: 100%;" type="number" class="calculate remise1" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise1}}"></td>
+                  <td><input style="width: 100%;" type="number" class="calculate remise2" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise2}}"></td>
+                  <td><input style="width: 100%;" type="number" class="calculate remise3" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise3}}"></td>
+                  <td><input style="width: 100%;" type="number" class="calculate remise4" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise4}}"></td>
+                  <!-- <td>{{i.product.prixnet}}</td> -->
+                  <td class="total">{{i.total}}</td>
+                  <input type="hidden" name="productid" value="{{i.product.id}}">
+              </tr>
+
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between">
+              <button class="btn btn-success submitupdateavoirsupp{{avoir.id}}">
+                    Valider
+              </button>
+              <div>
+                <b class="totalupdateavoirsupp{{avoir.id}} totalbon text-danger border p-2" style="color: #dc3545 !important;">
+                  {{avoir.total}}
+                </b>
+
+              </div>
+          </div>
+        </div>
+    </div>
+    {{avoir.id}}
+    <div class="reglementbonsholder border position-relative mt-5">
+
+      <div class="inputsholder">
+          <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button>
+          <strong class="totalreglblfields">0.00</strong>
+              <div class="d-flex align-items-center justify-content-between">
+                    <div class="">
+                        <small>Mantant:</small> <br>
+
+                    </div>
+                    <div class="">
+                        <small>N° piece:</small> <br>
+
+                    </div>
+                    <div class="">
+                        <small>Mode Paiment:</small> <br>
+
+                    </div>
+                    <div class="">
+                      <small>Echeance:</small> <br>
+
+                  </div>
+                  <div class="">
+                    <small>Bank:</small> <br>
+
+                </div>
+                </div>
+              <div class="reglements">
+                <div class="d-flex justify-content-between align-items-center mt-2"><div class=""> <input type="number" name="mantantreglementclient" onkeyup="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant"></div><div class=""> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class=""> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"></div><div class="d-flex"><div><input type="text" name="bank" class="w-100" placeholder="Nom bank"></div>
+                </div></div>
+              </div>
+          </div>
+    </div>
+</div>
+
+<script>
+  function removelineupdateavoirsupp(event, blid, id) {
+      let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+      clicksinupdateavsupp++;
+
+      if (clicksinupdateavsupp === requiredClicks) {
+          // User has clicked the element four times consecutively
+          // Add your code to run when there are four consecutive clicks here
+          alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+            console.log('delete'),
+            // remove element
+            // remove id from localstorage
+            $(event.target).parent().remove()
+            pdcts=JSON.parse(localStorage.getItem('pdctsinupdateavoirsupp{{avoir.id}}'))
+            pdcts.splice(pdcts.indexOf(id), 1)
+            localStorage.setItem('pdctsinupdateavoirsupp{{avoir.id}}', JSON.stringify(pdcts))
+            // update total
+            let totalbon = parseFloat(parentdiv.find('.totalbon').text())
+            let totalrow = parseFloat($(event.target).parent().find('.total').text())
+            let totalbonvalue = (totalbon-totalrow).toFixed(2)
+            parentdiv.find('.totalbon').html(totalbonvalue)
+            // Reset the count
+            clicksinupdateavsupp = 0;
+
+          }
+            , function(){ alertify.error('Cancel')});
+          // Reset the count
+          clicksinupdateavsupp = 0;
+      }
+  }
+  $(function(){
+    $('.suppselectavoir{{avoir.id}}').select2({
+        minimumInputLength:1,
+        placeholder: 'Select un Fournisseur',
+        ajax: {
+          url: "{% url 'products:searchsupplier' %}",
+          type: 'GET',
+          dataType: 'json',
+          data: function (params) {
+            return {
+              'term': params.term,
+            }
+          },
+          processResults: function (data) {
+            return {
+              results: data.results
+            };
+          },
+          cache: true
+        }
+      })
+      $('.productsavoirsupp{{avoir.id}}').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchproduct?target={{target}}',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
+  localStorage.removeItem('pdctsinupdateavoirsupp{{avoir.id}}')
+  var productIds = [];
+  {% for i in items %}
+  productIds.push('{{ i.product.id }}');
+  {% endfor %}
+  localStorage.setItem('pdctsinupdateavoirsupp{{avoir.id}}', JSON.stringify(productIds));
+
+  function addrowupdateavoirsupp(event, avoirid) {
+    let target=$(event.target)
+    parentdiv=target.parent().parent().parent().parent()
+    // this reset the select2 value
+    // parentdiv.find('.resultsholderbonlivraison').val('').trigger('change')
+    // ids of products in bon stored in localstorage
+    let bonachatbody = $('.avoirsuppbodyupdate{{avoir.id}}')
+    let addnameavsupp=parentdiv.find('[name="addnameavsupp"]')
+    let addqty=parentdiv.find('[name="addqty"]')
+    let addprice=parentdiv.find('[name="addprice"]')
+    let addremise1=parentdiv.find('[name="addremise1"]')
+    let addremise2=parentdiv.find('[name="addremise2"]')
+    let addremise3=parentdiv.find('[name="addremise3"]')
+    let addremise4=parentdiv.find('[name="addremise4"]')
+    let priceclient=parentdiv.find('.addclientprice ').text()
+
+    if (addqty.val()=='' || addprice.val()=='' ){
+      alertify.error('Veuillez remplir tous les champs')
+      return
+    }
+    var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addnameavsupp.attr('data').split('§');
+    pdcts=JSON.parse(localStorage.getItem(`pdctsinupdateavoirsupp${avoirid}`)) || []
+    console.log(id, pdcts, pdcts.includes(id), `pdctsinupdateavoirsupp${avoirid}`)
+    if (pdcts.includes(id)){
+      // addqty.val('')
+      // addnameavsupp.val('')
+      // addremise1.val('')
+      // addremise2.val('')
+      // addremise3.val('')
+      // addremise4.val('')
+      // addprice.val('')
+      alertify.error('Ce produit est deja dans le bon')
+      $('.productsavoirsupp{{avoir.id}}').select2('open')
+
+      //return
+    }
+    pdcts.push(id)
+    localStorage.setItem(`pdctsinupdateavoirsupp${avoirid}`, JSON.stringify(pdcts))
+    let netp1=(addprice.val()-(addprice.val()*addremise1.val()/100))
+    netp2=netp1-(netp1*addremise2.val()/100).toFixed(4)
+    netp3=netp2-(netp2*addremise3.val()/100).toFixed(4)
+    netp4=netp3-(netp3*addremise4.val()/100).toFixed(4)
+    console.log('netp1', netp1, netp2, netp3, netp4)
+    let addtotal=(addqty.val()*netp4).toFixed(2)
+    let tr = `
+    <tr class="itemrow">
+        <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelineupdateavoirsupp(event, '{{avoir.id}}', ${id})">${ref}</td>
+        <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+        <td style="paddingpx 0; font-size: 13px;" hidden>${dp}</td>
+        <td style="padding: 2px 0; font-size: 13px;" hidden>${stock}</td>
+        <td style="padding: 2px 0; font-size: 13px;" class="clientprice" hidden>${priceclient}</td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculatebonachat(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculatebonachat(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise1.val()}" class="calculate remise1" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise2.val()}" class="calculate remise2" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise3.val()}" class="calculate remise3" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise4.val()}" class="calculate remise4" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td>
+        <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+        <input type="hidden" name="productid" value="${id}">
+
+    </tr>
+    `
+
+    bonachatbody.prepend(tr)
+    // delete selected option
+    addqty.val('')
+    addnameavsupp.val('')
+    addremise1.val('')
+    addprice.val('')
+    totals=parentdiv.find('.total')
+    totalbon=parentdiv.find('.totalbon')
+    var totalSum = 0;
+    totals.each(function() {
+        totalSum += parseFloat($(this).text());
+    });
+    totalbon.text(totalSum.toFixed(2))
+    $('.productsavoirsupp{{avoir.id}} ').select2('open')
+
+  }
+
+  $(document).ready(function(){
+    //$('.suppselectavoir{{avoir.id}}').select2('open')
+  })
+
+
+
+    $('.productsavoirsupp{{avoir.id}}').on('change', function(){
+
+
+        if ($(this).val()==''){
+            return
+        }
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+        let repswithprice=[]
+        let addnameavsupp=$('input[name="addnameavsupp"]')
+        let addprice=$('input[name="addprice"]')
+        let addremise1=$('input[name="addremise1"]')
+        let addqty=$('input[name="addqty"]')
+        $('.addstockavsupp').text(stock)
+        addqty.val('')
+        // we don't need remise of the product
+        //addremise1.val(remise)
+        addnameavsupp.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
+        $.ajax({
+                url: "{% url 'products:getlastsuppprice' %}",
+                type: 'POST',
+                data: {
+                    'id': id,
+                    'target': '{{target}}',
+                    'supplierid': $('.suppselectavoir{{avoir.id}}').val(),
+                    'csrfmiddlewaretoken': '{{csrf_token}}'
+                },
+                success: function(data){
+                  console.log('data', data)
+                  // addprice.val(data.price)
+                  // addremise.val(data.remise)
+                  $('.tabeldata').html(data.table)
+                  // if (data.facture){
+
+                  //   isfacture.val(1)
+                  // }else{
+                  //   isfacture.val(0)
+                  // }
+                }
+              })
+
+        // we are getting ere list of reps that have price
+        // $.ajax({
+        //     url: "{% url 'products:getrepswithprice' %}",
+        //     type: 'POST',
+        //     data: {
+        //         'id': id,
+        //
+        //         'csrfmiddlewaretoken': '{{csrf_token}}'
+        //     },
+        //     success: function(data){
+        //       repswithprice=data.repswithprice
+        //       let repid=$('.repsselectsavoir{{avoir.id}}').val()
+        //       if (repswithprice.includes(repid)){
+        //         console.log('rep with price')
+        //         addprice.val(representprice)
+        //       }
+        //       else{
+        //         addprice.val(sellprice)
+        //       }
+        //     }
+        //   })
+
+        console.log('getting client price')
+        // $.ajax({
+        //     url: "{% url 'products:getclientprice' %}",
+        //     type: 'POST',
+        //     data: {
+        //         'id': id,
+        //         'supplierid': $('.suppselectavoir{{avoir.id}}').val()?$('.suppselectavoir{{avoir.id}}').val():'{{avoir.supplier.id}}',
+        //         'csrfmiddlewaretoken': '{{csrf_token}}'
+        //     },
+        //     success: function(data){
+        //       console.log(data.price)
+        //       $('.addclientprice').text(data.price)
+        //     }
+        //   })
+
+        let selected = $(this).find(':selected')
+        // selected.remove()
+        // delect selected option
+    })
+
+    $('.submitupdateavoirsupp{{avoir.id}}').on('click', (e)=>{
+      let parentdiv=$(e.target).parent().parent().parent().parent()
+      if ($('.repsselectsavoir{{avoir.id}}').val()=='' || $('.datebonavoirsupp{{avoir.id}}').val()=='' || $('.ordernoavoirsupp{{avoir.id}}').val()==''){
+          parentdiv.find('.data').addClass('border border-danger')
+          return
+      }
+      parentdiv.find('.data').removeClass('border border-danger')
+      // check if .itemrow is exist
+      if (parentdiv.find('.itemrow').length==0){
+          parentdiv.find('.tableholderupdateavsupp').addClass('border border-danger')
+          return
+      }
+      parentdiv.find('.tableholderupdateavsupp').removeClass('border border-danger')
+        var isAnyEmpty = $('.notemptyavoirsupp{{avoir.id}}').filter(function() { return $(this).val() == ''; }).length > 0;
+          if (isAnyEmpty){
+              let emptyInputs = $('input.notemptyavoirsupp{{avoir.id}}').filter(function() {
+                  return !this.value.trim();
+              });
+
+              // Add a red border to all empty input elements
+              alertify.error('Veuillez remplir tous les champs obligatoires')
+              emptyInputs.css('border', '1px solid red');
+              $('input.notemptyavoirsupp{{avoir.id}}').not(emptyInputs).css('border', '');
+              $(this).attr('disabled', false)
+              return
+          }
+
+        trs=$('.avoirsuppbodyupdate{{avoir.id}} tr')
+        let avsuppproducts = []
+        trs.each(function(){
+            let tr = $(this)
+            let qty = tr.find('.qty').val()
+            let name = tr.find('.name').text()
+            let ref = tr.find('.ref').text()
+            let price = tr.find('.price').val()
+            let remise1 = tr.find('.remise1').val()
+            let remise2 = tr.find('.remise2').val()
+            let remise3 = tr.find('.remise3').val()
+            let remise4 = tr.find('.remise4').val()
+            let total = tr.find('.total').text()
+            let productid = tr.find('input[name="productid"]').val()
+            let product = {
+                'qty': qty,
+                'name': name,
+                'ref': ref,
+                'price': price,
+                'remise1': remise1,
+                'remise2': remise2,
+                'remise3': remise3,
+                'remise4': remise4,
+                'total': total,
+                'productid': productid,
+            }
+            avsuppproducts.push(product)
+        })
+        console.log('')
+
+        let mode = $('.modeselectavsupp{{avoir.id}}').val()
+        let supplierid = $('.suppselectavoir{{avoir.id}}').val()?$('.suppselectavoir{{avoir.id}}').val():'{{avoir.supplier.id}}'
+        let repid = $('.repsselectsavoir{{avoir.id}}').val()
+        let datebon = $('.datebonavoirsupp{{avoir.id}}').val()
+        let orderno = $('.ordernoavoirsupp{{avoir.id}}').val()
+        let totalbon=parseFloat($('.totalupdateavoirsupp{{avoir.id}}').text())
+        if (parseFloat($('.totalreglblfields').text())>0 && parseFloat($('.totalreglblfields').text())!=totalbon){
+          alertify.error('Total payement doit etre egale au total bon')
+          return
+        }
+        $('.submitupdateavoirsupp{{avoir.id}}').addClass('disabled')
+
+        mantant=parentdiv.find('[name="mantantreglementclient"]').map(function() {
+              return parseFloat(this.value);
+          }).get();
+          mode=parentdiv.find('[name="modereglementclient"]').map(function() {
+              return this.value;
+          }).get();
+          npiece=parentdiv.find('[name="npiece"]').map(function() {
+              return this.value;
+          }).get();
+          bank=parentdiv.find('[name="bank"]').map(function() {
+              return this.value;
+          }).get();
+          echeance=parentdiv.find('[name="echeance"]').map(function() {
+              return this.value;
+          }).get();
+        console.log(totalbon)
+        console.log('sending')
+        localStorage.removeItem('pdctsinupdateavoirsupp{{avoir.id}}')
+        console.log(avsuppproducts)
+        $.ajax({
+            url: "{% url 'products:updatebonavoirsupp' %}",
+            type: 'POST',
+            data: {
+              'mantant':JSON.stringify(mantant),
+              'mode':JSON.stringify(mode),
+              'npiece':JSON.stringify(npiece),
+              'echeance':JSON.stringify(echeance),
+              'bank':JSON.stringify(bank),
+              'target':'{{target}}',
+              'bonid': '{{avoir.id}}',
+              'totalbon': totalbon,
+              'supplierid': supplierid,
+              'datebon': datebon,
+              'orderno': orderno,
+              'note':$('.noteavoir').val(),
+              'products': JSON.stringify(avsuppproducts),
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            // finish this
+            success: function(data){
+              if (data.success){
+                alertify.success('Bon avoir modifié')
+                // delerte this tab
+                deletetab('addmodifieravoirsupp{{avoir.id}}')
+                ajaxpage('avoirsupp', 'AOIR FOURNISSEUR', '/products/listavoirsupplier?target={{target}}')
+              }
+              else{
+                alertify.error('ERROR')
+              }
+              console.log('sent')
+                // $('#addbonavoir').html('')
+                // $('#addbonavoir').html(data.html)
+                // $('.select2').select2()
+            }
+        })
+    })
+    $('.searchbonavoirsuppcreation{{avoir.id}}').on("keyup", function() {
+  var value = $(this).val().toLowerCase();
+  $(".bonavoircreation{{i.id} tbody tr").filter(function() {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
+});
+
+
+
+    // const selectElement = document.getElementById("my-select");
+
+    // selectElement.addEventListener("keydown", function(event) {
+    //     if (event.key === "Enter") {
+
+    //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+    //         let bonachatbody = $('.bonachatbody')
+    //         let tr = `
+    //         <tr>
+    //             <td class="ref">${ref}</td>
+    //             <td class="name">${name}</td>
+    //             <td>${dp}</td>
+    //             <td>${stock}</td>
+    //             <td>
+    //                 <select name"local" class="form-select local">
+    //                     <option value="principal">Principal</option>
+    //                     <option value="depot">Depot</option>
+    //                 </select>
+    //             </td>
+    //             <td><input type="number" class="form-control calculate qty" onkeyup="calculatebonachat(event)" name="qty"></td>
+    //             <td><input type="number" class="form-control calculate price" onkeyup="calculatebonachat(event)" name="price"></td>
+    //             <td><input type="number" class="form-control calculate remise" onkeyup="calculatebonachat(event)" name="remise"></td>
+    //             <td class="total"></td>
+    //             <input type="hidden" name="productid" value="${id}">
+    //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+    //         </tr>
+    //         `
+    //         bonachatbody.prepend(tr)
+    //         // delect selected option
+    //         selectElement.remove(selectElement.selectedIndex);
+    //     }
+    // });
+
+
+    // const addtobon=(e, ref, name, stock)=>{
+    //     let target = $(e.target)
+    //     console.log(target)
+    //     target.remove()
+    //     let bonachatbody = $('.bonachatbody')
+    //     let tr = `
+    //     <tr>
+    //         <td>${ref}</td>
+    //         <td>${name}</td>
+    //         <td>${stock}</td>
+
+    //         <td><input type="number" class="form-control calculate qty" onkeyup="calculatebonachat(event)" name="qty"></td>
+    //         <td><input type="number" class="form-control calculate price" onkeyup="calculatebonachat(event)" name="price"></td>
+    //         <td class="total"></td>
+    //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+    //     </tr>
+    //     `
+    //     bonachatbody.append(tr)
+    // }
+
+
+</script>

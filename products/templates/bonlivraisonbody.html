@@ -1,0 +1,85 @@
+<div class="">
+    
+    <div class="d-lg-flex d-block justify-content-between">
+        <h5>Bon de Livraison: #{{order.bon_no}}</h5>
+    <p>
+        mode de livraison: {{ order.modlvrsn.upper}}
+    </p>
+    </div>
+    <div class="">
+        <h5>Client: {{order.client.name.upper}}</h5>
+        <p>
+        {{order.client.phone}} <br> {{order.client.address}} - {{order.client.city}}
+        </p>
+    <div class="card-table">
+        <div class="table-responsive-sm">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Representant</th>
+                <th>Total</th>
+                <!-- <th>Total Remise</th> -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ order.date|date:"d/m/Y" }}</td>
+                <td>{{ order.salseman }}</td>
+                <td>{{ order.total|floatformat:2}}</td>
+                <!-- <td>{{ order.totalremise}}</td> -->
+            </tr>
+            
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="card-divider"></div>
+
+    </div>
+
+</div>
+
+<div class="orderitems mt-3 bg-white rounded p-2">
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+        <th>ref</th>
+        <th>Article</th>
+        <th>qty</th>
+        <th>prix unit.</th>
+        <th>Remise</th>
+        <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in orderitems %}
+            <tr>
+                <td>
+                    {{i.ref.upper}}
+                </td>
+                <td>
+                    {{i.name.upper}}
+                </td>
+                <td>
+                    {{i.qty}}
+                </td>
+                <td>
+                    {{i.price}}
+                </td>
+                <td>
+                    {{i.remise}}
+                </td>
+                <td>
+                    {{i.total}}
+                </td>
+                {% empty %}
+                <td>
+                    none
+                </td>
+
+            </tr>
+            {% endfor %}
+    </tbody>
+    </table>
+</div>

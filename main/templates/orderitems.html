@@ -1,0 +1,122 @@
+<div class="boncommande">
+    <div class="order-header">
+      <div class="order-header__actions back">
+        <button class="btn btn-xs btn-secondary">Total: {{order.total}} Dh</button>
+      </div>
+      <h5 class="order-header__title">Bon de commande N° #{{order.id}}</h5>
+      <div class="order-header__subtitle">{{order.date|date:"d/m/Y"}}. </div>
+      <div class="d-flex justify-content-between">
+        <!-- {% if user.groups.all.0.name == 'accounting'%}
+        <p>
+          Fait par: {{ order.salseman}}
+        </p>
+        {%endif%} -->
+        <p>
+          paiment: {{order.modpymnt}}
+        </p>
+        <p>
+          mode de livraison: {{ order.modlvrsn}}
+        </p>
+      </div>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-table">
+      <div class="table-responsive-sm">
+        <table class="table table-striped table-borded">
+          <thead>
+            <tr>
+              <th>ref</th>
+              <th>Article</th>
+              <th>qty</th>
+            </tr>
+          </thead>
+          <tbody class="card-table__body card-table__body--merge-rows">
+            {% for i in orderitems %}
+            <tr>
+                <td>
+                    {{i.ref.upper}}
+                </td>
+                <td>
+                  {{i.name.upper}}
+              </td>
+              <td>
+                {{i.qty}}
+            </td>
+                {% empty %}
+                <td>
+                    none
+                </td>
+
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+</div>
+
+      
+      
+        
+      <div class="accordion" id="accordionExample">
+        <div id="collapseOne" class="collapse bg-white" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <div>
+              <div class="">{{order.client.name}}</div>
+              <div class="">{{order.client.address}}
+                , {{order.client.city}}
+              </div>
+              <div class="">
+                <div class="-content">{{order.client.phone}}</div>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card address-card address-card--featured">
+        {% if user.groups.all.0.name == 'accounting'%}
+        
+        {% endif %}
+        <div class="d-flex justify-content-between sticky-bottom">
+          
+          {% if user.groups.all.0.name == 'accounting' %}
+          {% if not order.isdelivered %}
+          <form action="/dilevered/{{order.id}}" method="POST">
+            {%csrf_token%}
+            <button class="btn btn-primary w-100"  type="submit">Livréé</button>
+          </form>
+          <button class="btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="False" aria-controls="collapseOne">
+            Client
+          </button>
+          {% else %}
+          <button class="btn btn-primary disabled">
+            Commande livrée
+          </button>
+          {% endif %}
+        {% endif %}
+        {% if user.groups.all.0.name == 'clients' %}
+          
+          {% if  order.isdelivered %}
+          <button class="btn btn-primary disabled">
+            Commande livrée
+          </button>
+          {% else %}
+          <button class="btn btn-primary disabled">
+            Commande en cours de livraison ...
+          </button>
+          {% endif %}
+        {% endif %}
+        
+        <!-- <button class="btn ">
+          Inprimer le bon
+        </button> -->
+        </div>
+        
+      </div>
+    </div>
+
+
+</div>
+

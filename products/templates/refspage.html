@@ -1,0 +1,66 @@
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<td>
+				Date
+			</td>
+			<td>
+				Ref
+			</td>
+			<td>
+				Recherches
+			</td>
+			<td>
+				USER
+			</td>
+			<td>
+				
+			</td>
+		</tr>
+
+	</thead>
+	<tbody>
+		{% for i in refserver %}
+		<tr style="background: #fdd2a6">
+			<td>
+				{{i.3}}
+			</td>
+			<td>
+				{{i.1}}
+			</td>
+			<td>
+				{{i.2}}
+			</td>
+			<td>
+				{{i.0}}
+			</td>
+			<td> <button class="btn btn-danger" onclick="deletsearchedref(event, '{{i.4}}')">X</button> </td>
+		</tr>
+		{% endfor %}
+		{% for i in refs %}
+		<tr>
+			<td>
+				{{i.lastdate|date:'d/m/Y'}}
+			</td>
+			<td>
+				{{i.ref}}
+			</td>
+			<td>
+				{{i.times}}
+			</td>
+			<td>
+				{{i.user.client.name}}{{i.user.represent.name}}
+			</td>
+			<td> <button class="btn btn-danger" onclick="deletsearchedref(event, '{{i.id}}')">X</button> </td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<script>
+	function deletsearchedref(event, refid){
+		$.get('/products/deletsearchedref', {
+			'refid':refid
+		}, (data)=>{
+			$(event.target).parent().parent().remove()
+		})
+	}

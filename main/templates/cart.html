@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+<div class="block">
+    <div class="container">
+      <div class="cart">
+
+        <div class="cart__table cart-table position-relative" style="height: 80vh; overflow: scroll;">
+          <div class="loadingcartitems d-flex flex-column align-items-center justify-content-center w-100 h-100 top-0 bg-dark200" style="background:#00000047; z-index:1199; position: absolute;">
+            <div class="spinner-border text-light"></div>
+        </div>
+
+          <table class="table table-bordered table-responsive">
+            <thead style="position: sticky;top: 0; background: #80808052;">
+              <tr class="">
+                <th style="width: 11%">Image</th>
+                <th class="" style="width: 50%;">Article</th>
+                <th class="">Prix</th>
+                <th class="">Remise</th>
+                <th class="">Quantité</th>
+                <th class="">Note</th>
+                <th class=""></th>
+              </tr>
+            </thead>
+            <tbody class="cartbody">
+
+            </tbody>
+
+          </table>
+
+        </div>
+      </div>
+
+      <p hidden class="total text-success"></p>
+  <!--<button class="btn btn-primary valider w-100" style="position: fixed; bottom: 0;" disabled>
+        valider le panier
+        </button>-->
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+
+</script>
+<script src="{% static 'js/catalog.js'%}"></script>
+<script src="{% static 'js/cart.js'%}"></script>
+<script>
+  function updatecartitem(event, cartitemid, productid, cartid){
+    $.get('/updatecartitem', {'cartitemid':cartitemid, qty:$(event.target).val(), productid:productid, cartid:cartid}, (data)=>{
+        location.reload()
+    })
+  }
+  function updaterepcartitem(event, cartitemid, productid, cartid){
+    $.get('/updaterepcartitem', {'cartitemid':cartitemid, qty:$(event.target).val(), productid:productid, cartid:cartid}, (data)=>{
+        location.reload()
+    })
+  }
+  function cancelrepproduct(event, id, repcartid, repitemid){
+    alertify.confirm('Supprimer?', function(){
+      $.get('/removeitemfromrepcart', {'productid':id, 'repcartid':repcartid, 'repitemid':repitemid}, (data)=>{
+        $('.commanditems').html(parseInt($('.commanditems').html())-1)
+      })
+      $(event.target).parent().parent().remove();
+      //updatetotal()
+      // remove from local storage
+      //products=JSON.parse(localStorage.getItem('products'))
+      // using splice
+      //let dx=products.indexOf(id)
+      //console.log(dx)
+      //products.splice(dx, 1)
+      //localStorage.setItem('products', JSON.stringify(products))
+      // remove from local storage
+      //productsdetails=JSON.parse(localStorage.getItem('productsdetails'))
+      //productsdetails.splice(dx, 1)
+      //localStorage.setItem('productsdetails', JSON.stringify(productsdetails))
+      //$('.commanditems').text(products.length)
+      // check if cart is empty
+      //if (products.length==0){
+      //    $('.valider').prop('disabled', true)
+      //}
+    })
+  }
+
+  $(document).ready(function () {
+
+    // edited (seperate carts)
+    {% if request.user.groups.all.0.name == 'clients' %}
+      $.get('/getitemsincart',
+        {
+          'userid': "{{request.user.id}}"
+        },
+        (data)=>{
+        for (i of data.items){
+          $('.cartbody').append(`
+
+            <tr>
+
+            <td class="">
+              <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
+            </td>
+            <td class="">
+              ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
+            </td>
+            <td class="" data-title="Price">
+            <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
+            </td>
+            <td>${i.remise}%</td>
+            <td class=" qtyholder" data-title="Quantity">
+              <input value="${i.qty}" onchange="updatecartitem(event, ${i.cartitemid}, ${i.id}, ${i.cartid})">
+
+            </td>
+
+            <td>
+              <button class="btn btn-danger" onclick="cancelproduct(event, ${i.id})">
+                X
+              </button>
+            </td>
+            <td><div class="status ${i.status}"></div></td>
+            </tr>
+            `)
+        }
+        $('.loadingcartitems').addClass('d-none')
+
+      })
+    {% elif request.user.groups.all.0.name == 'salsemen' %}
+    console.log('get items for rep')
+    let clientid=$('.clientidholder').attr('clientid')
+    if (clientid==''){
+      $('.commanditems').text('!')
+    }else{
+      $.get('/getitemsinrepcart', {"clientid":clientid}, (data)=>{
+          console.log('data of repcart', data)
+          $('tbody').html('')
+          $('.commanditems').text(data.length)
+          for (i of data.items){
+            $('.cartbody').append(`
+
+              <tr>
+
+              <td class="">
+                <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
+              </td>
+              <td class="">
+                ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
+              </td>
+              <td class="" data-title="Price">
+              <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
+              </td>
+              <td>${i.remise}%</td>
+              <td class=" qtyholder" data-title="Quantity">
+                <input value="${i.qty}" onchange="updaterepcartitem(event, ${i.cartitemid}, ${i.id}, ${i.cartid})">
+
+              </td>
+
+              <td>
+                <button class="btn btn-danger" onclick="cancelrepproduct(event, ${i.id}, ${i.cartid}, ${i.cartitemid})">
+                  X
+                </button>
+              </td>
+              <td><div class="status ${i.status}"></div></td>
+              </tr>
+              `)
+          }
+          $('.loadingcartitems').addClass('d-none')
+      })
+    }
+    {% endif %}
+    // cart delete item
+
+    $('.cart-table__remove').click(function () {
+      if (confirm("Supprimer l'article ?")){
+        $(this).closest('tr').remove();
+        updatetotal()
+        // remove from local storage
+        products=JSON.parse(localStorage.getItem('products'))
+        id=$(this).attr('id')
+        // using splice
+        let dx=products.indexOf(id)
+        console.log(dx)
+        products.splice(dx, 1)
+        localStorage.setItem('products', JSON.stringify(products))
+        // remove from local storage
+        productsdetails=JSON.parse(localStorage.getItem('productsdetails'))
+        productsdetails.splice(dx, 1)
+        localStorage.setItem('productsdetails', JSON.stringify(productsdetails))
+        $('.commanditems').text(products.length)
+        // check if cart is empty
+        if (products.length==0){
+            $('.valider').prop('disabled', true)
+        }
+
+
+      }
+    });
+
+    // handle 5% rem
+    $('[name="modpymnt"]').on('change', ()=>{
+        if($('[name="modpymnt"]').val()=='espece'){
+          // $('.priceholder').each((i, el)=>{
+          //   $(el).text((parseFloat($(el).text())*0.95).toFixed(2))
+          // })
+          // $('.subtotal').each((i, el)=>{
+          //   // animate the update of the total
+          //   price=parseFloat($(el).parent().parent().find('.priceholder').text())
+          //   qty=parseFloat($(el).parent().find('.qty').val())
+          //   $(el).text(parseFloat(price*qty).toFixed(2))
+
+
+          // })
+          // updatetotal()
+          let total=parseFloat($('.total').text())
+          let remiseamount=total*0.05
+          let afterremise=total-remiseamount
+          $('.totalremise').text(afterremise.toFixed(2))
+        }
+        else{
+
+          $('.remise').addClass('d-none')
+          // $("input[name=qtytosub]").each((i, el)=>{
+
+          //       v=$(el).val()
+          //       subt=$(el).attr('price')*v
+          //       // find the subtotal cell
+          //       subholder=$(el).parent().parent().parent().find('.subtotal')
+          //       subholder.text(subt.toFixed(2))
+          //     })
+          //     $('.priceholder').each((i, el)=>{
+          //       $(el).text($(el).attr('price'))
+          //     })
+          //     updatetotal()
+        }
+
+    })
+  });
+</script>
+{% endblock %}

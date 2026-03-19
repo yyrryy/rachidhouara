@@ -1,0 +1,74 @@
+{% load global_tags %}
+{% for order in bons %}
+<tr class="ord bl-row " orderid="{{order.code}}" ondblclick="ajaxpage('bons{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/bonsortiedetails/{{order.id}}')" style="background:" >
+  <td >
+    <input type="checkbox" class="checkbon" onchange="addtoprint('{{order.id}}', '{{order.bon_no}}')">
+    {{ order.bon_no }}
+  </td>
+  <td >{{ order.date|date:'d/m/Y' }}</td>
+  <td >{{ order.client.name }}</td>
+  <td >{{ order.client.code }}</td>
+  <td style="color: blue;">{{ order.total|floatformat:'2'|intspace}}
+  </td>
+  
+  <td class="">
+    {% if order.ispaid %}
+    <div  style="text-align: center; background: lightgreen;">
+      Encaissé
+    </div>
+    
+    {% elif order.hasavance %}
+    <div class="" style="text-align: center; background: rgb(255, 196, 0);">
+      Avance
+    </div>
+    {% else %}
+    <div class="" style="text-align: center; background: yellow;">
+      En attend
+    </div>
+
+      <!-- <div class="" style="text-align: center; background: yellow;">
+        En attend
+      </div> -->
+      
+
+    {% endif %}
+  </td>
+
+  <td class="">
+    {% if order.generated %}
+    <div  style="text-align: center; background: lightgreen;">
+      Valider
+    </div>
+    
+
+    {% else %}
+
+      <div class="" style="text-align: center; background: yellow;">
+        No valider
+      </div>
+      
+
+    {% endif %}
+  </td>
+  
+  <td>
+    {% if order.note %} {{order.note}}-{{order.car}} {% endif %}
+  </td>
+  <td>
+    {% if order.user %} {{order.user.username}} {% endif %}
+  </td>
+  <td class="d-flex">
+    <button class="btn btn-sm bi bi-eye" onclick="viewbonsortie('{{order.id}}')"></button>
+    {% if request.user.is_superuser %}
+      <button class="btn btn-sm bi bi-pen" onclick="ajaxpage('ee', 'rr', '/products/modifierbonsortie?id={{order.id}}')"></button>
+      {% else %}
+      {% if not order.generated and not order.ispaid %}
+      <button class="btn btn-sm bi bi-pen" onclick="ajaxpage('ee', 'rr', '/products/modifierbonsortie?id={{order.id}}')"></button>
+      {%endif%}
+    {%endif%}
+    <button class="btn btn-sm bi bi-download" onclick="printsortie2('{{order.id}}')">A5</button>
+    <button class="btn btn-sm bi bi-download" onclick="printsortieA6('{{order.id}}')">A6</button>
+  </td>
+
+</tr>
+{% endfor %}

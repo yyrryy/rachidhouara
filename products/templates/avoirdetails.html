@@ -1,0 +1,346 @@
+<div class="d-flex justify-content-between mb-5" style="position: sticky;top: 0; background: white;z-index: 999;">
+  <button class="bi bi-arrow-left" onclick="ajaxpage('addrecevoir', '+Achat', '/products/listavoirclient?target={{target}}')">LIST AVOIR CLIENTS</button>
+  <button class="btn btn-success" onclick="printavoir('{{avoir.id}}')">
+    Telecharger
+  </button>
+  <div>
+    <input {% if avoir.note %}value="{{avoir.note}}"{%endif%} placeholder="Note">
+    <button class="btn btn-info" onclick="updateavoirnote(event, '{{avoir.id}}')">+
+    </button>
+  </div>
+  
+  <button 
+  {% if avoir.ispaid or avoir.inreglement%}disabled{% endif %}
+  class="btn btn-danger" onclick="ajaxpage('addmodifieravoir{{avoir.id}}', 'Modifier avoir {{avoir.no}}', '/products/modifieravoir/{{avoir.id}}?target={{target}}')">
+    Modifier
+  </button>
+  
+  {% if reglement %}
+  <div class="accordion col-6" id="accordionreglbl">
+    <div class="">
+
+        <button class="btn btn-success w-100 border" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
+        >
+            Reglement
+        </button>
+
+        <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
+        <div class="card-body border shadow rounded">
+          <table class="table table-bordered">
+            <tr>
+              <td>
+                Serie
+              </td>
+              <td>
+                Mantant
+              </td>
+              <td>
+                mode
+              </td>
+              <td>
+                N° piece
+              </td>
+              <td>
+                Echeance
+              </td>
+            </tr>
+            {% for i in reglement %}
+            <tr>
+              <td>
+                #REGLFRN{{i.id}}
+              </td>
+              <td>
+                {{i.amount}}
+              </td>
+              <td>
+                {{i.mode}}
+              </td>
+              <td>
+                {{i.npiece}}
+              </td>
+              <td>
+                {{i.echeance}}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+            </div>
+        </div>
+        </div>
+  </div>
+  {% endif %}
+</div>
+<div id="printav{{avoir.id}}" style="position:relative;">
+  {% for i in orderitems %}
+  {% if forloop.counter == orderitems|length %}
+  <!-- last iteration -->
+  <div class="postion-relative p-2 avoir{{avoir.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+
+
+    <!-- avoir header -->
+    <div class="">
+      <img src="" alt="" style="width: 40%;" >
+        <div class="d-flex justify-content-between mt-5">
+          <div>
+            <h5 style="
+              border: 3px solid;
+              padding: 8px;
+              box-shadow: 4px 3px black;
+              border-radius: 12px;
+              width: 9em;
+              "
+              >avoir N°: <strong>{{avoir.no}}</strong></h5><br>
+              <h5 style="
+              border: 1px solid;
+              border-radius: 10px;
+              padding: 8px;
+          ">Date: <strong>{{avoir.date|date:"d/m/Y"}}</strong></h5>
+          </div>
+          <div style="width: 22em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <h5>Client: <strong>{{avoir.client.name.upper}}</strong></h5>
+            <p>
+              ICE: {{avoir.client.ice}} <br> Adresse: {{avoir.client.address}} <br>Ville: {{avoir.client.city}}
+            </p>
+          </div>
+        </div>
+
+
+    </div>
+
+    <!-- avoir items -->
+    <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+      <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+      <table class="table table-bordered avitems" style="font-size: 13px; border-color: black;">
+        <thead style="background: #c9c9c9;" class="text-center">
+          <tr>
+            <td style="width: 13%;">Ref</td>
+            <td>Designation</td>
+            <td style="width: 6%;">Qté</td>
+            <td style="width: 7%;">P.U</td>
+            <td style="width: 5%;">Rem</td>
+            <td style="width: 9%;">Mantant</td>
+          </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td style="height: 170mm;">
+                      {% for v in i %}
+                      {{v.product.ref.upper}}
+                      <br>
+                      {% endfor %}
+                    </td>
+                    <td style="white-space: nowrap;">
+                      {% for v in i %}
+                        {{v.product.name.upper}}
+                        <br>
+                      {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.quantity}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.price|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.remise1}}%
+                    <br>
+                    {% endfor %}
+                  </td>
+                  <td class="text-center">
+                    {% for v in i %}
+                    {{v.total|floatformat:2}}
+                    <br>
+                    {% endfor %}
+                  </td>
+
+                </tr>
+        </tbody>
+
+      </table>
+
+      <div
+        style="width: 8em;
+        float: right;">
+          <div class="text-center d-flex justify-content-between" style="background: #aeaeae8c;
+          font-size: 13px;">
+            <div>Total</div>
+            <div style="font-size: 16px;">
+              <strong>
+                {{avoir.total|floatformat:2}}
+              </strong>
+            </div>
+          </div>
+
+
+        </div>
+        <!--<div class="text-center" style="font-size: 13px">
+
+          adress <br>
+          IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
+          Fixe: +212 500000000 - Tel: 06 0000
+        </div>-->
+    </div>
+
+
+  </div>
+  {% else %}
+  <div class="postion-relative p-2 avoir{{avoir.id}}holder p-3" style="min-height: 29.7cm;width: 21cm;">
+
+    <!-- avoir header -->
+    <div class="">
+      <img src="" alt="" style="width: 40%;" >
+        <div class="d-flex justify-content-between mt-5">
+          <div>
+            <h5 style="
+              border: 3px solid;
+              padding: 8px;
+              box-shadow: 4px 3px black;
+              border-radius: 12px;
+              width: 9em;
+              "
+              >avoir N°: <strong>{{avoir.no}}</strong></h5><br>
+              <h5 style="
+              border: 1px solid;
+              border-radius: 10px;
+              padding: 8px;
+          ">Date: <strong></strong></h5>
+          </div>
+          <div style="width: 22em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <h5>Client: {{avoir.client.name.upper}}</h5>
+            <p>
+              ICE: {{avoir.client.ice}} <br> Adresse: {{avoir.client.address}} <br>Ville: {{avoir.client.city}}
+            </p>
+          </div>
+        </div>
+
+
+    </div>
+
+    <!-- avoir items -->
+    <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+      <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+      <table class="table table-bordered avitems" style="font-size: 13px; font-family: serif; border-color: black;">
+        <thead style="background: #c9c9c9;" class="text-center">
+          <tr>
+            <td style="width: 13%;">Ref</td>
+            <td>Designation</td>
+            <td style="width: 5%;">Qté</td>
+            <td style="width: 7%;">P.U</td>
+            <td style="width: 5%;">Rem</td>
+            <td style="width: 9%;">Mantant</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="height: 170mm;">
+              {% for v in i %}
+              {{v.product.ref.upper}}
+              <br>
+              {% endfor %}
+            </td>
+            <td style="white-space: nowrap;">
+              {% for v in i %}
+                {{v.product.name.upper}}
+                <br>
+              {% endfor %}
+          </td>
+          <td class="text-center">
+            {% for v in i %}
+            {{v.quantity}}
+            <br>
+            {% endfor %}
+          </td>
+          <td class="text-center">
+            {% for v in i %}
+            {{v.price|floatformat:2}}
+            <br>
+            {% endfor %}
+          </td>
+          <td class="text-center">
+            {% for v in i %}
+            {{v.remise1}}%
+            <br>
+            {% endfor %}
+          </td>
+          <td class="text-center">
+            {% for v in i %}
+            {{v.total|floatformat:2}}
+            <br>
+            {% endfor %}
+          </td>
+
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- avoir footer -->
+
+    <!--<div class="text-center" style="font-size: 13px">
+
+          adress <br>
+          IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
+          Fixe: +212 500000000 - Tel: 06 0000
+        </div>-->
+
+  </div>
+  {% endif %}
+  {% endfor %}
+
+</div>
+
+
+<script>
+  function updateavoirnote(event, avoirid){
+    note=$(event.target).parent().find('input').val()
+    console.log({
+      'avoirid':avoirid,
+      'note':note
+    })
+    $.get('/products/updateavoirnote', {
+      'avoirid':avoirid,
+      'note':note
+    }, (data)=>{
+      updatetab('avoir{{avoir.id}}', '/products/avoirdetails/{{avoir.id}}')
+    })
+  }
+  function Printavoir(divName){
+    $('.avoir{{avoir.id}}holder').addClass('d-flex flex-column')
+         var printContents = document.getElementById(divName).innerHTML;
+         var originalContents = document.body.innerHTML;
+         document.body.innerHTML = printContents;
+        //  $('.bgavoir').css({
+        //   "position": "absolute !important",
+        //   "right": "26em",
+        //   "opacity": "0.18",
+        //   "top": "23em",
+        //  })
+        // $('body').addClass('d-flex flex-column vh-100')
+         //$('.avitems').css({'font-size': '19px','font-family':'serif'})
+         $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+         $("table > thead").css('background','#c9c9c9');
+         window.print();
+         document.body.innerHTML = originalContents;
+        //  $('body').removeClass('d-flex flex-column vh-100 p-3')
+         $('body').css('font-size', '')
+    }
+  </script>

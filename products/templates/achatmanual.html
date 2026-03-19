@@ -1,0 +1,583 @@
+<html>
+  <head>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/jquerySpellingNumber.js"></script>
+    <link href="/static/css/minified.css" rel="stylesheet" />
+    <script src="/static/js/chart.js"></script>
+    <script src="/static/js/xlsx.full.min.js"></script>
+  </head>
+  <body style="background: #e3e3e3; font-family: monospace;" class="container">
+    <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+        <div>
+          Achat Manuel
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+           <div class="bg-white rounded shadow p-2 databonachat">
+             <strong class="text-danger error"></strong><br>
+              <select name="supplier" id="" class="supplierid form-control notempty select2" style="width:100%;">
+                <option value="">--</option>
+                {% for i in suppliers %}
+                <option value="{{i.id}}">{{i.name}}</option>
+                {% endfor %}
+              </select>
+              <input name="nbonachat" class="form-control notempty mt-2 nbonachat" style="width:100%;" placeholder="N° FACTURE">
+              <small class="mt-5">Date de Reception</small>
+              <input type="date" name="datebonachat" class="form-control notempty datebonachat" value="{{today|date:'Y-m-d'}}">
+              <small class="mt-5">Date Facture</small>
+              <input type="date" name="datefacture" class="form-control notempty datefacture" value="">
+              <small class="mt-5">Total Facture</small>
+              <input type="number" name="totalfacture" class="form-control notempty totalfacture" placeholder="Total Facture">
+              <small class="mt-5">Tva Facture</small>
+              <input type="number" name="tvafacture" class="form-control notempty tvafacture" placeholder="Tva facture">
+              <button class="btn btn-primary w-100" onclick="createbonmanual(event)">Creer</button>
+
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="bg-white rounded shadow p-2 data position-relative">
+              <input type="text" class="bonid form-control" placeholder="Bon ID" readonly>
+              <input type="file" class="excelfile form-control mt-3 d-none" onchange="handleFile(event)" placeholder="Excel">
+              <div class="mt-5 errorrefs">
+
+              </div>
+              <table class="table mt-5 table bordered">
+                <tr>
+                  <td>ref</td>
+                  <td>qty</td>
+                  <td>remise</td>
+                  <td>total</td>
+                </tr>
+              </table>
+
+                <!-- <div class="loadingscreen w-100 h-100 d-none" style="position:absolute;top:0;left:0;background:#00000063;z-index:9999;">
+
+                </div> -->
+                <!-- <div class="d-flex justify-content-between">
+                    <div class="mb-3 col-7 ">
+                        <select class="w-100 form-select resultsholderbonachat mb-2" id="my-select" style="width:100%;">
+
+                        </select>
+                        <div class="row">
+                            <div class="col-3" hidden>
+                                <input type="number" class="form-control" placeholder="Devise" name="adddevise" value="0">
+
+                              </div>
+                              <div class="col-3">
+                                <input type="number" class="form-control" placeholder="Quantité" name="addqty">
+                                <div class="addstock text-danger"></div>
+                              </div>
+                              <div class="col-3">
+                                <input type="number" class="form-control" placeholder="Prix" name="addprice">
+                                <div class="addlastbuyprice text-danger"></div>
+                              </div>
+
+                              <div class="col-12">
+                                <input hidden readonly type="text" name="addname" class="form-control">
+                              </div>
+                        </div>
+                    </div>
+
+                </div> -->
+
+              <!-- <table class="table table-bordered" style="font-size: 12px;">
+                <thead style="background: rgb(254, 196, 144);">
+                    <tr class="p-0">
+                        <td style="width: 5%;">REF</td>
+                        <td style=" width: 65%;" >Article</td>
+                        <td hidden style="width: 5%;">Dernier P.</td>
+                        <td hidden style="width: 5%;">Stock</td>
+                        <td hidden style="width: 5%;">Devise</td>
+                        <td style=" width: 5%;">Quantité</td>
+                        <td style=" width: 5%;">Prix</td>
+                        <td style=" width: 5%;">Remise</td>
+                        <td style=" width: 5%;">Total</td>
+                    </tr>
+                </thead>
+                <tbody class="bonachatbody">
+
+                </tbody>
+              </table>
+              <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
+                  <button class="btn btn-success submitbon">
+                        Valider
+                  </button>
+                  <b class="grandtotalbonachat text-danger totalbon">
+                    0.00
+                  </b>
+              </div> -->
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.select2').select2()
+    function matchData(excelData) {
+      data=[]
+        excelData.forEach(function(row) {
+          //1ref 2qty, 3pr, 4remise, 5total
+          p={
+
+          }
+
+        })
+
+        console.log(totalfacture)
+    }
+    function createbonmanual(event){
+      // Get all input elements with class 'notempty'
+      const emptyFields = document.querySelectorAll('.notempty');
+
+      // Loop through each field to check if it's empty
+      for (let field of emptyFields) {
+          if (field.value.trim() === '') {
+              // Alert or display a message to the user
+              field.focus();
+              field.classList.add('border-danger') // Optionally focus the first empty field
+              return; // Exit the function if an empty field is found
+          }
+      }
+      console.log('>> adding disab')
+      $(event.target).addClass('disabled')
+      supplierid=$('.supplierid').val()
+      $('.excelfile').removeClass('d-none')
+      nbonachat=$('.nbonachat').val()
+      datebonachat=$('.datebonachat').val()
+      datefacture=$('.datefacture').val()
+      totalfacture=$('.totalfacture').val()
+      tvafacture=$('.tvafacture').val()
+      $.get('/products/createbonmanual', {
+        'supplierid':supplierid,
+        'nbonachat':nbonachat,
+        'datebonachat':datebonachat,
+        'datefacture':datefacture,
+        'totalfacture':totalfacture,
+        'tvafacture':tvafacture,
+      }, (data)=>{
+        if (data.success){
+          $('.error').text('')
+          $('.bonid').val(data.bonid)
+        }else{
+          $('.error').text(data.error)
+        }
+
+      })
+    }
+
+    function handleFile(e) {
+        const emptyFields = document.querySelectorAll('.notempty');
+
+        // Loop through each field to check if it's empty
+        for (let field of emptyFields) {
+            if (field.value.trim() === '') {
+                // Alert or display a message to the user
+                field.focus();
+                field.classList.add('border-danger') // Optionally focus the first empty field
+                return; // Exit the function if an empty field is found
+            }
+        }
+        if ($('.bonid').val()==""){
+          $('.bonid').addClass('border-danger')
+          alertify.error('Bon id')
+          return
+        }
+        $('.bonid').removeClass('border-danger')
+        excelfile=$('.excelfile')
+        // send excel file data in a ajax request
+        let formData = new FormData();
+
+        // Append the Excel file to the FormData object
+        formData.append('excelFile', excelfile[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        formData.append('bonid', $('.bonid').val());
+        formData.append('supplierid', $('.supplierid').val());
+        formData.append('datebonachat', $('.datebonachat').val());
+        $('.errorrefs').text('')
+        $.ajax({
+          url: '/products/excelachatmanual', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(data) {
+            if(data.success){
+              location.reload()
+            }else{
+              $('.errorrefs').text(data.error)
+            }
+          }
+        })
+    }
+      const calculate=(e)=>{
+        let target = $(e.target)
+        parentdiv=target.parent().parent().parent().parent().parent()
+        console.log('parentdiv in calculate',parentdiv)
+        let tr = target.parent().parent()
+        let qty = tr.find('.qty').val()
+        let price = tr.find('.price').val()
+        let remise = tr.find('.remise').val()
+        // net price will be prix achat
+        let netprice=price-(price*remise/100)
+
+        let total = tr.find('.total')
+        // update also net in tr row if it's in row
+        let net = tr.find('.netprice')
+        if (net.length){
+          net.text(netprice.toFixed(2))
+        }
+        let totalvalue=(netprice*qty).toFixed(2)
+        total.html(totalvalue)
+
+        totals=parentdiv.find('.total')
+        // let totalbon = parseFloat($('.totalbon').text())
+        // totalbonvalue = totalbon+totalvalue
+        // console.log(totalbon, totalvalue )
+        // $('.totalbon').html(totalbonvalue)
+        var totalSum = 0;
+        totals.each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        grandtotal=parentdiv.find('.totalbon')
+        console.log('parentdiv', parentdiv)
+        grandtotal.text(totalSum.toFixed(2))
+        // let totalbonvalue = 0
+        // $('.total').each(function(){
+        //   totalbonvalue += parseFloat($(this).html())
+        // })
+        // totalbon.html(totalbonvalue)
+    }
+
+        function removelineba(event, id) {
+              let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+              clicksinba++;
+
+              if (clicksinba === requiredClicks) {
+                  // User has clicked the element four times consecutively
+                  // Add your code to run when there are four consecutive clicks here
+                  alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+                    console.log('delete'),
+                    // remove element
+                    $(event.target).parent().remove()
+                    // remove id from localstorage
+
+                    pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat'))
+                    pdcts.splice(pdcts.indexOf(id.toString()), 1)
+                    localStorage.setItem('pdctsinbonachat', JSON.stringify(pdcts))
+                    // update total
+                    let totalbon = parseFloat(parentdiv.find('.totalbon').text())
+                    let totalrow = parseFloat($(event.target).parent().find('.total').text())
+                    let totalbonvalue = (totalbon-totalrow).toFixed(2)
+                    parentdiv.find('.totalbon').html(totalbonvalue)
+                    // Reset the count
+                    clicksinba = 0;
+
+                  }
+                    , function(){ alertify.error('Cancel')});
+                  // Reset the count
+                  clicksinba = 0;
+              }
+          }
+
+        function addrowbonachat(event){
+          let target=$(event.target)
+          parentdiv=target.parent().parent().parent().parent().parent()
+          // this reset the select2 value
+          // parentdiv.find('.resultsholderbonachat').val('').trigger('change')
+          // ids of products in bon stored in localstorage
+          let bonachatbody = parentdiv.find('.bonachatbody')
+          let addname=parentdiv.find('[name="addname"]')
+          let adddevise=parentdiv.find('[name="adddevise"]')
+          let addqty=parentdiv.find('[name="addqty"]')
+          let addprice=parentdiv.find('[name="addprice"]')
+          let addremise=parentdiv.find('[name="addremise"]')
+
+          if (addqty.val()=='' || addprice.val()==''){
+            alertify.error('Veuillez remplir Qty ou prix')
+            return
+          }
+          var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
+          pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat')) || []
+
+          console.log(id, pdcts, pdcts.includes(id))
+          if (pdcts.includes(id)){
+            addqty.val('')
+            addname.val('')
+            addremise.val('')
+            addprice.val('')
+            //adddevise.val('')
+            alertify.error('Ce produit est deja dans le bon')
+            return
+          }
+          console.log(addqty.val(), stock)
+
+
+          pdcts.push(id)
+          localStorage.setItem('pdctsinbonachat', JSON.stringify(pdcts))
+          let netp=(addprice.val()-(addprice.val()*addremise.val()/100)).toFixed(2)
+          let addtotal=addqty.val()*netp
+          let tr = `
+          <tr class="itemrow">
+              <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelineba(event, id)">${ref}</td>
+              <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
+              <td hidden style="paddingpx 0; font-size: 13px;">${dp}</td>
+              <td hidden style="padding: 2px 0; font-size: 13px;">${stock}</td>
+              <td hidden style="padding: 2px 0; font-size: 13px;" class="clientprice"><input class="devise" value="${adddevise.val()}" style="width:65px;"></td>
+              <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notempty" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:65px;"></td>
+              <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notempty" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:65px;"></td>
+              <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:65px;"></td>
+              <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
+              <input type="hidden" name="productid" value="${id}">
+
+          </tr>
+          `
+
+          bonachatbody.prepend(tr)
+          // delete selected option
+          addqty.val('')
+          addname.val('')
+          addremise.val('')
+          addprice.val('')
+          //adddevise.val('')
+          totals=parentdiv.find('.total')
+          totalbon=parentdiv.find('.totalbon')
+          console.log('totalsn totalbon',totals, totalbon)
+          var totalSum = 0;
+          totals.each(function() {
+              totalSum += parseFloat($(this).text());
+          });
+          totalbon.text(totalSum.toFixed(2))
+          // parentdiv.find('.resultsholderbonachat').val('').trigger('change')
+
+          // let selected = $('.resultsholderbonachat').find(':selected')
+          // selected.remove()
+
+        }
+
+        localStorage.removeItem('pdctsinbonachat')
+        $('.resultsholderbonachat').on('change', function(){
+              let parentdiv=$(this).parent().parent()
+
+            if ($(this).val()==''){
+                return
+            }
+            var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+            let repswithprice=[]
+            let addname=parentdiv.find('input[name="addname"]')
+            // let addprice=parentdiv.find('input[name="addprice"]')
+            // let addremise=parentdiv.find('input[name="addremise"]')
+            // let addqty=parentdiv.find('input[name="addqty"]')
+            //parentdiv.find('.addstock').text('Stock: '+stock)
+            // addqty.val('')
+            // addremise.val(remise)
+            addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
+            //parentdiv.find('.addlastbuyprice').text('Dernier pr.ach. '+dp)
+
+            // let selected = $(this).find(':selected')
+            // selected.remove()
+            // delect selected option
+        })
+
+        // $('.resultsholder').on('change', function(){
+        //     console.log($(this).val().split('§'))
+        //     if ($(this).val()==''){
+        //         return
+        //     }
+        //     var [ref, name, dp, stock, id] = $(this).val().split('§');
+        //     let bonachatbody = $('.bonachatbody')
+        //     let tr = `
+        //     <tr>
+        //         <td class="refbonachat">${ref}</td>
+        //         <td class="namebonachat">${name}</td>
+        //         <td>${dp}</td>
+        //         <td>${stock}</td>
+        //         <td><input style="width:65px;" type="number" class="devise"></td>
+        //         <td><input style="width:65px;" type="number" class="calculatebonachat qtybonachat" onkeyup="calculatebonachat(event)" name="qtybonachat"></td>
+        //         <td><input style="width:65px;" type="number" class="calculatebonachat pricebonachat" onkeyup="calculatebonachat(event)" name="pricebonachat"></td>
+        //         <td><input style="width:65px;" type="number" class="calculatebonachat remisebonachat" onkeyup="calculatebonachat(event)" name="remisebonachat"></td>
+        //         <td class="totalbonachat">0.00</td>
+        //         <input type="hidden" name="productidbonachat" value="${id}">
+        //     </tr>
+        //     `
+        //     bonachatbody.prepend(tr)
+        //     // delect selected option
+        // })
+
+        $('.submitbon').on('click', (e)=>{
+            let parentdiv=$(e.target).parent().parent().parent().parent()
+            e.preventDefault()
+            if (parentdiv.find('.supplierselect').val()=='' || parentdiv.find('.nbonachat').val()=='' || parentdiv.find('.datebonachat').val()==''|| parentdiv.find('.mode').val()==""|| parentdiv.find('.datefacture').val()==""){
+                parentdiv.find('.databonachat').css('border', '3px solid red')
+                alertify.error('Veuillez remplir tous les champs obligatoires')
+                return
+            }
+            parentdiv.find('.databonachat').css('border', 'none')
+            // empty table
+            if (parentdiv.find('.bonachatbody tr').length==0 ){
+                parentdiv.find('.data').css('border', '3px solid red')
+                return
+            }
+            parentdiv.find('.data').css('border', 'none')
+            var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
+            if (isAnyEmpty){
+                let emptyInputs = parentdiv.find('.notempty').filter(function() {
+                    return !this.value.trim();
+                });
+
+                // Add a red border to all empty input elements
+                alertify.error('Veuillez remplir tous les champs obligatoires')
+                emptyInputs.css('border', '2px solid red');
+                parentdiv.find('input.notempty').not(emptyInputs).css('border', '');
+                return
+            }
+
+            parentdiv.find('.submitbtn').addClass('disabled')
+            trs=parentdiv.find('.bonachatbody tr')
+            let products = []
+            trs.each(function(){
+                let tr = $(this)
+                let qty = tr.find('.qty').val()
+                let name = tr.find('.name').text()
+                let total = tr.find('.total').text()
+                let ref = tr.find('.ref').text()
+                let devise = tr.find('.devise').val()
+                let price = tr.find('.price').val()
+                let remise = tr.find('.remise').val()
+                let productid = tr.find('input[name="productid"]').val()
+                let product = {
+                    'qty': qty,
+                    'name': name,
+                    'ref': ref,
+                    'price': price,
+                    'remise': remise,
+                    'productid': productid,
+                    'total': total,
+                    'devise':devise
+                }
+                products.push(product)
+            })
+            let supplierid = parentdiv.find('.supplierselect').val()
+            let nbon = parentdiv.find('.nbonachat').val()
+            let datebon = parentdiv.find('.datebonachat').val()
+            let datefacture = parentdiv.find('.datefacture').val()
+            let mode = parentdiv.find('.mode').val()
+            let totalbon=parseFloat(parentdiv.find('.grandtotalbonachat').text())
+            $('.loadingscreen').removeClass('d-none')
+            // $.ajax({
+            //     url: "{% url 'products:addsupply' %}",
+            //     type: 'POST',
+            //     data: {
+            //
+            //         'totalbon': totalbon,
+            //         'supplierid': supplierid,
+            //         'nbon': nbon,
+            //         'datebon': datebon,
+            //         'datefacture': datefacture,
+            //         'products': JSON.stringify(products),
+            //         'csrfmiddlewaretoken': '{{csrf_token}}',
+            //     },
+            //     success: function(data){
+            //         localStorage.removeItem('pdctsinbonachat')
+            //         $('.loadingscreen').addClass('d-none')
+                    // location.reload()
+            //         // $('.select2').select2()
+            //     }
+            // })
+            console.log(products)
+        })
+        // const selectElement = document.getElementById("my-select");
+
+        // selectElement.addEventListener("keydown", function(event) {
+        //     if (event.key === "Enter") {
+
+        //         var [ref, name, dp, stock, id] = selectElement.value.split('§');
+        //         let bonachatbody = $('.bonachatbody')
+        //         let tr = `
+        //         <tr>
+        //             <td class="ref">${ref}</td>
+        //             <td class="name">${name}</td>
+        //             <td>${dp}</td>
+        //             <td>${stock}</td>
+        //             <td>
+        //                 <select name"local" class="form-select local">
+        //                     <option value="principal">Principal</option>
+        //                     <option value="depot">Depot</option>
+        //                 </select>
+        //             </td>
+        //             <td><input type="number" class="form-control calculatebonachat qty" onkeyup="calculatebonachat(event)" name="qty"></td>
+        //             <td><input type="number" class="form-control calculatebonachat price" onkeyup="calculatebonachat(event)" name="price"></td>
+        //             <td><input type="number" class="form-control calculatebonachat remise" onkeyup="calculatebonachat(event)" name="remise"></td>
+        //             <td class="total"></td>
+        //             <input type="hidden" name="productid" value="${id}">
+        //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+        //         </tr>
+        //         `
+        //         bonachatbody.prepend(tr)
+        //         // delect selected option
+        //         selectElement.remove(selectElement.selectedIndex);
+        //     }
+        // });
+
+
+        // const addtobon=(e, ref, name, stock)=>{
+        //     let target = $(e.target)
+        //     console.log(target)
+        //     target.remove()
+        //     let bonachatbody = $('.bonachatbody')
+        //     let tr = `
+        //     <tr>
+        //         <td>${ref}</td>
+        //         <td>${name}</td>
+        //         <td>${stock}</td>
+
+        //         <td><input type="number" class="form-control calculatebonachat qty" onkeyup="calculatebonachat(event)" name="qty"></td>
+        //         <td><input type="number" class="form-control calculatebonachat price" onkeyup="calculatebonachat(event)" name="price"></td>
+        //         <td class="total"></td>
+        //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
+        //     </tr>
+        //     `
+        //     bonachatbody.append(tr)
+        // }
+
+        $(document).ready(function(){
+        $('.searchref').focus()
+        $('.searchref').on('keyup', ()=>{
+            let ref = $('.searchref').val()
+            if (ref.length>1){
+                $.ajax({
+                    url: "{% url 'products:searchref' %}",
+                    type: 'POST',
+                    data: {
+                        'ref': ref,
+                        'csrfmiddlewaretoken': '{{csrf_token}}'
+                    },
+                    success: function(data){
+                        console.log(data)
+                        $('.resultsholder').html(data.data)
+                    }
+                })
+            }else{
+                $('.resultsholder').html('')
+            }
+        })
+        // $('.supplierselect').on('change', ()=>{
+        //     let supplierid = $('.supplierselect').val()
+        //     $.ajax({
+        //         url: "{% url 'products:suppliercommanproducts' %}",
+        //         type: 'POST',
+        //         data: {
+        //             'supplierid': supplierid,
+        //             'csrfmiddlewaretoken': '{{csrf_token}}'
+        //         },
+        //         success: function(data){
+        //             console.log(data)
+        //         }
+        //     })
+        // })
+    // end of ready function
+    })
+    </script>
+  </body>
+</html>

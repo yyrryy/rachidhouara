@@ -1,0 +1,20 @@
+{% for i in products %}
+<tr class="journalventefc-row" year={{year}} term={{term}}>
+    <td>{{i.date|date:"d/m/Y"}}</td>
+    <td>{{i.facture.facture_no}}</td>
+    <td>{{i.product.ref}}</td>
+    <td>{{i.product.name}}</td>
+    <td>{{i.price}}</td>
+    <td class="prnetjvfc">{{i.product.prixnet}}</td>
+    <td style="color:blue" class="coutmoyenjvfc">{% if i.product.coutmoyen %} {{i.product.coutmoyen|floatformat:2}} {%else%}0{%endif%}</td>
+    <td class="text-danger prachatjvfc">{{i.product.buyprice|floatformat:2}}</td>
+    <td class="text-danger qtyjvfc">{{i.qty}}</td>
+    <td class="totalbonsjvfc">{{i.total}}</td>
+    <td class="totalmoyenjvfc"></td>
+    <td>{{i.facture.client.name}}</td>
+    <td>{{i.facture.client.code}}</td>
+    <td>{{i.facture.salseman.name}}</td>
+    <td class="text-success margejvfc">
+    </td>
+</tr>
+{% endfor %}

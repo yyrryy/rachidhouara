@@ -1,0 +1,34 @@
+{% load global_tags %}
+{% for i in tvas %}
+{% with i.month|split:'/' as s %}
+<tr monthid='{{s.0}}'>
+  <td>
+    <button class="btn btn-dark" onclick="gettvamonthinfo(event, '{{s.0}}')">
+      {{i.month}}
+    </button>
+  </td>
+  <td class="rest">{{i.rest|floatformat:2}}</td>
+  <td class="tvavente">{{i.tvavente|floatformat:2}}</td>
+  <td class="restandtva">{{i.restandtva|floatformat:2}}</td>
+  <td>
+    <input style="width:8em;" type="number" class="tvaachatinput" readonly value="{{i.tvaachat|floatformat:2}}">
+  </td>
+  <td>
+    <input style="width:8em; {% if i.othertvaachat < 0 %}background:#ffa6a6;{% endif %}"  type="number" class="othertvaachatinput" readonly value="{{i.othertvaachat|floatformat:2}}">
+  </td>
+  <td {% if i.net < 0 %} style="background:#ffa6a6;" {% endif %} class="net">{{i.net|floatformat:2}}</td>
+  <td>
+    <input style="width:8em;" type="number" class="report" value="{{i.report}}">
+  </td>
+
+  <td>
+    <input style="width:8em;" type="number" class="somme" onchange="somme(event)">
+  </td>
+  <td>
+    <button class="btn btn-info bi bi-check" onclick="savetva(event, '{{s.0}}')"></button>
+    <button class="btn btn-info bi bi-chevron-double-up" onclick="newlineup(event, '{{s.0}}')"></button>
+    <button class="btn btn-info bi bi-chevron-double-down" onclick="newlinedown(event, '{{s.0}}')"></button>
+  </td>
+</tr>
+{% endwith %}
+{% endfor %}
