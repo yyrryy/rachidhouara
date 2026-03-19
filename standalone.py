@@ -30,3 +30,4 @@ t2=Thread(target=lunchchrome)
 t1.start()
 sleep(2)
 t2.start()
+pause
