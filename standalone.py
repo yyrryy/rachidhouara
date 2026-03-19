@@ -30,4 +30,7 @@ t2=Thread(target=lunchchrome)
 t1.start()
 sleep(2)
 t2.start()
-pause
+
+#pause
+
+pause = input("Press Enter to stop the server...")
