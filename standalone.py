@@ -1,7 +1,7 @@
 import os
 from threading import Thread
 from time import sleep
-import subprocess
+import socket
 import sys
 
 def get_local_ip():
