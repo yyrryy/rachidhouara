@@ -14,14 +14,15 @@ def get_local_ip():
     finally:
         s.close()
     return ip
+ip = get_local_ip()
 def runserver():
-    os.system('python manage.py runserver {ip}:80')
+    os.system(f'python manage.py runserver {ip}:80')
 
 def lunchchrome():
     # ensure the django server is up and running
     sleep(2)
     # get ipv4 address
-    os.system('start chrome http://{ip}:80')
+    os.system(f'start chrome http://{ip}:80')
 t1=Thread(target=runserver)
 
 t2=Thread(target=lunchchrome)
