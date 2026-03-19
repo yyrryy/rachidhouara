@@ -4,14 +4,24 @@ from time import sleep
 import subprocess
 import sys
 
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+    except:
+        ip = 'localhost'
+    finally:
+        s.close()
+    return ip
 def runserver():
-    os.system('python manage.py runserver 192.168.1.8:8000')
+    os.system('python manage.py runserver {ip}:80')
 
 def lunchchrome():
     # ensure the django server is up and running
     sleep(2)
     # get ipv4 address
-    os.system('start chrome http://192.168.1.8:8000')
+    os.system('start chrome http://{ip}:80')
 t1=Thread(target=runserver)
 
 t2=Thread(target=lunchchrome)
