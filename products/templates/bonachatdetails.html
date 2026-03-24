@@ -1,6 +1,5 @@
 {% load global_tags %}
-<div class="bg-primary text-white">
-  <button class="bi bi-arrow-left" onclick="ajaxpage('listbl', 'list bon livraison', '/products/listbonachat?target={{target}}')">List bon achat</button>
+<div class="bg-primary text-white text-center">
   {{title}}
 </div>
 <div class="row">
@@ -9,27 +8,35 @@
       Telecharger
     </button>
     {% if not bon.ispaid %}
-    
-    <button class="btn w-100 btn-success" onclick="ajaxpage('addmodifierbonachat{{bon.id}}', 'Modifier Bon achat {{bon.nbon}}', '/products/modifierbonachat/{{bon.id}}?target={{target}}')">
+    {% if not bon.ismanual %}
+    <button class="btn w-100 btn-success" onclick="createtab('addmodifierbonachat{{bon.id}}', 'Modifier Bon achat {{bon.nbon}}', '/products/modifierbonachat/{{bon.id}}')">
       Modifier
     </button>
+    <button class="btn w-100 btn-danger" onclick="deletebonachat('{{bon.id}}')">
+      Supprimer
+    </button>
     {% endif %}
-    <button class="w-100" onclick="printbarcode()">Barcode</button>
+    {% endif %}
+    {% if bon.ismanual %}
+    <button class="btn w-100 btn-danger" onclick="deletebonachatmanual('{{bon.id}}')">
+      Supprimer manual
+    </button>
+    {% endif %}
     <!-- {% if order.isfacture %}
     <button class="btn w-100 btn-danger" onclick="degenerer(event, {{bon.id}}, 'bonl{{bon.id}}', '/products/bonbonachatdetails/{{bon.id}}')">
       Dégenerer Facture
     </button>
     {% else %}
-    <button class="btn w-100 btn-success" onclick="ajaxpage('generatefacturetab{{bon.id}}', 'Generer Fact.', '/products/generatefacture/{{bon.id}}')">
+    <button class="btn w-100 btn-success" onclick="createtab('generatefacturetab{{bon.id}}', 'Generer Fact.', '/products/generatefacture/{{bon.id}}')">
       Generer Facture
     </button>
-    <button class="btn w-100 btn-secondary" onclick="ajaxpage('modifierbonachat{{bon.id}}', 'Modifier {{bon.nbon}}', '/products/modifierbonachat/{{bon.id}}')">
+    <button class="btn w-100 btn-secondary" onclick="createtab('modifierbonachat{{bon.id}}', 'Modifier {{bon.nbon}}', '/products/modifierbonachat/{{bon.id}}')">
       Modifier
     </button>
     {% endif %} -->
     <strong>Reglements:</strong>
     {% for i in payments %}
-    <!-- <div class="mt-2">
+    <div class="mt-2">
 
       <table class="table table-bordered" style="font-size: 12px;">
         <tr>
@@ -37,40 +44,22 @@
           <td>{{i.amount|floatformat:2}} DH</td>
           <td>{{i.mode}}</td>
           <td>{{i.echeance|date:"d/m/Y"}}</td>
-
         </tr>
 
       </table>
-    </div> -->
-    <div class="alert alert-danger">
-      Reglement de bon: REG#{{i.id}} <br>
-      <strong>Mantant: {{i.amount}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      <strong>N° piece: {{i.npiece}}</strong> <br>
-      <strong>echeance: {{i.echance|date:'d/m/y'}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      {% for avoir in i.avoirs.all %}
-      <strong>
-        Avoir N° {{avoir.no}}: {{avoir.total}}
-      </strong> <br>
-      {% endfor %}
-      {% for avance in i.avances.all %}
-      <strong>
-        avance N° AVANCEF#{{avance.id}}: {{avance.amount}}
-      </strong>
-      {% endfor %}
     </div>
       {% endfor %}
 
   </div>
 
   <div id="printbachat{{bon.id}}" class="bonbody col-9">
-    
+    {% for i in orderitems %}
+    {% if forloop.counter == orderitems|length %}
     <!-- last iteration -->
-    <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 1123px; page-break-before: always;">
+    <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
       <div class="">
-        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
 
         <div class="d-flex justify-content-between mt-3">
           <div class="">
@@ -117,82 +106,81 @@
               <td style="width:53%;">Designation</td>
               <td style="width: 5%;">Qté</td>
               <td style="width: 7%;">P.U</td>
-              <td style="width: 7%;">Rem1</td>
-              <td style="width: 5%;">Rem2</td>
-              <td style="width: 5%;">Rem3</td>
-              <td style="width: 5%;">Rem4</td>
+              <td style="width: 7%;">Dvs</td>
+              <td style="width: 5%;">Rem</td>
               <td style="width: 13%;">Mantant</td>
             </tr>
           </thead>
-          <tbody class="bonachatbody">
-            {% for v in orderitems %}
-            <tr id="{{v.id}}">
-              <td class="ref">
-                  
+          <tbody>
+            <tr>
+              <td style="height: 190mm;white-space: nowrap;">
+                  {% for v in i %}
 
-                  
+                  {% if v.ref == '-' %}
                   {{v.product.ref.upper}}
-                  
+                  {% else %}
+                  {{v.ref.upper}}
+                  {% endif %}
+                  <br>
+                  {% endfor %}
               </td>
-              <td style="white-space: nowrap;" class="name">
-                  
-                  
+              <td style="white-space: nowrap;">
+                  {% for v in i %}
+                  {% if v.name == '-' %}
                   {{v.product.name.upper|slice:'45'}}
-                  
+                  {% else %}
+                  {{v.name.upper}}
+                  {% endif %}
+                  <br>
+                  {% endfor %}
               </td>
-              <td class="text-center qty d-flex">
-                  <input type="number" class="qtybarcode me-5" style="width: 3em;">
+              <td class="text-center">
+                  {% for v in i %}
 
                   {{v.quantity}}
-                  
+                  <br>
+                  {% endfor %}
               </td>
-              <td class="text-center price">
-                  
+              <td class="text-center">
+                  {% for v in i %}
 
                   {{v.price|floatformat:2}}
-                  
+                  <br>
+                  {% endfor %}
               </td>
-              <td class="text-center remise1">
-                
-
-                {{v.remise1|floatformat:-2}}
-                
-            </td>
-            <td class="text-center">
-                
-
-                {{v.remise2|floatformat:-2}}
-                
-            </td>
-
-            <td class="text-center">
-              
-
-              {{v.remise3|floatformat:-2}}
-              
-          </td>
-
-          <td class="text-center">
-            
-
-            {{v.remise4|floatformat:-2}}
-            
-        </td>
               <td class="text-center">
-                  
+                  {% for v in i %}
+
+                  {{v.devise|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.remise}}%
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
 
                   {{v.total|floatformat:2|intspace}}
-                  
+                  <br>
+                  {% endfor %}
               </td>
-              <input type="hidden" value="{{v.product.id}}">
+
             </tr>
-            {% endfor %}
           </tbody>
 
         </table>
         <!-- footer total -->
         <div class="d-flex justify-content-between">
-          
+          <div class="">
+            <small>
+              page: {{forloop.counter}}/{{orderitems|length}}
+            </small>
+          </div>
           <div class="text-center d-flex justify-content-between" style="background: #aeaeae8c;
           font-size: 13px; width:15em;">
             <div>Total</div>
@@ -209,6 +197,138 @@
       </div>
     </div>
 
+
+    {% else %}
+    <!-- other pages -->
+    <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+      <!-- header -->
+      <div class="">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+
+        <div class="d-flex justify-content-between mt-3">
+          <div class="">
+
+              <div>
+                <strong>Date: {{ bon.date|date:"d/m/Y" }}</strong>
+              </div>
+              <div>
+                <strong>N°: {{ bon.nbon }}</strong>
+              </div>
+          </div>
+          <h3>
+              <b>
+                Bon d'achat
+              </b>
+            </h3>
+
+          <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
+            <div>Fournisseur</div>
+            <div>{{bon.supplier.name.upper}}</div>
+            <div>{{bon.supplier.city.upper}}</div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- bonachat items -->
+      <div class="orderitems bg-white rounded p-2 position-relative">
+        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          visibility: hidden;
+          ">
+        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+          <thead style="background: #c9c9c980; font-size: 10px;
+        font-weight: 800;" class="text-center">
+            <tr>
+              <td style="">Ref</td>
+              <td style="width:53%;">Designation</td>
+              <td style="width: 5%;">Qté</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 7%;">Dvs</td>
+              <td style="width: 5%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 150mm;white-space: nowrap;">
+                  {% for v in i %}
+                  {% if v.ref == '-' %}
+                  {{v.product.ref.upper}}
+                  {% else %}
+                  {{v.ref.upper}}
+                  {% endif %}
+                  <br>
+                  {% endfor %}
+                  </td>
+                <td style="white-space: nowrap;">
+                  {% for v in i %}
+                  {% if v.name == '-' %}
+                  {{v.product.name.upper|slice:'45'}}
+                  {% else %}
+                  {{v.name.upper|slice:'45'}}
+                  {% endif %}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.quantity}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.price|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.devise|floatformat:2}}
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.remise}}%
+                  <br>
+                  {% endfor %}
+              </td>
+              <td class="text-center">
+                  {% for v in i %}
+
+                  {{v.total|floatformat:2|intspace}}
+                  <br>
+                  {% endfor %}
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+      <!-- bonachat footer -->
+      <div style="float:right;">
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+      </div>
+
+    </div>
+    {% endif %}
+    {% endfor %}
   </div>
 </div>
 {% if user.groups.all.0.name == 'accounting' or user.groups.all.0.name == 'admin' %}
@@ -221,62 +341,16 @@
 
 
 <script>
-  function printbarcode(){
-    console.log(">>>fff, {{bon.supplier.id}}")
-    supplierid="{{bon.supplier.id}}"
-    datebonachat="{{bon.date|date:'Y-m-d'}}"
-    
-    trs=$('.bonachatbody tr')
-    let products = []
-    trs.each(function(){
-        let tr = $(this)
-        let qty = tr.find('.qtybarcode').val() || tr.find('.qty').text()
-        let name = tr.find('.name').text()
-        let ref = tr.find('.ref').text()
-        let price = tr.find('.price').text()
-        let remise1 = tr.find('.remise1').text()
-        let productid = tr.find('input[name="productid"]').val()
-        let product = {
-            'qty': qty,
-            'name': name,
-            'ref': ref,
-            'price': price,
-            'remise1': remise1,
-            'productid': productid,
-            
-        }
-        products.push(product)
-      })
-      console.log(products)
-    var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/printbarcode?target={{target}}&products='+JSON.stringify(products)+'&supplierid='+supplierid+'&date='+datebonachat, '', 'width=900,height=900');
-
-    myWindow.focus();
-
-    myWindow.addEventListener('load', function() {
-    console.log('New window loaded.');
-
-    // Wait for 5 seconds before printing
-    // setTimeout(function() {
-    // try {
-    //   myWindow.print();
-    //   console.log('Print command issued.');
-    //   myWindow.close();
-    //   console.log('New window closed.');
-    // } catch (e) {
-    //   console.error('Failed to print and close the window:', e);
-    // }
-    // }, 300);
-  }, false);
-    // $.get('/products/printbarcode', {
-    //   'products': JSON.stringify(products),
-    // }, function(data){
-    //   console.log(data)
-    // })
-  }
-  
   function deletebonachat(id){
     alertify.confirm('Supprimer ?', function(){
       $.get('/products/deletebonachat', {'id':id}, (data)=>{
+        deletetab('bonachat{{bon.id}}')
+      })
+    })
+  }
+  function deletebonachatmanual(id){
+    alertify.confirm('Supprimer ?', function(){
+      $.get('/products/deletebonachatmanual', {'id':id}, (data)=>{
         deletetab('bonachat{{bon.id}}')
       })
     })

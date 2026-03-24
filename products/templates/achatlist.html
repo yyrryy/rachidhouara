@@ -1,5 +1,5 @@
 {% for order in bons %}
-<tr class="ord" orderid="{{order.id}}" ondblclick="ajaxpage('bonachat{{order.id}}', 'Bon achat {{order.nbon}}', '/products/bonachatdetails/{{order.id}}')">
+<tr class="ord" orderid="{{order.id}}" ondblclick="createtab('bonachat{{order.id}}', 'Bon achat {{order.nbon}}', '/products/bonachatdetails/{{order.id}}')">
     <td>{{ order.nbon }}</td>
     <td>{{ order.date|date:'d/m/Y' }}</td>
     <td>{{ order.supplier.name }}</td>

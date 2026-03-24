@@ -1,0 +1,28 @@
+{% for i in products %}
+<tr>
+  <td>
+    {{i.ref}}
+  </td>
+  <td>
+    {{i.name}}
+  </td>
+  <td>
+    {{i.stocktotal}}
+  </td>
+  <td>
+    {{i.stockfacture}}
+  </td>
+  <td>
+    {{i.buyprice}}
+  </td>
+  <td>
+    {{i.sellprice}}
+  </td>
+  <td>
+    {{i.remise}}
+  </td>
+  <td>
+    {{i.prixnet}}
+  </td>
+</tr>
+{% endfor %}

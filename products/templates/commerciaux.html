@@ -52,8 +52,8 @@
                 <input type="number" name="repphone2" class="form-control mb-2" placeholder="phone2">
                 <input type="text" name="repregion" class="form-control mb-2" placeholder="Region">
                 <hr>
-                <input type="text" name="repusername" class="form-control mb-2 checkusername" placeholder="Username">
-                <input type="text" name="reppassword" class="form-control mb-2" placeholder="Password">
+                <!-- <input type="text" name="repusername" class="form-control mb-2 checkusername" placeholder="Username">
+                <input type="text" name="reppassword" class="form-control mb-2" placeholder="Password"> -->
                 <button type="submit" class="btn btn-outline-success w-100 submitaddrepbtn">
                     Envoyer
                 </button>
@@ -82,7 +82,7 @@
                             ✐ {{i.id}}
                         </button>
                     </td>
-                    <td onclick="ajaxpage('addrep{{i.id}}', 'Representant {{i.name}}', '/products/onereppage/{{i.id}}')">{{i.name}}</td>
+                    <td onclick="createtab('addrep{{i.id}}', 'Representant {{i.name}}', '/products/onereppage/{{i.id}}')">{{i.name}}</td>
                     <td>{{i.phone}}</td>
                     <td>{{i.region}}</td>
                 </tr>
@@ -95,7 +95,7 @@
 
 
 <script>
-    //onclick="ajaxpage('supp{{i.id}}', 'Cleint: {{i.name}}', '/products/supplier/{{i.id}}')"
+    //onclick="createtab('supp{{i.id}}', 'Cleint: {{i.name}}', '/products/supplier/{{i.id}}')"
     function checkusername(username){
         $.post('{% url "products:checkusername" %}', {username: username}, function(data){
             if (data.exist){
@@ -128,7 +128,8 @@
     })
     $('.submitaddrepbtn').on('click', function(event){
         event.preventDefault()
-        if ($('[name="repname"]').val()=="" || $('[name="repphone"]').val()=="" || $('[name="repregion"]').val()=="" || $('[name="repusername"]').val()=="" || $('[name="reppassword"]').val()==""){
+        // if ($('[name="repname"]').val()=="" || $('[name="repphone"]').val()=="" || $('[name="repregion"]').val()=="" || $('[name="repusername"]').val()=="" || $('[name="reppassword"]').val()==""){
+        if ($('[name="repname"]').val()=="" || $('[name="repphone"]').val()=="" || $('[name="repregion"]').val()==""){
             $('#addrepform').css('border', '1px solid red')
             return
         }

@@ -45,20 +45,11 @@
 
 <div class="bg-white shadow rounded">
   <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-    <!-- <div>
-      <button class="btn border btnselect btn-dark active" style="
-      border-radius: 11px;" onclick="ajaxpage('addbonsortie', '+sortie', '/products/listbonsortie')">En attend</button>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); getbonsortievalider()">Validé</button>
-      
-    </div> -->
     <div>
       {{title}}
     </div>
-    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addlistbonsortie', 'tt', '/products/listbonsortie?target={{target}}')">↻</button>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addlistbonlivraison', 'tt', '/products/listbonlivraison?target={{target}}')">↻</button>
   </div>
-  
-
   <div class="d-flex justify-content-between">
     <div class="d-flex">
       <div class="me-2">
@@ -69,51 +60,37 @@
         <input type="date" name="" id="" class="enddatefilterbl">
       </div>
       <div>
-        <button class="btn btn-sm bg-dark text-white filterbsdate">Filtrer</button>
+        <button class="btn btn-sm bg-dark text-white filterbldate">Filtrer</button>
       </div>
 
     </div>
+    
+    <div hidden>
+      <input style="width: 20em;
+    background: #c3e6ff;
+    border-radius: 11px;
+    margin-bottom: 9px;" placeholder="TRODO" onchange="window.open(`https://www.trodo.fr/catalogsearch/result?q=${$(this).val()}&searchby=name`, '_blank')">
+    </div>
+    <div>
+      <select name="yearsbl" onchange="yeardatabl()" class="populateyears">
+
+      </select>
+    </div>
+    <div class="d-flex flex-column">
+      <!-- <button class="btn btn-success" style="border-radius: 10px; margin: 0 9px 9px 0;" onclick="ajaxpage('addbonsortie', '+bon livraison', '/products/bonlivraison?target={{target}}')">
+        +Ajouter
+      </button> -->
+
+    </div>
+  </div>
+  <div class="filters mt-2 d-flex justify-content-between">
     <input style="width: 20em;
     background: #80808038;
     border-radius: 11px;
     margin-bottom: 9px;
 " type="text" name="" id="" placeholder="Recherche" class="searchinputlistbl">
-    <!-- <div hidden>
-      <input style="width: 20em;
-    background: #c3e6ff;
-    border-radius: 11px;
-    margin-bottom: 9px;" placeholder="TRODO" onchange="window.open(`https://www.trodo.fr/catalogsearch/result?q=${$(this).val()}&searchby=name`, '_blank')">
-    </div> -->
-    <div>
-      
-    </div>
-    <div class="d-flex">
-      <select name="yearsbl" onchange="yeardatabs()" hidden class="populateyears disabled" hidden>
 
-      </select>
-      <button class="btn btn-success" onclick="ajaxpage('addbonsortie', '+sortie', '/products/bonsortie')">
-        +
-      </button>
-
-    </div>
-  </div>
-  <div class="filters mt-2">
-    
-  
-  <div class="">
-    <div class="d-flex justify-content-between">
-      <button class="btn border border-danger bi bi-trash" onclick="$('.bonstoprint').val('[]'); $('.checkbon').prop('checked', false);$('.bonstoprint').attr('ids', '[]')"></button>
-      <button class="btn border border-dark bi bi-download" onclick="printbulk()"></button>
-      <button class="btn bi border border-success validerbulk" onclick="validerbulk()">Valider</button>
-    </div>
-    <textarea
-    style="width: 100%;
-    background: #80808038;
-    border-radius: 11px;
-    margin-bottom: 9px;
-    min-height: 5em;
-    "
-    type="text" readonly class="bonstoprint" ids="[]">[]</textarea>
+  <div>
     
   </div>
 
@@ -126,102 +103,88 @@
   border-radius: 11px;"></button> -->
 
   </div>
-  <div style="height: 60vh; overflow: scroll;" class="listblholder">
+  <div style="height: 70vh; overflow: scroll;" class="listblholder">
     <table class="table table-bordered table-hover table-striped listbltable" style="font-size: 12px;" id="addbonlivraisonle">
       <thead style="position: sticky; top: 0;">
         <tr style="background: #676767; color: white;">
-          <td style="width:12%;" onclick="sorttable(event)">N° bon</td>
-          <td style="width:10%;" class="">
-            <!-- <div class="d-flex justify-content-between align-items-center"> -->
+          <td style="width: 8%;" onclick="sorttable(event)">N° bon</td>
+          <td style="width: 8%;" class="">
+            <div class="d-flex justify-content-between align-items-center">
               <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortupbl(event)">↑</button>  -->
               <div>Date</div>
               <!-- <button class="btn btn-sm" style="font-size: 10px; background: #f06623; color: white;" onclick="sortdownbl(event)">↓</button>  -->
-            <!-- </div> -->
+            </div>
           </td>
-          <td style="width:10%;"  onclick="sorttable(event)">Client</td>
-          <td style="width:10%;" >Code client</td>
-          <td style="width:10%;"  onclick="intsorttable(event)">Total</td>
-          <td style="width:10%;"  onclick="sorttable(event)">Staus</td>
-          <td style="width:10%;"  onclick="sorttable(event)">Validation</td>
-          <td style="width:15%;"  onclick="sorttable(event)">Notes</td>
-          <td style="width:10%;"  onclick="sorttable(event)">Useer</td>
-          <td style="width:10%;" ></td>
+          <td style="width: 12%;" onclick="sorttable(event)">Client</td>
+          <td style="width: 5%;">Code client</td>
+          <td style="width: 5%;" onclick="intsorttable(event)">Total</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Region</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Ville</td>
+          <td style="width: 5%;">Solde bl cl.</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Repr</td>
+          <td style="width: 4%;">Reglé</td>
+          <td style="width: 5%;">Facturé</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Cmnd</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Transport</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Notes</td>
+          <td style="width: 2%;"></td>
         </tr>
       </thead>
       <tbody class="listblbody">
-        <!-- {% if order.generated %}  lightgreen;{% endif %} {% if i.isfacture%} color:blue;{%endif%} {% if order.ispaid %} text-danger{% endif %} -->
         {% for order in bons %}
-          <tr class="ord bl-row " orderid="{{order.code}}" ondblclick="ajaxpage('bons{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/bonsortiedetails/{{order.id}}')" style="background:" >
-            <td >
-              <input type="checkbox" class="checkbon" onchange="addtoprint('{{order.id}}', '{{order.bon_no}}')">
-              {{ order.bon_no }}
-            </td>
+          <tr class="ord bl-row {% if order.ispaid %} text-danger{% endif %}" orderid="{{order.code}}" ondblclick="ajaxpage('bons{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/bonsortiedetails/{{order.id}}')" style="background:{% if order.isdelivered %}  lightgreen;{% endif %} {% if i.isfacture%} color:blue;{%endif%}" >
+            <td >{{ order.bon_no }}</td>
             <td >{{ order.date|date:'d/m/Y' }}</td>
             <td >{{ order.client.name }}</td>
             <td >{{ order.client.code }}</td>
-            <td style="color: blue;">{{ order.total|floatformat:'2'|intspace}}
-            </td>
-            
-            <td class="">
+            <td style="color: blue;">{{ order.total|floatformat:'2'|intspace}}</td>
+            <td >{{ order.client.region }}</td>
+            <td >{{ order.client.city }}</td>
+            <td >{{ order.client.soldbl|floatformat:2|intspace }}</td>
+            <td >{{ order.salseman }}</td>
+            <td class="d-flex justify-content-between">
               {% if order.ispaid %}
-              <div  style="text-align: center; background: lightgreen;">
-                Encaissé
+              <div>
+                R0
               </div>
-              
+              <div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
 
-              {% elif order.hasavance %}
-              <div class="" style="text-align: center; background: rgb(255, 196, 0);">
-                Avance
-              </div>
-              {% else %}
-              <div class="" style="text-align: center; background: yellow;">
-                En attend
-              </div>
-                
-
-              {% endif %}
-            </td>
-
-            <td class="">
-              {% if order.generated %}
-              <div  style="text-align: center; background: lightgreen;">
-                Valider
-              </div>
-              
 
               {% else %}
 
-                <div class="" style="text-align: center; background: yellow;">
-                  No valider
+                <div>
+                  N1
                 </div>
-                
+                <div style="width:15px; height:15px; border-radius:50%; background:orange;" ></div>
 
               {% endif %}
             </td>
-            
+            {% if order.isfacture %}
+            <td class="text-danger">
+              OUI
+            </td>
+            {% else %}
             <td>
-              {% if order.note %} {{order.note}}-{{order.car}} {% endif %}
+              Non
+            </td>
+            {% endif %}
+            <td>
+              {{order.commande.order_no}}
             </td>
             <td>
-              {% if order.user %} {{order.user.username}} {% endif %}
+              {{order.modlvrsn}}
+            </td>
+            <td>
+              {% if order.note %} {{order.note}} {% endif %}
             </td>
             <td class="d-flex">
-              <button class="btn btn-sm bi bi-eye" onclick="viewbonsortie('{{order.id}}')"></button>
-              {% if request.user.is_superuser %}
-                <button class="btn btn-sm bi bi-pen" onclick="ajaxpage('ee', 'rr', '/products/modifierbonsortie?id={{order.id}}')"></button>
-                {% else %}
-                {% if not order.generated and not order.ispaid %}
-                <button class="btn btn-sm bi bi-pen" onclick="ajaxpage('ee', 'rr', '/products/modifierbonsortie?id={{order.id}}')"></button>
-                {%endif%}
-              {%endif%}
-              <button class="btn btn-sm bi bi-download" onclick="printsortie2('{{order.id}}')">A5</button>
-              <button class="btn btn-sm bi bi-download" onclick="printsortieA6('{{order.id}}')">A6</button>
+              <button class="btn btn-sm btn-info" onclick="makedelivered('{{order.id}}', event)"></button>
+              <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}')"></button>
             </td>
-          
           </tr>
         {% endfor %}
       </tbody>
-      <!-- <thead style="position: sticky; bottom: 0; background: white;">
+      <thead style="position: sticky; bottom: 0; background: white;">
         <tr>
           <td style="width: 8%;"></td>
           <td style="width: 8%;"></td>
@@ -241,7 +204,7 @@
           <td style="width: 5%;"></td>
           <td></td>
         </tr>
-      </thead> -->
+      </thead>
       <!-- <tfoot>
         <tr>
           <td>N° bon</td>
@@ -267,107 +230,6 @@
 
 
 <script>
-  currentPagelistbl=1
-  function getbonsortievalider(){
-    $('.listblbody').addClass('blurred')
-    $.get('/products/getbonsortievalider?target={{target}}', (data)=>{
-      currentPagelistbl=1
-      $('.listblholder').on('scroll', handleScrolllistbl);
-      $('.searchinputlistbl').attr('waiting', '0')
-      $('.searchinputlistbl').attr('searchtype', 'valid')
-      $('.listblbody').html(data.html)
-      $('.hidebltotal').html(data.total)
-      $('.listblbody').removeClass('blurred')
-    })
-  }
-  
-  function viewbonsortie(id){
-    wd=window.open('/products/viewbonsortie?id='+id, '', 'width=900,height=900');
-    wd.focus();
-  }
-  function printbulk(){
-    oldval=JSON.parse($('.bonstoprint').val())
-    ids=JSON.parse($('.bonstoprint').attr('ids'))
-    if (!oldval.length==0){
-      var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/printbulk?ids='+JSON.stringify(ids), '', 'width=900,height=900');
-      myWindow.focus();
-      
-    }
-  }
-  function validerbulk() {
-    let oldval, ids;
-    
-    try {
-        oldval = JSON.parse($('.bonstoprint').val() || '[]');
-        ids = JSON.parse($('.bonstoprint').attr('ids') || '[]');
-    } catch (e) {
-        console.error('JSON parsing error:', e);
-        alertify.error('Erreur de données');
-        return;
-    }
-
-    if (oldval.length !== 0) {
-        console.log('ids from validerbulk:', ids);
-        ids = JSON.stringify(ids);
-        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value'
-               , function(evt, value) { if (value=='ORGHAD'){
-                $('.validerbulk').addClass('disabled')
-                  $.get('/products/validerbulk', { ids: ids }, function(data) {
-                    console.log('Réponse du serveur:', data);
-                    if (data.success) {
-                    alertify.success('Validé');
-                    ajaxpage('addlistbonsortie', 'tt', '/products/listbonsortie?target={{target}}');
-                    } else {
-                    alertify.error(data.error);
-                    }
-                    }).fail(function() {
-                    alertify.error('Erreur lors de la validation');
-                    });
-
-                
-               }else{
-                alertify.error('Mot de passe')
-               } }
-               , function() { alertify.error('Cancel') });
-        // alertify.prompt('Confirmer', 'Mot de passe', '', function(evt, value) {
-        //     console.log(value);
-        //     if (value === 'ORGHAD') {
-        //         console.log('Validation en cours...');
-        //         $.get('/products/validerbulk', { ids: ids }, function(data) {
-        //             console.log('Réponse du serveur:', data);
-        //             if (data.success) {
-        //                 alertify.success('Validé');
-        //                 ajaxpage('addlistbonsortie', 'tt', '/products/listbonsortie?target={{target}}');
-        //             } else {
-        //                 alertify.error(data.error);
-        //             }
-        //         }).fail(function() {
-        //             alertify.error('Erreur lors de la validation');
-        //         });
-        //     } else {
-        //         console.log('Mot de passe incorrect');
-        //         alertify.error('Mot de passe incorrect');
-        //     }
-        // });
-    
-      } else {
-        alertify.error("Aucune donnée à valider");
-    }
-  }
-
-
-  function addtoprint(id, bon_no){
-    oldval=JSON.parse($('.bonstoprint').val())
-    ids=JSON.parse($('.bonstoprint').attr('ids'))
-    console.log('>>', oldval)
-    console.log('already', ids.includes(id))
-    if (!ids.includes(id)){
-      oldval.push(bon_no)
-      ids.push(id)
-    }
-    $('.bonstoprint').val(JSON.stringify(oldval))
-    $('.bonstoprint').attr('ids', JSON.stringify(ids))
-  }
   function getbonswhite(event){
     $('.listblbody').addClass('blurred')
     $.get('/products/getbonswhite', (data)=>{
@@ -384,6 +246,32 @@
     $('.itemsforlistblresult > tr').not($el).hide();
     //$btns.removeClass('active');
     //$(this).addClass('active');
+  }
+  function getitemsforlistbl(event){
+    let term=$('.searchitemsforlistbl').val()
+    if (term.length>=2){
+      $('.itemsforlistblresult').html('<tr><td>searching....</td></tr>')
+      $.get('/products/getitemsforlistbl', {'term':term}, (data)=>{
+        console.log(data)
+        $('.brands').html('')
+        $('.categoriesfilter').html('')
+        for (i of data.brands){
+          $('.brands').append(`
+            <img class="tag-badge tag-badge--hot" id='${i.id}' onclick="filtersearch(event)" src='${i.image}'>
+          `)
+        }
+        for (i of data.categories){
+          $('.categoriesfilter').append(`
+            <div class="tag-badge tag-badge--hot" id='cat${i.id}' onclick="filtercategories(event)" style="font-size:15px;">${i.name}</div>
+          `)
+        }
+        $('.itemsforlistblresult').html(data.trs)
+      })
+    }else{
+      $('.itemsforlistblresult').html('<tr><td>....</td></tr>')
+    }
+
+
   }
   function makedelivered(orderid, event){
     $.get('/products/makebondelivered', {'id': orderid}, (data)=>{
@@ -419,22 +307,20 @@
   // date=new Date()
   // year=date.getFullYear()
   // $('select[name="yearsbl"]').append('<option value="'+year+'">'+year+'</option>')
-  function yeardatabs(){
+  function yeardatabl(){
     let year=$('select[name="yearsbl"]').val()
     if (year==''){return}
     currentPagelistbl=1
     loadinglistbl = false;
     $('.listblholder').on('scroll', handleScrolllistbl);
-    $.get('/products/yeardatabs', {year:year}, (data)=>{
-      console.log(data)
+    $.get('/products/yeardatabl', {year:year}, (data)=>{
       $('.listblbody').html(data.trs)
       $('.totalbons').text(data.total)
     })
   }
   function loadMoreRecordslistbl (year, startdate, enddate, term)  {
     loadinglistbl = true;
-    searchtype=$('.searchinputlistbl').attr('searchtype')
-    $.get(`/products/loadlistbs/?target={{target}}&page=${currentPagelistbl}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}&searchtype=${searchtype}`, (data)=>{
+    $.get(`/products/loadlistbs/?target={{target}}&page=${currentPagelistbl}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
 
       const tbody = $('.listbltable tbody');
       tbody.append(data.trs);
@@ -457,7 +343,7 @@
     function handleScrolllistbl () {
       const container = $('.listblholder')[0]; // Get the native DOM element
       const lastRow = document.querySelector('.bl-row:last-child');
-      let year=$('[name="yearsbl"]').val()
+      let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
       let startdate=$('.startdatefilterbl').val()==""?0:$('.startdatefilterbl').val()
       let enddate=$('.enddatefilterbl').val()==""?0:$('.enddatefilterbl').val()
       let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
@@ -505,7 +391,7 @@
       }
     )
   }
-  $('.filterbsdate').on('click', function(){
+  $('.filterbldate').on('click', function(){
 
     let parentdiv= $(this).parent().parent()
     startdate=parentdiv.find('.startdatefilterbl').val()
@@ -515,7 +401,7 @@
       alertify.error('Date')
       return
     }
-    $.get('/products/filterbsdate', {startdate:startdate, enddate:enddate},(data)=>{
+    $.get('/products/filterbldate', {startdate:startdate, enddate:enddate},(data)=>{
       console.log(data)
       $('.listblbody').html(data.trs)
       $('.totalbons').text(data.total)
@@ -529,13 +415,12 @@
     var filterValue = $(this).val().toLowerCase();
     console.log(filterValue)
     if (filterValue==""){
-      ajaxpage('addlistbonsortie', 'tt', '/products/listbonsortie?target={{target}}')
+      ajaxpage('addlistbonlivraison', 'tt', '/products/listbonlivraison?target={{target}}')
 
 
     }
     else{
       let year=$('select[name="yearsbl"]').val()?$('select[name="yearsbl"]').val():0
-      searchtype=$('.searchinputlistbl').attr('searchtype')
       console.log(year)
       // Split the filter value into individual terms based on the '&' sign
       // var filterTerms = filterValue.split('+').map(function(term) {
@@ -543,7 +428,7 @@
       // });
       let startdate=$('.startdatefilterbl').val()==""?0:$('.startdatefilterbl').val()
       let enddate=$('.enddatefilterbl').val()==""?0:$('.enddatefilterbl').val()
-      $.get('/products/searchforlistbs', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'searchtype':searchtype}, (data)=>{
+      $.get('/products/searchforlistbl', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate}, (data)=>{
         console.log('eee')
         $(".listbltable tbody").html('')
         $(".listbltable tbody").html(data.trs)

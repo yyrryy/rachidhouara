@@ -1,15 +1,19 @@
 <script src="/static/js/jquery.min.js"></script>
 <link href="/static/css/minified.css" rel="stylesheet">
 <div class="row">
-    <div class="col-3 shadow rounded p-2" style="z-index: 999">
+    <div class="col-3 shadow rounded p-2 situationclientcol3" style="z-index: 999">
         <div class="d-flex justify-content-between">
           <h5>
-              Situation Client
+              Situation Client BL
           </h5>
         </div>
-        <select readonly name="clientsituationselect" id="" class="clientsituationselect form-select notempty" style="width: 100%;">
-          <<option value="{{clientid}}">{{clientname}}</option>
-        </select>
+        <div class="d-flex">
+          <select readonly name="clientsituationselect" id="" class="clientsituationselect form-select notempty" style="width: 100%;">
+            <option value="{{clientid}}">{{clientname}}</option>
+          </select>
+          <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselect(event)">↻</button> -->
+
+        </div>
 
         <div class="mt-2">
             <div>
@@ -25,15 +29,28 @@
         <button class="btn btn-info w-100 mt-2" onclick="genererrelvecl(event)">Relevé</button>
         <!-- <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationbl('releveclblholder')">Imprimer</button> -->
         <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationbl('clientid', 'startdate', 'enddate')">Imprimer</button>
-
         <button class="btn btn-primary w-100 mt-2 printrelvebl" onclick="$('.relvlogo').toggleClass('invisible');localStorage.getItem('showenteterelv') === 'true'?localStorage.setItem('showenteterelv','false'):localStorage.setItem('showenteterelv','true')">Entette</button>
-        <!-- <button class="btn btn-primary w-100 mt-2 printrelvebl" onclick="$('.relvlogo').toggleClass('invisible')">Entette</button> -->
         <strong class="soldfcinrelvbl text-danger"></strong>
         <h5 class="mt-5">
             Situation Client FC
+            <button class="btn btn-success w-100 mt-2 bg-orange" onclick="relvclfcinbl(event)">Relevé Facture</button>
+            <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationfc('clientid', 'startdate', 'enddate')">Imprimer relev. Facture</button>
+            <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printtablet('releveclblholder')">Imprimer tablet</button>
         </h5>
-        <button class="btn btn-success w-100 mt-2 bg-orange" onclick="relvclfcinbl(event)">Relevé Facture</button>
-        <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationfc('clientid', 'startdate', 'enddate')">Imprimer relev. Facture</button>
+
+        <div class="mt-2">
+            <div>
+                <small>Du</small>
+                <input type="date" class="situationcldatefromfc form-control notempty" value="{{today|date:'Y-m-d'}}">
+            </div>
+            <div>
+                <small>Au</small>
+                <input type="date" class="situationcldatetofc form-control notempty" value="{{today|date:'Y-m-d'}}">
+            </div>
+        </div>
+
+        <button class="btn btn-success w-100 mt-2 printrelvebl bg-darkblue" onclick="relvclglobalinbl('releveclblholder')">Releve BL/FACTURE</button>
+        <button class="btn btn-success w-100 mt-2 printrelvebl bg-darkblue" onclick="printrelvclglobalinbl('releveclblholder')">imprimer Releve BL/FACTURE</button>
 
         <!-- <select name="clientsituationselect" id="" class="form-select notempty clientsituationfcselect" style="width: 100%;">
 
@@ -53,10 +70,37 @@
 </div>
 <script>
 
+  function refreshselect(event){
+    selection=$(event.target).parent().parent().find('.selection')
+    selection.remove()
+    $('.clientsituationselect').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+  }
     // the same function relv client facture in bl
     function relvclfcinbl(event){
 
-        parentdiv=$(event.target).parent()
+        parentdiv=$('.situationclientcol3')
         console.log(parentdiv)
         clientid=parentdiv.find('select[name="clientsituationselect"]').val()
         datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
@@ -84,6 +128,75 @@
             }
         })
     }
+
+
+    function relvclglobalinbl(event){
+
+        parentdiv=$('.situationclientcol3')
+        console.log('parentdiv', parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrombl=parentdiv.find('.situationcldatefrom').val()
+        datetobl=parentdiv.find('.situationcldateto').val()
+        datefromfc=$('.situationcldatefromfc').val()
+        datetofc=$('.situationcldatetofc').val()
+        console.log(clientid, datefrombl, datetobl, datefromfc, datetofc, clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc=='')
+        if (clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclientglobal',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrombl,
+                'dateto': datetobl,
+                'datefromfc': datefromfc,
+                'datetofc': datetofc,
+            },
+            success: function(data){
+                $('.loadingscreen').addClass('d-none')
+                $('.releveclblholder').html(data.html)
+                if (localStorage.getItem('showenteterelv') === 'true'){
+                  $('.relvlogo').removeClass('invisible')
+                }
+            }
+        })
+    }
+
+    function printrelvclglobalinbl(event){
+
+        parentdiv=$('.situationclientcol3')
+        console.log('parentdiv', parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrombl=parentdiv.find('.situationcldatefrom').val()
+        datetobl=parentdiv.find('.situationcldateto').val()
+        datefromfc=$('.situationcldatefromfc').val()
+        datetofc=$('.situationcldatetofc').val()
+        console.log(clientid, datefrombl, datetobl, datefromfc, datetofc, clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc=='')
+        if (clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc==''){
+          alertify.error('ERRO')
+          return
+        }
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/printrelevclientglobal?clientid='+clientid+'&datefrom='+datefrombl+'&dateto='+datetobl+'&datefromfc='+datefromfc+'&datetofc='+datetofc, '', 'width=900,height=900');
+
+          myWindow.focus();
+          setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000);
+    }
+
+
+
     function genererrelvecl(event){
         parentdiv=$(event.target).parent()
         console.log(parentdiv)
@@ -112,6 +225,31 @@
             }
         })
     }
+    $(function(){
+      $('.clientsituationselect').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchclient',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    })
 
     function printsituationbl(id){
         /*var printContents = document.getElementById(id).innerHTML;
@@ -125,7 +263,7 @@
         // $('body').addClass('d-flex flex-column vh-100 p-3')
         window.print();
         document.body.innerHTML = originalContents;
-        forceupdatetab('addsituationcl', 'products/situationcl')
+        forceupdatetab('addsituationcl', '/products/situationcl')
         */
         parentdiv=$(event.target).parent()
 
@@ -151,22 +289,26 @@
         }, 1000);
 
     }
+    function printtablet(id){
+      var printContents = document.getElementById('releveclblholder').innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+      // parentdiv.find('table').css('font-size', '13px')
+      // parentdiv.find('body').css('font-family', 'serif')
+      // parentdiv.find("table > tbody > tr > td").css('padding', '0px');
+      // parentdiv.find("table > thead > tr").css('background','gray');
+      // $('body').addClass('d-flex flex-column vh-100 p-3')
+      window.print();
+      //document.body.innerHTML = originalContents;
+      //forceupdatetab('addsituationcl', '/products/situationcl')
+
+    }
     function printsituationfc(id){
-        /*var printContents = document.getElementById(id).innerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-
-        parentdiv.find('table').css('font-size', '13px')
-        parentdiv.find('body').css('font-family', 'serif')
-        parentdiv.find("table > tbody > tr > td").css('padding', '0px');
-        parentdiv.find("table > thead > tr").css('background','gray');
-        // $('body').addClass('d-flex flex-column vh-100 p-3')
-        window.print();
-        document.body.innerHTML = originalContents;
-        forceupdatetab('addsituationcl', 'products/situationcl')
-        */
-        parentdiv=$(event.target).parent()
-
+        parentdiv=$('.situationclientcol3')
+        console.log(parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationcldateto"]').val()
         clientid=parentdiv.find('select[name="clientsituationselect"]').val()
         datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
         dateto=parentdiv.find('input[name="situationcldateto"]').val()
@@ -186,6 +328,6 @@
           } catch (e) {
             console.error('Failed to print and close the window:', e);
           }
-        }, 1000);
+        }, 1500);
     }
 </script>

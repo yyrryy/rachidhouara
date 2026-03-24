@@ -8,7 +8,7 @@
         
         <div class="row mb-2">
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addpducts', 'Articles', '/products/stock')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addpducts', 'Articles', '/products/stock')">
               
                 <i class="bi bi-list-task h1">
                   
@@ -19,7 +19,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addclientstab', 'ListCL', '/products/clientspage')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addclientstab', 'ListCL', '/products/clientspage')">
               
                 <i class="bi bi-people-fill h1">
                   
@@ -31,7 +31,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('supplist', 'List FR', '/products/supplierspage')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('supplist', 'List FR', '/products/supplierspage')">
               
                 <i class="bi bi-globe h1">
                   
@@ -43,7 +43,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addlistreglementbl', 'ReglBL', '/products/listreglementbl')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistreglementbl', 'ReglBL', '/products/listreglementbl')">
               
                 <i class="bi bi-cash h1">
                   
@@ -55,7 +55,7 @@
           </div>
           
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('replist', 'ListRep', '/products/commercialspage')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('replist', 'ListRep', '/products/commercialspage')">
               
                 <i class="bi bi-people  h1">
                   
@@ -66,7 +66,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('carttab', 'cart', '/products/cartpage')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('carttab', 'cart', '/products/cartpage')">
               
                 <i class="bi bi-cart  h1">
                   
@@ -77,7 +77,7 @@
             </div>
           </div>
           <!-- <div class="col-3">
-            <a onclick="ajaxpage('supplist', 'List FR', '/products/supplierspage')" class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+            <a onclick="createtab('supplist', 'List FR', '/products/supplierspage')" class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
               <div class="col-6 bg-darkblue text-white p-2">
                 <b class="h1">
                   sldnr
@@ -98,7 +98,7 @@
         
         <div class="row mb-2">
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addlistbonlivraison', 'list bl', '/products/listbonlivraison')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistbonlivraison', 'list bl', '/products/listbonlivraison')">
               
                 <i class="bi bi-folder h1">
                   
@@ -109,7 +109,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addCommandestab', 'lict BC', 'products/listboncommnd')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addCommandestab', 'lict BC', '/products/listboncommnd')">
               
                 <i class="bi bi-cart h1">
                   
@@ -121,7 +121,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addlistbonachat', 'list achat', '/products/listbonachat')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistbonachat', 'list achat', '/products/listbonachat')">
               
                 <i class="bi bi-folder-symlink h1">
                   
@@ -133,7 +133,7 @@
           </div>
           
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('avoircl', 'AvoirCL', '/products/listavoirclient')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('avoircl', 'AvoirCL', '/products/listavoirclient')">
               
                 <i class="bi bi-folder-x h1">
                   
@@ -145,7 +145,7 @@
           </div>
           
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('avoirsupp', 'AvoirFR', '/products/listavoirsupplier')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('avoirsupp', 'AvoirFR', '/products/listavoirsupplier')">
               
                 <i class="bi bi-folder h1">
                   
@@ -156,7 +156,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('reliquatab', 'reliqua', '/products/reliquatpage')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('reliquatab', 'reliqua', '/products/reliquatpage')">
               
                 <i class="bi bi-cart  h1">
                   
@@ -169,7 +169,7 @@
         </div>
         <div class="row mb-2">
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"   onclick="ajaxpage('add', '+ Article', '/products/addproductspage')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"   onclick="createtab('add', '+ Article', '/products/addproductspage')">
               <i class="bi bi-plus h1"></i>
               <div>
                 Article
@@ -178,7 +178,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="ajaxpage('addbonlivraison', '+livraison', '/products/bonlivraison')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="createtab('addbonlivraison', '+livraison', '/products/bonlivraison')">
               <i class="bi bi-plus h1"></i>
               <div>
                 Bon Livraison
@@ -187,7 +187,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addavoir', '+AvoirCL', '/products/avoirclient')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addavoir', '+AvoirCL', '/products/avoirclient')">
               <i class="bi bi-plus h1"></i>
               <div>
                 Avoir Client
@@ -196,7 +196,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addrecevoir', '+Achat', '/products/recevoir')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addrecevoir', '+Achat', '/products/recevoir')">
               <i class="bi bi-plus h1"></i>
               <div>
                 Bon Achat
@@ -204,7 +204,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('connectedtab', 'Connecté', '/products/listeconnected')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('connectedtab', 'Connecté', '/products/listeconnected')">
               
                 <i class="bi bi-people  h1">
                   
@@ -215,7 +215,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('echeancetab', 'Echeances', '/products/listecheance')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('echeancetab', 'Echeances', '/products/listecheance')">
               
                 <i class="bi bi-card-checklist  h1">
                   
@@ -231,7 +231,7 @@
   
         <div class="row mb-2">
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addsituationcl', 'Sit.CLBL', 'products/situationcl')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addsituationcl', 'Sit.CLBL', '/products/situationcl')">
               
                 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-file-spreadsheet-fill" viewBox="0 0 16 16">
                   <path d="M12 0H4a2 2 0 0 0-2 2v4h12V2a2 2 0 0 0-2-2zm2 7h-4v2h4V7zm0 3h-4v2h4v-2zm0 3h-4v3h2a2 2 0 0 0 2-2v-1zm-5 3v-3H6v3h3zm-4 0v-3H2v1a2 2 0 0 0 2 2h1zm-3-4h3v-2H2v2zm0-3h3V7H2v2zm4 0V7h3v2H6zm0 1h3v2H6v-2z"/>
@@ -243,7 +243,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('journalachat', 'Journ.achat', '/products/journalachat')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('journalachat', 'Journ.achat', '/products/journalachat')">
               
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-journal-arrow-down" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 5a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5A.5.5 0 0 1 8 5z"/>
@@ -260,7 +260,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('journalvente', 'Journal vente', '/products/journalvente')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('journalvente', 'Journal vente', '/products/journalvente')">
               
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-journal-arrow-up" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z"/>
@@ -277,7 +277,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('situationsupplier', 'Situation Fournisseurs', 'products/situationsupplier')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('situationsupplier', 'Situation Fournisseurs', '/products/situationsupplier')">
               
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-layer-backward" viewBox="0 0 16 16">
                 <path d="M8.354 15.854a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708l1-1a.5.5 0 0 1 .708 0l.646.647V4H1a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9v7.793l.646-.647a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1 0 .708l-3 3z"/>
@@ -293,7 +293,7 @@
           </div>
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('listreglementsupp', 'ReglFourn', '/products/listreglementsupp')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('listreglementsupp', 'ReglFourn', '/products/listreglementsupp')">
               
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-currency-exchange" viewBox="0 0 16 16">
                 <path d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z"/>
@@ -307,7 +307,7 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('etatblcl', 'Etat Bl', '/products/etatblclients')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('etatblcl', 'Etat Bl', '/products/etatblclients')">
               
                 <i class="bi bi-card-checklist  h1">
                   
@@ -323,7 +323,7 @@
   
         <hr class="mt-5 mb-5" style="height: 8px;">
         <div class="row">
-          <div class="col-2" onclick="ajaxpage('addlistfactures', 'Factures', '/products/listfactures')">
+          <div class="col-2" onclick="createtab('addlistfactures', 'Factures', '/products/listfactures')">
             <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
               <i class="bi bi-receipt h1"></i>
               <div>
@@ -332,14 +332,14 @@
             </div>
           </div>
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="ajaxpage('addfacture', '+ Facture', '/products/facture')">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="createtab('addfacture', '+ Facture', '/products/facture')">
               <i class="bi bi-plus h1"></i>
               <div>
                 Facture
               </div>
             </div>
           </div>
-          <div class="col-2" onclick="ajaxpage('addlistreglementfc', 'ReglFC', '/products/listreglementfc')">
+          <div class="col-2" onclick="createtab('addlistreglementfc', 'ReglFC', '/products/listreglementfc')">
             <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
               <i class="bi bi-cash h1"></i>
               <div>
@@ -349,7 +349,7 @@
           </div>
           
           <!-- <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('addsituationclfc', 'Sit.CLFC', 'products/situationclfc')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addsituationclfc', 'Sit.CLFC', '/products/situationclfc')">
               <i class="bi bi-calculator h1"></i>
               <div>
                 Situation CL. FC
@@ -361,7 +361,7 @@
           </div> -->
   
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('journalventefc', 'Journal vente', '/products/journalventefc')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('journalventefc', 'Journal vente', '/products/journalventefc')">
               
               <i class="bi bi-newspaper h1"></i>
               <div>
@@ -372,7 +372,7 @@
           </div>
 
           <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="ajaxpage('journalachatfc', 'Journ.achat fc', '/products/journalachatfc')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('journalachatfc', 'Journ.achat fc', '/products/journalachatfc')">
               
               <i class="bi bi-newspaper h1"></i>
               <div>

@@ -1,0 +1,504 @@
+{% load global_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Example</title>
+    <style>
+      @media print {
+         .livraison-holder {
+             height: 27.5cm; /* Slightly less than the maximum printable height */
+             width: 21cm; /* Full width of A4 */
+             border: 1px solid black; /* For debugging and visibility */
+             page-break-after: always; /* Ensures each div starts on a new page */
+             box-sizing: border-box; /* Include padding and border in the element's total width and height */
+         }
+
+         /* Reset margins and paddings for printing */
+         body {
+             margin: 0;
+             padding: 0;
+         }
+         td > div{
+           margin:4px;
+         }
+
+         /* Optional: If you need to adjust margins more precisely */
+         @page {
+             margin: 0; /* Remove any default margins */
+         }
+     }
+    </style>
+    <script src="/static/js/jquery.min.js"></script>
+    <link href="/static/css/minified.css" rel="stylesheet" />
+</head>
+<body style="font-family:sans-serif;">
+
+
+
+{% for i in releve %}
+    {% if forloop.counter == releve|length %}
+    <!-- last iteration -->
+    <div class="d-flex flex-column postion-relative livraison{{order.id}}holder px-5" style="min-height: 29.7cm;width: 21cm;">
+      <!-- header -->
+      <div class="px-2">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; margin-top:20px;;" class="relvlogo invisible" >
+
+
+        <div style="margin-top:40px;" class="d-flex align-items-center">
+            <strong class="me-5" style="font-size:11px;">
+                Du: {{startdate|date:'d/m/Y'}} - A: {{enddate|date:'d/m/Y'}}
+            </strong>
+            <div class="bg-gray rounded mb-3" style="width: 12em;
+                border: 2px solid black;
+                padding: 5px;
+                background: #c7c7c78a;">
+                <strong >
+                    Situation Client
+                </strong>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <strong>
+                    {{client.code}}
+                </strong>
+            </div>
+            <div>
+                <strong>
+                    {{client.name}}
+                </strong>
+            </div>
+            <div>
+                <strong>
+                    {{client.city}}
+                </strong>
+            </div>
+        </div>
+
+
+
+      </div>
+
+      <!-- relev items -->
+      <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
+        <img width="1000em" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          z-index: 99
+          " class="relvlogo invisible">
+        <table class="table table-bordered " style="border:1px solid; font-size:14px;">
+            <thead style="background: #c7c7c78a;">
+                <tr class="bg-gray">
+                    <td>Date</td>
+                    <td>lable</td>
+                    <td>debit</td>
+                    <td>credit</td>
+                    <td>sold</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="height:200mm; width: 15%; padding-left:5px">
+                        {% for v in i %}
+                        <span {% if 'fc' in v.1 %}style="font-weight:bold; background:#e3e3e3;"{% endif %}>
+                        {{v.0.date|date:'d/m/Y'}}</span> <br>
+                        {% endfor %}
+                    </td>
+                    <td style="padding-left: 5px;">
+                        {% for v in i %}
+                        {% if v.1 == 'Facturefc' %}
+                        <span style="font-weight:bold; background:#e3e3e3;">{{v.0.facture_no}}</span>
+                        <br>
+
+                        {% elif v.1 == 'PaymentClientfc' %}
+                            {% if v.0.mode == espece %}
+                            <span style="font-weight:bold; background:#e3e3e3;">Regl. Espece</span>
+                              <br>
+                            {% else %}
+                            <span style="font-weight:bold; background:#e3e3e3;">Regl. FC {{v.0.mode}} {{v.0.npiece}}</span>
+                              <br>
+                            {% endif %}
+
+                        {% elif v.1 == 'Avoirclientfc' %}
+                        <span style="font-weight:bold; background:#e3e3e3;">Avoir {{v.0.no}}</span>
+                          <br>
+                        {% elif v.1 == 'bon' %}
+                        {{v.0.bon_no}}<br>
+                        {% elif v.1 == 'PaymentClientbl' %}
+                            {% if v.0.mode == espece %}
+                            Espece<br>
+                            {% else %}
+                            {{v.0.mode}} {{v.0.npiece}}<br>
+                            {% endif %}
+
+                        {% elif v.1 == 'Avoirclientbl' %}
+                        Avoir {{v.0.no}}<br>
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <!-- debit -->
+                    <td style="padding-left: 5px; width: 15%">
+                        {% for v in i %}
+                        {% if v.1 == 'Facturefc' %}
+                        <span class="debitsoldfc" style="font-weight:bold; background:#e3e3e3;">
+
+                            {{v.0.total|floatformat:2|intspace}}
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientfc' %}
+                        <span class="debitsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientfc' %}
+                        <span class="debitsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                        </span> <br>
+                        {% elif v.1 == 'bon' %}
+                        <span class="debitsoldbl">
+
+                            {{v.0.total|floatformat:2|intspace}}
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientbl' %}
+                        <span class="debitsoldbl">
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientbl' %}
+                        <span class="debitsoldbl">
+                        </span>
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+
+                    </td>
+                    <!--  credit -->
+                    <td style="padding-left: 5px; width: 15%">
+                        {% for v in i %}
+                        {% if v.1 == 'Facturefc' %}
+                        <span class="creditsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientfc' %}
+                        <span class="creditsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                            {{v.0.amount|floatformat:2|intspace}}
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientfc' %}
+                        <span class="creditsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                            {{v.0.total}}
+                        </span> <br>
+                        {% elif v.1 == 'bon' %}
+                        <span class="creditsoldbl">
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientbl' %}
+                        <span class="creditsoldbl">
+                            {{v.0.amount|floatformat:2|intspace}}
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientbl' %}
+                        <span class="creditsoldbl">
+                            {{v.0.total|floatformat:2|intspace}}
+                        </span>
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <!-- sold -->
+                    <td style="padding-left: 5px; width: 15%">
+                        {% for v in i %}
+                        <span {% if 'fc' in v.1 %}style="font-weight:bold; background:#e3e3e3;"{% endif %} class="{% if 'fc' in v.1 %}soldfc{%else%}soldbl{%endif%}"></span> <br>
+                        {% endfor %}
+                    </td>
+
+                </tr>
+            </tbody>
+            <!-- we dont need footer in the first iteration -->
+            <tfoot>
+                <tr class="text-center">
+
+                    <td colspan="2"></td>
+                    <td class="totaldebitfc totaldebitbl" style="background: #c7c7c78a; font-weight: bold;
+    font-size: 18px;">{{totaldebit|intspace}}</td>
+                    <td class="totalcreditfc totalcreditbl" style="background: #c7c7c78a; font-weight: bold;
+    font-size: 18px;">{{totalcredit|intspace}}</td>
+                </tr>
+                <tr class="text-center">
+
+                    <td colspan="2"></td>
+                    <td>Sold</td>
+                    <td class="totalsoldfc totalsoldbl" style="background:  #c7c7c78a; font-weight: bold;
+    font-size: 18px;">{{sold|intspace}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <!-- footer total -->
+
+        <small>
+          page: {{forloop.counter}}/{{orderitems|length}}
+        </small>
+      </div>
+    </div>
+
+
+    {% else %}
+    <div class="d-flex flex-column postion-relative livraison{{order.id}}holder px-5"style="min-height: 29.7cm;width: 21cm;">
+      <!-- header -->
+      <div>
+      <div class="px-2">
+        <img src="/media/logos/logo2.jpg" alt="" class="relvlogo invisible" style="width: 40%; margin-top:20px;">
+
+
+
+        </div>
+        <div style="margin-top:40px;" class="d-flex align-items-center">
+            <strong class="me-5" style="font-size:11px;">
+                Du: {{startdate|date:'d/m/Y'}} - A: {{enddate|date:'d/m/Y'}}
+            </strong>
+            <div class="bg-gray rounded mb-3" style="width: 12em;
+                border: 2px solid black;
+                padding: 5px;
+                background: #c7c7c78a;">
+                <strong >
+                    Situation Client
+                </strong>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <strong>
+                    {{client.code}}
+                </strong>
+            </div>
+            <div>
+                <strong>
+                    {{client.name}}
+                </strong>
+            </div>
+            <div>
+                <strong>
+                    {{client.city}}
+                </strong>
+            </div>
+        </div>
+
+
+
+      </div>
+      <!-- livraison items -->
+      <div class="releve mt-3 bg-white rounded p-2 position-relative">
+        <img width="1000em" src="/media/logos/dd.png" style="
+          position: absolute !important;
+          right: 9.3em;
+          opacity: 0.1;
+          top: 5em;
+          z-index: -99
+          ">
+        <table class="table table-bordered " style="border:1px solid; font-size:14px;">
+            <thead style="background: #c7c7c78a;">
+                <tr class="bg-gray">
+                    <td>Date</td>
+                    <td>lable</td>
+                    <td>debit</td>
+                    <td>credit</td>
+                    <td>sold</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="height:200mm; width: 15%; padding-left:5px">
+                        {% for v in i %}
+                        <span {% if 'fc' in v.1 %}style="font-weight:bold; background:#e3e3e3;"{% endif %}>
+                        {{v.0.date|date:'d/m/Y'}}</span> <br>
+                        {% endfor %}
+                    </td>
+                    <td style="padding-left: 5px;">
+                        {% for v in i %}
+                        {% if v.1 == 'Facturefc' %}
+                        <span style="font-weight:bold; background:#e3e3e3;">{{v.0.facture_no}}</span>
+                        <br>
+
+                        {% elif v.1 == 'PaymentClientfc' %}
+                            {% if v.0.mode == espece %}
+                            <span style="font-weight:bold; background:#e3e3e3;">Regl. Espece</span>
+                              <br>
+                            {% else %}
+                            <span style="font-weight:bold; background:#e3e3e3;">Regl. FC {{v.0.mode}} {{v.0.npiece}}</span>
+                              <br>
+                            {% endif %}
+
+                        {% elif v.1 == 'Avoirclientfc' %}
+                        <span style="font-weight:bold; background:#e3e3e3;">Avoir {{v.0.no}}</span>
+                          <br>
+                        {% elif v.1 == 'bon' %}
+                        {{v.0.bon_no}}<br>
+                        {% elif v.1 == 'PaymentClientbl' %}
+                            {% if v.0.mode == espece %}
+                            Espece<br>
+                            {% else %}
+                            {{v.0.mode}} {{v.0.npiece}}<br>
+                            {% endif %}
+
+                        {% elif v.1 == 'Avoirclientbl' %}
+                        Avoir {{v.0.no}}<br>
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <!-- debit -->
+                    <td style="padding-left: 5px; width: 15%">
+                        {% for v in i %}
+                        {% if v.1 == 'Facturefc' %}
+                        <span class="debitsoldfc" style="font-weight:bold; background:#e3e3e3;">
+
+                            {{v.0.total|floatformat:2|intspace}}
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientfc' %}
+                        <span class="debitsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientfc' %}
+                        <span class="debitsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                        </span> <br>
+                        {% elif v.1 == 'bon' %}
+                        <span class="debitsoldbl">
+
+                            {{v.0.total|floatformat:2|intspace}}
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientbl' %}
+                        <span class="debitsoldbl">
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientbl' %}
+                        <span class="debitsoldbl">
+                        </span>
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+
+                    </td>
+                    <!--  credit -->
+                    <td style="padding-left: 5px; width: 15%">
+                        {% for v in i %}
+                        {% if v.1 == 'Facturefc' %}
+                        <span class="creditsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientfc' %}
+                        <span class="creditsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                            {{v.0.amount|floatformat:2|intspace}}
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientfc' %}
+                        <span class="creditsoldfc" style="font-weight:bold; background:#e3e3e3;">
+                            {{v.0.total}}
+                        </span> <br>
+                        {% elif v.1 == 'bon' %}
+                        <span class="creditsoldbl">
+                        </span>
+                        <br>
+                        {% elif v.1 == 'PaymentClientbl' %}
+                        <span class="creditsoldbl">
+                            {{v.0.amount|floatformat:2|intspace}}
+                        </span>
+                        <br>
+
+                        {% elif v.1 == 'Avoirclientbl' %}
+                        <span class="creditsoldbl">
+                            {{v.0.total|floatformat:2|intspace}}
+                        </span>
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <!-- sold -->
+                    <td style="padding-left: 5px; width: 15%">
+                        {% for v in i %}
+                        <span {% if 'fc' in v.1 %}style="font-weight:bold; background:#e3e3e3;"{% endif %} class="{% if 'fc' in v.1 %}soldfc{%else%}soldbl{%endif%}"></span> <br>
+                        {% endfor %}
+                    </td>
+
+                </tr>
+            </tbody>
+
+
+        </table>
+      </div>
+      <div>
+        <small>
+          page: {{forloop.counter}}/{{releve|length}}
+        </small>
+      </div>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+
+<script>
+    if (localStorage.getItem('showenteterelv') === 'true'){
+      $('.relvlogo').removeClass('invisible')
+    }
+    var sold=0
+    $('.soldfc').each(function(i, v){
+        console.log($($('.creditsoldfc')[i]).text(), '-', parseFloat($($('.creditsoldfc')[i]).text()))
+        sold+=parseFloat($($('.debitsoldfc')[i]).text().replace(/\s/g, ''))?parseFloat($($('.debitsoldfc')[i]).text().replace(/\s/g, '')):0
+        sold-=parseFloat($($('.creditsoldfc')[i]).text().replace(/\s/g, ''))?parseFloat($($('.creditsoldfc')[i]).text().replace(/\s/g, '')):0
+        // console.log(parseFloat($(this).prev().prev().text())?parseFloat($(this).prev().prev().text()):0)
+        // sold+=parseFloat($(this).prev().prev().text())?parseFloat($(this).prev().prev().text()):0-parseFloat($(this).prev().text()?parseFloat($(this).prev().text()):0)
+        $(this).text(sold.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+        //$('.totalsoldfc').text(sold.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+    var totaldebit=0
+    $('.debitsoldfc').each(function(){
+        totaldebit+=parseFloat($(this).text())?parseFloat($(this).text().replace(/\s/g, '')):0
+        //$('.totaldebitfc').text(totaldebit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+    var totalcredit=0
+    $('.creditsoldfc').each(function(){
+        totalcredit+=parseFloat($(this).text())?parseFloat($(this).text().replace(/\s/g, '')):0
+        //$('.totalcreditfc').text(totalcredit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+
+    //bl
+    var sold=0
+    $('.soldbl').each(function(i, v){
+        console.log($($('.creditsoldbl')[i]).text(), '-', parseFloat($($('.creditsoldbl')[i]).text()))
+        sold+=parseFloat($($('.debitsoldbl')[i]).text().replace(/\s/g, ''))?parseFloat($($('.debitsoldbl')[i]).text().replace(/\s/g, '')):0
+        sold-=parseFloat($($('.creditsoldbl')[i]).text().replace(/\s/g, ''))?parseFloat($($('.creditsoldbl')[i]).text().replace(/\s/g, '')):0
+        // console.log(parseFloat($(this).prev().prev().text())?parseFloat($(this).prev().prev().text()):0)
+        // sold+=parseFloat($(this).prev().prev().text())?parseFloat($(this).prev().prev().text()):0-parseFloat($(this).prev().text()?parseFloat($(this).prev().text()):0)
+        $(this).text(sold.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+        //$('.totalsoldbl').text(sold.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+    var totaldebit=0
+    $('.debitsoldbl').each(function(){
+        totaldebit+=parseFloat($(this).text())?parseFloat($(this).text().replace(/\s/g, '')):0
+        //$('.totaldebitbl').text(totaldebit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+    var totalcredit=0
+    $('.creditsoldbl').each(function(){
+        totalcredit+=parseFloat($(this).text())?parseFloat($(this).text().replace(/\s/g, '')):0
+        //$('.totalcreditbl').text(totalcredit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+
+    })
+</script>
+</body>
+</html>

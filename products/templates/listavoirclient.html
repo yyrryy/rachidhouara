@@ -7,6 +7,7 @@
     </div>
     <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('avoircl', '/products/listavoirclient')">↻</button>
   </div>
+  {% if not facturesection %}
   <div class="d-flex justify-content-between">
 
     <div class="d-flex">
@@ -21,15 +22,18 @@
       </div>
 
     </div>
-    {%if target == 's'%}
-    <button class="btn btn-success" onclick="ajaxpage('addavoir', '+AvoirCL', '/products/avoirclient?target=s')">
-      +Ajouter
-    </button>
-    {% else %}
-    <button class="btn btn-success" onclick="ajaxpage('addavoir', '+AvoirCL', '/products/avoirclient?target={{target}}')">
+
+    <button class="btn btn-success" onclick="createtab('addavoir', '+AvoirCL', '/products/avoirclient')">
       +Ajouter
   </button>
 
+  <select name="yearsavcl" class="populateyears" onchange="yeardataavcl()" style="background: #eaeaea;
+  margin: 0 6px 10px;
+  width: 5em;
+  border-radius: 10px;">
+
+
+  </select>
   {% endif %}
   </div>
   <div class="filters mt-2">
@@ -47,13 +51,14 @@
           <td style="width: 5%;">Region</td>
           <td style="width: 5%;">Ville</td>
           {% if facturesection %}<td style="width: 5%;">Solde</td>{% endif %}
+          <td style="width: 5%;">Repr</td>
           <td style="width: 5%;">status</td>
           <td style="width: 5%;">Note</td>
         </tr>
       </thead>
       <tbody class="listavclbody">
         {% for order in bons %}
-          <tr class="ord" orderid="{{order.code}}" ondblclick="ajaxpage('avoir{{order.id}}', 'avoir {{order.no}}', '/products/avoirdetails/{{order.id}}?target={{target}}')">
+          <tr class="ord" orderid="{{order.code}}" ondblclick="createtab('avoir{{order.id}}', 'avoir {{order.no}}', '/products/avoirdetails/{{order.id}}')">
             <td>{{ order.no }}</td>
             <td>{{ order.date|date:'d/m/Y' }}</td>
             <td>{{ order.client.name }}</td>
@@ -61,23 +66,27 @@
             <td>{{ order.total}}</td>
             <td>{{ order.client.region }}</td>
             <td>{{ order.client.city }}</td>
-            <td>
-              {% if order.ispaid %}
-              <div  style="text-align: center; background: lightgreen;">
-                Payé
-              </div>
-
-              {% elif order.inreglement %}
-              <div class="" style="text-align: center; background: rgb(179, 255, 0);">
-                Reglement
-              </div>
-              {% endif %}
-            </td>
+            {% if facturesection %}<td>{{ order.client.methodsoldfc|floatformat:2 }}</td>{% endif %}
+            <td>{{ order.representant }}</td>
+            <td>{% if order.avoirfacture %} facture {% else %}  BL {% endif %} </td>
             <td>{% if order.note %} {{ order.note }} {% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>
-      
+      <thead style="background: white; position: sticky; bottom: 0; z-index: 99;">
+        <tr>
+          <td style="width: 8%;"></td>
+          <td style="width: 8%;"></td>
+          <td style="width: 12%;"></td>
+          <td style="width: 5%;"></td>
+          <td style="width: 5%; background: yellowgreen;" class="totalbons">{{total|floatformat:2}}</td>
+          <td style="width: 5%;"></td>
+          <td style="width: 5%;"></td>
+          <td style="width: 5%;"></td>
+          <td style="width: 5%;"></td>
+          <td style="width: 5%;"></td>
+        </tr>
+      </thead>
       <!-- <tfoot>
         <tr>
           <td>N° bon</td>
@@ -107,6 +116,16 @@
 
 
 <script>
+  function yeardataavcl(){
+    let year=$('[name="yearsavcl"]').val()
+    if (year != 0){
+        $.get('/products/yeardataavcl', {'year':year}, (data)=>{
+            $('.listavcltable tbody').html(data)
+            //$('.totalreglbl').text(data.total)
+        })
+    }
+  }
+  populateyears()
   function getnotpaid(event) {
     let parentdiv=$(event.target).parent().parent()
     let tbody=parentdiv.find('tbody')

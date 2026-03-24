@@ -109,7 +109,7 @@
               {% for i in products %}
                 <!--
                 -->
-                <tr ondblclick="ajaxpage('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}')"
+                <tr ondblclick="createtab('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}')"
                 style="background:{% if not i.isactive %}#f3d6d694;{% endif %}"
                 data-product-id="{{ i.id }}" class="product-row ">
                     <td style="padding: 5px; font-weight: bold;" class="pe-2">
@@ -120,7 +120,7 @@
                     </td>
 
                     <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
-                       {% if i.buyprice %} {{i.buyprice|floatformat:2}} {% else %} 0 {% endif %}
+                       {% if i.buyprice %} -- {% else %} 0 {% endif %}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center">
                        {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}
@@ -133,7 +133,8 @@
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center stockfacture" style="color: blue;">
                       <span class="stockfacture">
-                        {{i.stockfacture}}
+                        <!-- {{i.stockfacture}} -->
+                        {{i.stocktotal}}
                       </span>
                   </td>
 
@@ -176,7 +177,7 @@
 
             </tbody>
             <tfoot style="background: rgb(231, 231, 231); position: sticky; bottom: 0;" class="tfootlistproduct">
-              <tr>
+              <!-- <tr>
 
                 <td></td>
                 <td class="text-end text-center" style="background: yellowgreen;">B</td>
@@ -194,7 +195,7 @@
                 <td>
                 </td>
                 <td></td>
-              </tr>
+              </tr> -->
             </tfoot>
         </table>
       </div>
@@ -374,9 +375,9 @@
     //     return term.trim();
     // });
     if (filterValue==""){
-        ajaxpage('addpducts', 'Articles', '/products/stock?fc=1')
+        createtab('addpducts', 'Articles', '/products/stock?fc=1')
     }else
-      {$.get('/products/searchproduct?target={{target}}sforstock', {'term':filterValue.trim(), 'facture':1}, (data)=>{
+      {$.get('/products/searchproductsforstock', {'term':filterValue.trim(), 'facture':1}, (data)=>{
 
               $(".productstable tbody").html('')
               $(".productstable tbody").html(data.trs)

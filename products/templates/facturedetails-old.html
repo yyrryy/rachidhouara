@@ -8,7 +8,7 @@
     entette
   </button>
 
-  <button class="btn btn-danger" onclick="ajaxpage('addmodifierfacture{{facture.id}}', 'Modifier facture {{facture.facture_no}}', '/products/modifierfacture/{{facture.id}}')">
+  <button class="btn btn-danger" onclick="createtab('addmodifierfacture{{facture.id}}', 'Modifier facture {{facture.facture_no}}', '/products/modifierfacture/{{facture.id}}')">
     Modifier
   </button>
   <button class="btn btn-success" onclick="comptable(event, '{{facture.id}}')">
@@ -43,7 +43,7 @@
 
     <!-- facture header -->
     <div class="">
-      <img src="" alt="" style="width: 40%;" class="factureheader">
+      <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="factureheader">
         <div class="d-flex justify-content-between mt-5">
           <div>
             <h5 style="
@@ -189,11 +189,11 @@
           Arreter la presente facture à la somme de: <br>
         <span class="totalfactureprint" style="font-size:10px ;"></span>
       </div>
-      <div style="font-size:11px">
-        adress <br>
-        IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
-        Fixe: +212 500000000 - Tel: 06 0000
-      </div>
+      <!-- <div style="font-size:11px">
+        LOT ARGANA N° B25 - AIT MELLOUL <br>
+        IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - ICE: 001667720000027 <br>
+        Fixe: +212 528 24 35 17 - Tel: 06 66 03 72 81
+      </div> -->
     </div>
   </div>
   {% else %}
@@ -202,7 +202,7 @@
 
     <!-- facture header -->
     <div class="">
-      <img src="" alt="" style="width: 40%;" class="factureheader">
+      <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="factureheader">
         <div class="d-flex justify-content-between mt-5">
           <div>
             <h5 style="
@@ -299,12 +299,12 @@
 
     <!-- facture footer -->
 
-    <div class="text-center" style="font-size:11px">
+    <!-- <div class="text-center" style="font-size:11px">
 
-      adress <br>
-      IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
-      Fixe: +212 500000000 - Tel: 06 0000
-    </div>
+      LOT ARGANA N° B25 - AIT MELLOUL <br>
+      IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - ICE: 001667720000027 <br>
+      Fixe: +212 528 24 35 17 - Tel: 06 66 03 72 81
+    </div> -->
 
   </div>
   {% endif %}
@@ -331,7 +331,7 @@
       'note':$('.notefacture{{facture.id}}input').val()
     },(data)=>{
       deletetab('facture{{facture.id}}')
-      ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+      createtab('addlistfactures', 'Factures', '/products/listfactures')
     }
   )}
   // facture is comptablisé

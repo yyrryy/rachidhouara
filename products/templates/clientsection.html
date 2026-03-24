@@ -5,11 +5,11 @@
         List client
       </div>
 
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listdevi?target={{target}}')">
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')">
         Devis
       </div>
 
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listcommand?target={{target}}')">
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')">
         Commandes
       </div>
 
@@ -17,26 +17,16 @@
       <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('listbl', 'list bon livraison', '/products/listbonlivraison?target={{target}}')">
         List Bons
       </div>
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('listbl', 'list bon livraison', '/products/listbonlivraison?target={{target}}')">
-        List Bons valider
-      </div>
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('listbl', 'list bon livraison', '/products/listbonlivraison?target={{target}}')">
-        List Bons annulé
-      </div>
-      
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listfactures?target={{target}}')">
-        Facture
-      </div>    
 
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addbonsortie', '+bon livraison', '/products/listavoirclient?target={{target}}')">
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')">
+        Facture
+      </div>
+
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addbonsortie', '+bon livraison', '/products/bonlivraison?target={{target}}')">
         Avoirs
       </div>
       <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')">
         Reglement
-      </div>
-
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listavances?target={{target}}')">
-        Avances
       </div>
       
       <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/situationcl?target={{target}}')">
@@ -52,224 +42,210 @@
     </div>
     <div class="col-10" id="maintab">
         <!-- addsupplier modal -->
-        <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-            <div>
-              {{title}}
-            </div>
-            <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addclientstab', 'list clients', '/products/clientspage?target={{target}}')">↻</button>
-          </div>
-        <div class="modal fade" id="editclientmodal" tabindex="-1" aria-labelledby="editclientmodalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content bg-white">
-        
-                    <div class="modal-body">
-                        <form class="form-horizontal add-ledger-form" id="updateclientform" autocomplete="off">
-                            <div class="form-group">
-                                {% csrf_token %}
-                                <input type="text" name="updateclientname" class="form-control mb-2" placeholder="client">
-                                <input type="text" name="updateclientcode" class="form-control mb-2" placeholder="Code">
-                                <!-- <div class="mb-2">
-                                    <small>Representant</small>
-                                <select name="updateclientrep" class="form-select">
-                                    <option value="">--</option>
-                                    {% for i in commerciaux %}
-                                    <option value="{{i.id}}">{{i.name}}</option>
-                                    {% endfor %}
-                                </select>
-                                </div> -->
-                                <input type="text" name="updateclientplafon" class="form-control mb-2" placeholder="plafon">
-                                <input type="text" name="updateclientphone" class="form-control mb-2" placeholder="phone">
-                                <input type="text" name="updateclientpersonalname" class="form-control mb-2" placeholder="NOM PERSONNEL">
-                                <input type="text" name="updateclientlocation" class="form-control mb-2" placeholder="localisation">
-                                <input type="text" name="updateclientphone2" class="form-control mb-2" placeholder="phone 2">
-                                <input type="text" name="updateclientice" class="form-control mb-2" placeholder="ICE">
-                                <input type="text" name="updateclientcity" class="form-control mb-2" placeholder="Ville">
-                                <input type="text" name="updateclientaddress" class="form-control mb-2" placeholder="Addresse">
-                                <input type="text" name="updateclientregion" class="form-control mb-2" placeholder="Region">
-                                <input hidden type="text" name="updateclientid">
-                                <hr>
-                                <small>Mode reglement (1: espece):</small>
-                                <input type="text" name="updateclientmoderegl" class="form-control mb-2">
-        
-                                    <button class="w-100 btn btn-primary updateclientbtn">Ajouter</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="w-100 btn btn-secondary" data-dismiss="modal">Fermer</button>
-        
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-        
-            <div class="card-body row">
-                <div class="col-3">
-                  <div class="border-end p-2">
-                      <strong>
-                          + Ajouter un Client
-                      </strong>
-                      <form action="{% url 'products:addclient' %}" class="mt-3" method="post" id="addclientform">
-                          {% csrf_token %}
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+  <div>
+    {{title}}
+  </div>
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addclientstab', 'list clients', '/products/clientspage?target={{target}}')">↻</button>
+</div>
+<div class="modal fade" id="editclientmodal" tabindex="-1" aria-labelledby="editclientmodalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content bg-white">
 
-                          <div class="clientcodeerror alert alert-danger d-none">
-                              Code/Client deja existe
-                          </div>
-                          <input type="file" name="image">
-                          <input type="text" name="clientcode" class="form-control mb-2 " placeholder="Code" value="{{lastcode}}">
-                          <input type="text" name="clientnameinp" class="form-control mb-2" placeholder="Nom STE">
-                          <input type="text" name="clientnamepersinp" class="form-control mb-2" placeholder="Nom contact">
-                          <!-- <div class="mb-2">
-                              <small>Representant</small>
-                          <select name="clientrep" class="form-select">
-                              <option value="">--</option>
-                              {% for i in commerciaux %}
-                              <option value="{{i.id}}">{{i.name}}</option>
-                              {% endfor %}
-                          </select>
-                          </div> -->
-                          <input type="number" name="clientphone" class="form-control mb-2" placeholder="phone">
-                          <input type="number" name="clientplafon" class="form-control mb-2" placeholder="plafon">
-                          <input type="number" name="clientphone2" class="form-control mb-2" placeholder="phone 2">
-                          <input type="text" name="clientice" class="form-control mb-2" placeholder="ICE">
-                          <input type="text" name="clientrc" class="form-control mb-2" placeholder="RC">
-                          <input type="text" name="clientif" class="form-control mb-2" placeholder="IF">
-        
-                          <small>Mode reglement:</small>
-                          <select id="" name="modereglement" class="modereglement form-control mb-2">
-                            <option value="compte">En compte</option>
-                            <option value="espece">Contre espece</option>
-                            <option value="cheque">Contre cheque</option>
-                            <option value="effet">Contre effet</option>
-                            <option value="verement">Contre verement</option>
-                          </select>
-        
-                          <input type="text" name="clientcity" class="form-control mb-2" placeholder="Ville">
-                          <input type="number" name="clientsold" class="form-control mb-2" placeholder="Sold Initial">
-                          <input type="text" name="clientemail" class="form-control mb-2" placeholder="Email">
-                          <input type="text" name="clientaddress" class="form-control mb-2" placeholder="Addresse">
-                          <input type="text" name="clientregion" class="form-control mb-2" placeholder="Region">
-                          <small>Observation:</small>
-                          <textarea name="note" id="" cols="30" rows="10" class="note form-control"></textarea>
-                          <!-- CHECK CODECLIENT IN UPDATE -->
-                          <button class="btn btn-outline-success w-100 submitaddclientbtn">
-                              Enregistrer
-                          </button>
-                      </form>
-                  </div>
-                </div>
-                <div class="col-9">
-                  <!-- {% if not facturesection %}
-                  <div class="col-8 d-flex justify-content-between mt-2">
-                      <select>
+          <div class="modal-body">
+              <form class="form-horizontal add-ledger-form" id="updateclientform" autocomplete="off">
+                  <div class="form-group">
+                      {% csrf_token %}
+                      <input type="text" name="updateclientname" class="form-control mb-2" placeholder="client">
+                      <input type="text" name="updateclientcode" class="form-control mb-2" placeholder="Code">
+                      <!-- <div class="mb-2">
+                          <small>Representant</small>
+                      <select name="updateclientrep" class="form-select">
+                          <option value="">--</option>
                           {% for i in commerciaux %}
                           <option value="{{i.id}}">{{i.name}}</option>
                           {% endfor %}
                       </select>
-                      <input type="text" class="form-control regionfilterclientpage" placeholder="Region">
-                      <button class="btn btn-primary" onclick="filterclientspage(event)" >Filtrer</button>
-                      <button class="btn btn-success ms-5" onclick="tabletoexcel()"> Excel</button>
+                      </div> -->
+                      <input type="text" name="updateclientplafon" class="form-control mb-2" placeholder="plafon">
+                      <input type="text" name="updateclientphone" class="form-control mb-2" placeholder="phone">
+                      <input type="text" name="updateclientpersonalname" class="form-control mb-2" placeholder="NOM PERSONNEL">
+                      <input type="text" name="updateclientlocation" class="form-control mb-2" placeholder="localisation">
+                      <input type="text" name="updateclientphone2" class="form-control mb-2" placeholder="phone 2">
+                      <input type="text" name="updateclientice" class="form-control mb-2" placeholder="ICE">
+                      <input type="text" name="updateclientcity" class="form-control mb-2" placeholder="Ville">
+                      <input type="text" name="updateclientaddress" class="form-control mb-2" placeholder="Addresse">
+                      <input type="text" name="updateclientregion" class="form-control mb-2" placeholder="Region">
+                      <input hidden type="text" name="updateclientid">
+                      <hr>
+                      <small>Mode reglement (1: espece):</small>
+                      <input type="text" name="updateclientmoderegl" class="form-control mb-2">
+
+                          <button class="w-100 btn btn-primary updateclientbtn">Ajouter</button>
                   </div>
-                  {% endif %} -->
-                  <div class="d-flex justify-content-between mt-2">
-                      <input  type="text" name="" id="" placeholder="Recherche" class="searchinputlistclients col-6" style="border-radius: 2em;height: 2.3em;background: #ffa50047;">
-                      <div class="d-flex">
-                          <input type="file" class="form-control excelfile">
-                          <button class="btn-success btn-sm" onclick="excelclients(event)">
-                              Import excel
-                          </button>
-                      </div>
-                  </div>
-                  <div style="height: 70vh; overflow-y: scroll;" class="clientsholder">
-                    <table class="table table-bordered listclientstable" style="font-size: 12px;" id="clientstable">
-                        <thead style="background: #ffcd83; position: sticky; top: 0;">
-                            <td style="width: 4%;"></td>
-                            <td onclick="sorttable(event)">
-                                client
-                            </td>
-                            <td onclick="sorttable(event)">
-                                Code
-                            </td>
-                            <td onclick="sorttable(event)">
-                                phone
-                            </td>
-                            <td onclick="sorttable(event)">
-                                Ville
-                            </td>
-                            <!-- <td onclick="sorttable(event)">
-                                Region
-                            </td> -->
-                            
-                            <!-- <td onclick="intsorttable(event)">
-                                Sold total
-                            </td> -->
-                            <td onclick="intsorttable(event)">
-                                Sold
-                            </td>
-                            
-                            <td onclick="sorttable(event)">
-                                ICE
-                            </td>
-                        </thead>
-                        <tbody class="clientstablebody">
-                            {% for i in clients %}
-                            <tr class="client-row" {% if i.diver %} style="background: #a8dfc5" {% endif %}>
-                                <td>
-                                    <button class="btn editsuppbtn border" id="{{i.id}}" data-toggle="modal" data-target="#editclientmodal" onclick="populateclientfields('{{i.id}}')">
-                                        ✐
-                                    </button>
-                                </td>
-                                <!-- <a href="onclick="ajaxpage('client{{i.id}}', 'client: {{i.name}}', '/products/clientlier/{{i.id}}')""></a> -->
-                                <!-- <td onclick="ajaxpage('client{{i.id}}', 'Client: {{i.name}}', '/products/client/{{i.id}}')">{{i.name}}</td> -->
-                                <td>{{i.name}}</td>
-                                <td >{{i.code}}</td>
-                                <td>{{i.phone}}</td>
-                                <td>{{i.city}}</td>
-                                <!-- <td>{{i.region}}</td> -->
-                                
-                                <!-- <td>{{i.soldtotal|floatformat:2}}</td> -->
-                                <td style="background: yellowgreen;">{{i.soldbl|floatformat:2}}</td>
-                                <td>{{i.ice}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        <thead style="background: white; position: sticky; bottom: 0;">
-                            <td style="width: 4%;"></td>
-                            <td>
-          
-                            </td>
-                            <td>
-          
-                            </td>
-                            <td>
-          
-                            </td>
-                            <td>
-          
-                            </td>
-                            <td>
-          
-                            </td>
-                            <td>
-          
-                            </td>
-                            
-                            <td style="background: yellowgreen;">
-                                {{soldbl|floatformat:2|intspace}}
-                            </td>
-                            
-                            <td>
-          
-                            </td>
-                        </thead>
-                    </table>
-                </div>
-                </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="w-100 btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="card">
+
+  <div class="card-body row">
+    <div class="col-3">
+      <div class="border-end p-2">
+          <strong>
+              + Ajouter un Client
+          </strong>
+          <form action="{% url 'products:addclient' %}" class="mt-3" method="post" id="addclientform">
+              {% csrf_token %}
+              <div class="clientcodeerror alert alert-danger d-none">
+                  Code/Client deja existe
               </div>
-        </div>
-        
+              <input type="text" name="clientcode" class="form-control mb-2 " placeholder="Code" value="{{lastcode}}">
+              <input type="text" name="clientnameinp" class="form-control mb-2" placeholder="client">
+              <!-- <div class="mb-2">
+                  <small>Representant</small>
+              <select name="clientrep" class="form-select">
+                  <option value="">--</option>
+                  {% for i in commerciaux %}
+                  <option value="{{i.id}}">{{i.name}}</option>
+                  {% endfor %}
+              </select>
+              </div> -->
+              <input type="number" name="clientphone" class="form-control mb-2" placeholder="phone">
+              <input type="number" name="clientplafon" class="form-control mb-2" placeholder="plafon">
+              <input type="number" name="clientphone2" class="form-control mb-2" placeholder="phone 2">
+              <input type="text" name="clientice" class="form-control mb-2" placeholder="ICE">
+              <input type="text" name="clientcity" class="form-control mb-2" placeholder="Ville">
+              <input type="text" name="clientaddress" class="form-control mb-2" placeholder="Addresse">
+              <input type="text" name="clientregion" class="form-control mb-2" placeholder="Region">
+              <!-- CHECK CODECLIENT IN UPDATE -->
+              <button class="btn btn-outline-success w-100 submitaddclientbtn">
+                  Enregistrer
+              </button>
+          </form>
+      </div>
+    </div>
+    <div class="col-9">
+      <!-- {% if not facturesection %}
+      <div class="col-8 d-flex justify-content-between mt-2">
+          <select>
+              {% for i in commerciaux %}
+              <option value="{{i.id}}">{{i.name}}</option>
+              {% endfor %}
+          </select>
+          <input type="text" class="form-control regionfilterclientpage" placeholder="Region">
+          <button class="btn btn-primary" onclick="filterclientspage(event)" >Filtrer</button>
+          <button class="btn btn-success ms-5" onclick="tabletoexcel()"> Excel</button>
+      </div>
+      {% endif %} -->
+      <div class="d-flex justify-content-between mt-2">
+          <input  type="text" name="" id="" placeholder="Recherche" class="searchinputlistclients col-6" style="border-radius: 2em;height: 2.3em;background: #ffa50047;">
+          <div class="d-flex">
+              <input type="file" class="form-control excelfile">
+              <button class="btn-success btn-sm" onclick="excelclients(event)">
+                  Import excel
+              </button>
+          </div>
+      </div>
+      <div style="height: 70vh; overflow-y: scroll;" class="clientsholder">
+          <table class="table table-bordered listclientstable" style="font-size: 12px;" id="clientstable">
+              <thead style="background: #ffcd83; position: sticky; top: 0;">
+                  <td style="width: 4%;"></td>
+                  <td onclick="sorttable(event)">
+                      client
+                  </td>
+                  <td onclick="sorttable(event)">
+                      Code
+                  </td>
+                  <td onclick="sorttable(event)">
+                      phone
+                  </td>
+                  <td onclick="sorttable(event)">
+                      Ville
+                  </td>
+                  <td onclick="sorttable(event)">
+                      Region
+                  </td>
+                  <td onclick="sorttable(event)">
+                      Representant
+                  </td>
+                  {% if not facturesection %}
+                  <!-- <td onclick="intsorttable(event)">
+                      Sold total
+                  </td> -->
+                  <td onclick="intsorttable(event)">
+                      Sold Bl
+                  </td>
+                  {% endif %}
+                  <td onclick="intsorttable(event)">
+                      Sold Facture
+                  </td>
+                  <td onclick="sorttable(event)">
+                      ICE
+                  </td>
+              </thead>
+              <tbody class="clientstablebody">
+                  {% for i in clients %}
+                  <tr class="client-row" {% if i.diver %} style="background: #a8dfc5" {% endif %}>
+                      <td>
+                          <button class="btn editsuppbtn border" id="{{i.id}}" data-toggle="modal" data-target="#editclientmodal" onclick="populateclientfields('{{i.id}}')">
+                              ✐
+                          </button>
+                      </td>
+                      <!-- <a href="onclick="ajaxpage('client{{i.id}}', 'client: {{i.name}}', '/products/clientlier/{{i.id}}')""></a> -->
+                      <!-- <td onclick="ajaxpage('client{{i.id}}', 'Client: {{i.name}}', '/products/client/{{i.id}}')">{{i.name}}</td> -->
+                      <td>{{i.name}}</td>
+                      <td >{{i.code}}</td>
+                      <td>{{i.phone}}</td>
+                      <td>{{i.city}}</td>
+                      <td>{{i.region}}</td>
+                      
+                      <!-- <td>{{i.soldtotal|floatformat:2}}</td> -->
+                      <td style="background: yellowgreen;">{{i.soldbl|floatformat:2}}</td>
+                      <td>{{i.ice}}</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+              <thead style="background: white; position: sticky; bottom: 0;">
+                  <td style="width: 4%;"></td>
+                  <td>
+
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+
+                  </td>
+                  
+                  <td style="background: yellowgreen;">
+                      {{soldbl|floatformat:2|intspace}}
+                  </td>
+                  
+                  <td>
+
+                  </td>
+              </thead>
+          </table>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <script>

@@ -1,0 +1,108 @@
+{% load global_tags %}
+
+{% for i in reglements %}
+               <tr class="reglbl-row"
+               {% if not i.ispaid and i.mode != 'espece' and i.mode != 'avoir' %}
+                   {% if i.echance == today %}
+                       style="background: yellow;"
+                   {% elif i.echance < today %}
+                       style="background: red;"
+                   {% endif %}
+               {% endif %}
+                >
+                     <td>
+                          {{i.mode}} <br>
+                          <!-- <select name="updatemodereglbl{{i.id}}" id=""></select> -->
+                     </td>
+                     <td>
+                          {{i.npiece}} <br>
+                          <input type="text" class="d-none updatenpiecereglbl{{i.id}}">
+                     </td>
+                     <td>
+                          {{i.amount|floatformat:'2'|intspace}}<br>
+                          <!-- <input type="text" class="d-none updateamountreglbl{{i.id}}"> -->
+                     </td>
+                     <td>
+                          {{i.date|date:"d/m/Y"}}<br>
+                          <input type="date" class="d-none updatetdatereglbl{{i.id}}">
+                     </td>
+                     <td class="text-start">
+                          {{i.client.name}}
+                     </td>
+                     <td>
+                          {{i.client.code}}
+                     </td>
+                     <td>
+                          {{i.echance|date:"d/m/Y"}} <br>
+                     </td>
+                     <td class="d-flex justify-content-between">
+                        <div class="accordion" id="accordionbons{{i.id}}">
+
+                            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{i.id}}" aria-expanded="true" aria-controls="collapsbon{{i.id}}">
+
+
+                            </button>
+
+                            <div id="collapsbon{{i.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{i.id}}">
+                                {% for bon in i.bons.all %}
+                                -{{ bon.bon_no }} <br>
+                                {% endfor %}
+
+
+                            </div>
+                        </div>
+                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip="Bon Nos: {% for bon in i.bons.all %}{{ bon.bon_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="createtab('regl{{i.id}}tab', 'regl{{i.id}}tab', '/products/viewreglement/{{i.id}}')">
+                        </button> -->
+
+                        <button class="btn btn-success btn-sm" onclick="updatereglementbl('{{i.id}}')" style="font-size: 12px;
+                        height: 19px;">✐</button>
+                     </td>
+               </tr>
+               {% endfor %}
+{% for i in reglementsfc %}
+               <tr class="reglfc-row"  style={% if i.echance and i.echance == today %}"background: yellow;"{% elif i.echance and i.echance < today %}"color:red" {% endif %}>
+                     <td>
+                          {{i.mode}}
+                     </td>
+                     <td>
+                          {{i.npiece}}
+                     </td>
+                     <td>
+                          {{i.amount|floatformat:2|intspace}}
+                     </td>
+                     <td>
+                          {{i.date|date:"d/m/Y"}}
+                     </td>
+                     <td>
+                          {{i.client.name}}
+                     </td>
+                     <td>
+                          {{i.client.code}}
+                     </td>
+                     <td>
+                          {{i.echance|date:"d/m/Y"}}
+                     </td>
+                     <td class="d-flex justify-content-between">
+                        <div class="accordion" id="accordionfactures{{i.id}}">
+
+                            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsfacture{{i.id}}" aria-expanded="true" aria-controls="collapsfacture{{i.id}}">
+
+
+                            </button>
+
+                            <div id="collapsfacture{{i.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionfactures{{i.id}}">
+                                {% for bon in i.factures.all %}
+                                -{{ bon.facture_no }} <br>
+                                {% endfor %}
+
+
+                            </div>
+                        </div>
+                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.factures.all %}{{ bon.facture_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="createtab('viewreg{{i.id}}', 'reglement #{{i.id}}', '/products/viewreglementfc/{{i.id}}')">
+                        </button> -->
+
+                        <button class="btn btn-success btn-sm" onclick="updatereglementfc({{i.id}})" style="font-size: 12px;
+                        height: 19px;">✐</button>
+                     </td>
+               </tr>
+               {% endfor %}

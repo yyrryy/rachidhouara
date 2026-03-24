@@ -1,0 +1,29 @@
+{% for i in reglements %}
+<tr class="suppreglrow">
+      <td>
+           {{i.mode}}
+      </td>
+      <td>
+           {{i.npiece}}
+      </td>
+      <td>
+           {{i.amount}}
+      </td>
+      <td>
+           {{i.date|date:"d/m/Y"}}
+      </td>
+      <td>
+           {{i.supplier.name}}
+      </td>
+      <td>
+           {{i.echeance|date:"d/m/Y"}}
+      </td>
+      <td class="d-flex justify-content-between">
+
+         <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.bons.all %}{{ bon.nbon }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+         </button>
+
+         <button class="btn btn-success btn-sm" onclick="updatereglementsupp('{{i.id}}')">✐</button>
+      </td>
+</tr>
+{% endfor %}

@@ -1,145 +1,144 @@
-<div class="row">
-  <div class="col-8">
-    <div class="bg-white border p-2 rounded">
-      <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button> -->
-        <div>
-          {{title}} {{target}}
-        </div>
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button> -->
-      </div>
-      <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistecheance">
-      <div style="height: 70vh; overflow: scroll;">
-        <table class="table table-bordered table-hover table-striped echeancestable" style="font-size: 12px;" id="addbonlivraisonle">
-          <thead style="position: sticky; top: 0;">
-            <tr>
-              <td style="width: 8%;">Date</td>
-              <td style="width: 8%;">N° piece</td>
-              <td style="width: 12%;">Client</td>
-              <td style="width: 5%;">Mode</td>
-              <td style="width: 5%;">Mantant</td>
-              <td>
-                Echance
-              </td>
-              <td></td>
-              
-            </tr>
-          </thead>
-          <tbody>
-            {% for order in echeances %}
-          
-              <tr class="ord" orderid="{{order.id}}" style="background:{% if order.echance == today %}yellowgreen;{% elif order.echance < today %}#fff0f3{% endif %}">
-                <td>{{ order.date|date:'d/m/Y' }} </td>
-                <td>{{ order.npiece }}</td>
-                <td>{{ order.client.name }}</td>
-                <td>{{ order.mode}}</td>
-                <td>{{ order.amount|floatformat:2}}</td>
-                <td>{{ order.echance|date:'d/m/Y'}}</td>
-    
-                
-                <td class="d-flex justify-content-between">
-                  <button reglid="{{order.id}}" reglmode="{{order.mode}}" rglnpiece="{{order.npiece}}" onclick="selectregl('{{order.id}}', '{{order.mode}}', '{{order.npiece}}', '{{order.amount}}')" class="btn btn-dark bi bi-arrow-right"></button>
-                </td>
-    
-    
-    
-              </tr>
-              
-            {% endfor %}
-          </tbody>
-          <thead style="position: sticky; bottom: 0; background: white;">
-            <tr>
-              <td style="width: 8%;"></td>
-              <td style="width: 8%;"></td>
-              <td style="width: 12%;"></td>
-              <td style="width: 12%;"></td>
-              <td style="width: 5%; background: yellowgreen;" class="totalbbonachat">{{total|floatformat:2}}</td>
-              <td style="width: 5%;"></td>
-              <td style="width: 5%;"></td>
-            </tr>
-          </thead>
-          <!-- <tfoot>
-            <tr>
-              <td>N° bon</td>
-              <td>Date</td>
-              <td>Client</td>
-              <td>Code client</td>
-              <td>Total</td>
-              <td>Region</td>
-              <td>Ville</td>
-              <td>Solde cl.</td>
-              <td>Repr</td>
-              <td>Reglé</td>
-              <td>Facturé</td>
-              <td>Transport</td>
-            </tr>
-          </tfoot> -->
-        </table>
-      </div>
-      <div ></div>
+
+<div class="bg-white shadow rounded">
+  <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button>
+    <div>
+      {{title}}
     </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
   </div>
+  <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistecheance">
+  <div style="height: 70vh; overflow: scroll;">
+    <table class="table table-bordered table-hover table-striped echeancestable" style="font-size: 12px;" id="addbonlivraisonle">
+      <thead style="position: sticky; top: 0; background: gray;">
+        <tr>
+          <td style="width: 8%;">Date</td>
+          <td style="width: 8%;">N° piece</td>
+          <td style="width: 12%;">Client</td>
+          <td style="width: 12%;">Representant</td>
+          <td style="width: 5%;">Mode</td>
+          <td style="width: 5%;">Mantant</td>
+          <td>
+            Echance
+          </td>
+          <td style="width: 5%;">Bons</td>
+          <td style="width: 4%;">Type</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in echeances %}
+        {% if order.1 == 'bl' %}
+          <tr class="ord" orderid="{{order.id}}" style="background: {% if order.0.refused %}#f37e46{%endif%};">
+            <td>{{ order.0.date|date:'d/m/Y' }}</td>
+            <td>{{ order.0.npiece }}</td>
+            <td>{{ order.0.client.name }}</td>
+            <td>{{ order.0.client.represent.name }}</td>
+            <td>{{ order.0.mode}}</td>
+            <td>{{ order.0.amount|floatformat:2}}</td>
+            <td>{{ order.0.echance|date:'d/m/Y'}}</td>
+            <td>
+              <div class="accordion" id="accordionechbl{{order.0.id}}">
 
-  <div class="col-4">
-    <div class="bg-white p-2 border">
-      <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button> -->
-        <!-- <div>
-          Transfer
-        </div> -->
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button> -->
-      </div>
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseechbl{{order.0.id}}" aria-expanded="true" aria-controls="collapseechbl{{order.0.id}}">
 
-      <div>
-        date:
-        <input type="date" class="form-control mb-2 dateregl">
-        <input type="text" class="form-control mb-2 nrecu" placeholder="N° reçu">
-        <select class="form-control bank">
-          <option value="">-- Banque--</option>
-          {% for i in banks %}
-          <option value="{{i.id}}">
-            {{i.name}} ({{i.rib}})
-          </option>
-          {% endfor %}
-        </select>
-        <div class="mt-3 reglholder" ids="[]" style="height: 60vh; overflow: scroll;">
 
-        </div>
-        <button class="btn bg-darkblue w-100 text-white" onclick="payreglementbl()">Transfer</button>
-      </div>
+                </button>
 
-    </div>
+                <div id="collapseechbl{{order.0.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionechbl{{order.0.id}}">
+                    {% for i in order.0.bons.all %}
+                    -{{i.bon_no}} <br>
+                    {% endfor %}
+
+
+                </div>
+              </div>
+
+            </td>
+            <td class="d-flex justify-content-between">
+              <div>Rgl. BL</div>
+              <!-- <button class="bi bi-alert-fill btn-danger" onclick="refusedreglbl(event, '{{order.0.id}}')"></button> -->
+              <button class="bi bi-check btn-info" onclick="payreglementbl(event, '{{order.0.id}}')"></button>
+            </td>
+
+
+          </tr>
+          {% else %}
+          <tr class="ord" orderid="{{order.id}}" {% if order.0.refused %}style="background:#f37e46"{%endif%}>
+            <td>{{ order.0.date|date:'d/m/Y' }}</td>
+            <td>{{ order.0.npiece }}</td>
+            <td>{{ order.0.client.name }}</td>
+            <td>{{ order.0.client.represent.name }}</td>
+            <td>{{ order.0.mode}}</td>
+            <td>{{ order.0.amount|floatformat:2}}</td>
+            <td>{{ order.0.echance|date:'d/m/Y'}}</td>
+
+            <td>
+
+              <div class="accordion" id="accordionechfc{{order.0.id}}">
+
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseechfc{{order.0.id}}" aria-expanded="true" aria-controls="collapseechfc{{order.0.id}}">
+
+
+                </button>
+
+                <div id="collapseechfc{{order.0.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionechfc{{order.0.id}}">
+                    {% for i in order.0.factures.all %}
+                    -{{i.facture_no}} <br>
+                    {% endfor %}
+
+
+                </div>
+              </div>
+
+            </td>
+            <td class="d-flex justify-content-between">
+              <div>Rgl. FC</div>
+              <button class="bi bi-alert-fill btn-danger" onclick="refusedreglfc(event, '{{order.0.id}}')"></button>
+              <button class="bi bi-check btn-info" onclick="payreglementfc(event, '{{order.0.id}}')"></button>
+            </td>
+
+
+
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+      <thead style="position: sticky; bottom: 0; background: white;">
+        <tr>
+          <td style="width: 8%;"></td>
+          <td style="width: 8%;"></td>
+          <td style="width: 12%;"></td>
+          <td style="width: 12%;"></td>
+          <td style="width: 5%; background: yellowgreen;" class="totalbbonachat">{{total|floatformat:2}}</td>
+          <td style="width: 5%;"></td>
+          <td style="width: 5%;"></td>
+        </tr>
+      </thead>
+      <!-- <tfoot>
+        <tr>
+          <td>N° bon</td>
+          <td>Date</td>
+          <td>Client</td>
+          <td>Code client</td>
+          <td>Total</td>
+          <td>Region</td>
+          <td>Ville</td>
+          <td>Solde cl.</td>
+          <td>Repr</td>
+          <td>Reglé</td>
+          <td>Facturé</td>
+          <td>Transport</td>
+        </tr>
+      </tfoot> -->
+    </table>
   </div>
+  <div ></div>
 </div>
 
 
 
 
-
-
 <script>
-  function selectregl(reglid, reglmode, reglpiece, reglamount){
-    ids=JSON.parse($('.reglholder').attr('ids'))
-    if (ids.includes(reglid)){
-      alertify.error('Déja ajouté')
-      return
-    }
-    $('.reglholder').attr('ids', JSON.stringify(ids.concat(reglid)))
-    $('.reglholder').append(`
-      <div class="d-flex justify-content-between bg-darkblue text-white p-2 mb-2">
-        <div>
-          ${reglpiece} - ${reglmode} - ${reglamount}
-        </div>
-        <button class="btn bg-danger text-white" onclick="removeregl(event, ${reglid})">X</button>
-      </div>
-    `)
-    
-  }
-  function removeregl(event, reglid){
-    $(event.target).parent().remove()
-    ids=JSON.parse($('.reglholder').attr('ids'))
-    $('.reglholder').attr('ids', JSON.stringify(ids.filter(id=>id!=reglid)))
-  }
   function payreglementfc(event, reglid) {
     console.log(consecutiveClicksfc)
 
@@ -161,48 +160,38 @@
 
 
   }
-  function payreglementbl() {
-    nrecu=$('.nrecu').val()
-    bank=$('.bank').val()
-    dateregl=$('.dateregl').val()
-    ids=JSON.parse($('.reglholder').attr('ids'))
-    if (nrecu==''||bank==''||dateregl==''||ids.length==0){
-      alertify.error('N° reçu, Banque, reglements')
-      return
+  function payreglementbl(event, reglid) {
 
-    }
-    console.log(ids, nrecu, bank)
         // User has clicked the element four times consecutively
         // Add your code to run when there are four consecutive clicks here
-    alertify.confirm('Payer', 'Payer le reglement', function(){
-      $.get('/products/payreglbl', {'ids': JSON.stringify(ids), 'bank':bank, 'nrecu':nrecu, 'dateregl':dateregl}, (data)=>{
-        necheance=parseInt($('.echeanceindexcl').text())
-        if (necheance>0){
-          $('.echeanceindexcl').text(necheance-1)
-        }
-        ajaxpage('add', '+ Article', '/products/echeanceclient?target={{target}}')
-      })
-      // Reset the count
+        alertify.confirm('Payer', 'Payer le reglement', function(){
+          $.get('/products/payreglbl', {'reglid': reglid}, (data)=>{
+            $(event.target).parent().parent().css('background', 'yellowgreen')
+            necheance=parseInt($('.echeanceindex').text())
+            if (necheance>0){
+              $('.echeanceindex').text(necheance-1)
+            }
+          })
+          // Reset the count
 
-    }
-      , function(){ alertify.error('Cancel')});
+        }
+          , function(){ alertify.error('Cancel')});
+        // Reset the count
+        consecutiveClicksbl = 0;
 
 
   }
-  function refusedreglbl(reglid){
-        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value', function(evt, value) { 
-            console.log('>> value', value)
-            if (value=='ORGHAD'){
-                console.log('>> sending efused')
-                $.get('/products/refusedreglbl', {'reglid':reglid}, (data)=>{
-                    ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')
-                })
-            }else{
-                alertify.error('Mot de passe')
-            }
-        }, function() { alertify.error('Cancel') });
-    }
-    
+
+function refusedreglfc(event, reglfcid){
+  $.get('/products/refusedreglfc', {'reglfcid':reglfcid}, (data)=>{
+    $(event.target).parent().parent().css({'background':'#f37e46'})
+  })
+}
+function refusedreglbl(event, reglblid){
+  $.get('/products/refusedreglbl', {'reglblid':reglblid}, (data)=>{
+    $(event.target).parent().parent().css({'background':'#f37e46'})
+  })
+}
 $('.searchinputlistecheance').on("keyup", function() {
     // Get the values from all filter input fields
     var filterValue = $(this).val().toLowerCase();

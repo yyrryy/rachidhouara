@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://localhost:8000/categories/products/2 -->
+<html dir="ltr" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <!-- favicon -->
+    <link href="http://localhost:8000/static/images/favicon.png" rel="icon">
+    
+    
+    
+    <title>Produits de JOINT CULAS - STE companyname</title>
+    
+    <link href="./Produits de JOINT CULAS - STE companyname_files/css" rel="stylesheet">
+    <!-- css -->
+    <script src="./Produits de JOINT CULAS - STE companyname_files/jquery.min.js.téléchargement"></script>
+    <link href="./Produits de JOINT CULAS - STE companyname_files/minified.css" rel="stylesheet">
+    <link href="./Produits de JOINT CULAS - STE companyname_files/alertify.css" rel="stylesheet">
+
+    <style>
+        .fixedheader{
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+        .fitscreen{
+            height: 80vh;
+            overflow-y: scroll;
+            
+
+        }
+
+        .cartholder{
+            top: 0;
+            z-index: 9999;
+            background: aliceblue;
+            box-shadow: -11px 2px 7px 0px grey;
+            width: 99%;
+            right: -500rem;
+            height: 100%;
+            transition: all .5s ease-in-out;
+        }
+        /* width */
+        ::-webkit-scrollbar {
+        width: 5px;
+        }
+
+ 
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #888; 
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+        }
+        #button {
+            display: inline-block;
+            background-color: #e82323;
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            border-radius: 8px;
+            position: fixed;
+            bottom: 136px;
+            right: 53px;
+            transition: background-color .3s, opacity .5s, visibility .5s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        #button::after {
+            content: "⬆";
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 2em;
+            line-height: 50px;
+            color: #fff;
+        }
+            #button:hover {
+            cursor: pointer;
+            background-color: #333;
+        }
+            #button:active {
+            background-color: #555;
+            }
+            #button.show {
+            opacity: 1;
+            visibility: visible;
+            }
+    </style>
+    
+<style>
+  .products-list__item:hover {
+    box-shadow: -1px 3px 9px 2px #d9d9d9
+  }
+</style>
+
+</head>
+
+<body>
+    <div class="searchscreen bg-white w-100 h-100 p-2 d-none" style="position:fixed; z-index: 9999;">
+      <div class="d-flex justify-content-between">
+        <div class="col-5 d-flex align-items-center">
+          <input type="text" class="form-control searchref" placeholder="chercher ref, OEM, ...">
+
+          <!-- <button class="btn btn-danger">X</button> -->
+        </div>
+        <button class="btn btn-danger" onclick="$(&#39;.searchscreen&#39;).addClass(&#39;d-none&#39;)">X</button>
+      </div>
+      <div class="suggestions__group-content searchresults">
+                  
+      </div>
+    </div>
+
+    <!-- mobile header -->
+    
+    <!-- site -->
+    <a id="button"></a>
+    <div class="site">
+
+        
+        <!-- mobile site__header -->
+        <header class="site__mobile-header">
+    <div class="mobile-header">
+      <div class="container">
+        <div class="mobile-header__body">
+          
+          <button class="mobile-header__menu-button" type="button">
+            <svg width="18px" height="14px"><path d="M-0,8L-0,6L18,6L18,8L-0,8ZM-0,-0L18,-0L18,2L-0,2L-0,-0ZM14,14L-0,14L-0,12L14,12L14,14Z"></path></svg>
+          </button>
+          
+          
+          <a class="mobile-header__logo" href="http://localhost:8000/catalog">
+            <!-- mobile-logo -->
+            <img src="./Produits de JOINT CULAS - STE companyname_files/logo.png" alt="Logo">
+            <!-- mobile-logo / end -->
+          </a>
+          
+          
+          <div class="mobile-header__search mobile-search d-none flex-column">
+            <div class="mobile-search__body">
+              <!-- <input type="text" class="mobile-search__input searchref" placeholder="Enter keyword or part number"> -->
+              <!-- <button type="button" class="mobile-search__vehicle-picker" aria-label="Select Vehicle">
+                <svg width="20" height="20">
+                  <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1
+      c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2
+      C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9
+      c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z M4,10c-0.4-0.3-1.5-0.5-2,0
+      c-0.4,0.4-0.4,1.6,0,2c0.5,0.5,4,0.4,4,0C6,11.2,4.5,10.3,4,10z M14,12c0,0.4,3.5,0.5,4,0c0.4-0.4,0.4-1.6,0-2c-0.5-0.5-1.3-0.3-2,0
+      C15.5,10.2,14,11.3,14,12z"></path>
+                </svg>
+                <span class="mobile-search__vehicle-picker-label">Vehicle</span>
+              </button> -->
+              <button onclick="$(&#39;.searchscreen&#39;).removeClass(&#39;d-none&#39;)" type="submit" class="mobile-search__button mobile-search__button--search">
+                <svg width="20" height="20">
+                  <path d="M19.2,17.8c0,0-0.2,0.5-0.5,0.8c-0.4,0.4-0.9,0.6-0.9,0.6s-0.9,0.7-2.8-1.6c-1.1-1.4-2.2-2.8-3.1-3.9C10.9,14.5,9.5,15,8,15
+      c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4c1.1,0.8,2.5,2,4,3.1C20,16.8,19.2,17.8,19.2,17.8z M8,3C5.2,3,3,5.2,3,8
+      c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5C13,5.2,10.8,3,8,3z"></path>
+                </svg>
+              </button>
+              <button type="button" class="mobile-search__button mobile-search__button--close">
+                <svg width="20" height="20">
+                  <path d="M16.7,16.7L16.7,16.7c-0.4,0.4-1,0.4-1.4,0L10,11.4l-5.3,5.3c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L8.6,10L3.3,4.7
+      c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L10,8.6l5.3-5.3c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L11.4,10l5.3,5.3
+      C17.1,15.7,17.1,16.3,16.7,16.7z"></path>
+                </svg>
+              </button>
+              <div class="mobile-search__field"></div>
+              
+            </div>
+            <div class="bg-white rounded shadow-lg" style="height: 50vh; overflow-y: scroll; width: 100%;">
+              <div class="suggestions__group">
+                <div class="suggestions__group-title">Products</div>
+                <div class="suggestions__group-content searchresults">
+                  
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <div class="mobile-header__indicators">
+            
+            <div onclick="$(&#39;.searchscreen&#39;).removeClass(&#39;d-none&#39;)" class="mobile-indicator mobile-indicator--search">
+              <button type="button" class="mobile-indicator__button">
+                <span class="mobile-indicator__icon">
+                  <svg width="20" height="20">
+                    <path d="M19.2,17.8c0,0-0.2,0.5-0.5,0.8c-0.4,0.4-0.9,0.6-0.9,0.6s-0.9,0.7-2.8-1.6c-1.1-1.4-2.2-2.8-3.1-3.9C10.9,14.5,9.5,15,8,15
+      c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4c1.1,0.8,2.5,2,4,3.1C20,16.8,19.2,17.8,19.2,17.8z M8,3C5.2,3,3,5.2,3,8
+      c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5C13,5.2,10.8,3,8,3z"></path>
+                  </svg>
+                </span>
+              </button>
+            </div>
+            
+            <!-- account icon 
+            <div class="mobile-indicator d-block">
+              <a href="#" class="mobile-indicator__button">
+                <span class="mobile-indicator__icon">
+                  <svg width="20" height="20">
+                    <path d="M20,20h-2c0-4.4-3.6-8-8-8s-8,3.6-8,8H0c0-4.2,2.6-7.8,6.3-9.3C4.9,9.6,4,7.9,4,6c0-3.3,2.7-6,6-6s6,2.7,6,6
+      c0,1.9-0.9,3.6-2.3,4.7C17.4,12.2,20,15.8,20,20z M14,6c0-2.2-1.8-4-4-4S6,3.8,6,6s1.8,4,4,4S14,8.2,14,6z"></path>
+                  </svg>
+                </span>
+              </a>
+            </div>-->
+            <div class="mobile-indicator">
+              <a href="http://localhost:8000/cart" class="mobile-indicator__button">
+                <span class="mobile-indicator__icon">
+                  <svg width="20" height="20">
+                    <circle cx="7" cy="17" r="2"></circle>
+                    <circle cx="15" cy="17" r="2"></circle>
+                    <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+      V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+      C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+                  </svg>
+                  <span class="mobile-indicator__counter commanditems">3</span>
+                </span>
+              </a>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+        <header class="site__header">
+  <div class="header" style="background: #210f42;">
+    
+    <div class="header__logo">
+      
+      <a href="http://localhost:8000/catalog" class="logo">
+        
+        <div class="logo__image">
+          <!-- logo -->
+          <img src="./Produits de JOINT CULAS - STE companyname_files/logo.jpg" alt="">
+          <!-- <img src="/static/images/logo.png" alt=""> -->
+          <!-- logo / end -->
+        </div>
+      </a>
+      
+    </div>
+    
+
+    <div class="header__search">
+      <div class="search">
+        <div class="search__body">
+          <div class="search__shadow"></div>
+          <input class="search__input searchref" type="text" placeholder="Enter Keyword or Part Number">
+          <!-- <button class="search__button search__button--start" type="button">
+            <span class="search__button-icon">
+              <svg width="20" height="20">
+                <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1
+    c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2
+    C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9
+    c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z M4,10c-0.4-0.3-1.5-0.5-2,0
+    c-0.4,0.4-0.4,1.6,0,2c0.5,0.5,4,0.4,4,0C6,11.2,4.5,10.3,4,10z M14,12c0,0.4,3.5,0.5,4,0c0.4-0.4,0.4-1.6,0-2c-0.5-0.5-1.3-0.3-2,0
+    C15.5,10.2,14,11.3,14,12z"></path>
+              </svg>
+            </span>
+            <span class="search__button-title"></span>
+          </button> -->
+          <button onclick="$(&#39;.searchscreen&#39;).removeClass(&#39;d-none&#39;)" class="search__button search__button--end" type="submit">
+            <span class="search__button-icon">
+              <svg width="20" height="20">
+                <path d="M19.2,17.8c0,0-0.2,0.5-0.5,0.8c-0.4,0.4-0.9,0.6-0.9,0.6s-0.9,0.7-2.8-1.6c-1.1-1.4-2.2-2.8-3.1-3.9C10.9,14.5,9.5,15,8,15
+    c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4c1.1,0.8,2.5,2,4,3.1C20,16.8,19.2,17.8,19.2,17.8z M8,3C5.2,3,3,5.2,3,8
+    c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5C13,5.2,10.8,3,8,3z"></path>
+              </svg>
+            </span>
+          </button>
+          <div class="search__box"></div>
+          <div class="search__decor">
+            <div class="search__decor-start"></div>
+            <div class="search__decor-end"></div>
+          </div>
+          <!-- suggestions -->
+          <div class="search__dropdown search__dropdown--suggestions suggestions" style="height: 50vh; overflow-y: scroll;">
+            <div class="suggestions__group">
+              <div class="suggestions__group-title">Products</div>
+              <div class="suggestions__group-content searchresults">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header__indicators align-items-center">
+      
+      <div class="indicator indicator--trigger--click">
+        <a href="http://localhost:8000/categories/products/2#" class="indicator__button">
+          <span class="indicator__icon">
+            
+          </span>
+        </a>
+        <div class="indicator__content">
+          <div class="account-menu">
+            
+            <div class="account-menu__divider"></div>
+            <a href="http://localhost:8000/categories/products/2#" class="account-menu__user">
+              
+              <div class="account-menu__user-info">
+                testrep
+              </div>
+            </a>
+            <div class="account-menu__divider"></div>
+            
+            <div class="account-menu__divider"></div>
+            <ul class="account-menu__links">
+              <li>
+                <a href="http://localhost:8000/ordersforeach">Commandes</a>
+              </li>
+              <li>
+                <a href="http://localhost:8000/logoutuser" class="text-danger">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="indicator indicator--trigger--click">
+        <a href="http://localhost:8000/cart">
+          <div class="input-group">
+            <span class="input-group-text" id="basic-addon1">
+              <span class="badge bg-danger rounded-pill commanditems">3</span>
+              <svg width="20" height="20">
+                <circle cx="7" cy="17" r="2"></circle>
+                <circle cx="15" cy="17" r="2"></circle>
+                <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+  V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+  C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+              </svg>
+            </span>
+            <!-- <div type="text" class="form-control" placeholder="Input group example" aria-label="Input group example" aria-describedby="basic-addon1">
+              
+            </div> -->
+          </div>
+        </a>
+            
+      </div>
+      
+    </div>
+    
+    
+
+  </div>
+</header>
+        
+        <!-- site__body -->
+        
+        <!-- screen loader -->
+        <div class="d-flex flex-column align-items-center justify-content-center loadingscreen position-fixed d-none" style="height: 100vh;background:#171717bc ; width: 100vw; z-index: 9999;">
+        <div class="spinner-border text-white" role="status">
+        </div>
+        </div>
+        <div class="site__body">
+            <!-- <div class="block-space block-space--layout--divider-xs"></div> -->
+            <div class="px-3">
+                
+                <div class="">
+                    
+<!-- confirm order fixed at the bottom -->
+
+<!--question Modal -->
+<div class="modal fade" id="questionmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+      <p class="text-center">
+        سؤال عن المنتج
+      </p>
+			<div class="accordion mb-2" id="accordionExample">
+				<div class="accordion-item">
+				  
+				  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<form id="questionform">
+							<input type="hidden" name="csrfmiddlewaretoken" value="Y6mjAYBK61trB2Uielx3On3dPdfYKbTIcwZWjacixm7VKJGbySDTIGlXPeTz1ToF">
+							<div class="form-group">
+								<label for="exampleInputEmail1">ref</label>
+								<input readonly="" name="ref" type="text" required="" class="form-control">
+							</div>
+							
+							<div class="form-group">
+								<label for="exampleInputPassword1">question</label>
+								<textarea name="question" class="form-control" rows="15"></textarea>
+							</div>
+							
+              <input type="text" hidden="" name="phone" value="">
+              <input type="text" hidden="" name="client" value="">
+
+							<button class="btn btn-primary addclientbtn w-100 mt-3">Submit</button>
+					  </form>
+					</div>
+				  </div>
+				</div>
+			</div>
+			
+		</div>
+	  </div>
+	</div>
+</div>
+<div class="col-12 shadow-lg rounded p-2 categorytitle fixed-bottom  border border-2 bg-white">
+    <!-- <div class="d-flex justify-content-between align-items-center">
+      <a href="/catalog" class="bi bi-arrow-left me-2 btn text-primary">Catalog</a>
+      <div>
+        
+      </div>
+
+
+      
+      
+    </div> -->
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="layout-switcher__list  bg-whitex ">
+          <button onclick="$(&#39;.products-view__list&#39;).data(&#39;layout&#39;, &#39;grid&#39;)" type="button" class="layoutbtn  bi bi-list"></button>
+          <button onclick="$(&#39;.products-view__list&#39;).data(&#39;layout&#39;, &#39;grid&#39;)" type="button" class="layoutbtn bi bi-list"></button>
+        </div>
+          <a href="http://localhost:8000/catalog" class="btn text-white">
+            ←
+          </a>
+          <div class="d-flex col-8">
+            <input type="text" placeholder="Chercher dans JOINT CULAS" aria-describedby="button-addon1" class="form-control border bg-light" id="searchbox">
+            
+          </div>
+          
+          <a href="http://localhost:8000/cart">
+            <div class="d-flex flex-column">
+              <span class="input-group-text" id="basic-addon1">
+                <span class="badge bg-danger rounded-pill commanditems">3</span>
+                <svg width="20" height="20">
+                  <circle cx="7" cy="17" r="2"></circle>
+                  <circle cx="15" cy="17" r="2"></circle>
+                  <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+    V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+    C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+                </svg>
+              </span>
+              
+            </div>
+          </a>
+          
+        
+      </div>
+      
+      <div type="text" class="text-center" placeholder="Input group example" aria-label="Input group example" aria-describedby="basic-addon1">
+
+      </div>
+      
+  </div>
+<div class="container" style="height: 80vh; overflow-y: scroll;">
+  
+  <!-- products holder -->
+  <div class="block-split__item block-split__item-content col-auto mt-3">
+    <div class="block">
+      <div class="products-view">
+        <div class="products-view__list products-list products-list--grid--4 position-relative" data-layout="list" data-with-features="false">
+
+        <!-- title holder -->
+        
+          <div class="products-list__content">
+              
+              <div class="products-list__item col-md-9 col-12 mb-2">
+                <div class="border rounded product-card">
+                  <div class="product-card__image">
+                    
+                    <div class="image image--type--product text-center">
+                      <img src="http://localhost:8000/categories/products/2" alt="ee" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="&gt;
+
+                    &lt;/div&gt;
+                    &lt;div class=" status-badge="" status-badge--style--success="" product-card__fit="" status-badge--has-icon="" status-badge--has-text"="">
+                    </div>
+                  </div>
+                  <div class="product-card__info p-2">
+                    
+                    <div class="product-card__name">
+                      <div class="">
+                          <p>
+                            EE - TEST 
+                          </p>
+
+                      </div>
+                      <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                          
+                          <div class="status-badge status-badge--style--success status-badge--has-icon status-badge--has-text"><div class="status-badge__body"><div class="status-badge__icon"><svg width="13" height="13"><path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z"></path></svg></div><div class="status-badge__text">In Stock</div><div class="status-badge__tooltip" tabindex="0" data-toggle="tooltip" title="" data-original-title="In Stock"></div></div></div>
+                        
+                        
+                        
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="product-card__footer d-flex flex-column">
+                    <div class="bg-dark text-white w-100 text-center rounded mt-2">
+                      <strong>REF: TEST </strong>
+                    </div>
+                    <div class="product-card__prices p-2 border w-100 mt-2">
+                      <div class="product-card__price product-card__price--current ">
+                        120.00 (NET)
+                      </div>
+
+                    </div>
+                
+                    <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                <button class="btn btn-primary w-100" pdct="5" pdctref="test" pdctname="ee" pdctpr="120.0" pdctid="5" pdctimg="" pdctmin="" pdctcategory="" onclick="addtocart(event, &#39;5&#39;)">Cmnd</button>
+
+                
+                
+                <button class="mt-3 added btn btn-sm bi bi-check bg-success text-white d-none"></button>
+                  </div>
+                  
+                </div>
+              </div>
+            
+              <div class="products-list__item col-md-9 col-12 mb-2">
+                <div class="border rounded product-card">
+                  <div class="product-card__image">
+                    
+                    <div class="image image--type--product text-center">
+                      <img src="./Produits de JOINT CULAS - STE companyname_files/P83.jpeg" alt="JOINT CULAS PEUGEOT 83* BYSUN" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="/media/product_images/P83.jpeg">
+
+                    </div>
+                    <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+                    </div>
+                  </div>
+                  <div class="product-card__info p-2">
+                    
+                    <div class="product-card__name">
+                      <div class="">
+                          <p>
+                            JOINT CULAS PEUGEOT 83* BYSUN - B 61-31065-40 
+                          </p>
+
+                      </div>
+                      <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                          
+                          <div class="status-badge status-badge--style--success status-badge--has-icon status-badge--has-text"><div class="status-badge__body"><div class="status-badge__icon"><svg width="13" height="13"><path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z"></path></svg></div><div class="status-badge__text">In Stock</div><div class="status-badge__tooltip" tabindex="0" data-toggle="tooltip" title="" data-original-title="In Stock"></div></div></div>
+                        
+                        
+                        
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="product-card__footer d-flex flex-column">
+                    <div class="bg-dark text-white w-100 text-center rounded mt-2">
+                      <strong>REF: B 61-31065-40 </strong>
+                    </div>
+                    <div class="product-card__prices p-2 border w-100 mt-2">
+                      <div class="product-card__price product-card__price--current ">
+                        65.00 (NET)
+                      </div>
+
+                    </div>
+                
+                    <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                <button class="btn btn-primary w-100" pdct="8" pdctref="b 61-31065-40" pdctname="JOINT CULAS PEUGEOT 83* BYSUN" pdctpr="65.0" pdctid="8" pdctimg="/media/product_images/P83.jpeg" pdctmin="" pdctcategory="" onclick="addtocart(event, &#39;8&#39;)">Cmnd</button>
+
+                
+                
+                <button class="mt-3 added btn btn-sm bi bi-check bg-success text-white d-none"></button>
+                  </div>
+                  
+                </div>
+              </div>
+            
+              <div class="products-list__item col-md-9 col-12 mb-2">
+                <div class="border rounded product-card">
+                  <div class="product-card__image">
+                    
+                    <div class="image image--type--product text-center">
+                      <img src="http://localhost:8000/categories/products/2" alt="test" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="&gt;
+
+                    &lt;/div&gt;
+                    &lt;div class=" status-badge="" status-badge--style--success="" product-card__fit="" status-badge--has-icon="" status-badge--has-text"="">
+                    </div>
+                  </div>
+                  <div class="product-card__info p-2">
+                    
+                    <div class="product-card__name">
+                      <div class="">
+                          <p>
+                            TEST - REF44 
+                          </p>
+
+                      </div>
+                      <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                          
+                          <div class="status-badge status-badge--style--success status-badge--has-icon status-badge--has-text"><div class="status-badge__body"><div class="status-badge__icon"><svg width="13" height="13"><path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z"></path></svg></div><div class="status-badge__text">In Stock</div><div class="status-badge__tooltip" tabindex="0" data-toggle="tooltip" title="" data-original-title="In Stock"></div></div></div>
+                        
+                        
+                        
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="product-card__footer d-flex flex-column">
+                    <div class="bg-dark text-white w-100 text-center rounded mt-2">
+                      <strong>REF: REF44 </strong>
+                    </div>
+                    <div class="product-card__prices p-2 border w-100 mt-2">
+                      <div class="product-card__price product-card__price--current ">
+                        120.00 (NET)
+                      </div>
+
+                    </div>
+                
+                    <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                <button class="btn btn-primary w-100" pdct="14" pdctref="ref44" pdctname="test" pdctpr="120.0" pdctid="14" pdctimg="" pdctmin="" pdctcategory="" onclick="addtocart(event, &#39;14&#39;)">Cmnd</button>
+
+                
+                
+                <button class="mt-3 added btn btn-sm bi bi-check bg-success text-white d-none"></button>
+                  </div>
+                  
+                </div>
+              </div>
+            
+              <div class="products-list__item col-md-9 col-12 mb-2">
+                <div class="border rounded product-card">
+                  <div class="product-card__image">
+                    
+                    <div class="image image--type--product text-center">
+                      <img src="http://localhost:8000/categories/products/2" alt="test" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="&gt;
+
+                    &lt;/div&gt;
+                    &lt;div class=" status-badge="" status-badge--style--success="" product-card__fit="" status-badge--has-icon="" status-badge--has-text"="">
+                    </div>
+                  </div>
+                  <div class="product-card__info p-2">
+                    
+                    <div class="product-card__name">
+                      <div class="">
+                          <p>
+                            TEST - REF44 
+                          </p>
+
+                      </div>
+                      <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                          
+                          <div class="status-badge status-badge--style--success status-badge--has-icon status-badge--has-text"><div class="status-badge__body"><div class="status-badge__icon"><svg width="13" height="13"><path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z"></path></svg></div><div class="status-badge__text">In Stock</div><div class="status-badge__tooltip" tabindex="0" data-toggle="tooltip" title="" data-original-title="In Stock"></div></div></div>
+                        
+                        
+                        
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="product-card__footer d-flex flex-column">
+                    <div class="bg-dark text-white w-100 text-center rounded mt-2">
+                      <strong>REF: REF44 </strong>
+                    </div>
+                    <div class="product-card__prices p-2 border w-100 mt-2">
+                      <div class="product-card__price product-card__price--current ">
+                        120.00 (NET)
+                      </div>
+
+                    </div>
+                
+                    <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                <button class="btn btn-primary w-100" pdct="15" pdctref="ref44" pdctname="test" pdctpr="120.0" pdctid="15" pdctimg="" pdctmin="" pdctcategory="" onclick="addtocart(event, &#39;15&#39;)">Cmnd</button>
+
+                
+                
+                <button class="mt-3 added btn btn-sm bi bi-check bg-success text-white d-none"></button>
+                  </div>
+                  
+                </div>
+              </div>
+            
+              <div class="products-list__item col-md-9 col-12 mb-2">
+                <div class="border rounded product-card">
+                  <div class="product-card__image">
+                    
+                    <div class="image image--type--product text-center">
+                      <img src="./Produits de JOINT CULAS - STE companyname_files/R-19.jpeg" alt="JOINT CULAS RENAULT 19 KANGO AM  80*" loading="lazy" style="width: 100%;" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="/media/product_images/R-19.jpeg">
+
+                    </div>
+                    <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+                    </div>
+                  </div>
+                  <div class="product-card__info p-2">
+                    
+                    <div class="product-card__name">
+                      <div class="">
+                          <p>
+                            JOINT CULAS RENAULT 19 KANGO AM  80* - B 61-31210-20 
+                          </p>
+
+                      </div>
+                      <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                          
+                          <div class="status-badge status-badge--style--success status-badge--has-icon status-badge--has-text"><div class="status-badge__body"><div class="status-badge__icon"><svg width="13" height="13"><path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z"></path></svg></div><div class="status-badge__text">In Stock</div><div class="status-badge__tooltip" tabindex="0" data-toggle="tooltip" title="" data-original-title="In Stock"></div></div></div>
+                        
+                        
+                        
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                  <div class="product-card__footer d-flex flex-column">
+                    <div class="bg-dark text-white w-100 text-center rounded mt-2">
+                      <strong>REF: B 61-31210-20 </strong>
+                    </div>
+                    <div class="product-card__prices p-2 border w-100 mt-2">
+                      <div class="product-card__price product-card__price--current ">
+                        65.00 (NET)
+                      </div>
+
+                    </div>
+                
+                    <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                <button class="btn btn-primary w-100" pdct="17" pdctref="b 61-31210-20" pdctname="JOINT CULAS RENAULT 19 KANGO AM  80*" pdctpr="65.0" pdctid="17" pdctimg="/media/product_images/R-19.jpeg" pdctmin="" pdctcategory="" onclick="addtocart(event, &#39;17&#39;)">Cmnd</button>
+
+                
+                
+                <button class="mt-3 added btn btn-sm bi bi-check bg-success text-white d-none"></button>
+                  </div>
+                  
+                </div>
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <!-- cart 
+   <div class="col-md-4 borders cartdd">
+  <div class="sticky-top card-header text-center d-flex justify-content-between align-items-center">
+    <small>
+        Bon de commande
+    </small>
+    <button class="btn clearcommande bi bi-trash-fill text-danger" onclick="clearcommande()">
+    </button>
+  </div>
+    <div class="col-5 fitscreen bg-white shadow rounded px-2 w-100">
+    
+    
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th >ref</th>
+            <th >article</th>
+            <th style="width: 5%;">Qty</th>
+            <th style="width: 5%;">total</th>
+        </tr>
+        </thead>
+        <tbody class="commande-table">
+            
+        </tbody>
+    </table>
+    
+    </div>
+    
+</div>-->
+</div>
+  
+
+                </div>
+                <!-- cart -->
+                <!-- <div class="position-fixed cartholder">
+                    <div class="col-5 fitscreen bg-white shadow rounded px-2 w-100">
+                    <div class="sticky-top card-header text-center d-flex justify-content-between align-items-center">
+                        <button class="btn hidecommande bi bi-arrow-left"></button> 
+                        <h2>
+                            Commande
+                        </h2>
+                        <button class="btn clearcommande bi bi-trash-fill text-danger" onclick="clearcommande()">
+                        </button>
+                    </div>
+                    
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th >ref</th>
+                            <th >article</th>
+                            <th style="width: 5%;">Qty</th>
+                            <th style="width: 5%;">total</th>
+                        </tr>
+                        </thead>
+                        <tbody class="commande-table">
+                            
+                        </tbody>
+                    </table>
+                    
+                    </div>
+                    <div class=" mt-3  p-2 bg-white rpunded shadow d-flex justify-content-between align-items-center">
+                        <div>
+                            TOTAL: <span class="total">0</span>
+                        </div>
+            
+                        <div class="d-flex justify-content-between modes border p-2">
+                            <select class="form-select mb-2" aria-label="Default select example" name="modpymnt">
+                                <option selected value="0">Mode de payement</option>
+                                <option value="espece">Espece (-5%/article)</option>
+                                <option value="cheque">Cheque (delai 4 mois)</option>
+                              </select>
+                        
+                        
+                        
+                            <select class="form-select mb-2" aria-label="Default select example" name="modlvrsn">
+                                <option selected value="0">Mode de livraison</option>
+                                <option value="lux">Lux</option>
+                                <option value="sdtm">SDTM</option>
+                                <option value="ghazala">Ghazala</option>
+                                <option value="baha">Baha express</option>
+                              </select>
+                        </div>
+                        
+                        <div class="col-4">
+                            <div class="d-flex justify-content-center">
+                                <select class="form-control form-control-select2 clientid" name="client" >
+                                    <option value="0">---</option>
+                                    
+                                </select>
+                                
+                                <input type="hidden" name="csrfmiddlewaretoken" value="Y6mjAYBK61trB2Uielx3On3dPdfYKbTIcwZWjacixm7VKJGbySDTIGlXPeTz1ToF">
+                                <button class="btn btn-primary valider" disabled>
+                                Confirmer
+                                </button>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100 mt-2" data-toggle="modal" data-target="#addclientmodal">
+                                <i class="bi bi-plus"></i>Nouveau client
+                            </button>
+            
+                            <small class="text-danger d-none clienterr">
+                                Choisir un client ou ajouter un nouveau
+                            </small>
+                        </div>
+                            
+                        
+                        
+                        
+                    </div>
+                </div> -->
+                
+            </div>
+            
+
+            <br>
+            <footer class="px-3 bg-white text-muted mt-auto d-flex justify-content-between align-items-center">
+                <small>
+                    Version: 2.0.0
+                </small>
+                
+                <small>
+                   companyname @ <span id="thisyear">2024</span> 
+                </small>
+
+                <!-- <small>
+                    <a href="/me">developer</a>
+                </small> -->
+            </footer>
+            
+        </div><!-- site__body / end -->
+        <!-- site__footer -->
+        
+    </div><!-- site / end -->
+    <!-- mobile-menu -->
+    <div class="mobile-menu">
+        <div class="mobile-menu__backdrop"></div>
+        <div class="mobile-menu__body">
+          <button class="mobile-menu__close" type="button">
+            <svg width="12" height="12">
+              <path d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6
+          c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4
+          C11.2,9.8,11.2,10.4,10.8,10.8z"></path>
+            </svg>
+          </button>
+          <div class="mobile-menu__panel">
+            <div class="mobile-menu__panel-header">
+              <div class="mobile-menu__panel-title">Menu</div>
+            </div>
+            <div class="mobile-menu__panel-body">
+              <!-- <div class="mobile-menu__settings-list">
+                <div class="mobile-menu__setting" data-mobile-menu-item="">
+                  <button class="mobile-menu__setting-button" title="Language" data-mobile-menu-trigger="">
+                    <span class="mobile-menu__setting-icon">
+                      <img src="images/languages/language-5.png" alt="">
+                    </span>
+                    <span class="mobile-menu__setting-title">Italian</span>
+                    <span class="mobile-menu__setting-arrow">
+                      <svg width="6px" height="9px">
+                        <path d="M0.3,7.4l3-2.9l-3-2.9c-0.4-0.3-0.4-0.9,0-1.3l0,0c0.4-0.3,0.9-0.4,1.3,0L6,4.5L1.6,8.7c-0.4,0.4-0.9,0.4-1.3,0l0,0C-0.1,8.4-0.1,7.8,0.3,7.4z"></path>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="mobile-menu__setting-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Language</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">
+                              <div class="mobile-menu__links-image">
+                                <img src="images/languages/language-1.png" alt="">
+                              </div>English
+                            </button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">
+                              <div class="mobile-menu__links-image">
+                                <img src="images/languages/language-2.png" alt="">
+                              </div>French
+                            </button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">
+                              <div class="mobile-menu__links-image">
+                                <img src="images/languages/language-3.png" alt="">
+                              </div>German
+                            </button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">
+                              <div class="mobile-menu__links-image">
+                                <img src="images/languages/language-4.png" alt="">
+                              </div>Russian
+                            </button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">
+                              <div class="mobile-menu__links-image">
+                                <img src="images/languages/language-5.png" alt="">
+                              </div>Italian
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mobile-menu__setting" data-mobile-menu-item="">
+                  <button class="mobile-menu__setting-button" title="Currency" data-mobile-menu-trigger="">
+                    <span class="mobile-menu__setting-icon mobile-menu__setting-icon--currency">$ </span>
+                    <span class="mobile-menu__setting-title">US Dollar</span>
+                    <span class="mobile-menu__setting-arrow">
+                      <svg width="6px" height="9px">
+                        <path d="M0.3,7.4l3-2.9l-3-2.9c-0.4-0.3-0.4-0.9,0-1.3l0,0c0.4-0.3,0.9-0.4,1.3,0L6,4.5L1.6,8.7c-0.4,0.4-0.9,0.4-1.3,0l0,0C-0.1,8.4-0.1,7.8,0.3,7.4z"></path>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="mobile-menu__setting-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Currency</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">€ Euro</button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">£ Pound Sterling</button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">$ US Dollar</button>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <button type="button" class="" data-mobile-menu-trigger="">₽ Russian Ruble</button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+              <div class="mobile-menu__divider"></div>
+              <div class="mobile-menu__indicators d-flex justify-content-between">
+                <a class="mobile-menu__indicator" href="http://localhost:8000/ordersforeach">
+                  <span class="mobile-menu__indicator-icon">
+                    <svg width="20" height="20">
+                        <path d="M20,20h-2c0-4.4-3.6-8-8-8s-8,3.6-8,8H0c0-4.2,2.6-7.8,6.3-9.3C4.9,9.6,4,7.9,4,6c0-3.3,2.7-6,6-6s6,2.7,6,6
+            c0,1.9-0.9,3.6-2.3,4.7C17.4,12.2,20,15.8,20,20z M14,6c0-2.2-1.8-4-4-4S6,3.8,6,6s1.8,4,4,4S14,8.2,14,6z"></path>
+                      </svg>
+                  </span>
+                  <span class="mobile-menu__indicator-title">Commandes</span>
+                </a>
+                <!--    
+                <a class="mobile-menu__indicator" href="account-dashboard.html">
+                  <span class="mobile-menu__indicator-icon">
+                    <svg width="20" height="20">
+                      <path d="M20,20h-2c0-4.4-3.6-8-8-8s-8,3.6-8,8H0c0-4.2,2.6-7.8,6.3-9.3C4.9,9.6,4,7.9,4,6c0-3.3,2.7-6,6-6s6,2.7,6,6
+          c0,1.9-0.9,3.6-2.3,4.7C17.4,12.2,20,15.8,20,20z M14,6c0-2.2-1.8-4-4-4S6,3.8,6,6s1.8,4,4,4S14,8.2,14,6z"></path>
+                    </svg>
+                  </span>
+                  <span class="mobile-menu__indicator-title">Account</span>
+                </a>
+             
+                <a class="mobile-menu__indicator" href="account-garage.html">
+                  <span class="mobile-menu__indicator-icon">
+                    <svg width="20" height="20">
+                      <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1
+          c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2
+          C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9
+          c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z M4,10c-0.4-0.3-1.5-0.5-2,0
+          c-0.4,0.4-0.4,1.6,0,2c0.5,0.5,4,0.4,4,0C6,11.2,4.5,10.3,4,10z M14,12c0,0.4,3.5,0.5,4,0c0.4-0.4,0.4-1.6,0-2c-0.5-0.5-1.3-0.3-2,0
+          C15.5,10.2,14,11.3,14,12z"></path>
+                    </svg>
+                  </span>
+                  <span class="mobile-menu__indicator-title">Garage</span>
+                </a> -->
+                <a class="mobile-menu__indicator" href="http://localhost:8000/cart">
+                    <span class="mobile-menu__indicator-icon">
+                      <svg width="20" height="20">
+                        <circle cx="7" cy="17" r="2"></circle>
+                        <circle cx="15" cy="17" r="2"></circle>
+                        <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+            V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+            C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+                      </svg>
+                      <span class="mobile-menu__indicator-counter commanditems">3</span>
+                    </span>
+                    <span class="mobile-menu__indicator-title">Cart</span>
+                  </a>
+              </div>
+              <div class="mobile-menu__divider"></div>
+              <!-- <ul class="mobile-menu__links">
+                <li data-mobile-menu-item="">
+                  <a href="index.html" class="" data-mobile-menu-trigger="">Home <svg width="7" height="11">
+                      <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                    </svg>
+                  </a>
+                  <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Home</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <a href="index.html" class="" data-mobile-menu-trigger="">Home One</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="index2.html" class="" data-mobile-menu-trigger="">Home Two</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="header-spaceship-variant-one.html" class="" data-mobile-menu-trigger="">Header Spaceship <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Header Spaceship</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-spaceship-variant-one.html" class="" data-mobile-menu-trigger="">Variant One</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-spaceship-variant-two.html" class="" data-mobile-menu-trigger="">Variant Two</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-spaceship-variant-three.html" class="" data-mobile-menu-trigger="">Variant Three</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="header-classic-variant-one.html" class="" data-mobile-menu-trigger="">Header Classic <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Header Classic</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-classic-variant-one.html" class="" data-mobile-menu-trigger="">Variant One</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-classic-variant-two.html" class="" data-mobile-menu-trigger="">Variant Two</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-classic-variant-three.html" class="" data-mobile-menu-trigger="">Variant Three</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-classic-variant-four.html" class="" data-mobile-menu-trigger="">Variant Four</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="header-classic-variant-five.html" class="" data-mobile-menu-trigger="">Variant Five</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="mobile-header-variant-one.html" class="" data-mobile-menu-trigger="">Mobile Header <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Mobile Header</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="mobile-header-variant-one.html" class="" data-mobile-menu-trigger="">Variant One</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="mobile-header-variant-two.html" class="" data-mobile-menu-trigger="">Variant Two</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li data-mobile-menu-item="">
+                  <a href="shop-grid-4-columns-sidebar.html" class="" data-mobile-menu-trigger="">Shop <svg width="7" height="11">
+                      <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                    </svg>
+                  </a>
+                  <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Shop</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <a href="category.html" class="" data-mobile-menu-trigger="">Category <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Category</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-3-columns-sidebar.html" class="" data-mobile-menu-trigger="">3 Columns Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-4-columns-sidebar.html" class="" data-mobile-menu-trigger="">4 Columns Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-5-columns-sidebar.html" class="" data-mobile-menu-trigger="">5 Columns Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-4-columns-full.html" class="" data-mobile-menu-trigger="">4 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-5-columns-full.html" class="" data-mobile-menu-trigger="">5 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-6-columns-full.html" class="" data-mobile-menu-trigger="">6 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-7-columns-full.html" class="" data-mobile-menu-trigger="">7 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="category-right-sidebar.html" class="" data-mobile-menu-trigger="">Right Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="shop-grid-4-columns-sidebar.html" class="" data-mobile-menu-trigger="">Shop Grid <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Shop Grid</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="shop-grid-6-columns-full.html" class="" data-mobile-menu-trigger="">6 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="shop-grid-5-columns-full.html" class="" data-mobile-menu-trigger="">5 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="shop-grid-4-columns-full.html" class="" data-mobile-menu-trigger="">4 Columns Full</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="shop-grid-4-columns-sidebar.html" class="" data-mobile-menu-trigger="">4 Columns Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="shop-grid-3-columns-sidebar.html" class="" data-mobile-menu-trigger="">3 Columns Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="shop-list.html" class="" data-mobile-menu-trigger="">Shop List</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="shop-table.html" class="" data-mobile-menu-trigger="">Shop Table</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="shop-right-sidebar.html" class="" data-mobile-menu-trigger="">Shop Right Sidebar</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="product-full.html" class="" data-mobile-menu-trigger="">Product <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Product</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="product-full.html" class="" data-mobile-menu-trigger="">Full Width</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="product-sidebar.html" class="" data-mobile-menu-trigger="">Left Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="cart.html" class="" data-mobile-menu-trigger="">Cart</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="checkout.html" class="" data-mobile-menu-trigger="">Checkout</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="order-success.html" class="" data-mobile-menu-trigger="">Order Success</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="Wishlist.html" class="" data-mobile-menu-trigger="">Wishlist</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="compare.html" class="" data-mobile-menu-trigger="">Compare</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="track-order.html" class="" data-mobile-menu-trigger="">Track Order</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li data-mobile-menu-item="">
+                  <a href="blog-classic-right-sidebar.html" class="" data-mobile-menu-trigger="">Blog <svg width="7" height="11">
+                      <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                    </svg>
+                  </a>
+                  <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Blog</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <a href="blog-classic-right-sidebar.html" class="" data-mobile-menu-trigger="">Blog Classic <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Blog Classic</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="blog-classic-left-sidebar.html" class="" data-mobile-menu-trigger="">Left Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="blog-classic-right-sidebar.html" class="" data-mobile-menu-trigger="">Right Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="blog-list-right-sidebar.html" class="" data-mobile-menu-trigger="">Blog List <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Blog List</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="blog-list-left-sidebar.html" class="" data-mobile-menu-trigger="">Left Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="blog-list-right-sidebar.html" class="" data-mobile-menu-trigger="">Right Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="blog-grid-right-sidebar.html" class="" data-mobile-menu-trigger="">Blog Grid <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Blog Grid</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="blog-grid-left-sidebar.html" class="" data-mobile-menu-trigger="">Left Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="blog-grid-right-sidebar.html" class="" data-mobile-menu-trigger="">Right Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="post-full-width.html" class="" data-mobile-menu-trigger="">Post Page <svg width="7" height="11">
+                                <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                              </svg>
+                            </a>
+                            <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                              <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                                <div class="mobile-menu__panel-header">
+                                  <button class="mobile-menu__panel-back" type="button">
+                                    <svg width="7" height="11">
+                                      <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                                    </svg>
+                                  </button>
+                                  <div class="mobile-menu__panel-title">Post Page</div>
+                                </div>
+                                <div class="mobile-menu__panel-body">
+                                  <ul class="mobile-menu__links">
+                                    <li data-mobile-menu-item="">
+                                      <a href="post-full-width.html" class="" data-mobile-menu-trigger="">Full Width</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="post-left-sidebar.html" class="" data-mobile-menu-trigger="">Left Sidebar</a>
+                                    </li>
+                                    <li data-mobile-menu-item="">
+                                      <a href="post-right-sidebar.html" class="" data-mobile-menu-trigger="">Right Sidebar</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="post-without-image.html" class="" data-mobile-menu-trigger="">Post Without Image</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li data-mobile-menu-item="">
+                  <a href="account-login.html" class="" data-mobile-menu-trigger="">Account <svg width="7" height="11">
+                      <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                    </svg>
+                  </a>
+                  <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Account</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <a href="account-login.html" class="" data-mobile-menu-trigger="">Login &amp; Register</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-dashboard.html" class="" data-mobile-menu-trigger="">Dashboard</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-garage.html" class="" data-mobile-menu-trigger="">Garage</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-profile.html" class="" data-mobile-menu-trigger="">Edit Profile</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-orders.html" class="" data-mobile-menu-trigger="">Order History</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-order-details.html" class="" data-mobile-menu-trigger="">Order Details</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-addresses.html" class="" data-mobile-menu-trigger="">Address Book</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-edit-address.html" class="" data-mobile-menu-trigger="">Edit Address</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="account-password.html" class="" data-mobile-menu-trigger="">Change Password</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li data-mobile-menu-item="">
+                  <a href="about-us.html" class="" data-mobile-menu-trigger="">Pages <svg width="7" height="11">
+                      <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9
+          C-0.1,9.8-0.1,10.4,0.3,10.7z"></path>
+                    </svg>
+                  </a>
+                  <div class="mobile-menu__links-panel" data-mobile-menu-panel="">
+                    <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                      <div class="mobile-menu__panel-header">
+                        <button class="mobile-menu__panel-back" type="button">
+                          <svg width="7" height="11">
+                            <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                          </svg>
+                        </button>
+                        <div class="mobile-menu__panel-title">Pages</div>
+                      </div>
+                      <div class="mobile-menu__panel-body">
+                        <ul class="mobile-menu__links">
+                          <li data-mobile-menu-item="">
+                            <a href="about-us.html" class="" data-mobile-menu-trigger="">About Us</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="contact-us-v1.html" class="" data-mobile-menu-trigger="">Contact Us v1</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="contact-us-v2.html" class="" data-mobile-menu-trigger="">Contact Us v2</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="404.html" class="" data-mobile-menu-trigger="">404</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="terms.html" class="" data-mobile-menu-trigger="">Terms And Conditions</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="faq.html" class="" data-mobile-menu-trigger="">FAQ</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="components.html" class="" data-mobile-menu-trigger="">Components</a>
+                          </li>
+                          <li data-mobile-menu-item="">
+                            <a href="typography.html" class="" data-mobile-menu-trigger="">Typography</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li data-mobile-menu-item="">
+                  <a href="https://themeforest.net/item/redparts-auto-parts-html-template/24735474" class="highlight" target="_blank" data-mobile-menu-trigger="">Buy Theme</a>
+                </li>
+              </ul> -->
+              <div class="mobile-menu__spring"></div>
+              <div class="mobile-menu__divider"></div>
+              <a class="mobile-menu__contacts" href="http://localhost:8000/logoutuser">
+                <!-- <div class="mobile-menu__contacts-subtitle">Probleme de system</div>
+                <div class="mobile-menu__contacts-title">800 060-0730</div> -->
+                Deconnexion
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Modal -->
+  <div class="modal fade" id="addclientmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			<div class="accordion mb-2" id="accordionExample">
+				<div class="accordion-item">
+				  <h2 class="accordion-header" id="headingOne">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					  +Ajouter
+					</button>
+				  </h2>
+				  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<form id="addclientform">
+							<input type="hidden" name="csrfmiddlewaretoken" value="Y6mjAYBK61trB2Uielx3On3dPdfYKbTIcwZWjacixm7VKJGbySDTIGlXPeTz1ToF">
+							<div class="form-group">
+								<label for="exampleInputEmail1">Nom ou Nom commercial</label>
+								<input name="name" type="text" required="" class="form-control">
+							</div>
+							
+							<div class="form-group">
+								<label for="exampleInputPassword1">Phone</label>
+								<input name="phone" type="text" required="" class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Ville</label>
+								<input name="city" type="text" required="" class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Addresse</label>
+								<input name="address" type="text" required="" class="form-control">
+							</div>
+							<button class="btn btn-primary addclientbtn w-100">Submit</button>
+					  </form>
+					</div>
+				  </div>
+				</div>
+			</div>
+			
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <!-- image display modal -->
+<div class="modal fade" id="imagedisplaymodal" tabindex="-1" aria-labelledby="eimagedisplaymodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <div class="modal-body text-center">
+            <img src="http://localhost:8000/categories/products/2" alt="" class="imgproductmodal" style="max-width: 100%;">
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- scripts -->
+    <script src="./Produits de JOINT CULAS - STE companyname_files/bootstrap.bundle.min.js.téléchargement"></script>
+    <script src="./Produits de JOINT CULAS - STE companyname_files/select2.min.js.téléchargement"></script>
+    <script src="./Produits de JOINT CULAS - STE companyname_files/number.js.téléchargement"></script>
+    <script src="./Produits de JOINT CULAS - STE companyname_files/main.js.téléchargement"></script>
+    <script src="./Produits de JOINT CULAS - STE companyname_files/alertify.min.js.téléchargement"></script>
+    
+    <script>
+      $.get('/makeuserconnected', {'activity':document.title}, (data)=>{
+        console.log('ready',data)
+      })
+      $.get('/getcartitems', (data)=>{
+        $('.loadingcartitems').addClass('d-none')
+
+        $('.commanditems').html(data.length)
+      })
+      function addtocart(event, productid){
+        console.log('parent', $(event.target).parent().parent())
+        qty=$(event.target).parent().parent().find('.qty').val()
+        if (qty=="" || qty==0){
+          $(event.target).parent().parent().find('.qty').addClass('is-invalid')
+          alertify.error('Quantité invalide')
+          return
+        }
+        $(event.target).parent().parent().find('.qty').removeClass('is-invalid')
+        loading()
+        $.get('/addtocart',{
+              'productid': productid,
+              'qty': qty
+            },(data)=> {
+              console.log(data)
+                stoploading()
+                if (data.success){
+                  $('.commanditems').html(parseInt($('.commanditems').html())+1)
+                  //$('event.target').text('Ajouté')
+                  // setTimeout(() => {
+                    //     $('.addtocartbtn').text('Ajouter au panier').removeClass('disabled')
+                    // }, 2000);
+                  }
+                  else{
+                    alertify.error('Deja ajouté au panier')
+                  }
+                  added=$(event.target).parent().parent().find('.added')
+                  console.log('>> ', added)
+                  added.removeClass('d-none')
+                  // setTimeout(()=>{
+                  //   added.addClass('d-none')
+                  // }, 3000)
+            }
+          )
+      }
+      
+      function removefromcart(event, cartitemid){
+        loading()
+
+      }
+        
+
+        var btn = $('#button');
+
+        $(window).scroll(function() {
+        if ($(window).scrollTop() > 300) {
+            btn.addClass('show');
+        } else {
+            btn.removeClass('show');
+        }
+        });
+
+        btn.on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({scrollTop:0}, '300');
+        });
+        $(window).on('click', (e)=>{
+            if (e.target.className=='imagedisplaybtn'){
+                img=$(e.target).attr('imgsrc')
+                $('.imgproductmodal').attr('src', img)
+            }
+        })
+        const loading=()=>{
+		$('.loadingscreen').removeClass('d-none').addClass('d-flex');
+        }
+
+    const stoploading=()=>{
+        $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+    }
+        $('.searchref').on('change', function(){
+            ref=$(this).val()
+            if (ref!=''){
+                loading()
+                $.ajax({
+                    url: '/searchref',
+                    type: 'POST',
+                    data: {
+                        'ref': ref,
+                        'csrfmiddlewaretoken': 'Y6mjAYBK61trB2Uielx3On3dPdfYKbTIcwZWjacixm7VKJGbySDTIGlXPeTz1ToF'
+                    },
+                    success: function (data) {
+                        stoploading()
+                        if (data){
+                            $('.searchref').focus()
+                            $('.searchresults').html(data.data)
+                        }
+                    }
+                });
+            }
+        })
+        $('#thisyear').text(new Date().getFullYear())
+          
+    // products=JSON.parse(localStorage.getItem('products'))
+    // if (products && products.length){
+    //     $('.commanditems').text(products.length)
+    // }
+    $('.select2').select2()
+    </script>
+    
+<script src="./Produits de JOINT CULAS - STE companyname_files/catalog.js.téléchargement"></script>
+
+<script>
+  $('.askbtn').each((i, el)=>{
+    $(el).on('click', ()=>{
+      $('[name=ref]').val($(el).data('id'))
+    })
+  })
+  var form = document.getElementById('questionform');
+   $('.addclientbtn').on('click', function(e){
+        
+        e.preventDefault();
+        const scriptURL='https://script.google.com/macros/s/AKfycbysYBeRsdX8zbXzloiRkigWUsnAC0NWwtLUzcZGsoerf_VvLRBsdvVMi4LYjJYU5J90/exec'
+        if ($('[name=question]').val()=='' ){
+            alert('Veuillez remplir tous les champs');
+        }
+        else{
+            $(this).addClass('disabled')
+            $(this).text('En cours ...')
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+            alert('Votre demande a été envoyée avec succès');
+            // hide modal
+          $('#questionmodal').modal('hide')
+
+            })
+            .catch(error => {
+                alert('ERROR');
+                // redierct to home
+                location.reload 
+            }) 
+        }
+   }) 
+  // let pdctscards = document.querySelectorAll('.products-list__item')
+  // function pdctsliveSearch(e) {
+  //   console.log(e.target.value)
+  //   //Use innerText if all contents are visible
+  //   //Use textContent for including hidden elements
+  //   for (var i = 0; i < cards.length; i++) {
+  //       if(cards[i].textContent.toLowerCase()
+  //               .includes(e.target.value.toLowerCase())) {
+  //                   cards[i].classList.remove("d-none");
+  //       } else {
+  //           cards[i].classList.add("d-none");
+  //       }
+  //   }
+  // }
+  // let pdctssearchInput = document.getElementById('searchbox');
+
+  // pdctssearchInput.addEventListener('keyup', (e) => {
+  //     console.log('rr')
+  //     clearTimeout(typingTimer);
+  //     typingTimer = setTimeout(pdctsliveSearch(e), typeInterval);
+  // });
+   $(window).ready(function(){
+    
+   })
+</script>
+
+
+
+
+
+</body><!-- modals --></html>

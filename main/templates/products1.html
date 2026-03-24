@@ -1,0 +1,543 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block css %}
+
+<style>
+  
+@keyframes blink {
+  0%, 100% {opacity: 1;}
+  50% {opacity: 0;}
+}
+#blinking-text {
+  animation: blink 1s linear infinite;
+
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- confirm order fixed at the bottom -->
+
+<!--question Modal -->
+<div class="modal fade" id="pdctdatamodal" tabindex="-1" role="dialog" aria-labelledby="pdctdatamodalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content" style="width: 40em;">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+    <div class="modal-body">
+      
+    </div>
+	  </div>
+	</div>
+</div>
+
+<div class="modal fade" id="ordernote" tabindex="-1" role="dialog" aria-labelledby="ordernoteLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+    <div class="modal-body">
+      <small>Note commande</small>
+      <textarea name="notesorder" class="form-control notesorder" style="height: 180px;"></textarea>
+      <button onclick="savecommandetolocalst(event)" class="btn btn-success w-100 bi bi-check"></button>
+    </div>
+	  </div>
+	</div>
+</div>
+
+<!-- <div class="col-12 shadow-lg rounded p-2 categorytitle fixed-bottom container border border-2 bg-dark">
+    <div class="d-flex justify-content-between align-items-center">
+      <a href="/catalogpage" class="bi bi-arrow-left me-2 btn text-primary">Catalog</a>
+      <div>
+        {{category.title.upper}}
+      </div>
+
+
+      
+      
+    </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+          <a href="/catalogpage" class="btn btn-primary">
+            ←
+          </a>
+          <div class="d-flex col-8">
+            <input type="text" placeholder="Chercher Model/Voiture ..." aria-describedby="button-addon1" class="form-control border bg-light" id="searchbox">
+            
+          </div>
+          
+          <a href="/cart">
+            <div class="d-flex flex-column">
+              <span class="input-group-text" id="basic-addon1">
+                <span class="badge bg-danger rounded-pill commanditems">0</span>
+                <svg width="20" height="20">
+                  <circle cx="7" cy="17" r="2"></circle>
+                  <circle cx="15" cy="17" r="2"></circle>
+                  <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+    V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+    C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+                </svg>
+              </span>
+              
+            </div>
+          </a>
+          
+      </div>
+      <div type="text" class="text-center" placeholder="Input group example" aria-label="Input group example" aria-describedby="basic-addon1">
+        <span class="ttt">0</span>
+        <span>NET</span>
+      </div>
+  </div> -->
+<div class="position-relative">
+  
+  <!-- products holder -->
+  <div class="block-split__item block-split__item-content col-auto">
+    <div class="block">
+      <div class="products-view">
+        
+        <!-- title holder -->
+        {% if user.groups.all.0.name == 'salsemen'%}
+		<button class="btn bg-white bi bi-search position-fixed" style="left: 19em; bottom: 3em; z-index:9999; width:4em;" onclick="$('input.mobile-search__input.searchphone.search__input').focus()"></button>
+        <button class="btn btn-info bi bi-info position-fixed" style="left: 11px; bottom: 3em; z-index: 9999; width: 2em;" data-toggle="modal" data-target="#ordernote" onclick="getnotefromlocalst()"></button>
+        {% include 'salsemenproducts.html' %}
+        {% else %}
+       <div class="products-view__list products-list products-list--grid--4 position-relative container" data-layout="list" data-with-features="false" style="height: 81vh; overflow-y: scroll;" >
+        <div class="products-list__content p-2 m-0">
+          
+          <div class="row">
+		  <!--<div class="bg-dark rounded text-white">{{arrivage}}</div>-->
+          {% if arrivage %}
+          {% for i in products %}
+          <div class="col-6 mb-2">
+          <div class="bg-white shadow p-2" style="height: 17.5em;">
+            
+            <div class="d-flex justify-content-between">
+              <div class="" style="width:170px;">
+                {% if i.image %}
+                <img src="{%if i.image%}{{i.image.url}}{% endif %}" alt="" style="max-width: 275px;max-height: 176px;">
+                {% endif %}
+              </div>
+              <div class="">
+                <div class="mb-2 d-flex">
+                  <strong class="bg-darkblue p-2 text-white">
+                    {{i.ref.upper}}
+                  </strong>
+                  <div class="ms-3">
+                    {% if i.stocktotal %}
+                      {% if i.stocktotal <= 0 %}
+                      <div style="width:20px; height:20px; border-radius:50%; background:red;" ></div>
+                      {% elif i.stocktotal <= 5 %}
+                      <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+                      {% else %}
+                          <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+                          </div>
+                      {% endif %}
+                    {% else %}
+                      <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+                      </div>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="text-orange">
+                  <strong>
+                    {% if i.refeq1 %}
+                    {{i.refeq1}}
+                    {% endif %}
+                  </strong><br>
+                  <strong>
+                    {% if i.refeq2 %}
+                    {{i.refeq2}}
+                    {%endif%}
+                  </strong>
+                </div>
+                
+                
+                  
+                <div style="color: #28a8ff;
+                margin-top: 6px;
+                font-size: 20px;">
+                  {% if i.diametre %}
+                  {{i.diametre}}
+                  {% endif %}
+                </div>
+                <div class="mt-3">
+                <strong style="padding: 5px; color: red; margin-top: 7px;">
+                  {{i.refeq4}}
+                </strong>
+                </div>
+              </div>
+              <div><!--price and cmnd-->
+                <div style="margin-right: 20px;">
+                  {% if i.remise != 0 %}
+                        <div style="font-size: 12px;">
+                          <strong class="text-danger">
+                            {{i.sellprice|floatformat:2}} 
+                          </strong>
+                          <span class="text-danger" style="font-size: 12px;">({{i.remise}}%)</span>
+                        </div>
+                        {% else %}
+                        <div style="font-size: 18px;color:blue;">
+                          <strong class="text-danger">
+                            {{i.sellprice|floatformat:2}}
+                          </strong>
+                          <span class="text-danger" style="font-size: 12px">(NET)</span>
+                        </div>
+                        {% endif %}
+                </div>
+                <div class="d-flex flex-column">
+                  {% if i.sellprice > 0 %}
+                  <div>
+                  <div class="cart-table__quantity input-number" style="width: 8vw;"><input style="height: 2.5em;" class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+                </div>
+                {%if i.stocktotal <= 0%}
+                <button class="btn btn-success w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{%if i.image%} {{i.image.url}}  {%endif%}" pdctremise="{{i.remise}}" pdctcategory="{{i.category.title}}" onclick="whishlist(event)">Reliquat</button>
+                {%else%}
+                <button class="btn btn-primary cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+                {%endif%}
+
+                <button class="btn btn-info mt-2 d-none anullercmnd" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+                  Anuller
+                </button>
+                {%endif%}
+                </div>
+                {% if i.isnew %}
+              
+                <div id="blinking-text" class="blink mt-3">
+                  <img src="/media/new.jpg" width="40" style="width: 40px;">
+                </div>
+                {% endif %}
+              </div><!--price and cmnd-->
+            </div> <!--photo and equiv-->
+            <div class="row">
+              <div class="col-10" style="height: 6em; overflow-y: scroll;">
+                {% for a in i.getcars %}
+                {{a}} <br>
+                {% endfor %}
+              </div>
+              <div class="col-2">
+                {% if i.mark.image %}
+                <img src="{{i.mark.image.url}}" class="mb-3" width="70" style="width:70px;">
+                {% endif %}
+                {% if i.carlogos.image %}
+                <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+                {% endif %}
+              </div>
+            </div> <!--design and mark auto-->
+            
+          </div> <!--holder-->
+          </div>
+
+          {% endfor %}
+          {%else%}
+          
+          {% for i in products %}
+	  {% if i.sellprice > 0 %}
+	  <div class="col-12 mb-2">
+            <div class="border rounded product-card">
+              <div class="product-card__image" style="width: 35em;">
+                <div class="image image--type--product" style="height: 311px;width: 26em;">
+                  <img  src="{% if i.image %}{{i.image.url}}{% else %}/media/default.jpg{% endif %}" alt="{{ i.name }}" loading="lazy" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn">
+                  
+                  
+                </div>
+                
+                <div class="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
+                </div>
+              </div>
+              <div class="product-card__info p-2">
+                
+                <div class="product-card__name">
+                  <div class="d-flex">
+                    <div style="margin-right: 3px;">
+                      <strong style="font-size: 25px;">
+                        {{ i.ref.upper }} 
+                      </strong>
+                      <div>
+                        <strong>
+                          {% if i.refeq1 %}
+                          {{i.refeq1}}
+                          {% endif %}
+                        </strong> <br>
+                        <strong>
+                          {% if i.refeq2 %}
+                          {{i.refeq2}}
+                          {%endif%}
+                        </strong>
+                         <br>
+                        <strong>
+                          {% if i.refeq3 %}
+                          {{i.refeq3}}
+                          {% endif %}
+                        </strong>
+                      </div>
+                      {% if i.stocktotal %}
+                        {% if i.stocktotal <= 0 %}
+			<div class="d-flex">
+                        <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+			</div>
+			{% if i.near %}<div style="width:20px; height:20px; border-radius:50%; background:#1067b1;"></div>{%endif%}</div>
+                        {% elif i.stocktotal <= 5 %}
+                        <div style="width:20px; height:20px; border-radius:50%; background:orange;" ></div>
+                        {% else %}
+                            <div style="width:20px; height:20px; border-radius:50%; background:green;" >
+                            </div>
+                        {% endif %}
+                      {% else %}
+                        <div class="d-flex">
+                                        <div style="width:20px; height:20px; border-radius:50%; background:red;" >
+					</div>
+						{% if i.near %}<div style="width:20px; height:20px; border-radius:50%; background:#1067b1;"></div>{%endif%}</div>
+
+                      {% endif %}
+
+                      
+                        {% if i.isnew %}
+                    
+                      <div id="blinking-text" class="blink">
+                        <img src="/media/new.jpg" width="40" style="width: 40px;">
+                      </div>
+                      {% endif %}
+                      <div style="color:#00538c;">
+                        {% if i.diametre %}
+                        {{i.diametre}}
+                        {% endif %}
+                      </div>
+                      
+                    </div>
+                    <div class="mt-3" style="height: 10em; overflow-y: scroll; margin-left: 10px;">
+                      {% for car in i.getcars %}
+                      <div>
+                        {{car}}
+                      </div>
+                      {% endfor %}
+                    </div>
+                    
+                  </div>
+
+                  
+                </div>
+                
+                
+              </div>
+              <div class="product-card__footer d-flex flex-column">
+                <div class="bg-darkblue text-white w-100 text-center rounded mt-2">
+                  <strong>REF: {{i.ref.upper}} </strong>
+                </div>
+                <div class="product-card__prices p-2 border w-100 mt-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    {% if i.remise != 0 %}
+                    <div style="font-size: 18px;color:blue;">
+                      
+                      {{i.sellprice|floatformat:2}} 
+                    </div>
+                    <div class="text-danger" style="font-size: 12px;">({{i.remise}}%)</div>
+                    {% else %}
+                    <div style="font-size: 18px; color:blue;">
+                      {{i.sellprice|floatformat:2}}
+                    </div>
+                    <div class="text-danger" style="font-size: 12px;">(NET)</div>
+                    {% endif %}
+                  </div>
+
+                </div>
+                <div class="cart-table__quantity input-number mb-3"><input class="form-control input-number__input qty" type="number" min="1" value="1"><div class="input-number__add"></div><div class="input-number__sub"></div></div>
+            <!-- cmd button -->
+            
+            {%if i.stocktotal <= 0%}
+            <button class="btn btn-success w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{%if i.image%} {{i.image.url}}  {%endif%}" pdctremise="{{i.remise}}" pdctcategory="{{i.category.title}}" onclick="whishlist(event)">Reliquat</button>
+            {%else%}
+            <button class="btn btn-success cmnd w-100" pdct="{{i.id}}" pdctref="{{i.ref}}" pdctname="{{i.name}}" pdctpr="{{i.sellprice}}" pdctid="{{i.id}}" pdctimg="{% if i.image %} {{i.image.url}} {% endif %}" pdctremise="{{i.remise|floatformat:-2}}" pdctcategory="{{i.category.title}}">Cmnd</button>
+            {%endif%}
+            <button class="btn btn-info mt-2 d-none anullercmnd w-100" data-id="{{i.id}}" onclick="anullercmnd(event, '{{i.id}}')">
+              Anuller
+            </button>
+            
+            <div class="d-flex justify-content-end mt-2">
+              {% if i.mark.image %}
+              <img src="{{i.mark.image.url}}" width="70" style="width:70px;">
+              {% endif %}
+              {% if i.carlogos.image %}
+              <img src="{{i.carlogos.image.url}}" width="40" style="width:40px;">
+              {% endif %}
+            </div>
+              </div>
+              
+            </div>
+          </div>
+          <!-- next and previous -->
+	  {% endif %}
+
+          {% endfor %}
+	  
+          <!-- <div class="d-flex justify-content-between">
+            
+            <a href="{% if previousctg%}/categories/products/{{previousctg.id}}{%else%}#{% endif %}" class="btn btn-info">
+              precedent
+            </a>
+            <a href="{% if nextctg%}/categories/products/{{nextctg.id}}{%else%}#{% endif %}" class="btn btn-info">
+              Suivant
+            </a>
+          </div> -->
+      </div>
+        {% endif%}
+        {% endif%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+   <!-- cart 
+   <div class="col-md-4 borders cartdd">
+  <div class="sticky-top card-header text-center d-flex justify-content-between align-items-center">
+    <small>
+        Bon de commande
+    </small>
+    <button class="btn clearcommande bi bi-trash-fill text-danger" onclick="clearcommande()">
+    </button>
+  </div>
+    <div class="col-5 fitscreen bg-white shadow rounded px-2 w-100">
+    
+    
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th >ref</th>
+            <th >article</th>
+            <th style="width: 5%;">Qty</th>
+            <th style="width: 5%;">total</th>
+        </tr>
+        </thead>
+        <tbody class="commande-table">
+            
+        </tbody>
+    </table>
+    
+    </div>
+    
+</div>-->
+  
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/catalog.js' %} "></script>
+<script src="{% static 'js/owl.min.js'%}"></script>
+
+<script>
+  const row = document.querySelector('.row'); let currentIndex = 0; const cardsPerPage = 3; window.addEventListener('scroll', (e) => { e.preventDefault(); const delta = Math.sign(e.deltaY); const cardHeight = document.querySelector('.product-card').offsetHeight; const maxIndex = Math.floor(row.scrollHeight / cardHeight) - cardsPerPage; if ((currentIndex === 0 && delta === -1) || (currentIndex === maxIndex && delta === 1)) { return; } currentIndex = Math.max(0, Math.min(currentIndex + delta, maxIndex)); row.scrollTo({ top: currentIndex * cardHeight, behavior: 'smooth' }); });
+  function getnotefromlocalst(){
+    const notesorder = localStorage.getItem('notesorder')
+    $('.notesorder').val(notesorder)
+  }
+  function savecommandetolocalst(event){
+    event.preventDefault()
+    const notesorder = $('.notesorder').val()
+    localStorage.setItem('notesorder', notesorder)
+    
+  }
+  function pdctdata(id){
+    $.get('/productdata', {id:id}, function(data){
+      console.log(data)
+      $('#pdctdatamodal .modal-body').html(data.html)
+    })
+    // $.ajax({
+    //   url: '/productdata/'+id,
+    //   success: function(data){
+    //     $('#pdctdatamodal .modal-body').html(data)
+    //   }
+    // })
+  }
+    // window.addEventListener('beforeunload', function (e) {
+    //         // Cancel the event
+    //         e.preventDefault();
+    //         // Chrome requires the returnValue to be set
+    //         e.returnValue = '';
+    //     });
+  
+  $(document).ready(function(){
+  $(".owl-carousel").owlCarousel({
+    items:1,
+    nav:true,
+    navText: [
+      "<i class='bi bi-arrow-left'></i>",
+      "<i class='bi bi-arrow-right'></i>"
+    ]
+  })
+  })
+  function gotonext() {
+    // Get the current URL
+    var currentURL = window.location.href;
+    var parts = currentURL.split('/'); // Split the URL by '/'
+    var lastPart = parts[parts.length - 1]; // Get the last part of the URL
+    var currentNumber = parseInt(lastPart); // Try to parse it as a number
+
+    if (!isNaN(currentNumber)) {
+      var newNumber = currentNumber + 1;
+      var newURL = currentURL.replace(/(\d+)(?=\D*$)/, newNumber);
+      // Navigate to the new URL
+      window.location.href = newURL;
+    } else {
+      console.log("No valid number found at the end of the URL to increment.");
+    }
+  }
+  function gotoprevious() {
+    console.log('previous')
+    // Get the current URL
+    var currentURL = window.location.href;
+    var parts = currentURL.split('/'); // Split the URL by '/'
+    var lastPart = parts[parts.length - 1]; // Get the last part of the URL
+    var currentNumber = parseInt(lastPart); // Try to parse it as a number
+
+    if (!isNaN(currentNumber)) {
+      var newNumber = currentNumber - 1;
+      var newURL = currentURL.replace(/(\d+)(?=\D*$)/, newNumber);
+      console.log(newURL)
+      // Navigate to the new URL
+      //window.location.href = newURL;
+    } else {
+      console.log("No valid number found at the end of the URL to increment.");
+    }
+  }
+  $('.askbtn').each((i, el)=>{
+    $(el).on('click', ()=>{
+      $('[name=ref]').val($(el).data('id'))
+    })
+  })
+  var form = document.getElementById('questionform');
+   $('.addclientbtn').on('click', function(e){
+        
+        e.preventDefault();
+        const scriptURL='https://script.google.com/macros/s/AKfycbysYBeRsdX8zbXzloiRkigWUsnAC0NWwtLUzcZGsoerf_VvLRBsdvVMi4LYjJYU5J90/exec'
+        if ($('[name=question]').val()=='' ){
+            alert('Veuillez remplir tous les champs');
+        }
+        else{
+            $(this).addClass('disabled')
+            $(this).text('En cours ...')
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+            alert('Votre demande a été envoyée avec succès');
+            // hide modal
+          $('#questionmodal').modal('hide')
+
+            })
+            .catch(error => {
+                alert('ERROR');
+                // redierct to home
+                location.reload 
+            }) 
+        }
+   }) 
+ 
+   $(window).ready(function(){
+    
+   })
+</script>
+{% endblock %}

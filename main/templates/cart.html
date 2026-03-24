@@ -4,238 +4,183 @@
 
 
 {% block content %}
+
+
+
 <div class="block">
-    <div class="container">
-      <div class="cart">
+    <div class="container position-relative">
+      <div class="fixed-bottom" style="height: 6em; background: #333">
+    
 
-        <div class="cart__table cart-table position-relative" style="height: 80vh; overflow: scroll;">
-          <div class="loadingcartitems d-flex flex-column align-items-center justify-content-center w-100 h-100 top-0 bg-dark200" style="background:#00000047; z-index:1199; position: absolute;">
-            <div class="spinner-border text-light"></div>
+      <div class="p-2 d-flex justify-content-center">
+        <div class="d-flex me-3">
+          {% if user.groups.all.0.name == 'clients' %}
+          <input type="text" hidden value="{{user.client.id}}" class="clientid">
+          {% elif user.groups.all.0.name == 'salsemen' %}
+          <select class="form-control clientid">
+            <option value="">---</option>
+            {% for i in clients %}
+            <option value="{{i.id}}">
+              {{i.name}}
+            </option>
+            {% endfor %}
+          </select>
+          {% endif %}
+          <div>
+  
+            <select class="form-control mb-2 modes" aria-label="Default select example" name="modpymnt">
+              <option selected value="0">Mode de payement</option>
+              <option value="espece">Espece</option>
+              <option value="cheque">Cheque</option>
+              <option value="effet">Effet</option>
+            </select>
+          </div>
+          
+  
+          <div>
+            <select class="form-control modes" aria-label="Default select example" name="modlvrsn">
+              <option selected value="0">Mode de livraison</option>
+              <option value="LUX">LUX</option>
+              <option value="SDTM">SDTM</option>
+              <option value="GHAZALA">GHAZALA</option>
+              <option value="BAHA">BAHA express</option>
+              <option value="BG">BG</option>
+              <option value="VOIE EXPRESS">VOIE EXPRESS</option>
+            </select>
+          </div>
         </div>
-
-          <table class="table table-bordered table-responsive">
-            <thead style="position: sticky;top: 0; background: #80808052;">
+        <button class="btn btn-primary valider">
+          valider le panier
+        </button>
+          
+      </div>
+      <input type="text" name="isclient" hidden value="{% if user.groups.all.0.name == 'clients' %}true{%endif%}">
+      
+      
+  </div>
+      <div class="cart">
+        <div class="cart__table cart-table position-relative" style="height: 75vh;overflow-y: scroll;">
+          <div class="loadingcartitems flex-column align-items-center justify-content-center w-100 h-100 top-0 bg-dark" style="z-index:1199; position: absolute;">
+            <div class="spinner-border text-light"></div>
+          </div>
+        
+        
+          <table class="table table-bordered table-hover">
+            <thead style="background: white;">
               <tr class="">
-                <th style="width: 11%">Image</th>
+                <th class="">Ref</th>
                 <th class="" style="width: 50%;">Article</th>
-                <th class="">Prix</th>
-                <th class="">Remise</th>
+                <!-- <th class="">Prix</th> -->
                 <th class="">Quantité</th>
-                <th class="">Note</th>
+                <!-- <th class="">Total</th> -->
                 <th class=""></th>
               </tr>
             </thead>
-            <tbody class="cartbody">
-
+            <tbody class="">
+              {% for i in cartitems %}
+              <tr class="" ref="{{i.product.ref.upper}}" n="{{i.product.name}}" id="{{i.product.id}}">
+          
+                <td class="">
+                  <a src="{{i.product.image}}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="{{i.product.image}}">{{i.product.ref.upper}}</a>
+                </td>
+                <td class="">
+                  <strong>{{i.product.name.upper}}</strong>
+                </td>
+                <!-- <td class="price" data-title="Price">
+                <small class="priceholder" price={{i.product.price}}>{{i.product.price}} NET</small>
+                </td> -->
+                <td class="qtyholder" data-title="Quantity">
+                  <div class="d-flex cart-table__quantity input-number">
+                    <input  class="form-control input-number__input qty" type="number" min="1" value="{{i.qty}}" price={{i.product.price}} name="qtytosub" style="width: 30%;">
+                    <button class="btn border bi bi-pen-fill" onclick="edititemincart(event, '{{i.id}}')"></button>
+                    {% if i.product.isoffer %}
+                    <button class="btn btn-primary bi bi-question btn-sm" onclick="$(this).parent().parent().find('.offer').toggleClass('d-none')"></button>
+                    {% endif %}
+                  </div>
+                  {% if i.product.isoffer %}
+                  <strong class="offer d-none">
+                    {{i.product.offre.upper}}
+                  </strong>
+                  {% endif %}
+                </td>
+                <!-- <td class=" subtotal" data-title="Total">
+                <small>{{i.total}} NET</small>
+                </td> -->
+                <td class="">
+                  <button onclick="deleteitemcart(event, '{{i.id}}')" type="button" class="btn btn-sm btn-danger" id="{{i.product.id}}">
+                    
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
             </tbody>
-
+            <tfoot class="cart-table__foot">
+              <tr>
+              </tr>
+            </tfoot>
           </table>
-
         </div>
+        
       </div>
-
-      <p hidden class="total text-success"></p>
-  <!--<button class="btn btn-primary valider w-100" style="position: fixed; bottom: 0;" disabled>
-        valider le panier
-        </button>-->
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
-
-
-</script>
-<script src="{% static 'js/catalog.js'%}"></script>
-<script src="{% static 'js/cart.js'%}"></script>
-<script>
-  function updatecartitem(event, cartitemid, productid, cartid){
-    $.get('/updatecartitem', {'cartitemid':cartitemid, qty:$(event.target).val(), productid:productid, cartid:cartid}, (data)=>{
-        location.reload()
-    })
-  }
-  function updaterepcartitem(event, cartitemid, productid, cartid){
-    $.get('/updaterepcartitem', {'cartitemid':cartitemid, qty:$(event.target).val(), productid:productid, cartid:cartid}, (data)=>{
-        location.reload()
-    })
-  }
-  function cancelrepproduct(event, id, repcartid, repitemid){
-    alertify.confirm('Supprimer?', function(){
-      $.get('/removeitemfromrepcart', {'productid':id, 'repcartid':repcartid, 'repitemid':repitemid}, (data)=>{
-        $('.commanditems').html(parseInt($('.commanditems').html())-1)
-      })
-      $(event.target).parent().parent().remove();
-      //updatetotal()
-      // remove from local storage
-      //products=JSON.parse(localStorage.getItem('products'))
-      // using splice
-      //let dx=products.indexOf(id)
-      //console.log(dx)
-      //products.splice(dx, 1)
-      //localStorage.setItem('products', JSON.stringify(products))
-      // remove from local storage
-      //productsdetails=JSON.parse(localStorage.getItem('productsdetails'))
-      //productsdetails.splice(dx, 1)
-      //localStorage.setItem('productsdetails', JSON.stringify(productsdetails))
-      //$('.commanditems').text(products.length)
-      // check if cart is empty
-      //if (products.length==0){
-      //    $('.valider').prop('disabled', true)
-      //}
-    })
-  }
-
-  $(document).ready(function () {
-
-    // edited (seperate carts)
-    {% if request.user.groups.all.0.name == 'clients' %}
-      $.get('/getitemsincart',
-        {
-          'userid': "{{request.user.id}}"
-        },
-        (data)=>{
-        for (i of data.items){
-          $('.cartbody').append(`
-
-            <tr>
-
-            <td class="">
-              <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
-            </td>
-            <td class="">
-              ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
-            </td>
-            <td class="" data-title="Price">
-            <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
-            </td>
-            <td>${i.remise}%</td>
-            <td class=" qtyholder" data-title="Quantity">
-              <input value="${i.qty}" onchange="updatecartitem(event, ${i.cartitemid}, ${i.id}, ${i.cartid})">
-
-            </td>
-
-            <td>
-              <button class="btn btn-danger" onclick="cancelproduct(event, ${i.id})">
-                X
-              </button>
-            </td>
-            <td><div class="status ${i.status}"></div></td>
-            </tr>
-            `)
-        }
-        $('.loadingcartitems').addClass('d-none')
-
-      })
-    {% elif request.user.groups.all.0.name == 'salsemen' %}
-    console.log('get items for rep')
-    let clientid=$('.clientidholder').attr('clientid')
-    if (clientid==''){
-      $('.commanditems').text('!')
-    }else{
-      $.get('/getitemsinrepcart', {"clientid":clientid}, (data)=>{
-          console.log('data of repcart', data)
-          $('tbody').html('')
-          $('.commanditems').text(data.length)
-          for (i of data.items){
-            $('.cartbody').append(`
-
-              <tr>
-
-              <td class="">
-                <img width=100 src="${i.image}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="${i.image}">
-              </td>
-              <td class="">
-                ${i.ref.toUpperCase()} ${i.name.toUpperCase()}
-              </td>
-              <td class="" data-title="Price">
-              <small class="priceholder" price=${i.sellprice}>${(i.sellprice).toFixed(2)}</small>
-              </td>
-              <td>${i.remise}%</td>
-              <td class=" qtyholder" data-title="Quantity">
-                <input value="${i.qty}" onchange="updaterepcartitem(event, ${i.cartitemid}, ${i.id}, ${i.cartid})">
-
-              </td>
-
-              <td>
-                <button class="btn btn-danger" onclick="cancelrepproduct(event, ${i.id}, ${i.cartid}, ${i.cartitemid})">
-                  X
-                </button>
-              </td>
-              <td><div class="status ${i.status}"></div></td>
-              </tr>
-              `)
-          }
-          $('.loadingcartitems').addClass('d-none')
-      })
+  function edititemincart(event, id){
+    qty_input=$(event.target).parent().find('input')
+    if (qty_input.val()=='' || qty_input.val()==0){
+      qty_input.addClass('border-danger')
+      return
     }
-    {% endif %}
-    // cart delete item
-
-    $('.cart-table__remove').click(function () {
-      if (confirm("Supprimer l'article ?")){
-        $(this).closest('tr').remove();
-        updatetotal()
-        // remove from local storage
-        products=JSON.parse(localStorage.getItem('products'))
-        id=$(this).attr('id')
-        // using splice
-        let dx=products.indexOf(id)
-        console.log(dx)
-        products.splice(dx, 1)
-        localStorage.setItem('products', JSON.stringify(products))
-        // remove from local storage
-        productsdetails=JSON.parse(localStorage.getItem('productsdetails'))
-        productsdetails.splice(dx, 1)
-        localStorage.setItem('productsdetails', JSON.stringify(productsdetails))
-        $('.commanditems').text(products.length)
-        // check if cart is empty
-        if (products.length==0){
-            $('.valider').prop('disabled', true)
-        }
-
+    $('.loadingcartitems').toggleClass('d-none');
+    $.get({
+      url: '/edititemincart',
+      data: {
+        'cartitemid': id,
+        'qty': qty_input.val(),
+      },
+      success: function (data) {
+        $('.loadingcartitems').toggleClass('d-none');
 
       }
     });
-
-    // handle 5% rem
-    $('[name="modpymnt"]').on('change', ()=>{
-        if($('[name="modpymnt"]').val()=='espece'){
-          // $('.priceholder').each((i, el)=>{
-          //   $(el).text((parseFloat($(el).text())*0.95).toFixed(2))
-          // })
-          // $('.subtotal').each((i, el)=>{
-          //   // animate the update of the total
-          //   price=parseFloat($(el).parent().parent().find('.priceholder').text())
-          //   qty=parseFloat($(el).parent().find('.qty').val())
-          //   $(el).text(parseFloat(price*qty).toFixed(2))
-
-
-          // })
-          // updatetotal()
-          let total=parseFloat($('.total').text())
-          let remiseamount=total*0.05
-          let afterremise=total-remiseamount
-          $('.totalremise').text(afterremise.toFixed(2))
-        }
-        else{
-
-          $('.remise').addClass('d-none')
-          // $("input[name=qtytosub]").each((i, el)=>{
-
-          //       v=$(el).val()
-          //       subt=$(el).attr('price')*v
-          //       // find the subtotal cell
-          //       subholder=$(el).parent().parent().parent().find('.subtotal')
-          //       subholder.text(subt.toFixed(2))
-          //     })
-          //     $('.priceholder').each((i, el)=>{
-          //       $(el).text($(el).attr('price'))
-          //     })
-          //     updatetotal()
-        }
-
+  }
+  function deleteitemcart(event, id){
+    alertify.confirm('Supprimer ?', ()=>{
+      //$('.loadingcartitems').toggleClass('d-none');
+      $.get({
+      url: '/removeitemincart',
+      data: {
+        'cartitemid': id,
+      },
+      success: function (data) {
+        $(event.target).parent().parent().remove();
+        //$('.loadingcartitems').toggleClass('d-none');
+        
+      }
+    }, ()=>{
+      console.log('OK')
     })
-  });
+    
+    });
+  }
+  // get the input element
+  // const input = document.getElementById('onlynumbers');
+
+  // // add an event listener to validate input
+  // input.addEventListener('input', (event) => {
+  //     // get the current value of the input
+  //     const value = event.target.value;
+
+  //     // replace any non-numeric characters with an empty string
+  //     const cleanValue = value.replace(/[^0-9]/g, '');
+
+  //     // set the cleaned value as the input value
+  //     event.target.value = cleanValue;
+  // });
+
 </script>
+<script src="{% static 'js/cart.js'%}"></script>
 {% endblock %}

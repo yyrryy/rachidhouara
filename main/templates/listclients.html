@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+{% block css %}
+{% endblock %}
+{% block content %}
+<div class="modal fade" id="editclientmodal" tabindex="-1" aria-labelledby="editclientmodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white">
+
+            <div class="modal-body">
+                <form class="form-horizontal add-ledger-form" id="updateclientform" autocomplete="off">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <input type="text" name="updateclientname" class="form-control mb-2" placeholder="client">
+                        <input hidden type="text" name="updateclientcode" class="form-control mb-2" placeholder="Code">
+                        <div class="mb-2">
+                            <small>Representant</small>
+                        <select name="updateclientrep" class="form-select">
+                            <option value="">--</option>
+                            {% for i in commerciaux %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                        <input hidden type="text" name="updateclientphone" class="form-control mb-2" placeholder="phone">
+                        <input hidden type="text" name="updateclientpersonalname" class="form-control mb-2" placeholder="NOM PERSONNEL">
+                        <input hidden type="text" name="updateclientlocation" class="form-control mb-2" placeholder="localisation">
+                        <input hidden type="text" name="updateclientphone2" class="form-control mb-2" placeholder="phone 2">
+                        <input hidden type="text" name="updateclientice" class="form-control mb-2" placeholder="ICE">
+                        <input hidden type="text" name="updateclientcity" class="form-control mb-2" placeholder="Ville">
+                        <input hidden type="text" name="updateclientaddress" class="form-control mb-2" placeholder="Addresse">
+                        <input hidden type="text" name="updateclientregion" class="form-control mb-2" placeholder="Region">
+                        <input hidden type="text" name="updateclientid">
+                        
+
+                            <button class="w-100 btn btn-primary updateclientbtn">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="w-100 btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-body row">
+      <div class="col-3">
+        <div class="border-end p-2">
+            <strong>
+                + Ajouter un Client
+            </strong>
+            <form action="{% url 'products:addclient' %}" class="mt-3" method="post" id="addclientform">
+                {% csrf_token %}
+                <div class="clientcodeerror alert alert-danger d-none">
+                    Code/Client deja existe
+                </div>
+                <input type="text" name="clientcode" class="form-control mb-2 " placeholder="Code" value="{{lastcode}}">
+                <input type="text" name="clientnameinp" class="form-control mb-2" placeholder="client">
+                <div class="mb-2">
+                    <small>Representant</small>
+                <select name="clientrep" class="form-select">
+                    <option value="">--</option>
+                    {% for i in commerciaux %}
+                    <option value="{{i.id}}">{{i.name}}</option>
+                    {% endfor %}
+                </select>
+                </div>
+                <input type="number" name="clientphone" class="form-control mb-2" placeholder="phone">
+                <input type="number" name="clientphone2" class="form-control mb-2" placeholder="phone 2">
+                <input type="text" name="clientice" class="form-control mb-2" placeholder="ICE">
+                <input type="text" name="clientcity" class="form-control mb-2" placeholder="Ville">
+                <input type="text" name="clientaddress" class="form-control mb-2" placeholder="Addresse">
+                <input type="text" name="clientregion" class="form-control mb-2" placeholder="Region">
+                <!-- CHECK CODECLIENT IN UPDATE -->
+                <button class="btn btn-outline-success w-100 submitaddclientbtn">
+                    Enregistrer
+                </button>
+            </form>
+        </div>
+      </div>
+      <div class="col-9">
+       
+        <div class="d-flex justify-content-between mt-2">
+            <input  type="text" name="" id="" placeholder="Recherche" class="searchinputlistclients col-6" style="border-radius: 2em;height: 2.3em;background: #ffa50047;">
+            
+        </div>
+        <div style="height: 70vh; overflow-y: scroll;" class="clientsholder">
+            <table class="table table-bordered listclientstable" style="font-size: 12px;" id="clientstable">
+                <thead style="background: #ffcd83; position: sticky; top: 0;">
+                    <td style="width: 4%;"></td>
+                    <td onclick="sorttable(event)">
+                        client
+                    </td>
+                    <td onclick="sorttable(event)">
+                        Code
+                    </td>
+                    <td onclick="sorttable(event)">
+                        phone
+                    </td>
+                    <td onclick="sorttable(event)">
+                        Ville
+                    </td>
+                    <td onclick="sorttable(event)">
+                        Region
+                    </td>
+                    <td onclick="sorttable(event)">
+                        Representant
+                    </td>
+                    
+                    <td onclick="sorttable(event)">
+                        ICE
+                    </td>
+                </thead>
+                <tbody class="clientstablebody">
+                    {% for i in clients %}
+                    <tr class="client-row" {% if i.diver %} style="background: #a8dfc5" {% endif %}>
+                        <td>
+                            <button class="btn editsuppbtn border" id="{{i.id}}" data-toggle="modal" data-target="#editclientmodal" onclick="populateclientfields('{{i.id}}')">
+                                ✐
+                            </button>
+                        </td>
+                        <!-- <a href="onclick="createtab('client{{i.id}}', 'client: {{i.name}}', '/products/clientlier/{{i.id}}')""></a> -->
+                        <td onclick="createtab('client{{i.id}}', 'Client: {{i.name}}', '/products/client/{{i.id}}')">{{i.name}}</td>
+                        <td >{{i.code}}</td>
+                        <td>{{i.phone}}</td>
+                        <td>{{i.city}}</td>
+                        <td>{{i.region}}</td>
+                        <td>
+                            {% if i.represent %}
+                            {{i.represent.name}}
+
+                            {% endif %}
+                        </td>
+                        <!-- {% if not facturesection %}
+                        <td style="background: yellowgreen;">{{i.mehtodsoldbl|floatformat:2}}</td>
+                        {% endif %}
+                        <td style="background: aliceblue;">{{i.methodsoldfc|floatformat:2}}</td>
+                        <td>{{i.ice}}</td> -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<script>
+    function tabletoexcel(){
+        table = document.getElementById('clientstable')
+        console.log('>>excel')
+        var uri = 'data:application/vnd.ms-excel;base64,'
+        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        var ctx = {worksheet:'clients', table: table.innerHTML}
+        window.location.href = uri + base64(format(template, ctx))
+    }
+    // use event target to get out from risks
+    function filterclientspage(event) {
+        $('.clientstablebody').html('....')
+        let parentdiv = $(event.target).parent();
+        let rep = parentdiv.find('select').val(); // Extract the value of the select element
+        let region = parentdiv.find('input').val().toUpperCase(); // Extract the value of the input element
+
+        $.get('/products/filterclients', {'rep': rep, 'region': region}, (data) => {
+            console.log(data);
+            $('.clientstablebody').html(data.html)
+        });
+    }
+    function loadMorecl (term)  {
+    loadingclients = true;
+    $.get(`/products/loadclients/?facture={%if facturesection%}1{%endif%}&page=${currentPageclients}&term=${term}`, (data)=>{
+      console.log('loaded')
+      const tbody = $('.listclientstable tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadingclients = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.clientsholder').off('scroll', handleScrollcl);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrollcl () {
+      console.log('scroll')
+      const container = $('.clientsholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.client-row:last-child');
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+      const term=$('.searchinputlistclients').val()
+      const containerBottom = container.scrollTop + container.clientHeight;
+      console.log(containerBottom+900, lastRowOffset, containerBottom+900 >= lastRowOffset)
+      if (containerBottom+900 >= lastRowOffset && !loadingclients) {
+          currentPageclients++;
+          loadMorecl(term);
+      }
+    };
+
+    // Attach the scroll event listener
+    $('.clientsholder').on('scroll', handleScrollcl)
+    function excelclients(event){
+        let parentdiv=$(event.target).parent().parent()
+        excelfile=parentdiv.find('.excelfile')
+        // send excel file data in a ajax request
+        let formData = new FormData();
+
+        // Append the Excel file to the FormData object
+        formData.append('excelFile', excelfile[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      // Make an AJAX request to send the file data
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+          url: '/products/excelclients', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            // Handle the success response from the server
+            $('.loadingscreen').addClass('d-none')
+            alertify.success('File uploaded successfully')
+            updatetab('clientstab', '/products/clientspage')
+
+          },
+          error: function(xhr, status, error) {
+            $('.loadingscreen').addClass('d-none')
+            // Handle errors if the AJAX request fails
+            alertify.error('Error uploading file');
+          }
+        });
+    }
+
+    $('.searchinputlistclients').on("change", function() {
+      console.log($(this).val().length>0)
+      if ($(this).val().length>0){
+        $.get('/products/searchforlistclient?facture={%if facturesection%}1{%endif%}', {"term":$(this).val().toLowerCase()}, (data)=>{
+            $(".listclientstable tbody").html('')
+            $(".listclientstable tbody").html(data.trs)
+        })
+      }
+        loadingclients = false;
+        currentPageclients=1
+    // Get the values from all filter input fields
+        // var filterValue = $(this).val().toLowerCase();
+
+        // // Split the filter value into individual terms based on the '&' sign
+        // var filterTerms = filterValue.split('+').map(function(term) {
+        //     return term.trim();
+        // });
+
+        // // Iterate through the table rows
+        // $(".listclientstable tbody tr").each(function() {
+        //     var rowText = $(this).text().toLowerCase();
+        //     var showRow = true;
+
+        //     // Check if all filter terms are present in the row text
+        //     $.each(filterTerms, function(index, term) {
+        //         if (term !== '' && rowText.indexOf(term) === -1) {
+        //             showRow = false;
+        //             return false; // Exit the loop early if a mismatch is found
+        //         }
+        //     });
+
+        //     // Toggle the visibility of the row based on the filter criteria
+        //     $(this).toggle(showRow);
+        // });
+        // total=0
+        // $('.listclientstable tbody tr:visible').each(function(){
+        // total+=parseFloat($(this).find('td:nth-child(5)').text())
+        // })
+        // $('.totalbons').text(total.toFixed(2))
+    });
+
+    // check for ckient code
+    // $('[name="clientcode"]').on('change', function(){
+    //     let code = $(this).val()
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '{% url "products:checkcodeclient" %}',  // Replace with your Django URL
+    //         data: {
+    //             'code':code,
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}'
+    //         },
+    //         success:((data)=>{
+    //             if(data.exist){
+    //                 $('.clientcodeerror').removeClass('d-none')
+    //                 $('.submitaddclientbtn').addClass('disabled')
+    //             }else{
+    //                 console.log('not exist')
+    //                 $('.clientcodeerror').addClass('d-none')
+    //                 $('.submitaddclientbtn').removeClass('disabled')
+
+    //             }
+    //         })
+    //     })
+    // })
+
+
+    $('.updateclientbtn').on('click', function(event){
+        event.preventDefault()
+        if ($('[name="updateclientname"]').val()=="" || $('[name="updateclientcode"]').val()==""){
+            $('#updateclientform').css('border', '1px solid red')
+            return
+        }
+        $(this).addClass('disabled')
+        $('#editclientmodal').modal('hide')
+        $('.modal-backdrop').remove()
+        var formData = new FormData($('#updateclientform')[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updateclient" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                if (data.success){
+                    location.reload()
+                }else{
+                    alertify.error(data.error)
+                }
+
+
+            })
+        })
+    })
+    $('.submitaddclientbtn').on('click', function(event){
+        event.preventDefault()
+        if ($('[name="clientnameinp"]').val()=="" || $('[name="clientcode"]').val()=="" || $('[name="clientrep"]').val()==""){
+            $('#addclientform').css('border', '1px solid red')
+            return
+        }
+        $(this).addClass('disabled')
+        code=$('[name="clientcode"]').val()
+        // username=$('[name="clientusername"]').val()
+        // $.post('{% url "products:checkusername" %}', {
+        //     username: username,
+        //     'csrfmiddlewaretoken': '{{ csrf_token }}'
+        // }, function(data){
+        //     if (data.exist){
+        //         $('.checkclientusername').css('border', '1px solid red')
+        //         alertify.error('Username exist')
+        //         return
+        //     }
+        // })
+        $.post('{% url "products:checkcodeclient" %}', {
+        code: code,
+        name:$('[name="clientnameinp"]').val(),
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(data){
+            if(data.exist){
+                    $('.clientcodeerror').removeClass('d-none')
+                    alertify.error('Client deja existé')
+                    $(this).removeClass('disabled')
+                    return
+            }else{
+                var formData = new FormData($('#addclientform')[0]);
+                console.log('creating client')
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "products:addclient" %}',  // Replace with your Django URL
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success:((data)=>{
+                        if (data.success){
+                            location.reload()
+
+                        }else{
+                            alertify.error(data.error)
+                        }
+                    })
+                })
+            }
+        })
+
+    })
+
+</script>
+{% endblock %}

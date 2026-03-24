@@ -69,22 +69,26 @@
                     e.preventDefault();
                     let name = $('#name').val();
                     let subject = $('#subject').val();
-                    let phone = $('#phone').val();
+                    let email = $('#email').val();
                     let message = $('#message').val();
                     const form = document.forms['submit-to-google-sheet']
-                    if (name != "" && subject != "" && phone != "" && message != "" ) {
-                      
+                    if (name != "" && subject != "" && email != "" && message != "" ) {
+                      if ( email.indexOf('@') == -1 || email.indexOf('.')==-1){
+                        $('#email').addClass("uk-form-danger");
+                        return
+                      }
                       $('#buttonsend').attr('disabled', 'disabled');
                       const scriptURL = 'https://script.google.com/macros/s/AKfycbxeJZTixg7ZHzG4Cz9LNQnn--12PCYQIqwpUeQ8h8WOhJ2nMxUBDZF2KGfvKq0idBEZ/exec'
                       UIkit.notification("<span uk-icon='icon: fa-check-circle; ratio: 0.028'></span> Encours d'envoie", {status:'warning', pos: 'bottom-right' });
-                        $.get('/contactform', {'name':name, 'sujet':subject, 'phone':phone, 'message':message},(response) => {
+                        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                          .then(response => {
                             UIkit.notification("<span uk-icon='icon: fa-check-circle; ratio: 0.028'></span> Message envoyé. Thank you!", { timeout: 3000, status:'success', pos: 'bottom-right' });
                             $('#name').val('');
                             $('#subject').val('');
-                            $('#phone').val('');
+                            $('#email').val('');
                             $('#message').val('');                          
                             })
-                          
+                          .catch(error => console.error('Error!', error.message)) 
                       
                       $('#buttonsend').removeAttr('disabled');
                       // reset form

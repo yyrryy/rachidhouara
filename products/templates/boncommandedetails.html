@@ -3,7 +3,7 @@
     {% if order.isdelivered %}
     <div class="badge bg-primary text-white">Confirmé</div>
     {% else %}
-    <button class="btn w-100 btn-success" onclick="ajaxpage('addgenererbonlivraison{{order.id}}', 'Generer Bons de livraison', '/products/genererbonlivraison/{{order.id}}')">
+    <button class="btn w-100 btn-success" onclick="createtab('addgenererbonlivraison{{order.id}}', 'Generer Bons de livraison', '/products/genererbonlivraison/{{order.id}}')">
       GENERER BL
     </button>
    {% endif %}
@@ -91,14 +91,14 @@
               <td style="height: 190mm;">
                   {% for v in i %}
 
-                  {{v.ref.upper}} {% if reliquat and not v.islivraison and v.product.stocktotal > 0 %}<button style="height:16px;" onclick="makeitemsent('{{v.id}}')"></button>{%endif%}
+                  {{v.product.ref.upper}} {% if reliquat and not v.islivraison and v.product.stocktotal > 0 %}<button style="height:16px;" onclick="makeitemsent('{{v.id}}')"></button>{%endif%}
                   <br>
                   {% endfor %}
               </td>
               <td>
                   {% for v in i %}
 
-                  {{v.name.upper|slice:"30"}}
+                  {{v.product.name.upper|slice:"30"}}
                   <br>
                   {% endfor %}
               </td>
@@ -222,14 +222,14 @@
               <td style="height: 150mm;">
                   {% for v in i %}
 
-                  {{v.ref.upper}} {% if reliquat and not v.islivraison and v.product.stocktotal > 0 %}<button style="height:16px;" onclick="makeitemsent('{{v.id}}')"></button>{%endif%}
+                  {{v.product.ref.upper}} {% if reliquat and not v.islivraison and v.product.stocktotal > 0 %}<button style="height:16px;" onclick="makeitemsent('{{v.id}}')"></button>{%endif%}
                   <br>
                   {% endfor %}
                   </td>
                 <td>
                   {% for v in i %}
 
-                  {{v.name.upper|slice:"30"}}
+                  {{v.product.name.upper|slice:"30"}}
                   <br>
                   {% endfor %}
               </td>
@@ -293,7 +293,7 @@
     if (password==''){
       alertify.error('Password')
     }else{
-      $.get('products/makeitemsent', {
+      $.get('/products/makeitemsent', {
         'orderitemid':orderitemid,
         'password':password
       }, (data)=>{

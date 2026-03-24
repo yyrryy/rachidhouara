@@ -50,7 +50,34 @@
 		transition: all .5s ease">
 		<div class="d-flex justify-content-between">
 			<button class="col-10 btn btn-danger" onclick="$('.tvacalculholder').addClass('d-none')"></button>
-			<select class="tvayears populateyears disabled" hidden onchange="showtva()">
+			<select class="tvayears" onchange="showtva()">
+				<option value="2024">2024</option>
+				<option value="2025">2025</option>
+				<option value="2026">2026</option>
+				<option value="2027">2027</option>
+				<option value="2028">2028</option>
+				<option value="2029">2029</option>
+				<option value="2030">2030</option>
+				<option value="2031">2031</option>
+				<option value="2032">2032</option>
+				<option value="2033">2033</option>
+				<option value="2034">2034</option>
+				<option value="2035">2035</option>
+				<option value="2036">2036</option>
+				<option value="2037">2037</option>
+				<option value="2038">2038</option>
+				<option value="2039">2039</option>
+				<option value="2040">2040</option>
+				<option value="2041">2041</option>
+				<option value="2042">2042</option>
+				<option value="2043">2043</option>
+				<option value="2044">2044</option>
+				<option value="2045">2045</option>
+				<option value="2046">2046</option>
+				<option value="2047">2047</option>
+				<option value="2048">2048</option>
+				<option value="2049">2049</option>
+				<option value="2050">2050</option>
 			</select>
 		</div>
 		<table class="table table-hover table-bordered" style="border-color:black;font-weight:bold">
@@ -85,7 +112,34 @@
 	<div class="d-flex justify-content-between">
 		<div>
 			<button class="btn btn-primary btn-sm" name="button" onclick="remplacer()">Remplacer <strong class="rowstoreplace">0</strong></button>
-			<select class="years populateyears disabled" hidden name="">
+			<select class="years" name="">
+				<option value="2024">2024</option>
+				<option value="2025">2025</option>
+				<option value="2026">2026</option>
+				<option value="2027">2027</option>
+				<option value="2028">2028</option>
+				<option value="2029">2029</option>
+				<option value="2030">2030</option>
+				<option value="2031">2031</option>
+				<option value="2032">2032</option>
+				<option value="2033">2033</option>
+				<option value="2034">2034</option>
+				<option value="2035">2035</option>
+				<option value="2036">2036</option>
+				<option value="2037">2037</option>
+				<option value="2038">2038</option>
+				<option value="2039">2039</option>
+				<option value="2040">2040</option>
+				<option value="2041">2041</option>
+				<option value="2042">2042</option>
+				<option value="2043">2043</option>
+				<option value="2044">2044</option>
+				<option value="2045">2045</option>
+				<option value="2046">2046</option>
+				<option value="2047">2047</option>
+				<option value="2048">2048</option>
+				<option value="2049">2049</option>
+				<option value="2050">2050</option>
 			</select>
 			<select class="months" name="">
 				<option value="">--</option>
@@ -199,7 +253,7 @@
 									<div class="row align-items-center">
 											<div class="col-3">
 													<small>Mantant:</small> <br>
-													<input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant">
+													<input onchange="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant">
 											</div>
 											<div class="col-3">
 													<small>N° piece:</small> <br>
@@ -212,6 +266,7 @@
 															<option value="effet">effet</option>
 															<option value="espece">espece</option>
 															<option value="avoir">avoir</option>
+															<option value="verement">verement</option>
 													</select>
 											</div>
 											<div class="col-3">
@@ -354,8 +409,12 @@
 </div>
 <script src="/static/js/select2.min.js"></script>
 <script>
+	d = new Date();
+	year = d.getFullYear();
+	$('.years').val(year)
 // #uizyerz5
 function comptabilise(event, excelech_id){
+
 	console.log('>>', 'rerer')
 	parent=$(event.target).parent()
 	facture=parent.find('.factures').val()
@@ -592,22 +651,22 @@ function comptabilise(event, excelech_id){
 			})
 	})
 	// check for npiece existence
-	// $('.npiecereglementclient').on('change', function(){
-	// 		npiece=$(this).val()
-	// 		console.log('check npiece with get', npiece)
-	// 		$.get('/products/checknpiece', {
-	// 				npiece:npiece,
-	// 				csrfmiddlewaretoken: '{{ csrf_token }}'
-	// 				}, function(data){
-	// 						console.log(data)
-	// 						if (data.exist){
-	// 								alertify.error('N° piece existe deja')
-	// 								$('.submitaddreglemntclientbtnfc').addClass('disabled')
-	// 						}else{
-	// 								$('.submitaddreglemntclientbtnfc').removeClass('disabled')
-	// 						}
-	// 				})
-	// })
+	$('.npiecereglementclient').on('change', function(){
+			npiece=$(this).val()
+			console.log('check npiece with get', npiece)
+			$.get('/products/checknpiece', {
+					npiece:npiece,
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+					}, function(data){
+							console.log(data)
+							if (data.exist){
+									alertify.error('N° piece existe deja')
+									$('.submitaddreglemntclientbtnfc').addClass('disabled')
+							}else{
+									$('.submitaddreglemntclientbtnfc').removeClass('disabled')
+							}
+					})
+	})
 
 	function totalreglementfc(event){
 		let sum = 0;
@@ -642,7 +701,7 @@ function comptabilise(event, excelech_id){
 
 			// Format the date as "yyyy-mm-dd"
 			var currentDate = yyyy + '-' + mm + '-' + dd;
-			parentdiv.append(`<div class="row align-items-center mt-2 addedreglrow"><div class="col-3"> <input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrowfc(event)"></button></div></div>`)
+			parentdiv.append(`<div class="row align-items-center mt-2 addedreglrow"><div class="col-3"> <input onchange="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option><option value="verement">verement</option><option value="verement">verement</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrowfc(event)"></button></div></div>`)
 	}
 	function reglementech(event){
 		thistr=$(event.target).parent().parent()
@@ -679,7 +738,7 @@ function comptabilise(event, excelech_id){
 	$(document).ready(function() {
 		const $select = $('.populateyears');
     const currentYear = new Date().getFullYear();
-    const startYear = 2025;
+    const startYear = 2024;
 
     for (let year = startYear; year <= currentYear; year++) {
         $select.prepend($('<option>', {

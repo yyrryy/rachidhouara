@@ -1,0 +1,519 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+<div class="">
+    <div class=" position-relative">
+
+      <!-- nav -->
+
+      <!-- cards -->
+      <div >
+
+        <div class="row mb-2">
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addpducts', 'ARTICLES', '/products/stock')">
+
+                <i class="bi bi-list-task h1">
+
+                </i>
+                <div>
+                    Articles
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addclientstab', 'CLIENTS', '/products/clientspage')">
+
+                <i class="bi bi-people-fill h1">
+
+                </i>
+                <div>
+                  CLIENTS
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('supplist', 'FOURNISSEURS', '/products/supplierspage')">
+
+                <i class="bi bi-globe h1">
+
+                </i>
+                <div>
+                  Fournisseur
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistreglementbl', 'REGLEMENT BL CLIENT', '/products/listreglementbl')">
+
+                <i class="bi bi-cash h1">
+
+                </i>
+                <div>
+                  Reglements
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addreplist', 'REPRESENTANTS', '/products/commercialspage')">
+
+                <i class="bi bi-people  h1">
+
+                </i>
+                <div>
+                  Representants
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('carttab', 'PANIER', '/products/cartpage')">
+
+                <i class="bi bi-cart  h1">
+
+                </i>
+                <div>
+                  Panier
+                </div>
+            </div>
+          </div>
+
+          <!-- <div class="col-3">
+            <a onclick="createtab('supplist', 'List FR', '/products/supplierspage')" class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+              <div class="col-6 bg-darkblue text-white p-2">
+                <b class="h1">
+                  sldnr
+                </b>
+              </div>
+              <div class="col-6 d-flex flex-column align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-globe-central-south-asia" viewBox="0 0 16 16">
+                  <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM4.882 1.731a.482.482 0 0 0 .14.291.487.487 0 0 1-.126.78l-.291.146a.721.721 0 0 0-.188.135l-.48.48a1 1 0 0 1-1.023.242l-.02-.007a.996.996 0 0 0-.462-.04 7.03 7.03 0 0 1 2.45-2.027Zm-3 9.674.86-.216a1 1 0 0 0 .758-.97v-.184a1 1 0 0 1 .445-.832l.04-.026a1 1 0 0 0 .152-1.54L3.121 6.621a.414.414 0 0 1 .542-.624l1.09.818a.5.5 0 0 0 .523.047.5.5 0 0 1 .724.447v.455a.78.78 0 0 0 .131.433l.795 1.192a1 1 0 0 1 .116.238l.73 2.19a1 1 0 0 0 .949.683h.058a1 1 0 0 0 .949-.684l.73-2.189a1 1 0 0 1 .116-.238l.791-1.187A.454.454 0 0 1 11.743 8c.16 0 .306.084.392.218.557.875 1.63 2.282 2.365 2.282a.61.61 0 0 0 .04-.001 7.003 7.003 0 0 1-12.658.905Z"/>
+                </svg>
+                Fournisseurs
+              </div>
+            </a>
+          </div> -->
+
+
+
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistbonlivraison', 'BON LIVRAISON', '/products/listbonlivraison')">
+
+                <i class="bi bi-folder h1">
+
+                </i>
+                <div>
+                  List Devis
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addCommandestab', 'BON COMMANDES', '/products/listboncommnd')">
+
+                <i class="bi bi-cart h1">
+
+                </i>
+                <div>
+                  List Bon commande
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistbonachat', 'BON ACHAT', '/products/listbonachat')">
+
+                <i class="bi bi-folder-symlink h1">
+
+                </i>
+                <div>
+                  List Bon Achat
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addavoircl', 'AVOIR CLIENT', '/products/listavoirclient')">
+                <i class="bi bi-folder-x h1">
+                </i>
+                <div>
+                  List Avoir client
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('avoirsupp', 'AOIR FOURNISSEUR', '/products/listavoirsupplier')">
+
+                <i class="bi bi-folder h1">
+
+                </i>
+                <div>
+                  List Avoir Fournisseur
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('reliquatab', 'RELIQUAT', '/products/reliquatpage')">
+
+                <i class="bi bi-cart  h1">
+
+                </i>
+                <div>
+                  Reliquat
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"   onclick="createtab('add', '+ ARTICLE', '/products/addproductspage')">
+              <i class="bi bi-plus h1"></i>
+              <div>
+                Article
+              </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="createtab('addbonlivraison', '+LIVRAISON', '/products/bonlivraison')">
+              <i class="bi bi-plus h1"></i>
+              <div>
+                Bon Livraison
+              </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addavoir', '+AVOIR CLIENT', '/products/avoirclient')">
+              <i class="bi bi-plus h1"></i>
+              <div>
+                Avoir Client
+              </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addrecevoir', '+BON ACHAT', '/products/recevoir')">
+              <i class="bi bi-plus h1"></i>
+              <div>
+                Bon Achat
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('connectedtab', 'CONNECT', '/products/listeconnected')">
+
+                <i class="bi bi-people  h1">
+
+                </i>
+                <div>
+                  Connecter
+                </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('echeancetab', 'ECHEANCES', '/products/listecheance')">
+
+                <i class="bi bi-card-checklist  h1">
+
+                </i>
+                <div>
+                  Echeances
+                </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="row mb-2">
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addsituationcl', 'RELEVE CLIENT', '/products/situationcl')">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-file-spreadsheet-fill" viewBox="0 0 16 16">
+                  <path d="M12 0H4a2 2 0 0 0-2 2v4h12V2a2 2 0 0 0-2-2zm2 7h-4v2h4V7zm0 3h-4v2h4v-2zm0 3h-4v3h2a2 2 0 0 0 2-2v-1zm-5 3v-3H6v3h3zm-4 0v-3H2v1a2 2 0 0 0 2 2h1zm-3-4h3v-2H2v2zm0-3h3V7H2v2zm4 0V7h3v2H6zm0 1h3v2H6v-2z"/>
+                </svg>
+                <div>
+                  Situation Client
+                </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addjournalachat', 'JOURNAL ACHAT', '/products/journalachat')">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-journal-arrow-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 5a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5A.5.5 0 0 1 8 5z"/>
+                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+              </svg>
+                <div>
+
+                  Journal Achat
+                </div>
+
+
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addjournalvente', 'JOURNAL VENTE', '/products/journalvente')">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-journal-arrow-up" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z"/>
+                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+              </svg>
+                <div>
+                  Journal ventes
+                </div>
+
+
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addsituationsupplier', 'SITUATION FOURNISSEURS', '/products/situationsupplier')">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-layer-backward" viewBox="0 0 16 16">
+                <path d="M8.354 15.854a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708l1-1a.5.5 0 0 1 .708 0l.646.647V4H1a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9v7.793l.646-.647a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1 0 .708l-3 3z"/>
+                <path d="M1 9a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4.5a.5.5 0 0 1 0 1H1v2h4.5a.5.5 0 0 1 0 1H1zm9.5 0a.5.5 0 0 1 0-1H15V6h-4.5a.5.5 0 0 1 0-1H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4.5z"/>
+              </svg>
+                <div>
+
+                  Situation Fournisseurs
+                </div>
+
+
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addlistreglementsupp', 'REGLEMENT FOURNISSEUR', '/products/listreglementsupp')">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-currency-exchange" viewBox="0 0 16 16">
+                <path d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z"/>
+              </svg>
+                <div>
+
+                  Reglements Fournisseurs
+                </div>
+
+
+            </div>
+          </div>
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/etatblclients' target='_blank'>
+
+                <i class="bi bi-card-checklist  h1">
+
+                </i>
+                <div>
+                  Etat bl
+                </div>
+            </a>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/pdctrepport' target='_blank'>
+
+                <i class="bi bi-card-checklist  h1">
+
+                </i>
+                <div>
+                  Rapport
+                </div>
+            </a>
+          </div>
+
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/etude' target='_blank'>
+
+                <i class="bi bi-check2-square  h1">
+
+                </i>
+                <div>
+                  Etude
+                </div>
+            </a>
+          </div>
+
+
+
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/etatblfc' target='_blank'>
+
+                <i class="bi bi-check2-square  h1">
+
+                </i>
+                <div>
+                  Etat BL/FC
+                </div>
+            </a>
+          </div>
+
+
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/excelecheaces' target='_blank'>
+
+                <i class="bi bi-check2-square  h1">
+
+                </i>
+                <div>
+                  Bank
+                </div>
+
+            </a>
+          </div>
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/achatmanual' target='_blank'>
+
+                <i class="bi bi-check2-square  h1">
+
+                </i>
+                <div>
+                  <!-- this is to enter the data of facture supp manually -->
+                  Facture achat
+                </div>
+
+            </a>
+          </div>
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/inventaire' target='_blank'>
+
+                <i class="bi bi-calculator  h1">
+
+                </i>
+                <div>
+                  INVENTAIRE
+                </div>
+
+            </a>
+          </div>
+
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/stockperyear' target='_blank'>
+
+                <i class="bi bi-calculator  h1">
+
+                </i>
+                <div>
+                  Stock Année
+                </div>
+
+            </a>
+          </div>
+          <div class="col-2" onclick="createtab('addlistfacturescopy', 'Bon livraisons', '/products/listfacturescopy')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+              <i class="bi bi-receipt h1"></i>
+              <div>
+                List Bon livraison
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="mt-5 mb-5" style="height: 8px;">
+        <div class="row">
+          <div class="col-2" onclick="createtab('addlistfactures', 'FACTURES', '/products/listfactures')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+              <i class="bi bi-receipt h1"></i>
+              <div>
+                List Factures
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center"  onclick="createtab('addfacture', '+ FACTURE', '/products/facture')">
+              <i class="bi bi-plus h1"></i>
+              <div>
+                Facture
+              </div>
+            </div>
+          </div>
+          <div class="col-2" onclick="createtab('addlistreglementfc', 'REGLEMENT FACTURE CLIENT', '/products/listreglementfc')">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center">
+              <i class="bi bi-cash h1"></i>
+              <div>
+                Reglements Factures
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addsituationclfc', 'Sit.CLFC', '/products/situationclfc')">
+              <i class="bi bi-calculator h1"></i>
+              <div>
+                Situation CL. FC
+              </div>
+
+
+
+            </div>
+          </div> -->
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addjournalventefc', 'JOURNAL VENTE FACTURE', '/products/journalventefc')">
+
+              <i class="bi bi-newspaper h1"></i>
+              <div>
+                Journal Vente FC
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-2">
+            <div class="matrix bg-darkblue rounded shadow text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="createtab('addjournalachatfc', 'JOURNAL ACHAT FACTURE', '/products/journalachatfc')">
+
+              <i class="bi bi-newspaper h1"></i>
+              <div>
+                Journal Achat FC
+              </div>
+
+            </div>
+          </div>
+          <div class="col-2">
+            <a class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" href='/products/etatfcclients' target='_blank'>
+
+                <i class="bi bi-card-checklist  h1">
+
+                </i>
+                <div>
+                  Etat Client FC
+                </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+  $.get('/products/echeancetoday', (data)=>{
+    if (data.length > 0){
+      $('.echeanceindex').removeClass('d-none').text(data.length)
+      //alertify.confirm('Echenaces', data.length+' ECHEANES AUJOURD HUI', function(){
+      //  createtab('echeancetab', 'Echeances', '/products/listecheance')
+      //}, ()=>{
+
+      //})
+    }
+  })
+  $.get('/products/boncommandes', (data)=>{
+    $('.boncmndindex').removeClass('d-none').text(data.length)
+
+  })
+
+</script>
+{% endblock %}

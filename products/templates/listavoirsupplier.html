@@ -22,11 +22,11 @@
 
     </div>
 
-    <button class="btn btn-success" onclick="ajaxpage('addavoirsupp', '+ Avoir FR', '/products/avoirsupplier?target={{target}}')">
+    <button class="btn btn-success" onclick="createtab('addavoirsupp', '+ Avoir FR', '/products/avoirsupplier')">
       +Ajouter
   </button>
   {%endif%}
-  <select name="yearsavsupp" hidden class="populateyears disabled" hidden onchange="yeardataavsupp()">
+  <select name="yearsavsupp" class="populateyears" onchange="yeardataavsupp()">
   </select>
   </div>
   {%if not facturesection%}
@@ -39,38 +39,36 @@
     <table class="table table-bordered table-hover table-striped listavsupptable" style="font-size: 12px;" id="addbonlivraisonle">
       <thead style="position: sticky; top: 0; z-index: 99;">
         <tr style="background: #676767; color: white;">
-          <td>N° bon</td>
-          <td>Date</td>
-          <td>Fournisseur</td>
-          <td>Total</td>
-          <td></td>
-          <!-- <td style="width: 12%;">Sold</td> -->
+          <td style="width: 8%;">N° bon</td>
+          <td style="width: 8%;">Date</td>
+          <td style="width: 8%;">Mode</td>
+          <td style="width: 5%;">Total</td>
+          <td style="width: 12%;">Fournisseur</td>
+          <td style="width: 12%;">Sold</td>
         </tr>
       </thead>
       <tbody class="listavsuppbody">
         {% for order in bons %}
-          <tr class="ord" orderid="{{order.code}}" ondblclick="ajaxpage('avoirsupp{{order.id}}', 'avoirsupp {{order.no}}', '/products/avoirsuppdetails/{{order.id}}?target={{target}}')">
+          <tr class="ord" orderid="{{order.code}}" ondblclick="createtab('avoirsupp{{order.id}}', 'avoirsupp {{order.no}}', '/products/avoirsuppdetails/{{order.id}}')">
             <td>{{ order.no }}</td>
             <td>{{ order.date|date:'d/m/Y' }}</td>
+            <td>{%if order.avoirfacture %} FC {% else %} BL {% endif %}</td>
             <td>{{ order.supplier.name }}</td>
             <td>{{ order.total|floatformat:2|intspace}}</td>
-            <td>
-              
-              {% if order.ispaid %}
-              <div  style="text-align: center; background: lightgreen;">
-                Payé
-              </div>
-              {% elif order.inreglement %}
-              <div class="" style="text-align: center; background: rgb(179, 255, 0);">
-                Reglement
-              </div>
-              {% endif %}
-            </td>
+            <td>{{ order.supplier.rest|floatformat:2|intspace }}</td>
 
           </tr>
         {% endfor %}
       </tbody>
-      
+      <thead style="position: sticky; bottom: 0; z-index: 99;">
+        <tr style="background: white;">
+          <td style="width: 8%;"></td>
+          <td style="width: 5%; background: yellowgreen;" class="totalavsupp">{{total|floatformat:2|intspace}}</td>
+          <td style="width: 8%;"></td>
+          <td style="width: 12%;"></td>
+          <td style="width: 12%;"></td>
+        </tr>
+      </thead>
 
     </table>
   </div>

@@ -1,12 +1,12 @@
 <div class="row">
-    <div class="col-3 shadow rounded p-2" style="z-index: 999">
+    <div class="col-3 shadow rounded p-2 situationclientcol3" style="z-index: 999">
         <div class="d-flex justify-content-between">
           <h5>
-              Situation Client BL {{target}}
+              Situation Client BL
           </h5>
         </div>
         <div class="d-flex">
-          <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
+          <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button>
 
           <select name="clientsituationselect" id="" class="clientsituationselect form-select notempty select2client" style="width: 100%;">
 
@@ -27,18 +27,30 @@
         </div>
 
         <button class="btn btn-info w-100 mt-2" onclick="genererrelvecl(event)">Relevé</button>
-        <button class="btn btn-dark w-100 mt-2" onclick="genererrelveclnr(event)">Relevé Non reglé</button>
-        <button class="btn btn-dark w-100 mt-2" onclick="printrelveclnr(event)">Imprimer Relevé Non reglé</button>
         <!-- <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationbl('releveclblholder')">Imprimer</button> -->
         <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationbl('clientid', 'startdate', 'enddate')">Imprimer</button>
         <button class="btn btn-primary w-100 mt-2 printrelvebl" onclick="$('.relvlogo').toggleClass('invisible');localStorage.getItem('showenteterelv') === 'true'?localStorage.setItem('showenteterelv','false'):localStorage.setItem('showenteterelv','true')">Entette</button>
         <strong class="soldfcinrelvbl text-danger"></strong>
         <h5 class="mt-5">
             Situation Client FC
+            <button class="btn btn-success w-100 mt-2 bg-orange" onclick="relvclfcinbl(event)">Relevé Facture</button>
+            <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationfc('clientid', 'startdate', 'enddate')">Imprimer relev. Facture</button>
+            <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printtablet('releveclblholder')">Imprimer tablet</button>
         </h5>
-        <button class="btn btn-success w-100 mt-2 bg-orange" onclick="relvclfcinbl(event)">Relevé Facture</button>
-        <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printsituationfc('clientid', 'startdate', 'enddate')">Imprimer relev. Facture</button>
-        <button class="btn btn-success w-100 mt-2 printrelvebl" onclick="printtablet('releveclblholder')">Imprimer tablet</button>
+
+        <div class="mt-2">
+            <div>
+                <small>Du</small>
+                <input type="date" class="situationcldatefromfc form-control notempty" value="{{today|date:'Y-m-d'}}">
+            </div>
+            <div>
+                <small>Au</small>
+                <input type="date" class="situationcldatetofc form-control notempty" value="{{today|date:'Y-m-d'}}">
+            </div>
+        </div>
+
+        <button class="btn btn-success w-100 mt-2 printrelvebl bg-darkblue" onclick="relvclglobalinbl('releveclblholder')">Releve BL/FACTURE</button>
+        <button class="btn btn-success w-100 mt-2 printrelvebl bg-darkblue" onclick="printrelvclglobalinbl('releveclblholder')">imprimer Releve BL/FACTURE</button>
 
         <!-- <select name="clientsituationselect" id="" class="form-select notempty clientsituationfcselect" style="width: 100%;">
 
@@ -63,14 +75,14 @@
     selection.remove()
     $('.clientsituationselect').select2({
         minimumInputLength: 1,
-        placeholder:'Chercher ',
+        placeholder:'Chercher',
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
+          url: '/products/searchclient',
           data: function (params) {
             var query = {
-              term: params.term
+              term: params.term,
             }
             // Query parameters will be ?search=[term]&type=public
             return query;
@@ -88,7 +100,7 @@
     // the same function relv client facture in bl
     function relvclfcinbl(event){
 
-        parentdiv=$(event.target).parent()
+        parentdiv=$('.situationclientcol3')
         console.log(parentdiv)
         clientid=parentdiv.find('select[name="clientsituationselect"]').val()
         datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
@@ -104,7 +116,6 @@
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 'clientid': clientid,
-                'target': '{{target}}',
                 'datefrom': datefrom,
                 'dateto': dateto,
             },
@@ -117,6 +128,75 @@
             }
         })
     }
+
+
+    function relvclglobalinbl(event){
+
+        parentdiv=$('.situationclientcol3')
+        console.log('parentdiv', parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrombl=parentdiv.find('.situationcldatefrom').val()
+        datetobl=parentdiv.find('.situationcldateto').val()
+        datefromfc=$('.situationcldatefromfc').val()
+        datetofc=$('.situationcldatetofc').val()
+        console.log(clientid, datefrombl, datetobl, datefromfc, datetofc, clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc=='')
+        if (clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclientglobal',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrombl,
+                'dateto': datetobl,
+                'datefromfc': datefromfc,
+                'datetofc': datetofc,
+            },
+            success: function(data){
+                $('.loadingscreen').addClass('d-none')
+                $('.releveclblholder').html(data.html)
+                if (localStorage.getItem('showenteterelv') === 'true'){
+                  $('.relvlogo').removeClass('invisible')
+                }
+            }
+        })
+    }
+
+    function printrelvclglobalinbl(event){
+
+        parentdiv=$('.situationclientcol3')
+        console.log('parentdiv', parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrombl=parentdiv.find('.situationcldatefrom').val()
+        datetobl=parentdiv.find('.situationcldateto').val()
+        datefromfc=$('.situationcldatefromfc').val()
+        datetofc=$('.situationcldatetofc').val()
+        console.log(clientid, datefrombl, datetobl, datefromfc, datetofc, clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc=='')
+        if (clientid==null || datefrombl=='' || datetobl=='' || datefromfc=='' || datetofc==''){
+          alertify.error('ERRO')
+          return
+        }
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/printrelevclientglobal?clientid='+clientid+'&datefrom='+datefrombl+'&dateto='+datetobl+'&datefromfc='+datefromfc+'&datetofc='+datetofc, '', 'width=900,height=900');
+
+          myWindow.focus();
+          setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000);
+    }
+
+
+
     function genererrelvecl(event){
         parentdiv=$(event.target).parent()
         console.log(parentdiv)
@@ -136,90 +216,15 @@
                 'clientid': clientid,
                 'datefrom': datefrom,
                 'dateto': dateto,
-                'target':'{{target}}'
             },
             success: function(data){
                 $('.loader').addClass('d-none')
                 $('.releveclblholder').html(data.html)
-                // $('.soldfcinrelvbl').text('Sold Facture: '+(data.soldfc).toFixed(2))
+                $('.soldfcinrelvbl').text('Sold Facture: '+(data.soldfc).toFixed(2))
                 // dateInput.value = currentDate;
             }
         })
     }
-    function printrelveclnr(event){
-        parentdiv=$(event.target).parent()
-        console.log(parentdiv)
-        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
-        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
-        dateto=parentdiv.find('input[name="situationcldateto"]').val()
-        if (clientid==null || datefrom=='' || dateto==''){
-          alertify.error('ERRO')
-          return
-        }
-        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/relevclientnr?target={{target}}&clientid='+clientid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
-
-          myWindow.focus();
-          setTimeout(function() {
-          try {
-            myWindow.print();
-            console.log('Print command issued.');
-            myWindow.close();
-            console.log('New window closed.');
-          } catch (e) {
-            console.error('Failed to print and close the window:', e);
-          }
-        }, 1000);
-
-        // $.ajax({
-        //     url: '/products/relevclientnr',
-        //     type: 'POST',
-        //     data: {
-        //         csrfmiddlewaretoken: '{{ csrf_token }}',
-        //         'clientid': clientid,
-        //         'datefrom': datefrom,
-        //         'dateto': dateto,
-        //         'target':'{{target}}'
-        //     },
-        //     success: function(data){
-        //         $('.loader').addClass('d-none')
-        //         $('.releveclblholder').html(data.html)
-        //         $('.soldfcinrelvbl').text('Sold Facture: '+(data.soldfc).toFixed(2))
-        //         // dateInput.value = currentDate;
-        //     }
-        // })
-    }
-    
-    function genererrelveclnr(event){
-        parentdiv=$(event.target).parent()
-        console.log(parentdiv)
-        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
-        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
-        dateto=parentdiv.find('input[name="situationcldateto"]').val()
-        if (clientid==null || datefrom=='' || dateto==''){
-          alertify.error('ERRO')
-          return
-        }
-        $.ajax({
-            url: '/products/relevclientnr',
-            type: 'GET',
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                'clientid': clientid,
-                'datefrom': datefrom,
-                'dateto': dateto,
-                'target':'{{target}}'
-            },
-            success: function(data){
-                $('.loader').addClass('d-none')
-                $('.releveclblholder').html(data)
-                // dateInput.value = currentDate;
-            }
-        })
-    
-        
-      }
-    
-    
     $(function(){
       $('.clientsituationselect').select2({
         minimumInputLength: 1,
@@ -227,7 +232,7 @@
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
+          url: '/products/searchclient',
           data: function (params) {
             var query = {
               term: params.term,
@@ -258,7 +263,7 @@
         // $('body').addClass('d-flex flex-column vh-100 p-3')
         window.print();
         document.body.innerHTML = originalContents;
-        forceupdatetab('addsituationcl', 'products/situationcl')
+        forceupdatetab('addsituationcl', '/products/situationcl')
         */
         parentdiv=$(event.target).parent()
 
@@ -295,13 +300,15 @@
       // $('body').addClass('d-flex flex-column vh-100 p-3')
       window.print();
       //document.body.innerHTML = originalContents;
-      //forceupdatetab('addsituationcl', 'products/situationcl')
+      //forceupdatetab('addsituationcl', '/products/situationcl')
 
     }
     function printsituationfc(id){
-
-        parentdiv=$(event.target).parent()
-
+        parentdiv=$('.situationclientcol3')
+        console.log(parentdiv)
+        clientid=parentdiv.find('select[name="clientsituationselect"]').val()
+        datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationcldateto"]').val()
         clientid=parentdiv.find('select[name="clientsituationselect"]').val()
         datefrom=parentdiv.find('input[name="situationcldatefrom"]').val()
         dateto=parentdiv.find('input[name="situationcldateto"]').val()
@@ -309,7 +316,7 @@
           alertify.error('ERRO')
           return
         }
-        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevfcprint?target={{target}}&clientid='+clientid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+        var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevfcprint?clientid='+clientid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
 
           myWindow.focus();
         setTimeout(function() {

@@ -1,5 +1,13 @@
 {% load global_tags %}
-
+<style>
+  .blink {
+  animation: blinker .6s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+@keyframes blinker {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+</style>
 <!-- export -->
 <div class="exportblholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
   <div class="d-flex">
@@ -35,24 +43,14 @@
 
 </div>
 
-<div class=" shadow rounded">
+<div class="bg-white shadow rounded">
   <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-    <div>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active')">Tous</button>
-      <button class="btn border btnselect btn-dark active" style="
-      border-radius: 11px;" onclick="ajaxpage('addlistbonlivraison', 'tt', '/products/listbonlivraison?target={{target}}')">En attend</button>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); getbonvalider()">Validé</button>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); getcanceledbons()">Annulé</button>
-    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addlistbonlivraison')">x</button>
     <div>
       {{title}}
     </div>
-    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addlistbonlivraison', 'tt', '/products/listbonlivraison?target={{target}}')">↻</button>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistbonlivraison', '/products/listbonlivraison?facture={% if facturesection %}1{% endif %}')">↻</button>
   </div>
-  {% include 'validationblaccodrion.html' %}
   <div class="d-flex justify-content-between">
     <div class="d-flex">
       <div class="me-2">
@@ -67,23 +65,32 @@
       </div>
 
     </div>
-    
-    <div hidden>
-      <input style="width: 20em;
+    {% if not facturesection %}
+    <div class="d-flex">
+      <!-- <div style="color: white; background:red; cursor: pointer; padding: 7px; border-radius: 12px;" title="BON 3 MOIS" onclick="getnotpaid(event)">{{depasser}}
+      </div> -->
+      
+    </div>
+
+    <!--<div>
+       <input style="width: 20em;
     background: #c3e6ff;
     border-radius: 11px;
     margin-bottom: 9px;" placeholder="TRODO" onchange="window.open(`https://www.trodo.fr/catalogsearch/result?q=${$(this).val()}&searchby=name`, '_blank')">
-    </div>
+    </div> -->
+    {% endif %}
     <div>
-      <select name="yearsbl" onchange="yeardatabl()" hidden class="populateyears disabled" hidden>
+      <select name="yearsbl" onchange="yeardatabl()" class="populateyears">
 
       </select>
     </div>
     <div class="d-flex flex-column">
-      <button class="btn btn-success" style="border-radius: 10px; margin: 0 9px 9px 0;" onclick="ajaxpage('addbonsortie', '+bon livraison', '/products/bonlivraison?target={{target}}')">
+      <button class="btn btn-success" style="border-radius: 10px; margin: 0 9px 9px 0;" onclick="createtab('addbonlivraison', '+livraison', '/products/bonlivraison')">
         +Ajouter
       </button>
-
+      <button class="btn btn-danger" style="border-radius: 10px; margin: 0 9px 9px 0;" onclick="getcontrenonpaid(event)">
+        Contre non reglé
+      </button>
     </div>
   </div>
   <div class="filters mt-2 d-flex justify-content-between">
@@ -91,22 +98,59 @@
     background: #80808038;
     border-radius: 11px;
     margin-bottom: 9px;
-  " 
-  searchtype="waiting"
-  type="text" name="" id="" placeholder="Recherche" class="searchinputlistbl" waiting="1">
+" type="text" name="" id="" placeholder="Recherche" class="searchinputlistbl">
 
   <div>
-    
+    <input style="width: 60em;
+    background: #80808038;
+    border-radius: 11px;
+    margin-bottom: 9px;
+    " type="text" placeholder="Recherche Bons" class="searchitemsforlistbl"
+    onfocus="$('.itemssearchresultslistbl').removeClass('d-none')"
+    onchange="getitemsforlistbl(event)">
+    <div style="position: absolute;
+    height: 60vh;
+    width: 70vw;
+    overflow-y: scroll;
+    z-index: 99;
+    background: white;
+    padding: 10px;
+    box-shadow: -6px 5px 4px 4px #24232391" class="itemssearchresultslistbl d-none">
+      <div class="sticky-top bg-white">
+        <button class="w-100 btn btn-danger" onclick="$('.itemssearchresultslistbl').addClass('d-none')">X</button>
+        <div class="suggestions__group-title brands d-flex" >
+
+        </div>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr class="text-center bg-darkblue text-white">
+            <td>IMAGE</td>
+            <td>REF.</td>
+            <td>ARTICLE</td>
+            <td>STOCK</td>
+            <td>PR. BRUT</td>
+            <td>REMISE</td>
+            <td>PR. NET</td>
+            <td>DIAMETRE</td>
+          </tr>
+        </thead>
+        <tbody class="itemsforlistblresult">
+
+        </tbody>
+      </table>
+    </div>
   </div>
 
-
-  <!-- <button class="btn bi bi-download text-white" onclick="$('.exportblholder').css('top', '10vh')" style="width: 5.7em;
+  {% if not facturesection %}
+  <button class="btn bi bi-download text-white" onclick="$('.exportblholder').css('top', '10vh')" style="width: 5.7em;
   background: #df691a;
   border-radius: 11px;
   margin: 0 9px 9px 0;"></button>
-  <button class="btn bi bi-list border btn-dark" title="Orta tffo4" onclick="getbonswhite(event)" style="
-  border-radius: 11px;"></button> -->
 
+  <button class="btn bi bi-list border btn-dark" title="Orta tffo4" onclick="getbonswhite(event)" style="
+  border-radius: 11px;"></button>
+  {% endif %}
   </div>
   <div style="height: 70vh; overflow: scroll;" class="listblholder">
     <table class="table table-bordered table-hover table-striped listbltable" style="font-size: 12px;" id="addbonlivraisonle">
@@ -123,100 +167,83 @@
           <td style="width: 12%;" onclick="sorttable(event)">Client</td>
           <td style="width: 5%;">Code client</td>
           <td style="width: 5%;" onclick="intsorttable(event)">Total</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Region</td>
           <td style="width: 5%;" onclick="sorttable(event)">Ville</td>
-          <td style="width: 5%;">N° Facture</td>
-          <td style="width: 5%;" onclick="sorttable(event)">N° bon sortie</td>
-          <td style="width: 5%;" onclick="sorttable(event)">N° devis</td>
-          <td style="width: 5%;" onclick="sorttable(event)">N° Commande</td>
+          <td style="width: 5%;">Solde bl cl.</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Repr</td>
+          <td style="width: 4%;">Reglé</td>
+          <td style="width: 5%;">Facturé</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Cmnd</td>
           <td style="width: 5%;" onclick="sorttable(event)">Transport</td>
-          <td style="width: 5%;" onclick="sorttable(event)">Status</td>
-          <td style="width: 2%;" onclick="sorttable(event)">Utilisateur</td>
+          <td style="width: 5%;" onclick="sorttable(event)">Notes</td>
           <td style="width: 2%;"></td>
         </tr>
       </thead>
       <tbody class="listblbody">
         {% for order in bons %}
-          <tr class="ord bl-row" mode="waiting" orderid="{{order.code}}" ondblclick="ajaxpage('bonl{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/bonlivraisondetails/{{order.id}}?target={{target}}&mode=waiting')" style="background:{% if order.isdelivered %}  lightgreen;{% endif %} {% if i.isfacture%} color:blue;{%endif%}" >
-            
+          <tr class="ord bl-row {% if order.ispaid %} text-danger{% endif %}" orderid="{{order.code}}" ondblclick="createtab('bonl{{order.id}}', 'Bon livraison {{order.bon_no}}', '/products/bonlivraisondetails/{{order.id}}')" style="background:{% if order.isdelivered %}  lightgreen;{% endif %} {% if i.isfacture%} color:blue;{%endif%}" >
             <td >{{ order.bon_no }}</td>
             <td >{{ order.date|date:'d/m/Y' }}</td>
             <td >{{ order.client.name }}</td>
             <td >{{ order.client.code }}</td>
             <td style="color: blue;">{{ order.total|floatformat:'2'|intspace}}</td>
+            <td >{{ order.client.region }}</td>
             <td >{{ order.client.city }}</td>
+            <td >{{ order.client.soldbl|floatformat:2|intspace }}</td>
+            <td >{{ order.salseman }}</td>
             <td class="d-flex justify-content-between">
-              {% if order.isfacture %}
+              {% if order.ispaid %}
               <div>
-                {{order.facture.facture_no}}
+                R0
               </div>
               <div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
 
 
               {% else %}
 
-                
+                <div>
+                  N1
+                </div>
                 <div style="width:15px; height:15px; border-radius:50%; background:orange;" ></div>
 
               {% endif %}
             </td>
+            {% if order.isfacture %}
             <td class="text-danger">
-              {{order.bonsortie.bon_no}}
+              OUI
             </td>
-            
+            {% else %}
             <td>
-              {{order.devi.bon_no}}
+              Non
             </td>
+            {% endif %}
             <td>
-              {{order.command.bon_no}}
-            </td>
-            <td>
-              <div class="accordion" id="accordionrr{{order.id}}">
-
-                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsrr{{order.id}}" aria-expanded="true" aria-controls="collapsrr{{order.id}}">
-
-                  
-                </button>
-
-                <div id="collapsrr{{order.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionrr{{order.id}}">
-                    {{order.note}}
-
-
-                </div>
-              </div>
+              {{order.commande.order_no}}
             </td>
             <td>
-              {% if order.ispaid %}
-              <div  style="text-align: center; background: lightgreen;">
-                Payé
-              </div>
-
-              {% else %}
-              <div class="" style="text-align: center; background: rgb(255, 77, 0);">
-                Non payé
-              </div>
-              {% endif %}
+              {{order.modlvrsn}}
             </td>
             <td>
-              {% if order.user %}
-              {{order.user.username}}
-              {% endif %}
+              {% if order.note %} {{order.note}} {% endif %}
             </td>
             <td class="d-flex">
-              <!-- <button class="btn btn-sm btn-info" onclick="makedelivered('{{order.id}}', event)"></button> -->
-              <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}', '{{target}}')"></button>
+              <button class="btn btn-sm btn-info" onclick="makedelivered('{{order.id}}', event)"></button>
+              <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}')"></button>
             </td>
           </tr>
         {% endfor %}
       </tbody>
       <thead style="position: sticky; bottom: 0; background: white;">
+        {% if not facturesection %}
         <tr>
           <td style="width: 8%;"></td>
           <td style="width: 8%;"></td>
           <td style="width: 12%;"></td>
           <td style="width: 5%;"></td>
           <td style="width: 5%; background: yellowgreen;" class="totalbons" onclick="$('.hidebltotal').toggleClass('fade')">
-            <div class="hidebltotal">{{total|floatformat:'2'|intspace}}</div>
+            <div class="hidebltotal fade">{{total|floatformat:'2'|intspace}}</div>
           </td>
+          <td style="width: 5%;"></td>
           <td style="width: 5%;"></td>
           <td style="width: 5%;"></td>
           <td style="width: 5%;"></td>
@@ -227,8 +254,9 @@
           <td style="width: 5%;"></td>
           <td></td>
         </tr>
+        {% endif %}
       </thead>
-      
+
       <!-- <tfoot>
         <tr>
           <td>N° bon</td>
@@ -246,6 +274,7 @@
         </tr>
       </tfoot> -->
     </table>
+    <button type="button" name="button" onclick="handleScrolllistbl()" class="btn">..</button>
   </div>
 
 </div>
@@ -254,27 +283,7 @@
 
 
 <script>
-  currentPagelistbl=1
-  loadinglistbl = false;
-  function getcanceledbons(){
-    $('.listblbody').addClass('blurred')
-    $('.listblholder').off('scroll', handleScrolllistbl);
-    $('.searchinputlistbl').attr('searchtype', 'canceled')
-    $.get('/products/getcanceledbons?target={{target}}', (data)=>{
-      $('.listblbody').html(data.html)
-      $('.listblbody').removeClass('blurred')
-    })
-  }
-  function getbonvalider(){
-    $('.listblbody').addClass('blurred')
-    $.get('/products/getbonvalider?target={{target}}', (data)=>{
-      $('.searchinputlistbl').attr('waiting', '0')
-      $('.searchinputlistbl').attr('searchtype', 'valid')
-      $('.listblbody').html(data.html)
-      $('.hidebltotal').html(data.total)
-      $('.listblbody').removeClass('blurred')
-    })
-  }
+  function loadmore(){}
   function getbonswhite(event){
     $('.listblbody').addClass('blurred')
     $.get('/products/getbonswhite', (data)=>{
@@ -291,6 +300,32 @@
     $('.itemsforlistblresult > tr').not($el).hide();
     //$btns.removeClass('active');
     //$(this).addClass('active');
+  }
+  function getitemsforlistbl(event){
+    let term=$('.searchitemsforlistbl').val()
+    if (term.length>=2){
+      $('.itemsforlistblresult').html('<tr><td>searching....</td></tr>')
+      $.get('/products/getitemsforlistbl', {'term':term}, (data)=>{
+        console.log(data)
+        $('.brands').html('')
+        $('.categoriesfilter').html('')
+        for (i of data.brands){
+          $('.brands').append(`
+            <img class="tag-badge tag-badge--hot" id='${i.id}' onclick="filtersearch(event)" src='${i.image}'>
+          `)
+        }
+        for (i of data.categories){
+          $('.categoriesfilter').append(`
+            <div class="tag-badge tag-badge--hot" id='cat${i.id}' onclick="filtercategories(event)" style="font-size:15px;">${i.name}</div>
+          `)
+        }
+        $('.itemsforlistblresult').html(data.trs)
+      })
+    }else{
+      $('.itemsforlistblresult').html('<tr><td>....</td></tr>')
+    }
+
+
   }
   function makedelivered(orderid, event){
     $.get('/products/makebondelivered', {'id': orderid}, (data)=>{
@@ -334,13 +369,12 @@
     $('.listblholder').on('scroll', handleScrolllistbl);
     $.get('/products/yeardatabl', {year:year}, (data)=>{
       $('.listblbody').html(data.trs)
-      $('.hidebltotal').text(data.total)
+      $('.totalbons').text(data.total)
     })
   }
   function loadMoreRecordslistbl (year, startdate, enddate, term)  {
     loadinglistbl = true;
-    waiting=$('.searchinputlistbl').attr('waiting')
-    $.get(`/products/loadlistbl/?target={{target}}&mode=${waiting}&page=${currentPagelistbl}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
+    $.get(`/products/loadlistbl/?facture={%if facturesection%}1{% endif %}&page=${currentPagelistbl}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
 
       const tbody = $('.listbltable tbody');
       tbody.append(data.trs);
@@ -363,18 +397,17 @@
     function handleScrolllistbl () {
       const container = $('.listblholder')[0]; // Get the native DOM element
       const lastRow = document.querySelector('.bl-row:last-child');
+      // year used to be catched from the last row's year attribute, since we have now years populated and the current yrear is selected by deafault,, it's better to assign year to year directly
       // let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
       let year=$('[name="yearsbl"]').val()
-
       let startdate=$('.startdatefilterbl').val()==""?0:$('.startdatefilterbl').val()
       let enddate=$('.enddatefilterbl').val()==""?0:$('.enddatefilterbl').val()
-      // let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
-      let term = $('.searchinputlistbl').val()
+      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
       const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
 
       const containerBottom = container.scrollTop + container.clientHeight;
 
-      console.log(lastRow, containerBottom+900 >= lastRowOffset, !loadinglistbl)
+      console.log(lastRow, containerBottom+900 >= lastRowOffset && !loadinglistbl)
 
       if (containerBottom+900 >= lastRowOffset && !loadinglistbl) {
           currentPagelistbl++;
@@ -410,7 +443,22 @@
         $('.listblbody').removeClass('blurred')
 
         $('.listblbody').html(data.html)
-      $('.hidebltotal').text(data.total)
+      $('.totalbons').text(data.total)
+      }
+    )
+  }
+  function getcontrenonpaid(event) {
+    $('.listblbody').addClass('blurred')
+    let parentdiv=$(event.target).parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get(
+      '/products/getcontrenonpaid',
+      (data)=>{
+        console.log(tbody)
+        $('.listblbody').removeClass('blurred')
+
+        $('.listblbody').html(data.html)
+      $('.totalbons').text(data.total)
       }
     )
   }
@@ -424,31 +472,20 @@
       alertify.error('Date')
       return
     }
-    searchtype=$('.searchinputlistbl').attr('searchtype')
-    $.get('/products/filterbldate', {startdate:startdate, enddate:enddate, 'searchtype':searchtype, 'target':'{{target}}'},(data)=>{
+    $.get('/products/filterbldate?facture={% if facturesection %}1{% endif %}', {startdate:startdate, enddate:enddate},(data)=>{
       console.log(data)
       $('.listblbody').html(data.trs)
-      $('.hidebltotal').text(data.total)
+      $('.totalbons').text(data.total)
     })
-    // activate scrolling only if we are in wating mode
-    if (searchtype=='waiting'){
-      $('.listblholder').on('scroll', handleScrolllistbl);
+    $('.listblholder').on('scroll', handleScrolllistbl);
       currentPagelistbl=1
       loadinglistbl = false;
-    }
   })
   $('.searchinputlistbl').on("change", function() {
     // Get the values from all filter input fields
     var filterValue = $(this).val().toLowerCase();
-    console.log(filterValue)
-    if (filterValue==""){
-      ajaxpage('addlistbonlivraison', 'tt', '/products/listbonlivraison?target={{target}}')
-
-
-    }
-    else{
+    //if (filterValue!=""){
       let year=$('select[name="yearsbl"]').val()?$('select[name="yearsbl"]').val():0
-      searchtype=$('.searchinputlistbl').attr('searchtype')
       console.log(year)
       // Split the filter value into individual terms based on the '&' sign
       // var filterTerms = filterValue.split('+').map(function(term) {
@@ -456,16 +493,16 @@
       // });
       let startdate=$('.startdatefilterbl').val()==""?0:$('.startdatefilterbl').val()
       let enddate=$('.enddatefilterbl').val()==""?0:$('.enddatefilterbl').val()
-      $.get('/products/searchforlistbl', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year, 'searchtype':searchtype, 'target':'{{target}}'}, (data)=>{
-        
+      $.get('/products/searchforlistbl?facture={% if facturesection %}1{% endif %}', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year}, (data)=>{
+        console.log('eee')
         $(".listbltable tbody").html('')
         $(".listbltable tbody").html(data.trs)
-        $('.hidebltotal').text(data.total)
+        $('.totalbons').text(data.total)
         });
       $('.listblholder').on('scroll', handleScrolllistbl);
       currentPagelistbl=1
       loadinglistbl = false;
-    }
+    //}
 
 
     // Iterate through the table rows

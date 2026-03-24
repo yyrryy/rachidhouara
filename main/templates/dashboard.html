@@ -1,85 +1,206 @@
-{% extends 'adminbase.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
+<div class="container container--max--xl">
+    <div class="row">
+      <div class="col-12 col-lg-3 d-flex">
+        <div class="account-nav flex-grow-1">
+          <h4 class="account-nav__title">Navigation</h4>
+          <ul class="account-nav__list">
+            <li class="account-nav__item account-nav__item--active">
+              <a class="text-dark" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="account-nav__item">
+              <a class="text-dark" href="/orders">Commandes</a>
+            </li>
+            <li class="account-nav__item">
+              <a class="text-dark" href="/catalog">Catalog</a>
+            </li>
 
+            <li class="account-nav__item">
+              <a class="text-dark" href="/products/categoriespage">Categories</a>
+            </li>
 
-<!-- tabs holder -->
-<div class="tabsholder expended container">
-  <!-- tabs s -->
-  <div class="">
-    <div class=" position-relative">
+            <li class="account-nav__item">
+              <a class="text-dark" href="/products/marquespage">Marques</a>
+            </li>
 
-      <!-- nav -->
-
-      <!-- cards -->
-      <div >
-
-        <div class="row mb-2">
-          <!-- <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="location.href='/products/ste1'">
-
-                <i class="bi bi-list-task h1">
-
-                </i>
-                <div>
-                    Farah
-                </div>
-            </div>
-          </div> -->
-          <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="location.href='/products/ste2'">
-
-                <i class="bi bi-people-fill h1">
-
-                </i>
-                <div>
-                  Ait ali
-                </div>
+            <li class="account-nav__item">
+              <a class="text-dark" href="/products/commercialspage">Commerciaux</a>
+            </li>
+            <li class="account-nav__item">
+              <a class="text-dark" href="/listclients">Clients</a>
+            </li>
+            <li class="account-nav__item">
+              <a class="text-dark" href="/products/addproductspage">+ Produit</a>
+            </li>
+            <li class="account-nav__item">
+              <a class="text-dark" href="/products/promotionspage">Promotion</a>
+            </li>
+            
+            <!-- <li class="account-nav__item">
+              <a href="account-orders.html">Order History</a>
+            </li>
+            <li class="account-nav__item">
+              <a href="account-order-details.html">Order Details</a>
+            </li>
+            <li class="account-nav__item">
+              <a href="account-addresses.html">Addresses</a>
+            </li>
+            <li class="account-nav__item">
+              <a href="account-edit-address.html">Edit Address</a>
+            </li>
+            <li class="account-nav__item">
+              <a href="account-password.html">Password</a>
+            </li>
+            <li class="account-nav__divider" role="presentation"></li>
+            <li class="account-nav__item">
+              <a href="  {%url 'main:logoutuser'%} ">Logout</a>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+      <div class="col-12 col-lg-9 mt-4 mt-lg-0">
+        <div class="dashboard row">
+          <div class="dashboard__profile card profile-card col-md-3">
+            <div class="card-body profile-card__body">
+              <div class="profile-card__name">{{products}}</div>
+              <div class="profile-card__email">References</div>
             </div>
           </div>
 
-          <!-- <div class="col-2">
-            <div class="matrix bg-darkblue rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center" onclick="location.href='/products/pointdevente'">
 
-                <i class="bi bi-globe h1">
-
-                </i>
-                <div>
-                  Ventes
-                </div>
+          <div class="dashboard__profile card profile-card col-md-3">
+            <div class="card-body profile-card__body">
+              <div class="profile-card__name">{{orders}}</div>
+              <div class="profile-card__email">Commandes Aujourd'hui</div>
             </div>
-          </div> -->
-
-          
-          
-
-        </div>
-
+          </div>
+          <div class="dashboard__profile card profile-card col-md-3">
+            <div class="card-body profile-card__body">
+              <div class="profile-card__name">{{monthorders}}</div>
+              <div class="profile-card__email">Commandes de ce mois</div>
+            </div>
+          </div>
+          <div class="dashboard__profile card profile-card col-md-3">
+            <div class="card-body profile-card__body">
+              <div class="profile-card__name">{{clientscount}}</div>
+              <div class="profile-card__email">Clients</div>
+            </div>
+          </div> 
+        </div> 
+        <hr>
         
+
       </div>
+      <hr>
+        <input type="text" class="form-control" placeholder="REf" onchange="getpdctfordash(event)">
+        <div class="mt-5 searchresult">
+          
+        </div>
     </div>
 </div>
-</div>
-
 {% endblock %}
-
-
 {% block js %}
 <script>
-  $.get('/products/echeancetoday', (data)=>{
-    if (data.length > 0){
-      $('.echeanceindex').removeClass('d-none').text(data.length)
-      //alertify.confirm('Echenaces', data.length+' ECHEANES AUJOURD HUI', function(){
-      //  ajaxpage('echeancetab', 'Echeances', '/products/listecheance')
-      //}, ()=>{
+  function updatepdct(event){
+    event.preventDefault();
 
-      //})
+    // Get the reference input value
+    let ref = $('.searchresult').find("[name=ref]").val();
+
+    if (ref == ""){
+        alertify.error("Ref. est vide");
+        $('.searchresult').css('border', '1px solid red');
+        return;
     }
-  })
-  // $.get('/products/boncommandes', (data)=>{
-  //   $('.boncmndindex').removeClass('d-none').text(data.length)
 
-  // })
+    $('.searchresult').css('border', 'none');
 
+    // Create FormData from the form
+    let formData = new FormData($(event.target).parent().parent()[0]);
+
+    // Send the AJAX request using POST method
+    $.ajax({
+        type: 'POST',  // Use POST method
+        url: '/updateproduct',  // Replace with your Django URL
+        data: formData,
+        processData: false,  // Prevent jQuery from processing the data
+        contentType: false,  // Prevent jQuery from setting contentType
+        success: (data) => {
+            if (data.success) {
+                alertify.success('Produit modifié');
+                $(event.target).parent().parent().html('Produit modifié avec succès');
+                // reset the form
+                // $('.searchresult').find("[name=ref]").val('');
+                // $('.searchresult').find("[name=price]").val('');
+                // $('.searchresult').find("[name=pdctid]").val('');
+                // $('.pdctimg').attr('src', '');
+                // $('.updatepdctformspinner').hide();
+                
+            } else {
+                alertify.error(data.error);
+                $(event.target).parent().parent().css('border', '1px solid red');
+            }
+        },
+        error: (xhr, status, error) => {
+            alertify.error('Une erreur est survenue');
+        }
+    });
+}
+
+  function getpdctfordash(event){
+    ref=$(event.target).val().trim();
+    if (ref.length > 0){
+      // $('.updatepdctformspinner').show()
+      $('.searchresult').html('<div class="spinner-grow updatepdctformspinner"role="status"></div>')
+      $.get('/getpdctfordash', {'ref':ref}, (data)=>{
+        console.log(data)
+        if (data.success){
+          // $('.searchresult').find("[name=ref]").val(data.ref)
+          // $('.searchresult').find("[name=price]").val(data.price)
+          // $('.searchresult').find("[name=pdctid]").val(data.id)
+          // $('.pdctimg').attr('src', data.image)
+
+          // $('.searchresult').html(`
+          // {% csrf_token %}
+          
+          // <input hidden name="pdctid" value="${data.id}">
+          // <div class='col-6' >
+          // <strong>Modifier l'image</strong>
+          // <input class="form-control" type="file" name="image">
+          // <img class="pdctimg border p-2 mt-5" src='${data.image}' style='width:100%;'><br>
+          // </div>
+          // <div class="ms-5">
+          //   <div class="d-flex">
+          //     <div class="me-5"> Ref: <input class="form-control" name="ref" value="${data.ref}"></div>
+          //     <div> Prix: <input class="form-control" name="price" value="${data.price}"></div>
+          //   </div>
+          //   <br>
+          //   Equivalents
+          //   <textarea class='mb-3' style='width:100%' name="equivalent">${data.equivalent}</textarea>
+          //   Vehicules
+          //   <textarea style='width:100%' name="cars">${data.cars}</textarea>
+          //   <div class="form-check">
+          //     <input name="isoffer" type="checkbox" value="true" id="flexCheckDefault" ${data.isoffer?"checked":""}>
+          //     <label class="form-check-label" for="flexCheckDefault">
+          //       Produit en promotion?
+          //     </label>
+          //   </div>
+          //   <div> Promotion: <input class="form-control" name="offre" value="${data.offre}"></div>
+          //   <button class="btn btn-primary mt-3 updatepdctbtn w-100" onclick="updatepdct(event)">Modifier
+          //   </button>
+          //   </div>
+          // `)
+            
+          $('.searchresult').html(data.products)
+        }else{
+          $('.searchresult').html("REF. n'existe pas")
+          //alertify.error("REF. n'existe pas")
+        }
+        
+      })
+    }
+  }
 </script>
 {% endblock %}

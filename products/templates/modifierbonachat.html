@@ -23,18 +23,17 @@ margin: 0;
 </style>
 
 <div class="text-white rounded d-flex justify-content-between" style="background: #1a6a9b;">
-  <button class="btn bi bi-arrow-left" onclick="ajaxpage('bonachat92', 'Bon achat FR-BA0092', '/products/bonachatdetails/{{bon.id}}?target={{target}}')"></button>
   <div>
-    {{title}} {{target}}
+    {{title}}
   </div>
   <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addmodifierbonachat{{bon.id}}')">x</button>
 
 </div>
-{% if bon.ispaid%}
+{% if bon.ispaid or bon.rest > 0 %}
 <div class="alert alert-success">
   <b>Ce bon est payé ou avance</b>
 </div>
-{% endif %}
+{%else%}
 <div class="">
        <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
           <div class="col-5">
@@ -57,7 +56,8 @@ margin: 0;
                 <small>N° Bon:</small>
                   <input type="text" class="form-control bonachatno{{bon.id}}" name="bonachatno{{bon.id}}" value="{{bon.nbon}}">
               </div>
-              <select hidden name="mode" class="form-select mt-2 modeupdatebonachat{{bon.id}}">
+              <small>Mode:</small>
+              <select name="mode" class="form-select mt-2 modeupdatebonachat{{bon.id}}">
                 <option value="facture" {% if bon.isfacture %} selected {% endif %}>Facture</option>
 
                 <option value="bon" {% if not bon.isfacture %} selected {% endif %}>Bon</option>
@@ -73,8 +73,8 @@ margin: 0;
               </select>
 
             </div>
-            <div hidden class="col-3">
-              <input  type="number" class="form-control" placeholder="Devise" name="adddevise">
+            <div class="col-3">
+              <input type="number" class="form-control" placeholder="Devise" name="adddevise">
 
             </div>
             <div class="col-3">
@@ -83,28 +83,16 @@ margin: 0;
             </div>
             <div class="col-3">
               <input type="number" class="form-control" placeholder="Prix" name="addprice">
-              <div class="addlastbuyprice text-danger"></div>
+              <div class="addclientprice text-danger"></div>
             </div>
             <div class="col-3">
-              <input type="number" class="form-control" placeholder="Remise1" name="addremise1">
-            </div>
-            <div class="col-3">
-              <input type="number" class="form-control" placeholder="Remise2" name="addremise2">
-            </div>
-            <div class="col-3">
-              <input type="number" class="form-control" placeholder="Remise3" name="addremise3">
-            </div>
-            <div class="col-3">
-              <input type="number" class="form-control" placeholder="Remise4" name="addremise4">
-            </div>
-            <div class="col-3">
-              <button class="btn bg-darkblue text-white" onclick="addrowbonachat(event)">Ajouter</button>
-            </div>
-            <div class="col-3">
-              <button class="btn bg-darkblue text-white addrowjeubtn" onclick="addrowbonachatjeu(event)">Ajouter jeux</button>
+              <input type="number" class="form-control" placeholder="Remise" name="addremise">
             </div>
             <div class="col-12">
               <input hidden readonly type="text" name="addname" class="form-control">
+            </div>
+            <div class="col-12">
+              <button class="btn btn-outline-secondary" onclick="addrowupdatebonachat(event, '{{bon.id}}')">Ajouter</button>
             </div>
           </div>
 
@@ -137,34 +125,30 @@ margin: 0;
                   <tr>
                       <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
                       <td style="padding: 2px 0; font-size: 13px;">Article</td>
-                      <!-- <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Barcode</td> -->
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Devise</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
-                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise1</td>
-                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise2</td>
-                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise3</td>
-                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise4</td>
+                      <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
                       <!-- <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td> -->
                       <td style="padding: 2px 0; font-size: 13px;">Total</td>
                   </tr>
               </thead>
 
-              <tbody class="bonachatbodyupdate{{bon.id}} bonachatbody">
+              <tbody class="bonachatbodyupdate{{bon.id}}">
                 {% for i in items %}
                 <tr class="itemrow">
-                    <input type="hidden" class="achatitemid" value="{{i.id}}">
-                    <td class="ref text-uppercase" onclick="removelineupdateachat(event, '{{bon.id}}', '{{i.product.id}}')">{{i.product.ref.upper}}</td>
+                    <td class="ref" onclick="removelineupdateachat(event, '{{bon.id}}', '{{i.product.id}}')">{{i.product.ref.upper}}</td>
                     <td class="name">{{i.product.name}}</td>
-                    <!-- <td><input class="qtybarcode" style="width:65px;"></td> -->
-                    <!-- <td>
+                    <td>--</td>
+                    <td>{{i.product.stocktotal}}</td>
+                    <td>
                       <input style="width:65px;" type="text" value="{{i.devise}}" class="devise">
-                    </td> -->
-                    <td><input style="width:65px;" type="number" class="calculate qty" onkeyup="calculatebonachat(event)" name="qty" value="{{i.quantity}}"></td>
-                    <td><input style="width:65px;" type="number" class="calculate price" onkeyup="calculatebonachat(event)" name="price" value="{{i.price}}"></td>
-                    <td><input style="width:65px;" type="number" class="calculate remise1" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise1}}"></td>
-                    <td><input style="width:65px;" type="number" class="calculate remise2" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise2}}"></td>
-                    <td><input style="width:65px;" type="number" class="calculate remise3" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise3}}"></td>
-                    <td><input style="width:65px;" type="number" class="calculate remise4" onkeyup="calculatebonachat(event)" name="remise" value="{{i.remise4}}"></td>
+                    </td>
+                    <td><input style="width:65px;" type="number" class="calculate qty" onkeyup="calculate(event)" name="qty" value="{{i.quantity}}"></td>
+                    <td><input style="width:65px;" type="number" class="calculate price" onkeyup="calculate(event)" name="price" value="{{i.price}}"></td>
+                    <td><input style="width:65px;" type="number" class="calculate remise" onkeyup="calculate(event)" name="remise" value="{{i.remise}}"></td>
                     <!-- <td>{{i.product.prixnet}}</td> -->
                     <td class="total">{{i.total|floatformat:2}}</td>
                     <input type="hidden" name="productid" value="{{i.product.id}}">
@@ -176,16 +160,13 @@ margin: 0;
                 <button class="btn btn-success submitbonachat{{bon.id}}">
                       Valider
                 </button>
-                <button class="btn btn-info" onclick="tvabonachat()">
-                  TVA
-                </button>
                 <div>
                   <b class="totalbonachat{{bon.id}} totalbon text-danger border p-2" style="color: #dc3545 !important;">
                     {{bon.total}}
                   </b>
-                  <!-- <button class="btn btn-danger" onclick="deletetab('modifierlivraison{{bon.id}}')">
+                  <!-- <button class="btn btn-danger" onclick="deletetab('modifierlivraison{{bon.id}}')"> -->
                     Fermer
-                  </button> -->
+                  </button>
                 </div>
             </div>
           </div>
@@ -193,232 +174,9 @@ margin: 0;
     </div>
     {{bon.id}}
 </div>
-
+{% endif %}
 <script>
-  readingqrcode=false
-  function addrowbonachat(event){
-      let target=$(event.target)
-      parentdiv=target.parent().parent().parent().parent().parent()
-      // this reset the select2 value
-      // parentdiv.find('.resultsholderbonachat').val('').trigger('change')
-      // ids of products in bon stored in localstorage
-      let bonachatbody = parentdiv.find('.bonachatbody')
-      let addname=parentdiv.find('[name="addname"]')
-      let adddevise=parentdiv.find('[name="adddevise"]')
-      let addqty=parentdiv.find('[name="addqty"]')
-      let addprice=parentdiv.find('[name="addprice"]')
-      let addremise1=parentdiv.find('[name="addremise1"]')
-      let addremise2=parentdiv.find('[name="addremise2"]')
-      let addremise3=parentdiv.find('[name="addremise3"]')
-      let addremise4=parentdiv.find('[name="addremise4"]')
 
-      if (addqty.val()=='' || addprice.val()==''){
-        alertify.error('Veuillez remplir Qty ou prix')
-        return
-      }
-      var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
-      pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat{{bon.id}}{{target}}')) || []
-      
-      console.log(id, pdcts, pdcts.includes(id))
-      if (pdcts.includes(id)){
-        addqty.val('')
-        addname.val('')
-        addremise1.val('')
-        addremise2.val('')
-        addremise3.val('')
-        addremise4.val('')
-        addprice.val('')
-        adddevise.val('')
-        alertify.error('Ce produit est deja dans le bon')
-        return
-      }
-
-      // let netp1=(addprice.val()-(addprice.val()*addremise1.val()/100)
-      // (addprice.val()*addremise2.val()/100)-(addprice.val()*addremise3.val()/100)-(addprice.val()*addremise4.val()/100)).toFixed(2)
-      // // second methode
-      let netp1=(addprice.val()-(addprice.val()*addremise1.val()/100))
-      netp2=netp1-(netp1*addremise2.val()/100).toFixed(4)
-      netp3=netp2-(netp2*addremise3.val()/100).toFixed(4)
-      netp4=netp3-(netp3*addremise4.val()/100).toFixed(4)
-      console.log('netp1', netp1, netp2, netp3, netp4)
-      let addtotal=(addqty.val()*netp4).toFixed(2)
-      item={
-        'id':id,
-        'ref':ref,
-        'name':name,
-        'dp':dp,
-        'qty':addqty.val(),
-        'price':addprice.val(),
-        'remise1':addremise1.val(),
-        'remise2':addremise2.val(),
-        'remise3':addremise3.val(),
-        'remise4':addremise4.val(),
-        'total':addtotal
-      }
-      pdcts.push(id)
-      localStorage.setItem('pdctsinbonachat{{bon.id}}{{target}}', JSON.stringify(pdcts))
-      // <td><input class="qtybarcode" style="width:65px;"></td>
-      let tr = `
-      <tr class="itemrow">
-        <td style="padding: 2px 0; font-size: 13px;" class="ref text-uppercase" onclick="removelineupdateachat(event, '{{bon.id}}', ${id})">${ref}</td>
-        <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
-        
-        
-        <td hidden style="padding: 2px 0; font-size: 13px;" class="clientprice"><input class="devise" value="${adddevise.val()}" style="width:65px;"></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notempty" onkeyup="calculatebonachat(event)" name="qty" onkeyup="calculatebonachat(event)" value="${addqty.val()}" style="height:23px; width:65px;"></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notempty" onkeyup="calculatebonachat(event)" name="price" onkeyup="calculatebonachat(event)" value="${addprice.val()}" step=0.01 style="height:23px; width:65px;"></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" onkeyup="calculatebonachat(event)" value="${addremise1.val()}" class="calculate remise1" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" onkeyup="calculatebonachat(event)" value="${addremise2.val()}" class="calculate remise2" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" onkeyup="calculatebonachat(event)" value="${addremise3.val()}" class="calculate remise3" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" onkeyup="calculatebonachat(event)" value="${addremise4.val()}" class="calculate remise4" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td>
-        <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
-        <input type="hidden" name="productid" value="${id}">
-        
-        </tr>
-        `
-        
-        bonachatbody.append(tr)
-        // delete selected option
-        addqty.val('')
-        addname.val('')
-        addremise1.val('')
-        addremise2.val('')
-        addremise3.val('')
-        addremise4.val('')
-        addprice.val('')
-        adddevise.val('')
-        totals=parentdiv.find('.total')
-        totalbon=parentdiv.find('.totalbon')
-        console.log('totalsn totalbon',totals, totalbon)
-        var totalSum = 0;
-        totals.each(function() {
-          totalSum += parseFloat($(this).text());
-        });
-      console.log('saving')
-      savetolocalstorage(item, totalSum, 'bonachat{{bon.id}}{{target}}')
-      totalbon.text(totalSum.toFixed(2))
-      // parentdiv.find('.resultsholderbonachat').val('').trigger('change')
-      parentdiv.find('.resultsholderbonachat').select2('open')
-
-      // let selected = $('.resultsholderbonachat').find(':selected')
-      // selected.remove()
-
-    }
-
-    function addrowbonachatjeu(event){
-    let target=$(event.target)
-    parentdiv=target.parent().parent().parent().parent().parent()
-    // this reset the select2 value
-    // parentdiv.find('.resultsholderbonachat').val('').trigger('change')
-    // ids of products in bon stored in localstorage
-    let bonachatbody = parentdiv.find('.bonachatbody')
-    let addname=parentdiv.find('[name="addname"]')
-    let adddevise=parentdiv.find('[name="adddevise"]')
-    let addqty=parentdiv.find('[name="addqty"]')
-    let addprice=parentdiv.find('[name="addprice"]')
-    let addremise1=parentdiv.find('[name="addremise1"]')
-    let addremise2=parentdiv.find('[name="addremise2"]')
-    let addremise3=parentdiv.find('[name="addremise3"]')
-    let addremise4=parentdiv.find('[name="addremise4"]')
-
-    if (addqty.val()=='' || addprice.val()==''){
-      alertify.error('Veuillez remplir Qty ou prix')
-      return
-    }
-    var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice, qtyjeu] = addname.attr('data').split('§');
-    console.log('>> data>>', addname.attr('data'))
-    pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat{{bon.id}}{{target}}')) || []
-    
-    console.log(id, pdcts, pdcts.includes(id))
-    if (pdcts.includes(id)){
-      addqty.val('')
-      addname.val('')
-      addremise1.val('')
-      addremise2.val('')
-      addremise3.val('')
-      addremise4.val('')
-      addprice.val('')
-      adddevise.val('')
-      alertify.error('Ce produit est deja dans le bon')
-      return
-    }
-
-    // let netp1=(addprice.val()-(addprice.val()*addremise1.val()/100)
-    // (addprice.val()*addremise2.val()/100)-(addprice.val()*addremise3.val()/100)-(addprice.val()*addremise4.val()/100)).toFixed(2)
-    // // second methode
-    let netp1=(addprice.val()-(addprice.val()*addremise1.val()/100))
-    netp2=netp1-(netp1*addremise2.val()/100).toFixed(4)
-    netp3=netp2-(netp2*addremise3.val()/100).toFixed(4)
-    netp4=netp3-(netp3*addremise4.val()/100).toFixed(4)
-    console.log('netp1', netp1, netp2, netp3, netp4)
-    let addtotal=(addqty.val()*netp4).toFixed(2)
-    realqty=addqty.val()*qtyjeu
-    unitprice=addprice.val()/qtyjeu
-    console.log('>> addqty', addqty.val(), qtyjeu, addprice.val(), realqty, unitprice)
-    console.log('realqty', realqty, unitprice)
-    item={
-      'id':id,
-      'ref':ref,
-      'name':name,
-      'dp':dp,
-      // 'qty':addqty.val(),
-      'qty':realqty,
-      'price':unitprice,
-      'remise1':addremise1.val(),
-      'remise2':addremise2.val(),
-      'remise3':addremise3.val(),
-      'remise4':addremise4.val(),
-      'total':addtotal
-    }
-    
-    pdcts.push(id)
-    localStorage.setItem('pdctsinbonachat{{bon.id}}{{target}}', JSON.stringify(pdcts))
-    let tr = `
-    <tr class="itemrow">
-      <td style="padding: 2px 0; font-size: 13px;" class="ref text-uppercase" onclick="removelineupdateachat(event, '{{bon.id}}', ${id})">${ref}</td>
-      <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
-      
-      
-      <td hidden style="padding: 2px 0; font-size: 13px;" class="clientprice"><input class="devise" value="${adddevise.val()}" style="width:65px;"></td>
-      <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notempty" onkeyup="calculatebonachat(event)" name="qty" value="${realqty}" style="height:23px; width:65px;"></td>
-      <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notempty" onkeyup="calculatebonachat(event)" name="price" value="${unitprice}" step=0.01 style="height:23px; width:65px;"></td>
-      <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise1.val()}" class="calculate remise1" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
-      <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise2.val()}" class="calculate remise2" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
-      <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise3.val()}" class="calculate remise3" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td></td>
-      <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise4.val()}" class="calculate remise4" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td>
-      <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
-      <input type="hidden" name="productid" value="${id}">
-      
-      </tr>
-      `
-      
-      bonachatbody.append(tr)
-      // delete selected option
-      addqty.val('')
-      addname.val('')
-      addremise1.val('')
-      addremise2.val('')
-      addremise3.val('')
-      addremise4.val('')
-      addprice.val('')
-      adddevise.val('')
-      totals=parentdiv.find('.total')
-      totalbon=parentdiv.find('.totalbon')
-      console.log('totalsn totalbon',totals, totalbon)
-      var totalSum = 0;
-      totals.each(function() {
-        totalSum += parseFloat($(this).text());
-      });
-    console.log('saving')
-    savetolocalstorage(item, totalSum, 'bonachat{{target}}')
-    totalbon.text(totalSum.toFixed(2))
-    // parentdiv.find('.resultsholderbonachat').val('').trigger('change')
-    parentdiv.find('.resultsholderbonachat').select2('open')
-
-    // let selected = $('.resultsholderbonachat').find(':selected')
-    // selected.remove()
-  }
-   
   function removelineupdateachat(event, blid, id) {
       let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
       clicksinupdateachat++;
@@ -431,9 +189,9 @@ margin: 0;
             // remove element
             // remove id from localstorage
             $(event.target).parent().remove()
-            pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat{{bon.id}}{{target}}'))
+            pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat{{bon.id}}'))
             pdcts.splice(pdcts.indexOf(id), 1)
-            localStorage.setItem('pdctsinbonachat{{bon.id}}{{target}}', JSON.stringify(pdcts))
+            localStorage.setItem('pdctsinbonachat{{bon.id}}', JSON.stringify(pdcts))
             // update total
             let totalbon = parseFloat(parentdiv.find('.totalbon').text())
             let totalrow = parseFloat($(event.target).parent().find('.total').text())
@@ -468,7 +226,7 @@ margin: 0;
       //   return
       // }
       var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
-      pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat{{bon.id}}{{target}}')) || []
+      pdcts=JSON.parse(localStorage.getItem('pdctsinbonachat'+bonid)) || []
 
       console.log(id, pdcts, pdcts.includes(id))
       if (pdcts.includes(id)){
@@ -483,25 +241,27 @@ margin: 0;
 
 
       pdcts.push(id)
-      localStorage.setItem('pdctsinbonachat{{bon.id}}{{target}}', JSON.stringify(pdcts))
+      localStorage.setItem('pdctsinbonachat'+bonid, JSON.stringify(pdcts))
       let addtotal=(parseFloat(addqty.val()==''?0:addqty.val())*parseFloat(addprice.val()==''?0:addprice.val())).toFixed(2) || 0
+      let netp=(addprice.val()-(addprice.val()*addremise.val()/100)).toFixed(2)
+      addtotal=addqty.val()*netp
       let tr = `
       <tr class="itemrow ${stock<=0? "text-danger":"" }">: 2
-          <td style="padding: 2px 0; font-size: 13px;" class="ref text-uppercase" onclick="removelineupdateachat(event, '{{bon.id}}', ${id})">${ref}</td>
+          <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelineupdateachat(event, '{{bon.id}}', ${id})">${ref}</td>
           <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
-          
-          
-          <td hidden style="padding: 2px 0; font-size: 13px;" class="clientprice"><input class="devise" value="${adddevise.val()}" style="width:65px;"></td>
-          <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptybonachat" onkeyup="calculatebonachat(event)" name="qty" value="${addqty.val()}" style="height:23px; width:65px;"></td>
-          <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptybonachat" onkeyup="calculatebonachat(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:65px;"></td>
-          <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculatebonachat(event)" name="remise" style="height:23px; width:65px;"></td>
+          <td style="paddingpx 0; font-size: 13px;">${dp}</td>
+          <td style="padding: 2px 0; font-size: 13px;">${stock}</td>
+          <td style="padding: 2px 0; font-size: 13px;" class="clientprice"><input class="devise" value="${adddevise.val()}" style="width:65px;"></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptybonachat" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:65px;"></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptybonachat" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:65px;"></td>
+          <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:65px;"></td>
           <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
           <input type="hidden" name="productid" value="${id}">
 
       </tr>
       `
 
-      bonachatbody.append(tr)
+      bonachatbody.prepend(tr)
       // delete selected option
       addqty.val('')
       addname.val('')
@@ -531,7 +291,7 @@ margin: 0;
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproductforbonachat?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -549,13 +309,16 @@ margin: 0;
       });
 
     })
-  localStorage.removeItem('pdctsinbonachat{{bon.id}}{{target}}')
+  localStorage.removeItem('pdctsinbonachat{{bon.id}}')
   var productIds = [];
   {% for i in items %}
   productIds.push('{{ i.product.id }}');
   {% endfor %}
-  localStorage.setItem('pdctsinbonachat{{bon.id}}{{target}}', JSON.stringify(productIds));
-  
+  localStorage.setItem('pdctsinbonachat{{bon.id}}', JSON.stringify(productIds));
+  $(document).ready(function(){
+    $('.supplierbonachat{{bon.id}}').select2('open')
+  })
+
 
 
     $('.resultsholderbonachat{{bon.id}}').on('change', function(){
@@ -564,22 +327,16 @@ margin: 0;
         if ($(this).val()==''){
             return
         }
-        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice, qtyjeu] = $(this).val().split('§');
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
         let repswithprice=[]
         let addname=parentdiv.find('input[name="addname"]')
         // let addprice=parentdiv.find('input[name="addprice"]')
         // let addremise=parentdiv.find('input[name="addremise"]')
         // let addqty=parentdiv.find('input[name="addqty"]')
         parentdiv.find('.addstock').text('Stock: '+stock)
-        $.get('/products/getlastbuyprice', {
-          'target':'{{target}}',
-          'id':id
-        }, (data)=>{
-          parentdiv.find('.addlastbuyprice').text(`Dernier pr.ach. ${data.dp} (${data.remise}%)`)
-        })
         // addqty.val('')
         // addremise.val(remise)
-        addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}§${qtyjeu}`)  
+        addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
 
 
         // let selected = $(this).find(':selected')
@@ -593,13 +350,6 @@ margin: 0;
           $('.data').addClass('border border-danger')
           return
       }
-      // check if year is current year
-      // if ($('.datebonachat{{bon.id}}').val().split('-')[0] != new Date().getFullYear()){
-      //   $('.datebonachat{{bon.id}}').addClass('border border-danger')
-      //   alertify.error('Date invalid')
-      //   return
-      // }
-      $('.datebonachat{{bon.id}}').removeClass('border border-danger')
       $('.data').removeClass('border border-danger')
       // check if .itemrow is exist
       if ($('.itemrow').length==0){
@@ -626,28 +376,21 @@ margin: 0;
         let products = []
         trs.each(function(){
             let tr = $(this)
-            let achatitemid=tr.find('.achatitemid').val()
             let qty = tr.find('.qty').val()
             let name = tr.find('.name').text()
             let ref = tr.find('.ref').text()
             let price = tr.find('.price').val()
-            let remise1 = tr.find('.remise1').val()
-            let remise2 = tr.find('.remise2').val()
-            let remise3 = tr.find('.remise3').val()
-            let remise4 = tr.find('.remise4').val()
+            let remise = tr.find('.remise').val()
             let devise= tr.find('.devise').val()
             let total = tr.find('.total').text()
             let productid = tr.find('input[name="productid"]').val()
             let product = {
                 'qty': qty,
-                'achatitemid': achatitemid,
                 'name': name,
                 'ref': ref,
                 'price': price,
-                'remise1': remise1,
-                'remise2': remise2,
-                'remise3': remise3,
-                'remise4': remise4,
+                'remise': remise,
+                'devise': devise,
                 'total': total,
                 'productid': productid,
             }
@@ -660,7 +403,7 @@ margin: 0;
         let orderno = $('.bonachatno{{bon.id}}').val()
         let totalbon=parseFloat($('.totalbonachat{{bon.id}}').text())
         console.log('sending')
-        localStorage.setItem('pdctsinbonachat{{bon.id}}{{target}}', '[]')
+        localStorage.setItem('pdctsinbonachat', '[]')
         console.log(products)
         console.log({
               'bonid': '{{bon.id}}',
@@ -676,7 +419,6 @@ margin: 0;
             url: "{% url 'products:updatebonachat' %}",
             type: 'POST',
             data: {
-              'target':'{{target}}',
                 'bonid': '{{bon.id}}',
                 'totalbon': totalbon,
                 'datebon': datebon,
@@ -690,7 +432,7 @@ margin: 0;
               if (data.success){
                 alertify.success('Bon Achat modifié')
                 deletetab('addmodifierbonachat{{bon.id}}')
-                ajaxpage('bonachat{{bon.id}}', 'Bon achat {{bon.nbon}}', '/products/bonachatdetails/{{bon.id}}?target={{target}}')
+                createtab('bonachat{{bon.id}}', 'Bon achat {{bon.nbon}}', '/products/bonachatdetails/{{bon.id}}')
                 // delerte this tab
                 // deletetab('modifierlivraison{{bon.id}}')
               }
@@ -722,7 +464,7 @@ margin: 0;
     //         let bonachatbody = $('.bonachatbody')
     //         let tr = `
     //         <tr>
-    //             <td class="ref text-uppercase">${ref}</td>
+    //             <td class="ref">${ref}</td>
     //             <td class="name">${name}</td>
     //             <td>${dp}</td>
     //             <td>${stock}</td>
@@ -732,15 +474,15 @@ margin: 0;
     //                     <option value="depot">Depot</option>
     //                 </select>
     //             </td>
-    //             <td><input type="number" class="form-control calculate qty" onkeyup="calculatebonachat(event)" name="qty"></td>
-    //             <td><input type="number" class="form-control calculate price" onkeyup="calculatebonachat(event)" name="price"></td>
-    //             <td><input type="number" class="form-control calculate remise" onkeyup="calculatebonachat(event)" name="remise"></td>
+    //             <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+    //             <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
+    //             <td><input type="number" class="form-control calculate remise" onkeyup="calculate(event)" name="remise"></td>
     //             <td class="total"></td>
     //             <input type="hidden" name="productid" value="${id}">
     //             <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
     //         </tr>
     //         `
-    //         bonachatbody.append(tr)
+    //         bonachatbody.prepend(tr)
     //         // delect selected option
     //         selectElement.remove(selectElement.selectedIndex);
     //     }
@@ -758,8 +500,8 @@ margin: 0;
     //         <td>${name}</td>
     //         <td>${stock}</td>
 
-    //         <td><input type="number" class="form-control calculate qty" onkeyup="calculatebonachat(event)" name="qty"></td>
-    //         <td><input type="number" class="form-control calculate price" onkeyup="calculatebonachat(event)" name="price"></td>
+    //         <td><input type="number" class="form-control calculate qty" onkeyup="calculate(event)" name="qty"></td>
+    //         <td><input type="number" class="form-control calculate price" onkeyup="calculate(event)" name="price"></td>
     //         <td class="total"></td>
     //         <td><button class="btn btn-danger btn-sm" onclick="removefrombon(this)">X</button></td>
     //     </tr>

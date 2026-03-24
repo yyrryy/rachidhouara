@@ -1,0 +1,48 @@
+{% load global_tags %}
+{% for order in bons %}
+<tr class="ord {% if order.ispaid %}text-danger{% endif %} fccopy-row" orderid="{{order.code}}" ondblclick="createtab('Bl{{order.id}}', 'Bl {{order.facture_no}}', '/products/facturedetailscopy/{{order.id}}')"
+  style="{% if order.bon %} color: blue; {% endif %}{% if order.isaccount %}background:yellowgreen;{% endif %}"
+>
+  <td>{{ order.copynumber }}</td>
+  <td>{{ order.date|date:'d/m/Y' }}</td>
+  <td>{{ order.total|floatformat:2|intspace}}</td>
+  <!-- <td>{{ order.tva|floatformat:2|intspace}}</td> -->
+  <td>{{ order.client.name }}</td>
+  <td>{{ order.client.code }}</td>
+  <td>{{ order.client.region }}</td>
+  <td>{{ order.client.city }}</td>
+  <!-- <td>{{ order.client.soldfacture|floatformat:2|intspace }}</td> -->
+  <td>{{ order.salseman }}</td>
+  {% if order.ispaid %}
+  <!-- <td class="d-flex justify-content-between">
+    <div>
+    R0
+    <div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
+    </div>
+    <button class="btn"></button>
+  </td> -->
+  {% else %}
+
+  <!-- <td class="d-flex justify-content-between">
+    <div style="width:15px; height:15px; border-radius:50%; background:orange;" ></div>
+    <button title="Facture Comptabilisé" class="btn border border-success" onclick="makefacturecompta(event, '{{order.id}}')"></button>
+  </td> -->
+
+  {% endif %}
+  <td>
+    {{order.note}}
+  </td>
+  <!-- <td style="white-space:nowrap;">
+    {{order.getreglement|slice:'16' }}
+  </td> -->
+  {%if not facturesection%}
+    <!-- <td>{{ order.bon.bon_no }}</td> -->
+  {% endif %}
+    <!-- <td class="d-flex">
+      {% if order.isaccount %}
+      <i class="bi bi-check h3"></i>c
+      {% endif %}
+      <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{order.id}}')"></button>
+    </td> -->
+</tr>
+{% endfor %}

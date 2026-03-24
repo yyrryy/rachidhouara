@@ -4,17 +4,17 @@
   <div>
     {{title}}
   </div>
-  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addCommandestab', 'products/listboncommnd')">↻</button>
+  <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addCommandestab', '/products/listboncommnd')">↻</button>
 </div>
 <div class="bg-white shadow rounded">
     <div class="d-flex justify-content-between">
       <div class="d-flex">
         <div class="me-2">
           <!-- <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}"> -->
-          <input type="date" name="" id="" class="startdate" >
+          <input type="date" name="" id="" class="startdatebc" >
         </div>
         <div>
-          <input type="date" name="" id="" class="enddate">
+          <input type="date" name="" id="" class="enddatebc">
           <!-- <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}"> -->
         </div>
         <div>
@@ -43,7 +43,7 @@
     </div>
     <div class="d-flex justify-content-between">
         <input  type="text" name="" id="" placeholder="Recherche" class="searchinputlistboncommnd col-6">
-      <select name="yearsbc" hidden class="populateyears disabled" hidden onchange="yeardatabc()">
+      <select name="yearsbc" class="populateyears" onchange="yeardatabc()">
 
 
       </select>
@@ -75,7 +75,7 @@
       </thead>
       <tbody class="listbcbody">
         {% for order in bons %}
-          <tr class="orderrow {% if 'Reliquat' in order.note and not order.isdelivered %} bg-warning  {% elif not order.isdelivered  %} text-danger {%endif%}"  orderid="{{order.code}}" ondblclick="ajaxpage('command{{order.id}}', 'Commande {{order.order_no}}', '/products/boncommandedetails/{{order.id}}')" {% if 'Reliquat' in order.note %} style="color: blue"{% endif %}>
+          <tr class="orderrow {% if 'Reliquat' in order.note and not order.isdelivered %} bg-warning  {% elif not order.isdelivered  %} text-danger {%endif%}"  orderid="{{order.code}}" ondblclick="createtab('command{{order.id}}', 'Commande {{order.order_no}}', '/products/boncommandedetails/{{order.id}}')" {% if 'Reliquat' in order.note %} style="color: blue"{% endif %}>
             <td>{{ order.order_no }}</td>
             <td>{{ order.date|dateadd}}</td>
             <td>{{ order.client.name }}</td>
@@ -131,7 +131,7 @@
     console.log('>> populating years')
     const $select = $('.populateyears');
     const currentYear = new Date().getFullYear();
-    const startYear = 2025;
+    const startYear = 2024;
     console.log('startYear, currentYear', startYear, currentYear)
 
     for (let year = startYear; year <= currentYear; year++) {
@@ -238,8 +238,8 @@
     loadinglistbc = false;
     $('.listbcholder').on('scroll', handleScrolllistbc);
     let parentdiv= $(this).parent().parent()
-    startdate=parentdiv.find('.startdate').val()
-    enddate=parentdiv.find('.enddate').val()
+    startdate=parentdiv.find('.startdatebc').val()
+    enddate=parentdiv.find('.enddatebc').val()
     if (startdate=='' || enddate==''){
       alertify.error('Date')
       return
@@ -268,8 +268,8 @@
       //     return term.trim();
       // });
       let year=$('select[name="yearsbc"]').val()
-      let startdate=$('.startdate').val()==""?0:$('.startdate').val()
-      let enddate=$('.enddate').val()==""?0:$('.enddate').val()
+      let startdate=$('.startdatebc').val()==""?0:$('.startdatebc').val()
+      let enddate=$('.enddatebc').val()==""?0:$('.enddatebc').val()
       $.get('/products/searchforlistbc', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year}, (data)=>{
         console.log('eee')
         $(".listbcbody").html('')

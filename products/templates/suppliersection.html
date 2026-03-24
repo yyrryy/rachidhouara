@@ -5,21 +5,6 @@
         List fournisserus
       </div>
 
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addrecevoir', '+Achat', '/products/supplierlistdevi?target={{target}}&&suppliersection=1')">
-        Devis
-      </div>
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addrecevoir', '+Achat', '/products/supplierlistcommand?target={{target}}')">
-        Commandes
-      </div>
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('listbl', 'list bon livraison', '/products/listbonachat?target={{target}}')">
-        List Bons achat
-      </div>
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addrecevoir', '+Achat', '/products/achatfacture?target={{target}}')">
-        Factures achat
-      </div>
-      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addrecevoir', '+Achat', '/products/listavoirsupplier?target={{target}}')">
-        Avoir achat
-      </div>
       <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/listreglementsupp?target={{target}}')">
         Reglement
       </div>
@@ -28,9 +13,17 @@
         Situation
       </div>
 
-      
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('listbl', 'list bon livraison', '/products/listbonachat?target={{target}}')">
+        List Bons achat
+      </div>
 
-      
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addrecevoir', '+Achat', '/products/achatfacture?target={{target}}')">
+        Factures
+      </div>
+
+      <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('addrecevoir', '+Achat', '/products/recevoir?target={{target}}')">
+        + Bon achat
+      </div>
       
       <!-- <div class="sectionitem border-bottom p-2 btn w-100 text-start" onclick="$('.sectionitem').removeClass('bg-white text-success'); $(this).addClass('bg-white text-success'); ajaxpage('add', '+ Article', '/products/marquespage?target={{target}}')">
         Marques
@@ -216,8 +209,7 @@
             processData: false,
             contentType: false,
             success:((data)=>{
-                ajaxpage('ee', 'rr', '/products/supplierspage?target={{target}}')
-                
+                $(`#supplist`).html(data.html)
             })
         })
     })

@@ -51,7 +51,7 @@
       {{title}}
     </div>
     <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistreglementbl', '/products/listreglementbl')">↻</button>
-</div>
+  </div>
 <!-- addsupplier modal -->
 <div class="modal fade" id="editsuppmodal" tabindex="-1" aria-labelledby="editsuppmodalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -96,15 +96,129 @@
     </div>
 </div>
 
-    <div class="card">
-    <div class="border p-2 position-relative updatereglementbl position-fixed shadow rounded d-none" style="z-index: 999;overflow: scroll; height: 85vh;background: aliceblue; width: 85%;">
-        
-        <div class="row reglebldata">
+<div class="card">
+    <div class="border p-2 position-relative updatereglementbl position-fixed shadow rounded d-none" style="z-index: 999;overflow: scroll; height: 85vh;background: aliceblue;">
+        <button onclick="$(this).parent().addClass('d-none')">X</button>
+        <strong>
+            Modifier le reglement
+        </strong>
+        <div class="row">
 
-            
-            <!-- <button class="btn text-white w-100" onclick="submitupdatereglementbl(event)" style="background: #00538c;">
-                Valider
-            </button> -->
+            <div class="col-3">
+                <div class="">
+                    <small>Date:</small> <br>
+                    <input type="date" name="date" class="w-100 notempty mb-2">
+                </div><br>
+                <input name="reglementid" hidden>
+                <small>Client: <span class="client"></span></small><br>
+                <small>Sold Bl Client: <span class="soldblinupdatereglbl text-danger" style="margin-left: 10px;"></span></small><br>
+                <div class="mt-5">
+                    <input type="password" class="passworddeletereglbl form-control">
+                    <button class="btn btn-danger deletereglblbtn w-100" reglid="" onclick="deletereglbl(event)">Supprimer</button>
+                </div>
+
+            </div>
+
+            <div class="reglementbonsholderinupdate col-9 border position-relative">
+
+                <div class="inputsholder">
+
+
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <small>Mantant:</small> <br>
+                            <input type="number" name="mantant" class="w-100 notempty" placeholder="Mantant">
+                        </div>
+                        <div class="col-3">
+                            <small>N° piece:</small> <br>
+                            <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece">
+                        </div>
+                        <div class="col-3">
+                            <small>Mode Paiment:</small> <br>
+                            <select name="mode" class="w-100 notempty" onchange="checkmodereglement(event)">
+                                <option value="cheque">Cheque</option>
+                                <option value="effet">effet</option>
+                                <option value="espece">espece</option>
+                                <option value="avoir">avoir</option>
+                                <option value="remise">remise</option>
+                                <option value="verement">verement</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <small>Echeance:</small> <br>
+                            <input type="date" name="echeance" class="w-100 notempty">
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="mb-2 mt-2">
+                    <div class="d-flex justify-content-between">
+                        <div>Bons </div>
+                        <div>
+                            <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglblupdate">
+                        </div>
+                    </div>
+                    <div style="max-height: 220px; overflow-y: scroll;" class="listupdatereglblholder">
+                        <table class="table table-bordered reglblupdate table-hover" style="font-size: 12px;">
+                            <thead style="position: sticky; top: 0;" class="bg-white">
+                                <tr>
+                                    <td>
+                                        Date
+                                    </td>
+                                    <td>
+                                        N° Bon
+                                    </td>
+
+                                    <td>
+                                        total
+                                    </td>
+                                    <td>
+                                        Status
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <thead style="position: sticky; bottom: 0;" class="bg-white">
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                    <td class="totalblinupdatereglbl" style="background: yellowgreen;">
+                                    </td>
+                                    <td class="">
+
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                    </select> -->
+                </div>
+                <button class="btn text-white w-100 submitupdatereglementbl" onclick="submitupdatereglementbl(event)" style="background: #00538c;">
+                    Valider
+                </button>
+                <!-- <div class="mb-2">
+                    <small>Facture</small>
+                    <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
+
+                    </select>
+                </div>
+
+                <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                </select> -->
+
+            </div>
             <div class="mt-3">
                 {% csrf_token %}
 
@@ -114,493 +228,319 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-8">
-            <!-- section ajouter -->
-            <div class="border-end p-2 position-relative">
-            <div class="accordion" id="accordionreglbl">
-                <div class="">
+    <!-- section ajouter -->
+    <div class="border-end p-2 position-relative">
+    <div class="accordion" id="accordionreglbl">
+        <div class="">
 
-                    <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
-                    style="border-radius: 10px;"
-                    >
-                        + Ajouter
-                    </button>
+            <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
+            style="border-radius: 10px;"
+            >
+                + Ajouter
+            </button>
 
-                <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
-                    <div class="card-body border shadow rounded">
-                        <div class="row">
+          <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
+            <div class="card-body border shadow rounded">
+                <div class="row">
+
+                    <div class="col-3">
+                        <div class="">
+                            <small>Date:</small> <br>
+                            <input type="date" name="datereglementclientbl" class="w-100 notempty datereglement mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
                             <small class="errordatereglclbl text-danger d-none">
-                                Date incorrect
+                              Date incorrect
                             </small>
-                            <div class="col-3">
-                                <div class="">
-                                    <small>Du:</small> <br>
-                                    <input type="date" name="datereglementclientbl" class="w-100 notempty datefrom mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
-                                    
-                                </div>
-                                <div class="">
-                                    <small>Au:</small> <br>
-                                    <input type="date" name="dateend" class="w-100 notempty mb-2 dateend" value="{{today|date:'Y-m-d'}}">
-                                </div>
-                                <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
-                                <select name="addreglementclientsbl" id="" class="form-select addreglementclientsbl select2client" style="width:100%;" onchange="getbons()">
-
-                                </select>
-                                
-                                <select name="" id="" class="moderegl mt-2 form-control" onchange="getbons()">
-                                    <option value="bl">bl</option>
-                                    <option value="facture">facture</option>
-                                </select>
-                                <button class="btn btn-success w-100" onclick="getbons()">Situation</button>
-                            </div>
-
-                            <div class="reglementbonsholder d-none col-9 border position-relative">
-
-                                <div class="inputsholder">
-                                    <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button>
-                                    <strong class="totalreglblfields">0.00</strong>
-                                        <!-- <div class="d-flex justify-content-between align-items-center">
-                                            <div class="me-2">
-                                                <small>Mantant:</small> <br>
-
-                                            </div>
-                                            <div class="me-2">
-                                                <small>N° piece:</small> <br>
-
-                                            </div>
-                                            <div class="me-2">
-                                                <small>Mode Paiment:</small> <br>
-
-                                            </div>
-                                            <div class="me-2">
-                                                <small>Echeance:</small> <br>
-
-                                            </div>
-                                            <div class="me-2">
-                                                <small>Bank:</small> <br>
-                                            </div>
-                                        </div> -->
-                                        <div class="reglements">
-                                            <div class="d-flex align-items-center mt-2">
-                                                <div class="me-2">
-                                                    <input type="number" name="mantantreglementclient" oninput="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant">
-                                                </div>
-                                                <div class="me-2">
-                                                    <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece">
-                                                </div>
-                                                <div class="me-2">
-                                                    <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)">
-                                                        <option value="cheque">Cheque</option>
-                                                        <option value="effet">effet</option>
-                                                        <option value="espece">espece</option>
-                                                        <option value="remise">remise</option>
-                                                        <option value="verement">verement</option>
-                                                        <option value="versement">versement</option>
-                                                        <option value="carte">carte banquaire</option>
-                                                    </select>
-                                                </div>
-                                                <div class="me-2">
-                                                    <input type="date" name="echeance" class="w-100 notempty echeancereglbl" value="{{today|date:'Y-m-d'}}">
-                                                </div>
-                                                <div class="me-2">
-                                                    <input type="text" name="bank" class="w-100" placeholder="Nom du bank">
-                                                </div>
-                                                <div class="me-2">
-                                                    <select name="source">
-                                                        <option value="">Source</option>
-                                                        <option value="societe">Societe</option>
-                                                        <option value="client">client</option>
-                                                        <option value="personel">personel</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-between mt-3">
-                                    
-                                    
-                                    <!-- <div>
-                                        <button class="btn btn-sm btn-danger" onclick="filternonreglr()" style="border-radius: 10px;">NR</button>
-                                        <button class="btn btn-sm btn-info" onclick="getallbl()" style="border-radius: 10px;">TOUS</button>
-                                    </div>
-                                    <input style="width:10em;background: #8080802b;
-                                    border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistaddreglbl"> -->
-
-                                </div>
-
-                                <div class="col-4 mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
-                                    <div>
-                                        <!-- <small>Bons:</small> <strong class="totalcheckedbl">0.00</strong><br> -->
-                                        <small>Bons:</small> <strong class="totalbons">0.00</strong><br>
-                                    </div>
-                                    <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
-                                        <thead style="position: sticky; top: 0; background: white;">
-                                            <tr>
-                                                <td>
-                                                    Date
-                                                </td>
-                                                <td>
-                                                    N° Bon
-                                                </td>
-                                                <td>
-                                                    total
-                                                </td>
-                                                <td>
-                                                    Rest
-                                                </td>
-                                                <td></td>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="reglementclientbonholder">
-                                        </tbody>
-                                        <tfoot style="position: sticky; bottom: 0; background: white;">
-                                            <tr>
-                                                <td colspan="2">
-
-                                                </td>
-                                                <td class="text-danger" style="background: yellowgreen;"></td>
-                                                <td class="totalbonsbl text-danger" style="background: yellowgreen;">
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-
-                                    </table>
-                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-
-                                    </select> -->
-                                </div>
-                                <div class="col-4 mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
-                                    Avoirs: <strong class="totalavoirs">0.00</strong>
-
-                                    <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
-                                        <thead style="position: sticky; top: 0; background: white;">
-                                            <tr>
-                                                <td>
-                                                    Date
-                                                </td>
-                                                <td>
-                                                    N° Bon
-                                                </td>
-                                                <td>
-                                                    total
-                                                </td>
-                                                <td></td>
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody class="avoirstable">
-                                        </tbody>
-                                        <!-- <tfoot style="position: sticky; bottom: 0; background: white;">
-                                            <tr>
-                                                <td colspan="2">
-
-                                                </td>
-                                                <td class=" text-danger" style="background: yellowgreen;"></td>
-                                                <td class="totalavoirs text-danger" style="background: yellowgreen;">
-                                                </td>
-                                            </tr>
-                                        </tfoot> -->
-
-                                    </table>
-                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-
-                                    </select> -->
-                                </div>
-                                <div class="col-4 mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
-                                    Avances: <strong class="totalavances">0.00</strong>
-                                    <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
-                                        <thead style="position: sticky; top: 0; background: white;">
-                                            <tr>
-                                                <td>
-                                                    Date
-                                                </td>
-                                                
-                                                <td>
-                                                    Mantant
-                                                </td>
-                                                <td></td>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody class="avancestable">
-                                        </tbody>
-                                        <!-- <tfoot style="position: sticky; bottom: 0; background: white;">
-                                            <tr>
-                                                <td colspan="2">
-
-                                                </td>
-                                                <td class=" text-danger" style="background: yellowgreen;"></td>
-                                                <td class="totalavances text-danger" style="background: yellowgreen;">
-                                                </td>
-                                            </tr>
-                                        </tfoot> -->
-
-                                    </table>
-                                    <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-
-                                    </select> -->
-                                </div>  
-                                <div>
-                                    Mantant a payé <strong class="whattopay">0.00</strong>DH
-                                </div>
-                                
-                                <div class="row">
-                                    <small>Date reglement:</small>
-                                    <div class="col-4">
-                                        <input type="date" name="" id="" value="{{today|date:'Y-m-d'}}" class="form-control mb-2 datereglement">
-                                    </div>
-
-                                </div>
-                                <button class="btn text-white w-100 submitaddreglemntclientbtn disabled" style="background: #00538c;">
-                                    Valider
-                                </button>
-                                <button class="btn btn-success col-4" onclick="$('.confirmregl').toggleClass('d-none')">
-                                    Regler situation
-                                </button>
-                                <div class="confirmregl row col-4 d-none">
-                                    Confirmer le reglement?
-                                    <button class="btn btn-success col-6" onclick="reglsituation()">
-                                        Oui
-                                    </button>
-                                    <button class="btn btn-danger col-6" onclick="$('.confirmregl').addClass('d-none')">
-                                        Non
-                                    </button>
-                                </div>
-                                <!-- <div class="mb-2">
-                                    <small>Facture</small>
-                                    <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-
-                                    </select>
-                                </div>
-
-                                <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
-
-                                </select> -->
-
-                            </div>
-                            <div class="mt-3">
-                                {% csrf_token %}
-
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-
-            <div class="d-flex justify-content-between">
-
-            </div>
-
-
-            <div class="d-flex justify-content-between">
-                <!-- <div class="d-flex">
-                <div class="me-2">
-                    <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}">
-                </div>
-                <div>
-                    <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}">
-                </div>
-                <div>
-
-                    <button class="btn btn-sm bg-dark text-white filterreglbldate">Filtrer</button>
-                </div>
-
-                </div> -->
-                <div>
-                    <div class="text-end">
-                        <select name="yearsreglbl" hidden class="populateyears disabled" hidden onchange="yeardatareglbl()" style="background: #eaeaea;
-                        margin: 0 6px 10px;
-                        width: 5em;
-                        border-radius: 10px;">
-
+                        </div><br>
+                        <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button>
+                        <select name="addreglementclientsbl" id="" class="form-select addreglementclientsbl select2client" style="width:100%;">
 
                         </select>
                     </div>
-                    <input style="width:20em;background: #8080802b;
-                    border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglbl">
-                </div>
 
-            </div>
+                    <div class="reglementbonsholder d-none col-9 border position-relative">
 
-            <!-- list reglement -->
-            <div style="height: 62vh; overflow: scroll;" class="reglbltableholder mt-2">
-            <table class="table table-bordered reglbltable text-center table-hover" style="font-size: 12px;">
-                <thead style="position: sticky; top: 0;" class="bg-darkblue text-white">
-                        <th>
-                            Serie
-                        </th>
-                    <th onclick="sorttable(event)">
-                        Type
-                    </th>
-                    <th onclick="sorttable(event)">
-                        N°
-                    </th>
-                    <th onclick="sorttable(event)">
-                        Mantant
-                    </th>
-                    <th onclick="sorttable(event)">
-                        Date saisie
-                    </th>
-                    <th onclick="sorttable(event)" class="text-start">
-                        Client
-                    </th>
-                    <th onclick="sorttable(event)">
-                        Code cl.
-                    </th>
-                    <th onclick="sorttable(event)">
-                        Echeance
-                    </th>
-                    <th onclick="sorttable(event)">
-                        Banque
-                    </th>
-                    <th onclick="sorttable(event)">
-                        N° Bons
-                    </th>
-                </thead>
-                <tbody>
-                    {% for i in reglements %}
-                    <tr class="reglbl-row" style={% if i.mode != 'espece' and i.echance == today %}"background: yellow;"{% elif i.mode != 'espece' and i.echance < today %}"color:red" {% endif %} >
-                            <td>
-                                REGL#{{i.id}} {% if i.isavoir %} (Avoir) {% endif %}
-                            </td>
-                            <td>
-                                {{i.mode}} <br>
-                                <!-- <select name="updatemodereglbl{{i.id}}" id=""></select> -->
-                            </td>
-                            <td>
-                                {{i.npiece}} <br>
-                                <input type="text" class="d-none updatenpiecereglbl{{i.id}}">
-                            </td>
-                            <td>
-                                {{i.amount|floatformat:'2'|intspace}}<br>
-                                <!-- <input type="text" class="d-none updateamountreglbl{{i.id}}"> -->
-                            </td>
-                            <td>
-                                {{i.date|date:"d/m/Y"}}<br>
-                                <input type="date" class="d-none updatetdatereglbl{{i.id}}">
-                            </td>
-                            <td class="text-start">
-                                {{i.client.name}}
-                            </td>
-                            <td>
-                                {{i.client.code}}
-                            </td>
-                            <td>
-                                {{i.echance|date:"d/m/Y"}} <br>
-                            </td>
-                            <td>
-                                {{i.bank.upper}}
-                        </td>
-                            <td class="d-flex justify-content-between">
-                                <div class="accordion" id="accordionbons{{i.id}}">
+                        <div class="inputsholder">
+                            <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button>
+                            <strong class="totalreglblfields">0.00</strong>
+                                <div class="row align-items-center">
+                                      <div class="col-3">
+                                          <small>Mantant:</small> <br>
 
-                                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{i.id}}" aria-expanded="true" aria-controls="collapsbon{{i.id}}">
+                                      </div>
+                                      <div class="col-3">
+                                          <small>N° piece:</small> <br>
 
+                                      </div>
+                                      <div class="col-3">
+                                          <small>Mode Paiment:</small> <br>
 
-                                    </button>
+                                      </div>
+                                      <div class="col-3">
+                                          <small>Echeance:</small> <br>
 
-                                    <div id="collapsbon{{i.id}}" class="text-start collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{i.id}}">
-                                        {% for bon in i.bons.all %}
-                                        (Bon){{ bon.bon_no }} <br>
-                                        {% endfor %}
-                                        {% for bon in i.bonsortie.all %}
-                                        (Bon){{ bon.bon_no }} <br>
-                                        {% endfor %}
-                                        {% for fact in i.factures.all %}
-                                        (Facture){{ fact.fact_no }} <br>
-                                        {% endfor %}
-                                        {% for av in i.avoirs.all %}
-                                        (avoir){{ av.no }} <br>
-                                        {% endfor %}
-                                        {% for av in i.avances.all %}
-                                        (Avance) ({{ av.amount }}DH) <br>
-                                        {% endfor %}
-
-
+                                      </div>
+                                  </div>
+                                <div class="reglements">
+                                    <div class="row align-items-center mt-2">
+                                        <div class="col-3">
+                                            <input type="number" name="mantantreglementclient" onchange="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant">
+                                        </div>
+                                        <div class="col-3">
+                                            <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece">
+                                        </div>
+                                        <div class="col-3">
+                                            <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)">
+                                                <option value="cheque">Cheque</option>
+                                                <option value="effet">effet</option>
+                                                <option value="espece">espece</option>
+                                                <option value="avoir">avoir</option>
+                                                <option value="remise">remise</option>
+                                                <option value="verement">verement</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
+                                            <input type="date" name="echeance" class="w-100 notempty echeancereglbl" value="{{today|date:'Y-m-d'}}">
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip="Bon Nos: {% for bon in i.bons.all %}{{ bon.bon_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="ajaxpage('regl{{i.id}}tab', 'regl{{i.id}}tab', 'products/viewreglement/{{i.id}}')">
-                                </button> -->
+                            </div>
+                        </div>
 
-                                <button class="btn btn-success btn-sm bi bi-eye" onclick="updatereglementbl('{{i.id}}')" style="font-size: 12px;
-                                height: 19px;"></button>
-                                {% if not i.ispaid %}
-                                {% if not i.mode == 'espece' %}
-                              <button reglid="{{i.id}}" reglmode="{{i.mode}}" rglnpiece="{{i.npiece}}" onclick="selectregl('{{i.id}}', '{{i.mode}}', '{{i.npiece}}', '{{i.amount}}')" class="btn btn-dark bi bi-arrow-right"></button>
-                                {% endif %}
-                                {% endif %}
-                            </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <thead style="background: white; position: sticky; bottom: 0;">
-                    <th>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <small>Bons:</small> <strong class="totalcheckedbl">0.00</strong><br>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-danger" onclick="filternonreglr()" style="border-radius: 10px;">NR</button>
+                                <button class="btn btn-sm btn-info" onclick="getallbl()" style="border-radius: 10px;">TOUS</button>
+                            </div>
+                            <input style="width:10em;background: #8080802b;
+                            border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistaddreglbl">
 
-                    </th>
-                    <th>
+                        </div>
 
-                    </th>
-                    <th>
+                        <div class="mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
 
-                    </th>
-                    <th class="totalreglbl" style="background: yellowgreen;">
-                        {{total|floatformat:2|intspace}}
-                    </th>
-                    <th>
+                            <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
+                                <thead style="position: sticky; top: 0; background: white;">
+                                    <tr>
+                                        <td>
+                                            Date
+                                        </td>
+                                        <td>
+                                            N° Bon
+                                        </td>
+                                        <td>
+                                            Client
+                                        </td>
+                                        <td>
+                                            total
+                                        </td>
+                                        <td>
+                                            Rest
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody class="reglementclientbonholder">
+                                </tbody>
+                                <tfoot style="position: sticky; bottom: 0; background: white;">
+                                    <tr>
+                                        <td colspan="2">
 
-                    </th>
-                    <th>
+                                        </td>
+                                        <td class="soldblregl text-danger" style="background: yellowgreen;"></td>
+                                        <td class="totalbonsbl text-danger" style="background: yellowgreen;">
+                                        </td>
+                                    </tr>
+                                </tfoot>
 
-                    </th>
-                    <th>
+                            </table>
+                            <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
 
-                    </th>
-                    <th>
+                            </select> -->
+                        </div>
+                        <button class="btn text-white w-100 submitaddreglemntclientbtn disabled" style="background: #00538c;">
+                            Valider
+                        </button>
+                        <!-- <div class="mb-2">
+                            <small>Facture</small>
+                            <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
 
-                    </th>
-                    <th>
+                            </select>
+                        </div>
 
-                    </th>
-                </thead>
-            </table>
+                        <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
+
+                        </select> -->
+
+                    </div>
+                    <div class="mt-3">
+                        {% csrf_token %}
+
+
+                    </div>
+
+                </div>
             </div>
+          </div>
         </div>
-        <div class="col-4">
-            <div class="bg-white p-2 border">
-                <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-                  <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button> -->
-                  <!-- <div>
-                    Transfer
-                  </div> -->
-                  <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button> -->
-                </div>
-          
-                <div>
-                  date:
-                  <input type="date" class="form-control mb-2 dateregl">
-                  <input type="text" class="form-control mb-2 nrecu" placeholder="N° reçu">
-                  <select class="form-control bank">
-                    <option value="">-- Banque--</option>
-                    {% for i in banks %}
-                    <option value="{{i.id}}">
-                      {{i.name}} ({{i.rib}})
-                    </option>
-                    {% endfor %}
-                  </select>
-                  <div class="mt-3 reglholder" ids="[]" style="height: 60vh; overflow: scroll;">
-          
-                  </div>
-                  <button class="btn bg-darkblue w-100 text-white" onclick="payreglementbl()">Transfer</button>
-                </div>
-          
-              </div>
+    </div>
+
+    </div>
+    <div class="d-flex justify-content-between">
+
+    </div>
+
+
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+          <div class="me-2">
+            <input type="date" name="" id="" class="startdate" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div>
+            <input type="date" name="" id="" class="enddate" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div>
+
+              <button class="btn btn-sm bg-dark text-white filterreglbldate">Filtrer</button>
+          </div>
+
         </div>
+        <div>
+            <div class="text-end">
+                <select name="yearsreglbl" class="populateyears" onchange="yeardatareglbl()" style="background: #eaeaea;
+                margin: 0 6px 10px;
+                width: 5em;
+                border-radius: 10px;">
+
+
+                </select>
+            </div>
+            <input style="width:20em;background: #8080802b;
+            border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistreglbl">
+        </div>
+
+      </div>
+
+    <!-- list reglement -->
+    <div style="height: 62vh; overflow: scroll;" class="reglbltableholder mt-2">
+      <table class="table table-bordered reglbltable text-center table-hover" style="font-size: 12px;">
+          <thead style="position: sticky; top: 0;" class="bg-darkblue text-white">
+              <th onclick="sorttable(event)">
+                  Type
+              </th>
+              <th onclick="sorttable(event)">
+                  N°
+              </th>
+              <th onclick="sorttable(event)">
+                  Mantant
+              </th>
+              <th onclick="sorttable(event)">
+                  Date saisie
+              </th>
+              <th onclick="sorttable(event)" class="text-start">
+                  Client
+              </th>
+              <th onclick="sorttable(event)">
+                  Code cl.
+              </th>
+              <th onclick="sorttable(event)">
+                  Echeance
+              </th>
+              <th onclick="sorttable(event)">
+                  N° Bons
+              </th>
+          </thead>
+          <tbody>
+               {% for i in reglements %}
+               <tr class="reglbl-row"
+               {% if not i.ispaid and i.mode != 'espece' and i.mode != 'avoir' %}
+                   {% if i.echance == today %}
+                       style="background: yellow;"
+                   {% elif i.echance < today %}
+                       style="background: red;"
+                   {% endif %}
+               {% endif %}
+                >
+                     <td>
+                          {{i.mode}} <br>
+                          <!-- <select name="updatemodereglbl{{i.id}}" id=""></select> -->
+                     </td>
+                     <td>
+                          {{i.npiece}} <br>
+                          <input type="text" class="d-none updatenpiecereglbl{{i.id}}">
+                     </td>
+                     <td>
+                          {{i.amount|floatformat:'2'|intspace}}<br>
+                          <!-- <input type="text" class="d-none updateamountreglbl{{i.id}}"> -->
+                     </td>
+                     <td>
+                          {{i.date|date:"d/m/Y"}}<br>
+                          <input type="date" class="d-none updatetdatereglbl{{i.id}}">
+                     </td>
+                     <td class="text-start">
+                          {{i.client.name}}
+                     </td>
+                     <td>
+                          {{i.client.code}}
+                     </td>
+                     <td>
+                          {{i.echance|date:"d/m/Y"}} <br>
+                     </td>
+                     <td class="d-flex justify-content-between">
+                        <div class="accordion" id="accordionbons{{i.id}}">
+
+                            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{i.id}}" aria-expanded="true" aria-controls="collapsbon{{i.id}}">
+
+
+                            </button>
+
+                            <div id="collapsbon{{i.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{i.id}}">
+                                {% for bon in i.bons.all %}
+                                -{{ bon.bon_no }} <br>
+                                {% endfor %}
+
+
+                            </div>
+                        </div>
+                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip="Bon Nos: {% for bon in i.bons.all %}{{ bon.bon_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="createtab('regl{{i.id}}tab', 'regl{{i.id}}tab', '/products/viewreglement/{{i.id}}')">
+                        </button> -->
+
+                        <button class="btn btn-success btn-sm" onclick="updatereglementbl('{{i.id}}')" style="font-size: 12px;
+                        height: 19px;">✐</button>
+                     </td>
+               </tr>
+               {% endfor %}
+          </tbody>
+          <thead style="background: white; position: sticky; bottom: 0;">
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th class="totalreglbl" style="background: yellowgreen;">
+                {{total|floatformat:2|intspace}}
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+        </thead>
+      </table>
+    </div>
     <!-- {{today|date:'Y-m-d'}} -->
     <div class="card-body row">
       <div class="col-4">
@@ -610,186 +550,17 @@
 
 
 <script>
-    function reglsituation(){
-        selectedValues = $("input[name='bonstopay']:checked").map(function() {
-            return this.value;
-        }).get()
-        selectedavoirs = $("input[name='avoirstopay']:checked").map(function() {
-            return this.value;
-        }).get()
-        
-        selectedavances = $("input[name='avancestopay']:checked").map(function() {
-            return this.value;
-        }).get()
-        clientid=$('[name="addreglementclientsbl"]').val()
-        date=$('[name="datereglementclientbl"]').val()
-        $.get('/products/reglsituation', {
-            bons:JSON.stringify(selectedValues),
-            avoirs:JSON.stringify(selectedavoirs),
-            avances:JSON.stringify(selectedavances),
-            clientid:clientid,
-            date:date,
-            moderegl:$('.moderegl').val(),
-            target:'{{target}}',
-        }, (data)=>{
-            if (data.success){
-                ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')
-            }else{
-                alertify.error(data.message)
-            }
-        })
-    }
-    function selectregl(reglid, reglmode, reglpiece, reglamount){
-    ids=JSON.parse($('.reglholder').attr('ids'))
-    if (ids.includes(reglid)){
-      alertify.error('Déja ajouté')
-      return
-    }
-    $('.reglholder').attr('ids', JSON.stringify(ids.concat(reglid)))
-    $('.reglholder').append(`
-      <div class="d-flex justify-content-between bg-darkblue text-white p-2 mb-2">
-        <div>
-          ${reglpiece} - ${reglmode} - ${reglamount}
-        </div>
-        <button class="btn bg-danger text-white" onclick="removeregl(event, ${reglid})">X</button>
-      </div>
-    `)
-    
-  }
-    function removeregl(event, reglid){
-        $(event.target).parent().remove()
-        ids=JSON.parse($('.reglholder').attr('ids'))
-        $('.reglholder').attr('ids', JSON.stringify(ids.filter(id=>id!=reglid)))
-    }
-    function payreglementbl() {
-        nrecu=$('.nrecu').val()
-        bank=$('.bank').val()
-        dateregl=$('.dateregl').val()
-        ids=JSON.parse($('.reglholder').attr('ids'))
-        if (nrecu==''||bank==''||dateregl==''||ids.length==0){
-        alertify.error('N° reçu, Banque, reglements')
-        return
-
-        }
-        console.log(ids, nrecu, bank)
-            // User has clicked the element four times consecutively
-            // Add your code to run when there are four consecutive clicks here
-        alertify.confirm('Payer', 'Payer le reglement', function(){
-        $.get('/products/payreglbl', {'ids': JSON.stringify(ids), 'bank':bank, 'nrecu':nrecu, 'dateregl':dateregl}, (data)=>{
-            necheance=parseInt($('.echeanceindexcl').text())
-            if (necheance>0){
-            $('.echeanceindexcl').text(necheance-1)
-            }
-            ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')
-        })
-        // Reset the count
-
-        }
-        , function(){ alertify.error('Cancel')});
-
-
-    }
-    function refusedreglbl(reglid){
-        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value', function(evt, value) { 
-            console.log('>> value', value)
-            if (value=='ORGHAD'){
-                console.log('>> sending efused')
-                $.get('/products/refusedreglbl', {'reglid':reglid}, (data)=>{
-                    ajaxpage('add', '+ Article', '/products/listreglementbl?target={{target}}')
-                })
-            }else{
-                alertify.error('Mot de passe')
-            }
-        }, function() { alertify.error('Cancel') });
-    }
-    
-
-    function payreglementclient(reglid){
-        banktarget=$('.banktarget').val()
-        if (banktarget==''){
-            alertify.error('Bank is required')
-            return
-        }
-        alertify.prompt( 'Confirmer', 'Mot de pass', 'Prompt Value', function(evt, value) { 
-            if (value=='ORGHAD'){
-            $.get('/products/payreglementclient', {
-                'reglid':reglid,
-                'banktarget':banktarget,
-            }, (data)=>{
-                if (data.success){
-                    updatereglementbl(reglid)
-                }
-            })
-            }else{
-                alertify.error('Mot de pass incorrect')
-            }
-        }, function() { alertify.error('Cancel') });
-        
-    }
-    readingqrcode=false
   populateyears()
-    function deletereglementclient(reglid){
-        alertify.confirm(
-            'Confirmation',
-            'Confirmer?',
-            ()=>{
-            $.get('/products/deletereglementclient', {
-                'reglid':reglid,
-            }, (data)=>{
-                ajaxpage('ee','ee', '/products/listreglementbl?target={{target}}')
-                // if (data.success){
-                //     $(event.target).parent().remove()
-                // }
-            })
-            }, ()=>console.log('>>'))
-    
-    }
-    function removebonfromregl(event, reglid, bonid){
-        alertify.confirm(
-            'Confirmation',
-            'Confirmer?',
-            ()=>{
-            $.get('/products/removebonfromregl', {
-                'reglid':reglid,
-                'bonid':bonid,
-            }, (data)=>{
-                if (data.success){
-                    $(event.target).parent().remove()
-                }
-            })
-            }, ()=>console.log('>>'))
-    
-    }
-    function removeavoirfromregl(event, reglid, avoirid){
-        alertify.confirm(
-            'Confirmation',
-            'Confirmer?',
-            ()=>{
-            $.get('/products/removeavoirfromregl', {
-                'reglid':reglid,
-                'avoirid':avoirid,
-            }, (data)=>{
-                if (data.success){
-                    $(event.target).parent().parent().remove()
-                }
-            })
-            }, ()=>console.log('>>'))
-    }
-    function removeavancefromregl(event, reglid, avanceid){
-        alertify.confirm(
-            'Confirmation',
-            'Confirmer?',
-            ()=>{
-            $.get('/products/removeavancefromregl', {
-                'reglid':reglid,
-                'avanceid':avanceid,
-            }, (data)=>{
-                if (data.success){
-                    $(event.target).parent().parent().remove()
-                }
-            })
-            }, ()=>console.log('>>'))
-    }
+  function yeardatareglbl(){
+      let year=$('[name="yearsreglbl"]').val()
+      if (year != 0){
+          $.get('/products/yeardatareglbl', {'year':year}, (data)=>{
+              $('.reglbltable tbody').html(data.trs)
+              $('.totalreglbl').text(data.total)
+          })
+      }
+  }
+
   // load more bl in regle not woking
   function checkyearreglbl(event){
     inpval=$(event.target).val()
@@ -818,11 +589,11 @@
     $(function(){
       $('.addreglementclientsbl').select2({
         minimumInputLength: 1,
-        placeholder:'Chercher client',
+        placeholder:'Chercher',
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
+          url: '/products/searchclient',
           data: function (params) {
             var query = {
               term: params.term,
@@ -841,8 +612,40 @@
 
     })
 
-    
-    
+    function removereglrow(event){
+        let parentdiv=$(event.target).parent().parent()
+        let amountinp=parentdiv.find('[name="mantantreglementclient"]').val()
+        if (amountinp.length==0){
+            parentdiv.remove()
+        }
+    }
+    function totalreglementbl(event){
+    let sum = 0;
+    $('input[name="mantantreglementclient"]').map(function() {
+        const value = parseFloat($(this).val()) || 0;
+        sum += value;
+    });
+    $('.totalreglblfields').text(sum.toFixed(2))
+  }
+    function addfieldsreglement(event){
+        let parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        // parentdiv.find('.mantantholder').append('<input type="number" name="mantantreglementclient" class="w-100 notempty mt-2">')
+        // parentdiv.find('.modeholder').append('<select name="modereglementclient" class="w-100 notempty"><option value="cheque">Cheque</option><option value="effet">effet</option></select>')
+        // parentdiv.find('.echeanceholder').append('<input type="date" name="echeancereglementclient" class="w-100 notempty">')
+        // parentdiv.find('.npieceholder').append('<input type="text" name="npiecereglementclient" class="w-100 notempty mt-2">')
+        //today's date in yyyy-mm-dd format
+        var today = new Date();
+
+        // Get the current date in the "yyyy-mm-dd" format
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Format the date as "yyyy-mm-dd"
+        var currentDate = yyyy + '-' + mm + '-' + dd;
+        parentdiv.find('.reglements').prepend(`<div class="row align-items-center mt-2"><div class="col-3"> <input type="number" name="mantantreglementclient" onchange="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option><option value="remise">remise</option><option value="verement">verement</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrow(event)"></button></div></div>`)
+      }
     // load bl in adding reglement
     function loadMoreRecordsreglblcl (clientid, nr)  {
     loadingblregl = true;
@@ -931,7 +734,7 @@
     loadingreglbl = true;
     term=$('.searchinputlistreglbl').val()
     year=$('[name="yearsreglbl"]').val()
-    $.get(`/products/loadreglbl/?target={{target}}&page=${currentPagereglbl}&term=${term}&year=${year}`, (data)=>{
+    $.get(`/products/loadreglbl/?page=${currentPagereglbl}&term=${term}&year=${year}`, (data)=>{
 
       const tbody = $('.reglbltable tbody');
       tbody.append(data.trs);
@@ -996,20 +799,17 @@
     }
 
     function getallbl(){
-        console.log('err')
         currentPageblregl=1
         loadingblregl = false;
-        //$('.listaddreglblholder').on('scroll', handleScrollreglblcl)
+        $('.listaddreglblholder').on('scroll', handleScrollreglblcl)
         let clientid=$('[name="addreglementclientsbl"]').val()
         console.log(clientid)
         $.post(
             'products/getclientbons',
-            {clientid:clientid,csrfmiddlewaretoken: '{{ csrf_token }}', target:'{{target}}', moderegl:$('.moderegl').val()},
+            {clientid:clientid,csrfmiddlewaretoken: '{{ csrf_token }}'},
 
             (data)=>{
-                $('.reglementclientbonholder').html(data.bons)
-                $('.avoirs').html(data.avoirs)
-                $('.avances').html(data.avances)
+                $('.reglementclientbonholder').html(data.trs)
             }
         )
     }
@@ -1042,7 +842,7 @@
             $('.reglbltableholder').on('scroll', handleScrollinregl);
             currentPagereglbl=1
             loadingreglbl = false;
-            $.get('/products/searchregl', {'term':filterValue.trim(), 'year':year, 'target':'{{target}}'}, (data)=>{
+            $.get('/products/searchregl', {'term':filterValue.trim(), 'year':year}, (data)=>{
                 console.log('eee')
                 $('.reglbltable tbody').html(data.trs)
                 $('.totalreglbl').text(data.total)
@@ -1123,8 +923,6 @@
         npiece=$('.updatereglementbl').find('[name="npiece"]').val()
         mode=$('.updatereglementbl').find('[name="mode"]').val()
         echeance=$('.updatereglementbl').find('[name="echeance"]').val()
-        source=$('.updatereglementbl').find('[name="source"]').val()
-        bank=$('.updatereglementbl').find('[name="bank"]').val()
         // check if echeance is today
         if ((mode=='cheque'||mode=='effet')&&echeance=='{{today|date:"Y-m-d"}}'){
             necheance=parseInt($('.echeanceindex').text())
@@ -1164,7 +962,6 @@
             mode:mode,
             npiece:npiece,
             echeance:echeance,
-            bank:bank,
             date:date,
             bons:JSON.stringify(selectedValues),
             csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1177,6 +974,7 @@
     }
 
     function updatereglementbl(reglementid){
+      $('.submitupdatereglementbl').removeClass('disabled')
         // activate load more
         $('.listupdatereglblholder').on('scroll', scrollupdateregl);
         loadingupdateblregl=false
@@ -1185,48 +983,46 @@
         $('.deletereglblbtn').attr('reglid', reglementid)
         $('.updatereglementbl').removeClass('d-none')
         // get reglement data
-        // date=$('.updatereglementbl').find('[name="date"]')
-        // regid=$('.updatereglementbl').find('[name="reglementid"]').val(reglementid)
-        // mantant=$('.updatereglementbl').find('[name="mantant"]')
-        // client=$('.updatereglementbl').find('.client')
-        // tbody=$('.updatereglementbl').find('tbody')
-        // npiece=$('.updatereglementbl').find('[name="npiece"]')
-        // mode=$('.updatereglementbl').find('[name="mode"]')
-        // echeance=$('.updatereglementbl').find('[name="echeance"]')
+        date=$('.updatereglementbl').find('[name="date"]')
+        regid=$('.updatereglementbl').find('[name="reglementid"]').val(reglementid)
+        mantant=$('.updatereglementbl').find('[name="mantant"]')
+        client=$('.updatereglementbl').find('.client')
+        tbody=$('.updatereglementbl').find('tbody')
+        npiece=$('.updatereglementbl').find('[name="npiece"]')
+        mode=$('.updatereglementbl').find('[name="mode"]')
+        echeance=$('.updatereglementbl').find('[name="echeance"]')
 
-        // tbody.html('')
-        //console.log(date, mantant)
+        tbody.html('')
+        console.log(date, mantant)
         // get regl data
         $.get('/products/getreglementbl/'+reglementid, {
-            'target':'{{target}}'
-            }, function(data){
-                console.log(data)
-                $('.reglebldata').html(data.html)
-                // $('.searchinputlistreglblupdate').attr('clientid', data.clientid)
-                // $('.totalblinupdatereglbl').text(data.total)
-                // $('.soldblinupdatereglbl').text((data.soldclient).toFixed(2))
-                // $('.loadingscreen').addClass('d-none')
-                // date.val(data.date)
-                // mantant.val(data.mantant.toFixed(2))
-                // client.text(data.client)
-                // npiece.val(data.npiece)
-                // mode.val(data.mode)
-                // echeance.val(data.echance)
-                // if (data.mode == "espece"){
-                //     echeance.removeClass('notempty')
-                //     npiece.removeClass('notempty')
-                // }
-                // // bons of this reglement
-                // for (let i of data.bons){
-                //     const date = new Date(i.date);
 
-                //     // Create formatted date string in the desired format "d/m/Y"
-                //     const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                //     tbody.append(`
-                //     <tr style="background:#ddfaed" ><td>${formattedDate}</td><td>${i.bon_no}</td><td>${i.total.toFixed(2)}</td><td class="text-danger">${i.ispaid?"R0":"NR"}</td> <td><input type="checkbox" value="${i.id}" name="bonstopay" onchange="checkreglementbox(event)" checked></td></tr>
-                //     `)
-                // }
-                // tbody.append(data.livraisons)
+            }, function(data){
+                $('.searchinputlistreglblupdate').attr('clientid', data.clientid)
+                $('.totalblinupdatereglbl').text(data.total)
+                $('.soldblinupdatereglbl').text((data.soldclient).toFixed(2))
+                $('.loadingscreen').addClass('d-none')
+                date.val(data.date)
+                mantant.val(data.mantant.toFixed(2))
+                client.text(data.client)
+                npiece.val(data.npiece)
+                mode.val(data.mode)
+                echeance.val(data.echance)
+                if (data.mode == "espece"){
+                    echeance.removeClass('notempty')
+                    npiece.removeClass('notempty')
+                }
+                // bons of this reglement
+                for (let i of data.bons){
+                    const date = new Date(i.date);
+
+                    // Create formatted date string in the desired format "d/m/Y"
+                    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    tbody.append(`
+                    <tr style="background:#ddfaed" ><td>${formattedDate}</td><td>${i.bon_no}</td><td>${i.total.toFixed(2)}</td><td class="text-danger">${i.ispaid?"R0":"NR"}</td> <td><input type="checkbox" value="${i.id}" name="bonstopay" onchange="checkreglementbox(event)" checked></td></tr>
+                    `)
+                }
+                tbody.append(data.livraisons)
                 // all bons of this client
                 // for (let i of data.livraisons){
                 //     const date = new Date(i.date);
@@ -1271,119 +1067,63 @@
     // })
 
     // client change
-    function getbons(){
-        console.log('err')
+    $('[name="addreglementclientsbl"]').on('change', function(){
         currentPageblregl=1
         loadingblregl = false;
-        console.log('err2')
-        clientid=$('[name="addreglementclientsbl"]').val()
-        mode=$('.mode').val()
-        datefrom=$('.datefrom').val()
-        dateend=$('.dateend').val()
-        //$('.listaddreglblholder').on('scroll', handleScrollreglblcl)
-        if (clientid==null || datefrom=="" || dateend==""){
-            console.log('err3')
-            console.log('err3')
+        $('.listaddreglblholder').on('scroll', handleScrollreglblcl)
+        if ($(this).val()==""){
             $('.reglementbonsholder').addClass('d-none')
-            alertify.error('Champs vide')
             // disable the divholder of the multiselects
             // disable the button
             $('.submitaddreglemntclientbtn').addClass('disabled')
             return
         }
-        console.log('rafter')
         $('.submitaddreglemntclientbtn').removeClass('disabled')
         $('.reglementbonsholder').removeClass('d-none')
-        clientid=$('[name="addreglementclientsbl"]').val()
-        mode=$('.mode').val()
+        clientid=$(this).val()
         $('.loadingscreen').removeClass('d-none')
-        console.log('>>sending getbonsclient')
-        // $.get('/products/getclientbons', {
-        //     'moderegl':$('.moderegl').val(),
-        //     'clientid':clientid,
-        //     'datefrom':datefrom,
-        //     'dateend':dateend,
-        //     'target':'{{target}}',
-        //     'mode':$('.mode').val(),
-        //     'csrfmiddlewaretoken': '{{ csrf_token }}'
-        //     }, function(data){
-        //         console.log(data)
-        //         $('.loadingscreen').addClass('d-none')
-        //         $('.reglementclientbonholder').html(data.bons)
-        //         $('.avoirstable').html(data.avoirs)
-        //         $('.avancestable').html(data.avances)
-        //         $('.totalbonsbl').text(data.total)
-        //         $('.totalbons').text(data.totalbons)
-        //         $('.totalavoirs').text(data.totalavoirs)
-        //         $('.totalavances').text(data.totalavances)
-        //         $('.soldblregl').text((data.soldbl).toFixed(2))
-        //         // $('.select2').select2()
-        //     // populate bons multiselect
-        // })
-
-        $.get('/products/getclientbons', {
-            'moderegl': $('.moderegl').val(),
-            'clientid': clientid,
-            'datefrom': datefrom,
-            'dateend': dateend,
-            'target': '{{target}}',
-            'mode': $('.mode').val(),
-            'csrfmiddlewaretoken': 'uPWR8DvkdtFBhoN4jW5Dma1Zyn1g6BU8cSh0fu44pAWAoIHbH0arVH5ynK7RN08N'
+        $.post('/products/getclientbons', {
+            clientid:clientid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                $('.loadingscreen').addClass('d-none')
+                $('.reglementclientbonholder').html(data.trs)
+                $('.totalbonsbl').text(data.total)
+                $('.soldblregl').text((data.soldbl).toFixed(2))
+                // $('.select2').select2()
+            // populate bons multiselect
         })
-        .done(function(data) {
-            console.log('Success:', data);
-            $('.loadingscreen').addClass('d-none');
-            $('.reglementclientbonholder').html(data.bons);
-            $('.avoirstable').html(data.avoirs);
-            $('.avancestable').html(data.avances);
-            $('.totalbonsbl').text(data.total);
-            $('.totalbons').text(data.totalbons);
-            $('.totalavoirs').text(data.totalavoirs);
-            $('.totalavances').text(data.totalavances);
-            $('.soldblregl').text((data.soldbl).toFixed(2));
-        })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-            console.error('Error fetching bons:', textStatus, errorThrown);
-            console.log('Response Text:', jqXHR.responseText);
-        })
-        .always(function() {
-            console.log('Request finished');
-        });
         // enable the divholder of the multiselects
         // get client bons
         //populate bons multiselect
         // get client facture
         // populate facture multiselect
-    }
+    })
 
     // check for npiece existence
-    // $('[name="npiece"]').on('input', function(){
-    //     npiece=$(this).val()
-    //     console.log('check npiece', npiece)
-    //     $.get('/products/checknpiece', {
-    //         npiece:npiece,
-    //         csrfmiddlewaretoken: '{{ csrf_token }}'
-    //         }, function(data){
-    //             console.log(data)
-    //             if (data.exist){
-    //                 alertify.error('N° piece existe deja')
-    //                 $('.submitaddreglemntclientbtn').addClass('disabled')
-    //             }
-    //             else{
-    //                 $('.submitaddreglemntclientbtn').removeClass('disabled')
-    //             }
-    //         })
-    // })
+    $('[name="npiece"]').on('input', function(){
+        npiece=$(this).val()
+        console.log('check npiece', npiece)
+        $.get('/products/checknpiece', {
+            npiece:npiece,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                if (data.exist){
+                    alertify.error('N° piece existe deja')
+                    $('.submitaddreglemntclientbtn').addClass('disabled')
+                }
+                else{
+                    $('.submitaddreglemntclientbtn').removeClass('disabled')
+                }
+            })
+    })
 
 
     $('.submitaddreglemntclientbtn').on('click', function(event){
-        datereglement=$('.datereglement').val()
-        if (datereglement==''){
-            alertify.error('Date')
-            return
-        }
         event.preventDefault()
-        //$(event.target).addClass('disabled')
+        $(event.target).addClass('disabled')
         let parentdiv=$(this).parent().parent()
         var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == ''; }).length > 0;
         if (isAnyEmpty){
@@ -1399,7 +1139,7 @@
             $(this).attr('disabled', false)
             return
         }
-        //$(event.target).addClass('disabled')
+        $(event.target).addClass('disabled')
         // if ((selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
         //     return this.value;
         // }).get()).length == 0){
@@ -1409,14 +1149,7 @@
         selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
             return this.value;
         }).get()
-        selectedavoirs = parentdiv.find("input[name='avoirstopay']:checked").map(function() {
-            return this.value;
-        }).get()
-        
-        selectedavances = parentdiv.find("input[name='avancestopay']:checked").map(function() {
-            return this.value;
-        }).get()
-        
+        $(this).addClass('disabled')
         clientid=parentdiv.find('[name="addreglementclientsbl"]').val()
         mantant=parentdiv.find('[name="mantantreglementclient"]').map(function() {
             return parseFloat(this.value);
@@ -1427,53 +1160,31 @@
         npiece=parentdiv.find('[name="npiece"]').map(function() {
             return this.value;
         }).get();
-        bank=parentdiv.find('[name="bank"]').map(function() {
-            return this.value;
-        }).get();
         echeance=parentdiv.find('[name="echeance"]').map(function() {
             return this.value;
         }).get();
         date=parentdiv.find('[name="datereglementclientbl"]').val()
-        
+
         bons=parentdiv.find('[name="addreglementbons"]').map(function() {
             return this.value;
         }).get();
         echeance=parentdiv.find('[name="echeance"]').map(function() {
             return this.value;
         }).get();
-        source=parentdiv.find('[name="source"]').map(function() {
-            return this.value;
-        }).get();
-        whattopay=parseFloat($('.whattopay').text())
-        totalregl=parseFloat($('.totalreglblfields').text())
-        console.log('>>', !whattopay==totalregl)
-        if (whattopay<=0){
-            alertify.error('Selectionner bon')
-            return
-        }
-        if (whattopay!=totalregl){
-            alertify.error('Mantant a payé doit etre egale a mantant total')
-            return
-        }
-        $(this).addClass('disabled')
-        $.post("/products/{%if target == 's' %}reglebonsortie{%else%}reglebons{%endif%}", {
-            whattopay:whattopay,
-            moderegl:$('.moderegl').val(),
+
+        console.log(clientid, date, mantant, mode, npiece, echeance, selectedValues)
+        $.post('/products/reglebons', {
             clientid:clientid,
-            target:'{{target}}',
             mantant:JSON.stringify(mantant),
             mode:JSON.stringify(mode),
             npiece:JSON.stringify(npiece),
             echeance:JSON.stringify(echeance),
-            source:JSON.stringify(source),
-            bank:JSON.stringify(bank),
-            date:datereglement,
+            date:date,
             bons:JSON.stringify(selectedValues),
-            avoirs:JSON.stringify(selectedavoirs),
-            avances:JSON.stringify(selectedavances),
             csrfmiddlewaretoken: '{{ csrf_token }}'
             }, function(data){
-                ajaxpage('addlistreglementbl', 'd', '/products/listreglementbl?target={{target}}')
+                createtab('addlistreglementbl', 'REGL BL', '/products/listreglementbl')
+                // forceupdatetab('addlistreglementbl', '/products/listreglementbl')
                 alertify.success('Reglement ajouté')
         })
     })

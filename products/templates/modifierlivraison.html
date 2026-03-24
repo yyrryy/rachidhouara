@@ -21,17 +21,16 @@ padding: 0;
 margin: 0;
 }
 </style>
-<div class="d-flex text-white rounded h3 text-center" style="background: #1a6a9b;">
-  <button class="bi bi-arrow-left" onclick="ajaxpage('listbl', 'list bon livraison', '/products/listbonlivraison?target={{target}}')"></button>
+<div class="text-white rounded h3 text-center" style="background: #1a6a9b;">
   <div>
-    {{title}} {{target}}
+    {{title}}
   </div>
 </div>
 {% if livraison.ispaid %}
 <div class="alert alert-success">
   <b>Ce bon est payé</b>
 </div>
-{%endif%}
+{%else%}
 <div class="">
        <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
           <div class="col-5">
@@ -42,9 +41,9 @@ margin: 0;
 
                   </select>
               </div>
-              <div hidden class="mb-2">
+              <div class="mb-2">
                   <small>Representant:</small>
-                  <select name="representant" id="" style="width:100%;" class="select2 repsselectslivraison{{livraison.id}} form-select">
+                  <select name="representant" id="" style="width:100%;" class="select2 repsselectslivraison{{livraison.id}} form-select notemptylivraison{{livraison.id}}">
                       <option value="{{livraison.salseman.id}}">{{livraison.salseman.name}}</option>
                       {% for i in commercials %}
                       <option value="{{i.id}}">{{i.name}}</option>
@@ -56,7 +55,7 @@ margin: 0;
 
                   <input type="date" class="form-control datebonlivraison{{livraison.id}}" name="datebonlivraison{{livraison.id}}" value="{{livraison.date|date:'Y-m-d'}}" placeholder="Date bon">
               </div>
-              <div hidden class="mb-2">
+              <div class="mb-2">
                 <small>N° Bon:</small>
                   <input type="text" class="form-control ordernolivraison{{livraison.id}}" name="ordernolivraison{{livraison.id}}" value="{{livraison.bon_no}}">
               </div>
@@ -97,7 +96,6 @@ margin: 0;
             <div class="col-12">
               <input hidden readonly type="text" name="addname" class="form-control">
             </div>
-            {% include 'accordionqtyprice.html' %}
           </div>
 
 
@@ -159,19 +157,17 @@ margin: 0;
               <!-- items of the bon -->
               {% for i in items %}
               <tr class="itemrow">
-                <input type="hidden" value="{{i.id}}" class="bonitem">
                   <td class="ref" onclick="removelineupdatebl(event, '{{livraison.id}}', '{{i.product.id}}')">{{i.product.ref}}</td>
                   <td class="name">{{i.product.name}}</td>
-                  <td>{{i.product.buyprice}}</td>
+                  <td>--</td>
                   <td>{{i.product.stocktotal}}</td>
                   <td class="clientprice">{{i.clientprice}}</td>
-                  <td><input type="number" class="calculate qty" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="qty" value="{{i.qty}}"></td>
-                  <td><input type="number" class="calculate price" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="price" value="{{i.price}}"></td>
-                  <td><input type="number" class="calculate remise" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="remise" value="{{i.remise}}"></td>
+                  <td><input type="number" class="calculate qty notemptylivraison{{livraison.id}}" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="qty" value="{{i.qty}}"></td>
+                  <td><input type="number" class="calculate price notemptylivraison{{livraison.id}}" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="price" value="{{i.price}}"></td>
+                  <td><input type="number" class="calculate remise notemptylivraison{{livraison.id}}" onkeyup="calculatelivraison(event, '{{livraison.id}}')" name="remise" value="{{i.remise}}"></td>
                   <td class="netprice">{{i.product.prixnet}}</td>
                   <td class="total">{{i.total}}</td>
                   <input type="hidden" name="productid" value="{{i.product.id}}">
-                  <input type="hidden" name="coutmoyen" value="{{i.coutmoyen}}" achatids="{{i.achatids}}" remainqties="{{i.remainqties}}" oldqties="{{i.oldqties}}">
 
             {% endfor %}
             </tbody>
@@ -194,7 +190,7 @@ margin: 0;
     {{livraison.id}}
 </div>
 
-
+{%endif%}
 <script>
   //removelineupdatebl
   function removelineupdatebl(event, blid, id) {
@@ -268,44 +264,7 @@ margin: 0;
       return
     }
     console.log(addqty.val(), stock)
-    qtyprices=$('.qtyprices')
-            prices=0
-            qties=0
-            achatids=[]
-            // what remains from eaach achat
-            remainqties=[]
-            oldqties=[]
-            qty=parseFloat(addqty.val())
-            for (let i = 0; i < qtyprices.length; i++) {
-              
-              let current = $(qtyprices[i]); // get the jQuery object
-              oldqtyprice=current.text()
-              price=current.parent().find('.price')
-              let currentQty = parseFloat(current.text()); // if it's an input use .val(), if span/div use .text()
-              if (qty <= 0) {
-                console.log('Reached 0 or below, stopping.');
-                break; // stop the loop if qty is zero or less
-              }
-              achatids.push(current.attr('achatid'))
-              oldqties.push(currentQty)
-              if (qty>=currentQty){
-                prices+=currentQty*parseFloat(price.text())
-                qties+=currentQty
-                current.text(0)
-                remainqties.push(0)
-              }else{
-                newqtyprice=Math.abs(qty-currentQty)
-                //diff=oldqtyprice-newqtyprice
-                prices+=qty*parseFloat(price.text())
-                qties+=qty
-                current.text(newqtyprice)
-                remainqties.push(newqtyprice)
-              }
-              qty= qty-currentQty; // decrease qty
-                console.log('After item', i, 'qty is now:', qty);
-                
-            }
-            coutmoyen=prices/qties
+
     if (parseInt(addqty.val())>parseInt(stock)){
       console.log('qty', addqty.val(), 'stock', stock, 'qty > stock', addqty>stock)
 
@@ -335,13 +294,12 @@ margin: 0;
               <td style="paddingpx 0; font-size: 13px;">${dp}</td>
               <td style="padding: 2px 0; font-size: 13px;">${stock}</td>
               <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
-              <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
-              <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
-              <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
+              <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison{{livraison.id}} " onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+              <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison{{livraison.id}}" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+              <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise notemptylivraison{{livraison.id}}" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
               <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
               <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
               <input type="hidden" name="productid" value="${id}">
-              <input type="hidden" name="coutmoyen" value="${coutmoyen}" achatids="${achatids}" remainqties="${remainqties}" oldqties="${oldqties}">
 
           </tr>
           `
@@ -382,13 +340,12 @@ margin: 0;
         <td style="paddingpx 0; font-size: 13px;">${dp}</td>
         <td style="padding: 2px 0; font-size: 13px;">${stock}</td>
         <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
-        <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison{{livraison.id}}" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison{{livraison.id}}" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
+        <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise notemptylivraison{{livraison.id}}" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
         <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
         <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
         <input type="hidden" name="productid" value="${id}">
-        <input type="hidden" name="coutmoyen" value="${coutmoyen}" achatids="${achatids}" remainqties="${remainqties}" oldqties="${oldqties}">
 
     </tr>
     `
@@ -424,7 +381,7 @@ margin: 0;
         minimumInputLength:1,
         placeholder: 'Select un client',
         ajax: {
-          url: '/products/searchclient?target={{target}}',
+          url: "{% url 'products:searchclient' %}",
           type: 'GET',
           dataType: 'json',
           data: function (params) {
@@ -445,7 +402,7 @@ margin: 0;
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproduct?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -544,21 +501,14 @@ margin: 0;
 
             }
           })
-          $.get('/products/getqtyprice',
-            {
-              'target':'{{target}}',
-              'id':id
-            },
-            function(data){
-              $('.producthistory').html(data)
-            })
+
         console.log('getting client price')
         $.ajax({
             url: "{% url 'products:getclientprice' %}",
             type: 'POST',
             data: {
+              'target':'bl',
                 'id': id,
-                'target':'{{target}}',
                 'clientid': parentdiv.find('.clientselectlivraison{{livraison.id}}').val()?parentdiv.find('.clientselectlivraison{{livraison.id}}').val():'{{livraison.client.id}}',
                 'csrfmiddlewaretoken': '{{csrf_token}}'
             },
@@ -575,7 +525,7 @@ margin: 0;
 
     $('.submitbonlivraison{{livraison.id}}').on('click', (e)=>{
       let parentdiv=$(e.target).parent().parent().parent().parent()
-      if ($('.datebonlivraison{{livraison.id}}').val()=='' || $('.ordernolivraison{{livraison.id}}').val()==''){
+      if ($('.repsselectslivraison{{livraison.id}}').val()=='' || $('.datebonlivraison{{livraison.id}}').val()=='' || $('.ordernolivraison{{livraison.id}}').val()==''){
           parentdiv.find('.data').addClass('border border-danger')
           return
       }
@@ -585,6 +535,7 @@ margin: 0;
           parentdiv.find('.tableholder').addClass('border border-danger')
           return
       }
+      //check aty and price
       parentdiv.find('.tableholder').removeClass('border border-danger')
         var isAnyEmpty = $('.notemptylivraison{{livraison.id}}').filter(function() { return $(this).val() == ''; }).length > 0;
           if (isAnyEmpty){
@@ -611,12 +562,10 @@ margin: 0;
             let price = tr.find('.price').val()
             let remise = tr.find('.remise').val()
             let total = tr.find('.total').text()
-            let bonitemid = tr.find('.bonitemid').text()
             let clientprice = tr.find('.clientprice').text()
             let productid = tr.find('input[name="productid"]').val()
             let product = {
                 'qty': qty,
-                'bonitemid': bonitemid,
                 'name': name,
                 'ref': ref,
                 'price': price,
@@ -628,26 +577,33 @@ margin: 0;
             products.push(product)
         })
         let clientid = $('.clientselectlivraison{{livraison.id}}').val()?$('.clientselectlivraison{{livraison.id}}').val():'{{livraison.client.id}}'
-        // let repid = $('.repsselectslivraison{{livraison.id}}').val()
+        let repid = $('.repsselectslivraison{{livraison.id}}').val()
         let datebon = $('.datebonlivraison{{livraison.id}}').val()
         let transport = $('.transportlivraison{{livraison.id}}').val()
         let note = $('.notelivraison{{livraison.id}}').val()
-        // let orderno = $('.ordernolivraison{{livraison.id}}').val()
+        let orderno = $('.ordernolivraison{{livraison.id}}').val()
         let totalbon=parseFloat($('.totalbonlivraison{{livraison.id}}').text())
         $('.loadingscreen').removeClass('d-none').addClass('d-flex')
-        $.ajax({
+        $.get('/products/checklivraisonno', {'no':orderno, 'id':'{{livraison.id}}'}, (data)=>{
+          if (data.exist){
+            $('.loadingscreen').removeClass('d-flex').addClass('d-none')
+            $('.submitbonlivraison{{livraison.id}}').removeClass('disabled')
+            alertify.error('CE NUMERO EST DEJA EXISTE')
+          }
+          else{
+
+            $.ajax({
               url: "{% url 'products:updatebonlivraison' %}",
               type: 'POST',
               data: {
-                'target':'{{target}}',
                 'bonid': '{{livraison.id}}',
                 'totalbon': totalbon,
                 'clientid': clientid,
-                // 'repid':repid,
+                'repid':repid,
                 'transport':transport,
                 'note':note,
                 'datebon': datebon,
-                // 'orderno': orderno,
+                'orderno': orderno,
                 'products': JSON.stringify(products),
                 'csrfmiddlewaretoken': '{{csrf_token}}'
               },
@@ -657,22 +613,12 @@ margin: 0;
                 alertify.success('Bon livraison modifié')
                 // delerte this tab
                 deletetab('modifierlivraison{{livraison.id}}')
-                ajaxpage('addlistbonlivraison', 'list bl', '/products/listbonlivraison?target={{target}}')
+                createtab('addlistbonlivraison', 'list bl', '/products/listbonlivraison')
 
                 }
             })
-            // check if orderno is already exist -old code you can edit bon no'
-        // $.get('/products/checklivraisonno', {'no':orderno, 'id':'{{livraison.id}}'}, (data)=>{
-        //   if (data.exist){
-        //     $('.loadingscreen').removeClass('d-flex').addClass('d-none')
-        //     $('.submitbonlivraison{{livraison.id}}').removeClass('disabled')
-        //     alertify.error('CE NUMERO EST DEJA EXISTE')
-        //   }
-        //   else{
-
-            
-        //   }
-        // })
+          }
+        })
     })
     $('.searchbonlivraisoncreation{{livraison.id}}').on("keyup", function() {
   var value = $(this).val().toLowerCase();

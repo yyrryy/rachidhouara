@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <h5 class="card-header">List des Marques</h5>
+
+    <div class="card-body row">
+        <div class="col-3">
+            <div class="border-end p-2">
+                <strong>
+                    + Ajouter une Marque
+                </strong>
+                <form class="mt-3" method="post" enctype="multipart/form-data" id="createmarque">
+                    {% csrf_token %}
+                    <input name="marquename" type="text" class="form-control mb-2" placeholder="Marque" required>
+                    <strong>Image</strong>
+                    <input name="marqueimage" type="file" class="form-control" required>
+                    
+                    <button class="btn btn-primary w-100 mt-2 createmarquebtn">Ajouter</button>
+                
+                </form>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="bg-white border p-2">
+                <div class="row">
+                    {% for i in marques %}
+                    <div class="col-4 mb-2 searchcards">
+                        <p hidden>
+                            {{i.name}}
+                        </p>
+                        <div class="border-end p-2">
+                            <form action="{% url 'products:updatemarque' %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{i.id}}">
+                                {{i.id}}
+                                {% if i.image %}
+                                <img class="text-center w-100" src="{{i.image.url}}" alt="">
+                                {% endif %}
+                                <input type="file" name="image" class="form-control">
+                                <input type="text" name="name" class="form-control" value="{{i.name}}">
+                                
+                                <button class="btn btn-sm w-100 updatemarquebtn btn btn-success">Mise à jour</button>
+                            </form>
+                        </div>
+                    </div>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+     $('.select').select2()
+    })
+    $('.updatemarquebtn').on('click', function(event){
+        event.preventDefault()
+        name=$(event.target).parent().find('input')[3]
+        id=$(event.target).attr('id')
+        form=$(event.target).parent()
+        name=$($(event.target).parent().find('input')[3]).val()
+        if ($(name).val()==""){
+            name.css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($(event.target).parent()[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updatemarque" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                location.reload()
+            })
+        })
+        
+    
+    })
+    $('.createmarquebtn').on('click', function(event){
+        event.preventDefault()
+        console.log('sending')
+        if ($('[name="marquename"]').val()==""){
+            $('#createmarque').css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($('#createmarque')[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:createmarque" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                location.reload()
+                //ajaxpage('mrks', 'list marque', '/products/marquespage')
+            })
+        })
+    })
+</script>
+{% endblock %}

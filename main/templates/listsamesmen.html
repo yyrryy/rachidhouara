@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block css %}
+<style>
+    .fixeddetails{
+      position: fixed;
+      top: 0;
+      right: 43px;
+      width: 46%;
+      z-index: 1030;
+      margin-top: 10px;
+      background: white;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+  <!-- orders -->
+  <div class="bg-white shadow rounded p-2 col-6">
+    <div class="d-flex justify-content-between">
+      <div>
+        List commerciaux 
+      </div>
+      
+    </div>
+    <table class="table table-bordered table-hover table-striped table-borded tablecommande">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Username</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in reps %}
+          <tr>
+            <td>{{ i.name }}</td>
+            <td>{{ i.user.username }}</td>
+            
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+
+{% endblock %}
+{% block js %}
+<script>
+  // wrap the code bellow inside document ready function
+  $(document).ready(function() {
+    // get how many rows in tablecommande table in jquery
+    var rows = $('.tablecommande tr').length;
+    // assign this value to nonvalider
+    $('.nonvalider').html(rows-1);
+  });
+
+
+
+
+    $('.ord').each(function(){
+      $(this).click(function(){
+        
+        id=$(this).attr('orderid');
+        window.location.href='/salsemanorders/'+id
+            // $.ajax({
+            //     url: '/salsemanorders/'+id,
+            //     type: 'POST',
+            //     data:{
+            //       'csrfmiddlewaretoken': '{{ csrf_token }}',
+            //     },
+            //     success: function(data){
+            //       $('.orderitems').html(data.data);
+            //       stoploading()
+            //       $('.closeorderitems').click(function(){
+            //         $('.orderitems').removeClass('openorder');
+            //       })
+            //     }
+            // });
+        });
+    })
+
+</script>
+{% endblock %}

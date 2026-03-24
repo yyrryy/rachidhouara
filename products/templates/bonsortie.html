@@ -22,20 +22,20 @@
   margin: 0;
 }
 </style>
-<!-- <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+<div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
   <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('')">x</button>
   <div>
     {{title}}
   </div>
   <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
-</div> -->
+</div>
 
   <div class="bonsortieparentdiv">
-         <div class="bg-white rounded border p-2 mb-3 data d-flex justify-content-between">
-            <div class="col-5 row">
+         <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
+            <div class="col-5">
                 <div class="mb-2 clientselectblholder">
-                    <div class="alert alert-danger p-2 oldbonswarning d-none">
-                      
+                    <div class="alert alert-danger p-2 d-none oldbonswarning">
+                      CLIENT ANCIEN BONS/FACTURE
                     </div>
                     <small>Clients:
                     </small>
@@ -47,7 +47,7 @@
                         <option value="{{i.id}}">{{i.name}} | {{i.code}} | {{i.city}} | {{i.region}} | {{i.represent}} </option>
                         {% endfor %} -->
                     </select>
-                  </div>
+                </div>
                 <!-- <div class="mb-2 cerpselectholder">
                     <small>Representant:</small> <strong class="text-danger repblname"></strong>
                     <select name="representant" id="" style="width:100%;" class="select2 repsselectsbl form-select notemptylivraison">
@@ -57,45 +57,38 @@
                         {% endfor %}
                     </select>
                 </div> -->
-                <div class="mb-2 col-4">
+                <div class="mb-2">
                     <input type="date" class="form-control datebonbl" name="datebon" placeholder="Date bon">
                 </div>
-                <div class="mb-2 col-4">
+                <div class="mb-2">
                   <input placeholder="transport" type="text" class="form-control transport" name="transport">
                 </div>
-                <div class="mb-2 col-4">
+                <div class="mb-2">
                     <input type="text" class="form-control note" name="note" placeholder="Note">
                 </div>
-                <select id="cars" name="cars" class="select2 cars">
-                  {% for i in cars %}
-                  <option value="{{i.name}}">{{i.name}}</option>
-                  {% endfor %}
-                </select>
             </div>
 
             <div class="col-7 row productsholder d-none">
-              <div class="col-12 d-flex">
-                <!-- <button class="btn bg-darkblue text-white">+</button> -->
+              <div class="col-12">
+
                 <select class="resultsholderbonsortie mb-2 form-select " style="width: 100%;" id="productsselect2">
 
                 </select>
-
               </div>
               <div class="col-3">
-                <input type="number" class="form-control" onkeyup="checkmax(event)" placeholder="Quantité" name="addqty">
+                <input type="number" class="form-control" placeholder="Quantité" name="addqty">
                 <div class="addstock text-danger"></div>
                 <div class="addstockfacture text-danger mt-2"></div>
               </div>
               <div class="col-3">
                 <input type="number" class="form-control" placeholder="Prix" name="addprice">
                 <div class="addclientprice text-danger"></div>
-                <div class="addbyuprice text-danger"></div>
               </div>
-              <div class="col-3">
+              <div class="col-3" hidden>
                 <input type="number" class="form-control" placeholder="Remise" name="addremise">
               </div>
               <div class="col-3">
-                <button class="btn addrowbtn valider" farah="0" onclick="addrowbonsortie(event)" style="border: 4px solid;
+                <button class="btn addrowbtn" farah="0" onclick="addrowbonsortie(event)" style="border: 4px solid;
                 border-color: var(--darkblue);
                 border-radius: 10px;
                 height: 36px;
@@ -103,7 +96,6 @@
                 background: #00800024;">Valider</button>
               </div>
               <input hidden readonly type="text" name="addname" class="form-control">
-              {% include 'accordionqtyprice.html' %}
             </div>
 
 
@@ -111,8 +103,8 @@
 
           </div>
 
-      <div class="d-flex">
-          <div class="bg-white rounded p-2 tableholder col-10 border">
+      <div>
+          <div class="bg-white rounded shadow p-2 tableholder">
               <!-- <div>
                   <small>
                       Ref.
@@ -135,7 +127,7 @@
                       <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
                       <td style="padding: 2px 0; font-size: 13px;">Article</td>
                       <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td>
-                      <!-- <td style="padding: 2px 0; font-size: 13px;">Stock</td> -->
+                      <td style="padding: 2px 0; font-size: 13px;">Stock</td>
                       <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
@@ -164,83 +156,19 @@
               </tbody>
             </table>
             <div class="d-flex justify-content-between bg-white" style="position: sticky; bottom: 0;">
-                <button class="btn btn-success submitbonsortie valider" style="border-radius: 10px;">
+                <button class="btn btn-success submitbonsortie" style="border-radius: 10px;">
                       Valider
                 </button>
-                <button class="btn btn-danger" onclick="annulerbon('bonsortie', '/products/bonsortie?target=s')" style="border-radius: 10px;">
-                  Annuler
-                  </button>
-                <div>
-                  <b class="totalbon text-danger totalbonsortie">
-                    0.00
-                  </b>
-
-                </div>
-
+                <b class="totalbon text-danger totalbonsortie">
+                  0.00
+                </b>
             </div>
-          </div>
-          <div class="col-2">
-            <!-- <strong>Payment</strong> -->
-            <!-- bordered box with title peyment, it will have input for the given amount and a div ta calculate the remaining amount -->
-            <div class="bg-white rounded p-2">
-              <div class="">
-                <div>
-                  <strong>Payment Espece</strong>
-                </div>
-              </div>
-              
-              <div class="">
-                <div>
-                  <input type="number" class="form-control payment" placeholder="Payment" value="0.00" onkeyup="paymentbon()">
-                </div>
-                <div class="mt-2 bg-dark p-2 text-white">
-                  <b>Caisse</b>
-                  <select class="form-select caissetarget" name="caissetarget">
-                    {% for i in caisses %}
-                    <option value="{{i.id}}">{{i.name}}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-                <div>
-                  Rondu: <strong class="rondu"></strong>
-                </div>
-                <div>
-                  Rest: <strong class="rest"></strong>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input remisecheck" type="checkbox" value="" id="remisecheck">
-                  <label class="form-check-label" for="remisecheck">
-                    Remise
-                  </label>
-                </div>
-              </div>
-
-
           </div>
       </div>
 
   </div>
 
   <script>
-    
-    $('.select2').select2()
-    function paymentbon(){
-      let total = parseFloat($('.totalbonsortie').text())
-      let payment = parseFloat($('.payment').val())
-      if (!isNaN(payment)){
-        if (payment<total){
-          $('.rondu').text('0.00')
-          let rest = total - payment
-          $('.rest').text(rest.toFixed(2))
-        }else{
-          let rondu = payment - total
-          $('.rondu').text(rondu.toFixed(2))
-          $('.rest').text('0.00')
-        }
-        
-      }
-      
-    }
     $(function(){
 
       $('.clientselectbl').select2({
@@ -287,7 +215,6 @@
         }
 
     })
-    
     function removelinebl(event, id) {
           let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
           clicksinbl++;
@@ -306,17 +233,10 @@
                 localStorage.setItem('pdctsinbonsortie', JSON.stringify(pdcts))
                 // update total
                 let totalbon = parseFloat(parentdiv.find('.totalbonsortie').text())
-                let totalrow = $('.total')
-                sum=0
-                totalrow.each(function() {
-                  sum += parseFloat($(this).text());
-                });
-                parentdiv.find('.totalbonsortie').html(sum)
+                let totalrow = parseFloat($(event.target).parent().find('.total').text())
+                let totalbonvalue = (totalbon-totalrow).toFixed(2)
+                parentdiv.find('.totalbonsortie').html(totalbonvalue)
                 // Reset the count
-                $('.producthistory').html('')
-                $('[name="addname"]').attr('data', '')
-                // resete select2
-                $('.resultsholderbonsortie').val('').trigger('change')
                 clicksinbl = 0;
                 removeinlocalstorage('bonsortie', id)
 
@@ -338,34 +258,25 @@
         let bonachatbody = parentdiv.find('.bonsortiebody')
         let addname=parentdiv.find('[name="addname"]')
         let addqty=parentdiv.find('[name="addqty"]')
-        let max=addqty.attr('max')
         let addprice=parentdiv.find('[name="addprice"]')
         let addremise=parentdiv.find('[name="addremise"]')
         let priceclient=parentdiv.find('.addclientprice ').text()
         //|| addremise.val()==''
-        if (addqty.val()=='' || addprice.val()=='' || addqty.val()==0 || addprice.val()==0 || addname.attr('data')==''){
+        if (addqty.val()=='' || addprice.val()==''){
           alertify.error('Veuillez remplir tous les champs')
           return
         }
-        // if (addqty.val()<0 || addqty.val()>max){
-        //   alertify.error('Qty invalid')
-          
-        // }
-        var [ref, name, dp, stockfarah, stockfacturefarah, stockorgh, stockfactureorgh, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
-        //console.log(ref, name, dp, stock, id, sellprice, remise, netprice, representprice)
+        var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
+        console.log(ref, name, dp, stock, id, sellprice, remise, netprice, representprice)
         pdcts=JSON.parse(localStorage.getItem('pdctsinbonsortie')) || []
         console.log(id, pdcts, pdcts.includes(id))
-        // distinguished id will be an id to store in ids local
-        distid=farah=='1'?'f'+id:'o'+id
-        if (pdcts.includes(distid)){
+        if (pdcts.includes(id)){
           parentdiv.find('.addstock').val('')
           parentdiv.find('.addstockfacture').val('')
           addqty.val('')
           addname.val('')
           addremise.val('')
           addprice.val('')
-          $('.addstock').text('')
-          $('.addstockfacture').text('')
           alertify.error('Ce produit est deja dans le bon')
           $('.resultsholderbonsortie').select2('open')
 
@@ -373,7 +284,7 @@
         }
 
         // here is the case if qty is greater than stock
-        //console.log(addqty.val(), stock)
+        console.log(addqty.val(), stock)
         
         // if (parseInt(addqty.val())>parseInt(stock)){
         //   console.log('qty', addqty.val(), 'stock', stock, 'qty > stock', addqty>stock)
@@ -409,7 +320,7 @@
         //         <td style="paddingpx 0; font-size: 13px;" class="dp">${dp}</td>
         //         <td style="padding: 2px 0; font-size: 13px;" class="stock">${stock}</td>
         //         <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
-        //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" readonly onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+        //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
         //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
         //         <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="remise" style="height:23px; width:100%;"></td>
         //         <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
@@ -458,45 +369,8 @@
         //   );
         //   return
         // }
-        qtyprices=$('.qtyprices')
-      prices=0
-      qties=0
-      achatids=[]
-      // what remains from eaach achat
-      remainqties=[]
-      oldqties=[]
-      qty=parseFloat(addqty.val())
-      for (let i = 0; i < qtyprices.length; i++) {
-        
-        let current = $(qtyprices[i]); // get the jQuery object
-        oldqtyprice=current.text()
-        price=current.parent().find('.price')
-        let currentQty = parseFloat(current.text()); // if it's an input use .val(), if span/div use .text()
-        if (qty <= 0) {
-          console.log('Reached 0 or below, stopping.');
-          break; // stop the loop if qty is zero or less
-        }
-        achatids.push(current.attr('achatid'))
-        oldqties.push(currentQty)
-        if (qty>=currentQty){
-          prices+=currentQty*parseFloat(price.text())
-          qties+=currentQty
-          current.text(0)
-          remainqties.push(0)
-        }else{
-          newqtyprice=Math.abs(qty-currentQty)
-          //diff=oldqtyprice-newqtyprice
-          prices+=qty*parseFloat(price.text())
-          qties+=qty
-          current.text(newqtyprice)
-          remainqties.push(newqtyprice)
-        }
-        qty= qty-currentQty; // decrease qty
-          console.log('After item', i, 'qty is now:', qty);
-          
-      }
-      coutmoyen=prices/qties
-        pdcts.push(distid)
+
+        pdcts.push(id)
         localStorage.setItem('pdctsinbonsortie', JSON.stringify(pdcts))
         afterremise=parseFloat(addprice.val())*parseFloat(addremise.val())/100
         console.log(afterremise)
@@ -506,17 +380,17 @@
         // ${stock<=0? "text-danger":"" }"
         let tr = `
         <tr class="itemrow" productid=${id} farah=${farah}>
-            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${farah=='1'?'(FR)':'(OR)'} ${ref}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${id})">${ref}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
             <td style="paddingpx 0; font-size: 13px;" class="dp">${dp}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="stock">${stock}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
-            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" readonly onkeyup="calculate(event); checkmax(event); updateinlocalstorage(event, 'bonsortie', ${id})" max=${max} name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${id})" name="remise" style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;" class="netprice">${netprice}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
             <input type="hidden" name="productid" value="${id}">
-            <input type="hidden" name="coutmoyen" value="${coutmoyen}" achatids="${achatids}" remainqties="${remainqties}" oldqties="${oldqties}">
 
         </tr>
         `
@@ -524,20 +398,15 @@
           'farah':farah,
           'id': id,
           'qty': addqty.val(),
-          'max':max,
           'price': addprice.val(),
           'remise': addremise.val(),
           'total': addtotal,
           'name': name,
-          'ref': `${farah=='1'?'(FR)':'(OR)'} ${ref}`,
+          'ref': ref,
           'dp': dp,
-          'stock': stockfarah,
+          'stock': stock,
           'clientprice': priceclient,
-          'netprice': netprice,
-          'coutmoyen': coutmoyen,
-          'achatids': achatids,
-          'remainqties': remainqties,
-          'oldqties': oldqties
+          'netprice': netprice
         }
         bonachatbody.prepend(tr)
         // delete selected option
@@ -546,7 +415,7 @@
         addremise.val('')
         addprice.val('')
         parentdiv.find('.addstock').val('')
-        parentdiv.find('.addstockfacture').val('')
+          parentdiv.find('.addstockfacture').val('')
         totals=parentdiv.find('.total')
         totalbon=parentdiv.find('.totalbon')
         var totalSum = 0;
@@ -572,7 +441,7 @@
         return
       }else{
         parentdiv.find('.productsholder').removeClass('d-none')
-        //$.get('products/getclientrep/'+$(this).val(), function(data){
+        //$.get('/products/getclientrep/'+$(this).val(), function(data){
         //  $('.repsselectsbl').val(data.id).trigger('change')
         //})
         $('#productsselect2').select2({
@@ -596,18 +465,18 @@
           },
           cache:true
         },
-        minimumInputLength: 2,
+        minimumInputLength: 3,
         placeholder:'Chercher Produits',
-        templateResult: formatRepo,
-        templateSelection: formatRepoSelection,
+        // templateResult: formatRepo,
+        // templateSelection: formatRepoSelection,
       });
         function formatRepo (repo) {
           if (repo.loading) {
             return repo.text;
           }
-          console.log('>>> repo', repo)
+
           var $container = $(
-            `<div class="d-flex justify-content-between align-items-center"><strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div><img src="${repo.image}" style="width:13%;">${repo.mark}</div></div>`
+            `<strong style="color:${repo.stock>0?"blue":"red"};">${repo.text}</div>`
             );
 
 
@@ -618,7 +487,6 @@
         function formatRepoSelection (repo) {
           return repo.text;
         }
-      
       }//end else
 
     })
@@ -626,14 +494,12 @@
       parentdiv=$(this).parent().parent().parent()
       parentdiv.find('.productsholder').removeClass('d-none')
         console.log('check for old unpaid bons')
-        // will check plafon and sold
         $.get('/products/checkplafon', {"clientid":$(this).val()}, (data)=>{
-          // if (data.exist){
-          // $('.oldbonswarning').removeClass('d-none')
-          // }else{
-          //   $('.oldbonswarning').addClass('d-none')
-          // }
-          $('.oldbonswarning').removeClass('d-none').text('Sold: '+data.soldtotal.toFixed(2)+' HD')
+          if (data.exist){
+          $('.oldbonswarning').removeClass('d-none')
+          }else{
+            $('.oldbonswarning').addClass('d-none')
+          }
         })
         $('#productsselect2').select2({
 
@@ -656,38 +522,20 @@
           },
           cache:true
         },
-        minimumInputLength: 2,
+        minimumInputLength: 3,
         placeholder:'Chercher Produits',
         templateResult: formatRepo,
         templateSelection: formatRepoSelection,
       });
-      function formatRepo (repo) {
-          if (repo.loading) {
-            return repo.text;
-          }
-
-          console.log('>>> repo', repo)
-          var $container = $(
-            `<div class="row"><strong class="col-10" style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div class="col-2"><img src="${repo.image}" style="width:100%;">${repo.mark}</div></div>`
-            );
-
-
-            return $container;
-        }
-
-        function formatRepoSelection (repo) {
-          return repo.text;
-        }
-      
         
       // if ($(this).val()==''||$('.repsselectsbl').val()==''){
-      //   $.get('products/getclientrep/'+$(this).val(), function(data){
+      //   $.get('/products/getclientrep/'+$(this).val(), function(data){
       //     console.log(data)
       //     $('.repblname').text(data.name)
       //     //$('.repsselectsbl').val(data.id).trigger('change')
       //   })
       //   console.log('check for old unpaid bons')
-      //   $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+      //   $.get('/products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
       //     if (data.exist){
       //       $('.oldbonswarning').removeClass('d-none')
       //     }else{
@@ -699,7 +547,7 @@
       // }else{
       //   parentdiv.find('.productsholder').removeClass('d-none')
       //   console.log('check for old unpaid bons')
-      //   $.get('products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
+      //   $.get('/products/checkoldunpaidbons', {"clientid":$(this).val()}, (data)=>{
       //     if (data.exist){
       //     $('.oldbonswarning').removeClass('d-none')
       //     }else{
@@ -768,14 +616,14 @@
             <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${item.id})">${item.ref}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${item.name}</td>
             <td style="paddingpx 0; font-size: 13px;" class="dp">${item.dp}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="stock">${item.stock}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${item.clientprice}</td>
-            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" readonly onkeyup="calculate(event); checkmax(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" max=${item.max} name="qty" value="${item.qty}" style="height:23px; width:100%;"></td>
+            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" name="qty" value="${item.qty}" style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" name="price" value="${item.price}" step=0.01 style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${item.remise}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonsortie', ${item.id})" name="remise" style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;" class="netprice">${item.netprice}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="total">${item.total}</td>
             <input type="hidden" name="productid" value="${item.id}">
-            <input type="hidden" name="coutmoyen" value="${item.coutmoyen}" achatids="${item.achatids}" remainqties="${item.remainqties}" oldqties="${item.oldqties}">
 
         </tr>
         `
@@ -805,67 +653,48 @@
 
 
       $('.resultsholderbonsortie').on('change', function(){
-          console.log('>cc>', $(this).val()=='' || $(this).val()==null)
+          console.log('>cc>', $(this).val())
           parentdiv=$(this).parent().parent()
-          if ($(this).val()=='' || $(this).val()==null){
+          if ($(this).val()==''){
               return
           }
-          var [ref, name, dp, stocktotalfarah, stockfacturefarah, stocktotalorgh, stockfactureorgh, id, sellprice, remise, netprice, representprice, term] = $(this).val().split('§');
-          console.log('>> id', id)
-          let addname=$(this).parent().parent().find('input[name="addname"]')
-          let addprice=$(this).parent().parent().find('input[name="addprice"]')
-          let addremise=$(this).parent().parent().find('input[name="addremise"]')
-          let addqty=$(this).parent().parent().find('input[name="addqty"]')
+          var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice, term] = $(this).val().split('§');
+          console.log('>> term', term)
           if (term.startsWith('fr-')){
-            addqty.attr('max', stocktotalfarah)
             // add a sign to addrowbtn to use it when adding row #sfefr435
             // 1 means thsi product is a farah product
             $('.addrowbtn').attr('farah', 1)
           }else{
-            addqty.attr('max', stocktotalorgh)
             $('.addrowbtn').attr('farah', 0)
 
           }
           let repswithprice=[]
-          
+          let addname=$(this).parent().parent().find('input[name="addname"]')
+          let addprice=$(this).parent().parent().find('input[name="addprice"]')
+          let addremise=$(this).parent().parent().find('input[name="addremise"]')
+          let addqty=$(this).parent().parent().find('input[name="addqty"]')
           // display stock
           // $(this).parent().parent().find('.addstock').text(stock)
           // $(this).parent().parent().find('.addstockfacture').text(stockfacture)
           addqty.val('')
           addqty.focus()
-          addprice.val(0)
-          addremise.val(0)
-          // addremise.val(remise)
-          addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stocktotalfarah}§${stockfacturefarah}§${stocktotalorgh}§${stockfactureorgh}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
-          $.get('/products/getqtyprice',
-            {
-              'term':term,
-              'target':'s',
-              'id':id
-            },
-            function(data){
-              $('.producthistory').html(data)
-          })
-          // $('.addstock').text('Stock farah: '+stocktotalfarah)
-          $('.addstockfacture').text('Stock orgh: '+stocktotalorgh)
+          addprice.val(sellprice)
+          addremise.val(remise)
+          addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
           // we are getting ere list of reps that have price
           
           $.ajax({
-              url: "{% url 'products:getclientpricesortie' %}",
+              url: "{% url 'products:getclientprice' %}",
               type: 'POST',
               data: {
                   'target':'bl',
                   'id': id,
                   'clientid': $('.clientselectbl').val(),
-                  'csrfmiddlewaretoken': '{{csrf_token}}',
-                  // term to use it in case it has fr- to get buyprice
-                  'term':term
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
               },
               success: function(data){
-                console.log(data)
-                parentdiv.find('.addclientprice').html((`${data.price} (${data.remise}%)`))
-                $('.addbyuprice').html(`pr. achat orgh: ${data.orbuyprice}(${data.orremise}%)`)
-                // $('.addbyuprice').html(`pr. achat farah: ${data.frbuyprice}(${data.frremise}%) <br> pr. achat orgh: ${data.orbuyprice}(${data.orremise}%)`)
+                console.log(data.price)
+                parentdiv.find('.addclientprice').text((data.price).toFixed(2))
               }
             })
 
@@ -901,7 +730,7 @@
                 return
             }
 
-          
+          parentdiv.find('.submitbonsortie').addClass('disabled')
           trs=parentdiv.find('.bonsortiebody tr')
           let products = []
           trs.each(function(){
@@ -914,10 +743,6 @@
               let total = tr.find('.total').text()
               let clientprice= tr.find('.clientprice').text()
               let productid = tr.find('input[name="productid"]').val()
-              let achatids= tr.find('input[name="coutmoyen"]').attr('achatids')
-              let remainqties= tr.find('input[name="coutmoyen"]').attr('remainqties')
-              let oldqties= tr.find('input[name="coutmoyen"]').attr('oldqties')
-              let coutmoyen = tr.find('input[name="coutmoyen"]').val()
               let product = {
                 'farah':tr.attr('farah'),
                 'qty': qty,
@@ -927,29 +752,20 @@
                 'remise': remise,
                 'total': total,
                 'productid': productid,
-                'clientprice':clientprice,
-                'coutmoyen': coutmoyen,
-                'achatids':achatids,
-                'remainqties':remainqties,
-                'oldqties':oldqties
+                'clientprice':clientprice
               }
               products.push(product)
-            })
-            console.log(products)
-          if (products.length==0){
-            alertify.error('NO PRODUCTS')
-            return
-          }
+          })
           let clientid = parentdiv.find('.clientselectbl').val()
           let repid = parentdiv.find('.repsselectsbl').val()
           let datebon = parentdiv.find('.datebonbl').val()
           let transport = parentdiv.find('.transport').val()
           let note = parentdiv.find('.note').val()
-          let payment = parentdiv.find('.payment').val()
           let totalbon=parseFloat(parentdiv.find('.totalbon').text())
           console.log(products)
           console.log(totalbon)
           console.log('sending')
+          localStorage.setItem('pdctsinbonsortie', '[]')
           // data={
           //     'totalbon': totalbon,
           //     'clientid': clientid,
@@ -961,35 +777,17 @@
           //     'csrfmiddlewaretoken': '{{csrf_token}}'
           // },
           // console.log(data)
-          isremise=$('.remisecheck').is(':checked')
-          if (parseFloat(payment)>0){
-            if (parseFloat(payment)<totalbon){
-              if (!isremise){
-                alertify.error('error payment avance/remise')
-                return
-              }
-            }
-          }
-          if (parseFloat(payment)>totalbon){
-            alertify.error('Payment superieur au total')
-            return
-          }
-          parentdiv.find('.submitbonsortie').addClass('disabled')
-          console.log(payment)
+          console.log(products)
           $.ajax({
               url: "{% url 'products:addbonsortie' %}",
               type: 'POST',
               data: {
-                'remise':$('.remisecheck').is(':checked'),
-                'car':$('.cars').val(),
-                'caissetarget':$('.caissetarget').val(),
                   'totalbon': totalbon,
                   'clientid': clientid,
                   'repid':repid,
                   'transport':transport,
                   'datebon': datebon,
                   'note': note,
-                  'payment': payment,
                   'products': JSON.stringify(products),
                   'csrfmiddlewaretoken': '{{csrf_token}}'
               },
@@ -998,7 +796,7 @@
                   // remove list in localstorage
                   localStorage.removeItem('pdctsinbonsortie')
                   localStorage.removeItem('bonsortie')
-                  localStorage.removeItem('totalbonsortie')
+                  deletetab('addbonsortie')
                   ajaxpage('addlistbonsortie', 'list bl', '/products/listbonsortie')
 
 

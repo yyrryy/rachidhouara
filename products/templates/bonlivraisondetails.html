@@ -1,141 +1,50 @@
 {% load global_tags %}
 
 <div class="row">
-
   <div class="col-3 bg-white rounded">
-    <button class="btn bi bi-arrow-left" onclick="ajaxpage('listbl', 'list bon livraison', '/products/listbonlivraison?target={{target}}')">List bons</button>
-    <button class="btn w-100 btn-primary mb-2" onclick="printlivraison('{{order.id}}', '{{target}}')">
+    <button class="btn w-100 btn-primary mb-2" onclick="printlivraison('{{order.id}}')">
       Imprimer
     </button>
-    <button class="btn w-100 btn-primary mb-2" onclick="printlivraisonht('{{order.id}}', '{{target}}', 0)">
-      Imprimer HT
+    {% if order.isfacture %}
+    <button class="btn mt-2 w-100 bg-orange" onclick="degenerer(event, '{{order.id}}', 'bonl{{order.id}}', '/products/bonlivraisondetails/{{order.id}}')">
+      Dégenerer Facture
     </button>
-    <button class="btn w-100 btn-primary mb-2" onclick="printlivraisonht('{{order.id}}', '{{target}}', 1)">
-      Imprimer HT (Category)
-    </button>
-    <button 
-    class="btn w-100 bg-orange text-white mt-2" 
-    {% if order.isvalid or order.ispaid %}disabled{% endif %}
-    onclick="ajaxpage('modifierlivraison{{order.id}}', 'Modifier {{order.bon_no}}', '/products/modifierlivraison/{{order.id}}?target={{target}}')">
-      Modifier
-    </button>
-
-    {% for i in reglements %}
-    <div class="alert alert-danger">
-      Reglement de bon: REG#{{i.id}} <br>
-      <strong>date: {{i.date|date:'d/m/y'}}</strong> <br>
-      <strong>Mantant: {{i.amount}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      <strong>N° piece: {{i.npiece}}</strong> <br>
-      <strong>echeance: {{i.echance|date:'d/m/y'}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      <hr>
-      Avance de reglement: <br>
-      {% for avance in i.avances.all %}
-      <strong>date: {{i.date|date:'d/m/y'}}</strong> <br>
-      <strong>Mantant: {{avance.amount}}</strong> <br>
-      <strong>Mode: {{avance.mode}}</strong> <br>
-      <strong>N° piece: {{avance.npiece}}</strong> <br>
-      <strong>echeance: {{avance.echance|date:'d/m/y'}}</strong> <br>
-      {% endfor %}
-      <hr>
-      Avoir de reglement: <br>
-      {% for avoir in i.avoires.all %}
-      <strong>Total: {{avoir.total}}</strong> <br>
-      <strong>date: {{avoir.date|date:'d/m/Y'}}</strong> <br>
-      <strong>N° piece: {{avoir.no}}</strong> <br>
-      
-      {% endfor %}
-    </div>
-    {% endfor %}
-    <hr>
-    {% for i in avances %}
-    <div class="border p-2 bg-dark text-white">
-      <div>Avance de bon</div>
-      <strong>date: {{i.date|date:'d/m/y'}}</strong> <br>
-      <strong>Mantant: {{i.amount}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      <strong>N° piece: {{i.npiece}}</strong> <br>
-      <strong>echeance: {{i.echance|date:'d/m/y'}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-    </div>
-    {% endfor %}
-    {% for i in reglementsfc %}
-    <div class="alert alert-danger">
-      Reglement facture de bon: REG#{{i.id}} <br>
-      <strong>Mantant: {{i.amount}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      <strong>N° piece: {{i.npiece}}</strong> <br>
-      <strong>echeance: {{i.echance|date:'d/m/y'}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      {% for avoir in i.avoirs.all %}
-      <strong>
-        Avoir N° {{avoir.no}}: {{avoir.total}}
-      </strong> <br>
-      {% endfor %}
-      {% for avance in i.avances.all %}
-      <strong><br>
-        avance N° AVANCEF#{{avance.id}}: {{avance.amount}}
-      </strong>
-      {% endfor %}
-    </div>
-    {% endfor %}
-    
-    <!-- {% if order.isfacture %}
-    
     <select name="client" id="" style="width:100%;" class="select2 clientselectchangeinbl form-select notemptylivraison mt-5">
 
     </select>
     {% if order.total == 0 %}
 
     {% endif %}
-    {% else %} -->
-    <!-- {% if order.ispaid %}
+    {% else %}
+    {% if order.ispaid %}
     <p>
       Bon est reglé
     </p>
-    <button class="btn w-100 bg-orange text-white mt-2" onclick="ajaxpage('modifierlivraison{{order.id}}', 'Modifier {{order.bon_no}}', '/products/modifierlivraison/{{order.id}}?target={{target}}')">
+    {% else %}
+    <button class="btn w-100 btn-success" onclick="createtab('generatefacturetab{{order.id}}', 'Generer Fact.', '/products/generatefacture/{{order.id}}')">
+      Generer Facture
+    </button>
+    <button class="btn w-100 bg-orange text-white mt-2" onclick="createtab('modifierlivraison{{order.id}}', 'Modifier {{bon_no}}', '/products/modifierlivraison/{{order.id}}')">
       Modifier
     </button>
-    {% else %} -->
-    <!-- <button class="btn w-100 btn-success" onclick="ajaxpage('generatefacturetab{{order.id}}', 'Generer Fact.', '/products/validatebonsortie?bonid={{order.id}}')">
-      Generer Bon sortie
-    </button> -->
-    <!-- if it has order sortie, dont diplay modifier -->
-    <!-- {% if order.iscanceled %}
-    <button>Rastaurer</button>
-    {%endif%}
-    {% if not order.ispaid %}
-      {% if not order.iscanceled %}
-      <button class="btn btn-danger" onclick="cancelthis('{{order.id}}', 'bon', '/products/bonlivraisondetails/{{order.id}}')">Anullé</button>
-      {% endif %}
-    {% endif %}
-    {% if not order.iscanceled %}
-    <button class="btn w-100 bg-orange text-white mt-2" onclick="ajaxpage('modifierlivraison{{order.id}}', 'Modifier {{order.bon_no}}', '/products/modifierlivraison/{{order.id}}?target={{target}}')">
-      Modifier
-    </button>
-    {% endif %}
-    {% if i.bonsortie %}
-    {% endif %}
 
 
     {% endif %}
     {% endif %}
     <button class="btn btn-sm bg-darkblue text-white w-100 mt-2" onclick="hidetettebl()">
       Entette
-    </button> -->
-    
-    <!-- <strong class="mt-2">Transport</strong>
+    </button>
+    <strong class="mt-2">Transport</strong>
     <div class="d-flex">
       <input value="{{order.modlvrsn}}">
       <button onclick="updatetransportbl(event, '{{order.id}}')">+</button>
-    </div> -->
+    </div>
     <strong class="mt-2">Note</strong>
     <div class="d-flex">
-      <input value="{% if order.notebon %}{{order.notebon}}{% endif %}">
+      <input value="{% if order.note %}{{order.note}}{% endif %}">
       <button onclick="updatenotebl(event, '{{order.id}}')">+</button>
     </div>
-    <!-- <strong class="mt-2">Reprenant</strong>
+    <strong class="mt-2">Reprenant</strong>
     <div class="d-flex">
       <select>
         <option value="{{order.salseman.id}}">{{order.salseman.name}}</option>
@@ -144,7 +53,16 @@
         {% endfor %}
       </select>
       <button onclick="updaterepbl(event, '{{order.id}}')">+</button>
-    </div> 
+    </div>
+    <div class="mt-2">
+      Contre/normal
+      <select class="updateiscontreselect" name="" onchange="updateiscontrebon(event, '{{order.id}}')">
+          <option value="Simple" {% if order.paymenttype == "Simple" %}selected{%endif%}>Simple</option>
+          <option value="Espece" {% if order.paymenttype == "Espece" %}selected{%endif%}>Espece</option>
+          <option value="Cheque" {% if order.paymenttype == "Cheque" %}selected{%endif%}>Cheque</option>
+          <option value="Traite" {% if order.paymenttype == "Traite" %}selected{%endif%}>Traite</option>
+      </select>
+    </div>
     <strong>Reglements:</strong>
     {% for i in reglements %}
     <table style="border-color: black;" class="table table-bordered mb-2" style="font-size: 12px;">
@@ -169,18 +87,18 @@
         <td style="background: #e1e7ff;">Echeance</td>
         <td>{{i.echance|date:"d/m/Y"}}</td>
       </tr>
-    </table> 
-    {% endfor %} 
+    </table>
+    {% endfor %}
     {% if order.rest > 0 %}
     Rest: {{order.rest|floatformat:2}}
-    {% endif %} -->
+    {% endif %}
   </div>
 
 
   <div id="printbl{{order.id}}" class="bonbody col-9 position-relative">
 
 
-    {% if order.total == 0 %}
+    {% if order.total == 0 and order.isfacture %}
     <div class="alert alert-success">
       <b>Tous produit de ce bon ont eté generé</b>
     </div>
@@ -191,7 +109,7 @@
     <div class="d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
       <div class="">
-        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
 
         <div class="d-flex justify-content-between mt-3">
           <div class="">
@@ -200,12 +118,12 @@
                 <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
               </div>
               <div>
-                <strong>N°: {{ order.bon_no }}</strong>
+                <strong>N°: {{ bon_no }}</strong>
               </div>
           </div>
           <h3>
               <b>
-                Bon de Livraison
+
               </b>
             </h3>
 
@@ -255,7 +173,7 @@
               <td style="white-space: nowrap;">
                   {% for v in i %}
 
-                  {{v.name.upper|slice:'45'}}
+                  {{v.name.upper|slice:'45'}} {%if v.product.mark%}{{v.product.mark}}{%endif%}
                   <br>
                   {% endfor %}
               </td>
@@ -320,7 +238,7 @@
     <div class="d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
       <div class="">
-        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
 
         <div class="d-flex justify-content-between mt-3">
           <div class="">
@@ -329,12 +247,12 @@
                 <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
               </div>
               <div>
-                <strong>N°: {{ order.bon_no }}</strong>
+                <strong>N°: {{ bon_no }}</strong>
               </div>
           </div>
           <h3>
               <b>
-                Bon de {% if bonsortie %}Sortie{% else %}Livraison{% endif %}
+
               </b>
             </h3>
 
@@ -384,7 +302,7 @@
                 <td style="white-space: nowrap;">
                   {% for v in i %}
 
-                  {{v.name.upper|slice:'45'}}
+                  {{v.name.upper|slice:'45'}} {%if v.product.mark%}{{v.product.mark}}{%endif%}
                   <br>
                   {% endfor %}
               </td>

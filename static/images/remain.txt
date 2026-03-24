@@ -1,0 +1,15 @@
+home page :
+header => Phone /X 
+footer => Phone, Adress, social media /X
+
+about page: //
+main => nous somme ...., mission, vision, croyance
+
+contact page:
+main => email, phone, address, google sheet as data base
+
+stuff page (optional):
+main => photos, informations
+
+histoire page (optional):
+main => facebook, parcours

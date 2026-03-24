@@ -2,7 +2,7 @@
                 <!--
                 -->
                 <!-- style="background:{% if not i.isactive %}#f3d6d694;{% endif %}" -->
-                <tr ondblclick="openwindow('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}?target={{target}}')"
+                <tr ondblclick="ajaxpage('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}?target={{target}}')"
                 
                 data-product-id="{{ i.id }}" class="product-row ">
                     <td style="padding: 5px; font-weight: bold;" class="pe-2">
@@ -13,42 +13,60 @@
                     </td>
 
                     <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
-                      {%if isfarah%}{{i.frbuyprice}}{%else%}{{i.buyprice}}{%endif%}
+                       {% if i.buyprice %} -- {% else %} 0 {% endif %}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center">
-                      {%if isfarah%}{{i.frremise1}}{%else%}{{i.remise1}}{%endif%}
+                       {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}
                     </td>
                     <td style="padding: 5px; font-weight: bold; font-size: 14px; color: var(--orange);" class="text-center">
-                      {%if isfarah%}{{i.frsellprice}}{%else%}{{i.sellprice}}{%endif%}
+                        {{i.remise}}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center">
-                      {%if isfarah%}{{i.frremisesell}}{%else%}{{i.remisesell}}{%endif%}
+                        {{i.prixnet|floatformat:2}}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
-                        {% if isfarah %} {{i.stocktotalfarah}} {% else %} {{i.stocktotalorgh}} {% endif %}
+                        {% if target == 'f' %} {{i.stocktotalfarah}} {% else %} {{i.stocktotalorgh}} {% endif %}
                     </td>
-                    
+                    <td style="padding: 5px; font-weight: bold;" class="text-center stockfacture" style="color: blue;">
+                      <span class="stockfacture invisible">
+                        {% if target == 'f' %} {{i.stockfacturefarah}} {% else %} {{i.stockfactureorgh}} {% endif %}
+                      </span>
+                  </td>
 
-                    
+                    <td style="padding: 5px; font-weight: bold;">
+                      {{i.diametre}}
+                  </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-success">
                       {{i.block}}
                   </td>
-                  
-                  <!-- <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                  <td style="padding: 5px; font-weight: bold;">
+                    {{i.coderef}}
+                  </td>
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
                     {%if i.coutmoyen%}{{i.coutmoyen}}{%endif%}
-                </td> -->
-                   
+                </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.0}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.1}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.2}}
+                    </td>
                     <td style="padding: 5px; font-weight: bold;">
                       {{i.mark.name}}
                   </td>
-                  
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                    {{i.code}}
+                </td>
 
 
-                <!-- <td style="padding: 5px; font-weight: bold;" class="text-danger">
-                  <span class="percentage">
+                <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                  <span class="percentage invisible">
                     {{i.getpercentage|floatformat:2}}
                   </span>
-                </td> -->
+                </td>
 
                 </tr>
               {% endfor %}

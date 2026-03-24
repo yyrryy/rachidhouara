@@ -34,7 +34,7 @@
     <script src="/static/js/jquerySpellingNumber.js"></script>
     <link href="/static/css/minified.css" rel="stylesheet" />
 </head>
-<body>
+<body style="font-family:sans-serif;">
 
   <div id="printbl{{order.id}}" class="bonbody position-relative">
 
@@ -47,43 +47,32 @@
     {% for i in orderitems %}
     {% if forloop.counter == orderitems|length %}
     <!-- last iteration -->
-    <div class="px-5 d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+    <div class="px-2 d-flex flex-column postion-relative livraison{{order.id}}holder" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
-      <div class="">
-        {% if not isfarah %}
-        <img src="/media/factureheader.jpg" style="width: 100%;" alt="" class="factureheader">
-        {% endif %}
-        <div class="d-flex justify-content-between">
-          <div style="border: 1px solid; padding: 5px; border-radius: 10px;">
-            Date: <strong>{{order.date|date:"d/m/Y"}}</strong><br>
-            Bon N°:<strong>{{order.bon_no}}</strong><br>
-          
-            page: {{forloop.counter}}/{{orderitems|length}}<br>
-          
-        </div>
-          <div style="width: 60%; border: 1px solid; padding: 5px; border-radius: 10px;">
-          
-            Code: <strong>
-              {{order.client.code}}
-            </strong>
-            
-            <br>
-            Client: 
-            <strong>{{order.client.name.upper}}</strong><br>
-            ICE: <strong>
-               {% if order.client.ice %}{{order.client.ice}} {% endif %}
-            </strong><br>
-            Address: <strong>{{client.address}} {{order.client.city}}</strong><br>
-            Note: <strong>{{order.notebon.upper}}</strong>
-        </div>
-        
-        </div>
-          <div class="d-flex justify-content-between">
-            
-            
+      <div class="mt-5">
+        <div class="d-flex justify-content-between p-2">
+          <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+          <div style="border: 1px solid; padding: 2px; width: 25em;">
+            <div>{{order.client.name.upper}}</div>
+            <div>{{order.client.city.upper}}</div>
           </div>
-  
-  
+        </div>
+
+        <div class="d-flex justify-content-between mt-2 p-2">
+          <div class="p-2 rounded" style="border: 1px solid;">
+            <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+          </div>
+          <div class="p-2 rounded" style="border: 1px solid;">
+            <strong>Bon livraison N°: {{ bon_no }}</strong>
+          </div>
+          <div class="p-2 rounded" style="border: 1px solid;">
+            <strong>Code: {{order.client.code.upper}}</strong>
+          </div>
+        </div>
+
+
+
+
       </div>
 
       <!-- livraison items -->
@@ -95,60 +84,59 @@
           top: 5em;
           visibility: hidden;
           ">
-        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+        <table class="table table-bordered blitems" style="font-size: 13px; border-color: black;">
           <thead style="background: #c9c9c967; font-size: 10px;
         font-weight: 800;" class="text-center">
             <tr>
-              <td style="">Ref</td>
-              <td style="width:53%;">Designation</td>
+              <td style="width:15%;">Ref</td>
+              <td style="width:60%;">Designation</td>
               <td style="width: 5%;">Qté</td>
-              <td style="width: 7%;">P.U TTC</td>
-              <td style="width: 5%;">Rem</td>
-              <td style="width: 13%;">Mantant TTC</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 3%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="height: 165mm;white-space: nowrap; padding:3px">
+              <td style="height: 215mm;white-space: nowrap; padding:3px">
                   {% for v in i %}
 
-                  {{v.ref.upper}}
-                  <br>
+                  {{v.product.ref.upper}}
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td style="white-space: nowrap; padding:3px">
                   {% for v in i %}
 
-                  {{v.name.upper|slice:'45'}}
-                  <br>
+                  {{v.product.name.upper|slice:'65'}} {%if v.product.mark%}{{v.product.mark}}{%endif%} {%if v.product.diametre%}{{v.product.diametre}}{%endif%}
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
 
                   {{v.qty}}
-                  <br>
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
 
                   {{v.price|floatformat:2}}
-                  <br>
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
-
-                  {{v.remise}}%
-                  <br>
+                  0
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
 
                   {{v.total|floatformat:2|intspace}}
-                  <br>
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
 
@@ -161,77 +149,51 @@
           <small>
             page: {{forloop.counter}}/{{orderitems|length}}
           </small>
-          <div class="text-center d-flex justify-content-between" style="
-          font-size: 13px; width: 50%;">
-          <table class="table">
-            <tr>
-              <td>Total HT</td>
-              <td>{{order.totalht|floatformat:2|intspace}}</td>
-            </tr>
-            <tr>
-              <td>TVA</td>
-              <td>{{order.tva|floatformat:2|intspace}}</td>
-            </tr>
-            <tr>
-              <td>Total</td>
-              <td>{{order.total|floatformat:2|intspace}}</td>
-            </tr>
-          </table>
-            
+          <div class="text-center d-flex justify-content-between" style="background: #aeaeae8c;
+          font-size: 13px; width:14em;">
+            <div>Total</div>
+            <div style="font-size: 16px; margin-right: 13px;">
+              <strong>
+                {{order.total|floatformat:2|intspace}}
+              </strong>
+            </div>
           </div>
-          
-          
+
+
         </div>
-        {% if not isfarah %}
-        <div class="text-center">
-          <div class="text-center" style="font-size:11px; margin-top: 5px;">
-  
-            Siege: Lot Dounia II N°118 OULED TEIMA Code Postal 83350 Patente: 49901722 ICE: 002394334000087 RC: 6513 CNSS: 1858196 IF: 39498717 Email: orghpieceauto@gmail.com Fix: 0528521331
-        </div>
-        {% endif %}
+
       </div>
     </div>
 
 
     {% else %}
     <!-- other pages -->
-    <div class="px-5 d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
+    <div class="px-2 d-flex flex-column postion-relative livraison{{order.id}}holder" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
-      <div class="">
-        {% if not isfarah %}
-        <img src="/media/factureheader.jpg" style="width: 100%;" alt="" class="factureheader">
-        {% endif %}
-        <div class="d-flex justify-content-between">
-          <div style="border: 1px solid; padding: 5px; border-radius: 10px;">
-            Date: <strong>{{order.date|date:"d/m/Y"}}</strong><br>
-            Bon N°:<strong>{{order.bon_no}}</strong><br>
-          
-            page: {{forloop.counter}}/{{orderitems|length}}<br>
-          
-        </div>
-          <div style="width: 60%; border: 1px solid; padding: 5px; border-radius: 10px;">
-          
-            Code: <strong>
-              {{order.client.code}}
-            </strong>
-            
-            <br>
-            Client: 
-            <strong>{{order.client.name.upper}}</strong><br>
-            ICE: <strong>
-               {% if order.client.ice %}{{order.client.ice}} {% endif %}
-            </strong><br>
-            Address: <strong>{{client.address}} {{order.client.city}}</strong><br>
-            Note: <strong>{{order.notebon.upper}}</strong>
-        </div>
-        
-        </div>
-          <div class="d-flex justify-content-between">
-            
-            
+      <div class="mt-5">
+        <div class="d-flex justify-content-between p-2">
+          <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+          <div style="border: 1px solid; padding: 2px; width: 25em;">
+            <div>{{order.client.name.upper}}</div>
+            <div>{{order.client.city.upper}}</div>
           </div>
-  
-  
+        </div>
+
+        <div class="d-flex justify-content-between mt-2 p-2">
+          <div class="p-2 rounded" style="border: 1px solid;">
+            <strong>Date: {{ order.date|date:"d/m/Y" }}</strong>
+          </div>
+          <div class="p-2 rounded" style="border: 1px solid;">
+            <strong>Bon livraison N°: {{ bon_no }}</strong>
+          </div>
+          <div class="p-2 rounded" style="border: 1px solid;">
+            <strong>Code: {{order.client.code.upper}}</strong>
+          </div>
+        </div>
+
+
+
+
       </div>
 
       <!-- livraison items -->
@@ -243,60 +205,59 @@
           top: 5em;
           visibility: hidden;
           ">
-        <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
+        <table class="table table-bordered blitems" style="font-size: 13px; border-color: black;">
           <thead style="background: #c9c9c980; font-size: 10px;
         font-weight: 800;" class="text-center">
             <tr>
-              <td style="">Ref</td>
-              <td style="width:53%;">Designation</td>
+              <td style="width:15%;">Ref</td>
+              <td style="width:57%;">Designation</td>
               <td style="width: 5%;">Qté</td>
-              <td style="width: 7%;">P.U TTC</td>
-              <td style="width: 5%;">Rem</td>
-              <td style="width: 13%;">Mantant TTC</td>
+              <td style="width: 7%;">P.U</td>
+              <td style="width: 3%;">Rem</td>
+              <td style="width: 13%;">Mantant</td>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="height: 175mm;white-space: nowrap; padding:3px">
+              <td style="height: 200mm;white-space: nowrap; padding:3px">
                   {% for v in i %}
 
-                  {{v.ref.upper}}
-                  <br>
+                  {{v.product.ref.upper}}
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
                   </td>
                 <td style="white-space: nowrap; padding:3px">
                   {% for v in i %}
 
-                  {{v.name.upper|slice:'45'}}
-                  <br>
+                  {{v.product.name.upper|slice:'65'}} {%if v.product.mark%}{{v.product.mark}}{%endif%} {%if v.product.diametre%}{{v.product.diametre}}{%endif%}
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
 
                   {{v.qty}}
-                  <br>
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
 
                   {{v.price|floatformat:2}}
-                  <br>
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
-
-                  {{v.remise}}%
-                  <br>
+                  0
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
               <td class="text-center">
                   {% for v in i %}
 
                   {{v.total|floatformat:2|intspace}}
-                  <br>
+                  <hr style="margin:0; padding:0;opacity: 1;">
                   {% endfor %}
               </td>
 
@@ -328,7 +289,7 @@
          var printContents = document.getElementById(divName).innerHTML;
          var originalContents = document.body.innerHTML;
          document.body.innerHTML = printContents;
-         $('.blitems').css({'font-size': '15px','font-family':'serif'})
+         $('.blitems').css({'font-size': '15px'})
          $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
          //  $('body').addClass('d-flex flex-column vh-100 p-3')
          window.print();

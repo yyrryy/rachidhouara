@@ -157,7 +157,7 @@
           </div>
 
           <div class="row mt-5 bg-white rounded shadow">
-            <select class="categoryselect" name="">
+            <select class="categoryselect" name="" onchange="getcategorypdcts()">
               <option value="">--</option>
               {% for i in categories %}
               <option value="{{i.id}}">{{i.name}}</option>
@@ -165,13 +165,15 @@
             </select>
             <div class="mt-3 d-flex justify-content-between">
               <button type="button" class="btn btn-success" onclick="exportcommand()">Export</button>
+
               <input placeholder="Recherche" oninput="searchpdctcategory(event)">
               <div class="excelfile d-none d-flex flex-row">
                 <strong>Excel: </strong>
                 <input type="file" id="upload" class="form-control" style="width:12em;" />
                 <div class="referr">
 
-                </div>
+                </div> <br>
+                <button type="button" class="btn btn-success" onclick="cleartable()">Zero</button>
               </div>
 
             </div>
@@ -259,6 +261,7 @@
                 var fobNvInput = $(this).find('.fobnv');
                 var fobNvInput = $(this).find('.fobnv');
                 var arrivageInput = $(this).find('.arrivage');
+                var arrivagespan = arrivageInput.parent().find('span');
                 var fobanInputval = parseFloat($(this).find('.foban').val());
                 // // the exceldevise need to be after
                 // //var fobNvValue = parseFloat(fobNvInput.val()) || 0;
@@ -268,6 +271,7 @@
                 }
                 fobNvInput.val(parseFloat(exceldevise));
                 arrivageInput.val(excelarrivage);
+                arrivagespan.text(excelarrivage)
                 //newfob(exceldevise, id)
                 //newarrivageexcel(excelarrivage, id)
             }
@@ -502,11 +506,12 @@
       $(`.difffob${id}`).text((fobnv-foban).toFixed(2))
       newfob(fobnv, id)
     }
-    $('.categoryselect').on('change', function(){
-      $('.pdctcategorybody').html('<div class="spinner-border" role="status"></div>')
-      if(!$(this).val()==""){
+    function getcategorypdcts(){
+      categoryid=$('.categoryselect').val()
+      if(!categoryid==""){
+        $('.pdctcategorybody').html('<div class="spinner-border" role="status"></div>')
         console.log('start sending')
-        $.get('/products/pdctscategoryrepport', {'categoryid':$(this).val()}, (data)=>{
+        $.get('/products/pdctscategoryrepport', {'categoryid':categoryid}, (data)=>{
           console.log(data)
           $('.pdctcategorybody').html('')
           //minstock is used to indeicate arrivage
@@ -520,7 +525,7 @@
               <td><input class="foban" value="${(i.devise).toFixed(2)}" onkeyup="difffob(event, ${i.id})"></span></td>
               <td><input class="fobnv" value="${i.newfob}" onkeyup="difffob(event, ${i.id})"></span></td>
               <td class="difffob difffob${i.id} ${diffClass}">${(i.newfob-i.devise).toFixed(2)} </td>
-              <td><input class="arrivage text-danger" value="${i.arrivage}" onchange="$('.arrivage${i.id}').text($(this).val()), minstockpdct(event, '${i.id}')"><span class="arrivage${i.id}">${i.arrivage}</span></td>
+              <td><input class="arrivage text-danger" value="${i.arrivage}" onkeyup="$('.arrivage${i.id}').text($(this).val()), minstockpdct(event, '${i.id}')"><span class="arrivage${i.id}">${i.arrivage}</span></td>
               <td style="background: #baf9c7;">${i.totalqtyin}</td>
               <td style="background: #f3d5d0;">${i.totalqtyout}</td>
               <td style="background: #5f9ea08a;">${i.stocktotal}</td>
@@ -532,7 +537,19 @@
 
         })
       }
-    })
+    }
+    function cleartable(){
+      categoryid=$('.categoryselect').val()
+      if (!categoryid==''){
+        $.get('/products/cleararrivage', {'categoryid':categoryid}, (data)=>{
+          if (data.success){
+            getcategorypdcts()
+          }
+        })
+
+      }
+    }
+
     // minstock is arrivage
     function minstockpdct(event, pdctid){
       $.get('/products/minstockpdct', {
@@ -571,7 +588,7 @@
       ajax: {
         type:'get',
         dataType: 'json',
-        url: '/products/searchproduct?target={{target}}',
+        url: '/products/searchproduct',
         data: function (params) {
           var query = {
             term: params.term,

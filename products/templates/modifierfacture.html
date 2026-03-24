@@ -212,7 +212,7 @@ margin: 0;
                     alertify.error('Client deja existé')
                     return
             }else{
-                $.get('products/addclientdivers', {'name':clientname, 'code':clientcode, 'ville':clientville}, (data)=>{
+                $.get('/products/addclientdivers', {'name':clientname, 'code':clientcode, 'ville':clientville}, (data)=>{
                   $('.addclientholder').css('top', '-10vh')
                   alertify.success('OK')
                 })
@@ -271,7 +271,7 @@ margin: 0;
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproduct?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -312,7 +312,7 @@ margin: 0;
     })
   function canceltab(){
     deletetab('addmodifierfacture{{facture.id}}')
-    ajaxpage('facture{{facture.id}}', 'Facture {{facture.facture_no}}', '/products/facturedetails/{{facture.id}}')
+    createtab('facture{{facture.id}}', 'Facture {{facture.facture_no}}', '/products/facturedetails/{{facture.id}}')
   }
   function removelineupdatefacture(event, id) {
       let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
@@ -671,7 +671,7 @@ margin: 0;
                     alertify.success('Facture modifié')
                     // delerte this tab
                     deletetab('addmodifierfacture{{facture.id}}')
-                    ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+                    createtab('addlistfactures', 'Factures', '/products/listfactures')
                     updatetab('facture{{facture.id}}', '/products/facturedetails/{{facture.id}}')
                   }
                   else{

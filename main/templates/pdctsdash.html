@@ -1,0 +1,62 @@
+{% for i in products %}
+<form action="/updateproduct" class="mt-2 searchresult d-flex border_bottom mb-3" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input hidden="" name="pdctid" value="{{i.id}}">
+    <div class="col-6">
+    <strong>Modifier l'image</strong>
+    <input class="form-control" type="file" name="image">
+    <img class="pdctimg border p-2 mt-5" src="{% if i.image %}{{i.image.url}}{%endif%}" style="width:100%;"><br>
+    </div>
+    <div class="ms-5">
+      <div class="d-flex mb-2">
+        <div class="me-5 col-6"> Ref: <input class="form-control" name="ref" value="{{i.ref}}"></div>
+        <div class="me-5 col-6"> Prix: <input class="form-control" name="price" value="{{i.sellprice}}"></div>
+      </div>
+      <div class="d-flex mt-2 mb-3">
+        <div class="me-5 col-6"> Categorie: 
+          <select class="form-control" name="category" id="">
+            <option value="{{i.category.id}}">
+              {{i.category.name}}
+            </option>
+            {% for ct in categories %}
+            <option value="{{ct.id}}">
+              {{ct.name}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="me-5 col-6"> Marque: 
+          <select class="form-control" name="mark" id="">
+            <option value="{{i.mark.id}}">
+              {{i.mark.name}}
+            </option>
+            {% for ct in marks %}
+            <option value="{{ct.id}}">
+              {{ct.name}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" name="activation" id="flexSwitchCheckChecked" {% if i.active %}checked{% endif %}>
+        <label class="form-check-label" for="flexSwitchCheckChecked">Activation de produit</label>
+      </div>
+      Equivalents
+      <textarea class="mb-3" style="width:100%" name="equivalent">{% if i.equivalent %}{{i.equivalent}}{% endif %}</textarea>
+      <!-- Vehicules
+      <textarea style="width:100%" name="cars"></textarea> -->
+      <!-- <div class="form-check">
+        <input name="isoffer" type="checkbox" value="true" id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+          Produit en promotion?
+        </label>
+      </div> -->
+      <!-- <div> Promotion: <input class="form-control" name="offre" value="null"></div> -->
+      <button class="btn btn-primary mt-3 updatepdctbtn w-100" onclick="updatepdct(event)">Modifier
+      </button>
+      </div>
+    </form>
+    
+<hr>
+{% endfor %}

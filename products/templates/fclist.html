@@ -1,87 +1,45 @@
 {% load global_tags %}
 {% for order in bons %}
-<tr class="ord fc-row" orderid="{{order.code}}" ondblclick="ajaxpage('facture{{order.id}}', 'Facture {{order.facture_no}}', '/products/facturedetails/{{order.id}}?target={{target}}')" mode="waiting"
->
-  <td>{{ order.facture_no }}</td>
-  <td>{{ order.date|date:'d/m/Y' }}</td>
-  <td style="color: blue; font-size: 15px;">{{ order.total|floatformat:2|intspace}}</td>
-  <td>{{ order.ht|floatformat:2|intspace}}</td>
-  <td>{{ order.thistva|floatformat:2|intspace}}</td>
-  <td>{{ order.client.name }}</td>
-  <td>{{ order.client.code }}</td>
-  <!-- <td>{{ order.client.region }}</td> -->
-  <td>{{ order.client.city }}</td>
-  <!-- <td>{{ order.client.soldfacture|floatformat:2|intspace }}</td> -->
-  <!-- <td>{{ order.salseman }}</td> -->
-  <td>
-  {% if order.ispaid %}
-  <div  style="text-align: center; background: lightgreen;">
-    Payé
-  </div>
-
-  {% else %}
-  <div class="" style="text-align: center; background: rgb(255, 77, 0);">
-    Non payé
-  </div>
-  {% endif %}
-</td>
-
-  <td>
-    {{order.note}}
-  </td>
-  <td>
-    {% for i in order.reglements %}
-        -Mode: {{ i.mode }} {{ i.npiece }} <br>
-        <!-- -N° piece: {{ i.npiece }} <br>
-        -Mantant {{ i.amount }} <br>
-        -Echeance: {{ i.echance|date:'d/m/Y' }} <br> -->
-    {% endfor %}  
-    <!-- <div class="accordion" id="accordionrr{{order.id}}">
-
-      <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsrr{{order.id}}" aria-expanded="true" aria-controls="collapsrr{{order.id}}">
-
-        REGLEMENTS
-      </button>
-
-      <div id="collapsrr{{order.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionrr{{order.id}}">
-          {% for i in order.reglements %}
-          -{{ i.mode }} <br>
-          -{{ i.npiece }} <br>
-          -{{ i.amount }} <br>
-          -{{ i.echance }} <br>
-          {% endfor %}
-
-
-      </div>
-    </div> -->
-  </td>
-    <td>
-      {% if order.bon %}
-      {{ order.bon.bon_no }}
-      {% else %}
-      <div class="accordion" id="accordionbons{{order.id}}">
-
-        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{order.id}}" aria-expanded="true" aria-controls="collapsbon{{order.id}}">
-
-
-        </button>
-
-        <div id="collapsbon{{order.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{order.id}}">
-            {% for bon in order.bons.all %}
-            -{{ bon.bon_no }} <br>
-            {% endfor %}
-
-
-        </div>
-    </div>
-      {% endif %}
-    </td>
+  <tr class="ord {% if order.ispaid %}text-danger{% endif %} {% if loadmore %}fc-row{% endif %}" orderid="{{order.code}}" ondblclick="createtab('facture{{order.id}}', 'Facture {{order.facture_no}}', '/products/facturedetails/{{order.id}}')"
+    style="{% if order.bon %} color: blue; {% endif %} {% if order.isaccount %}background:yellowgreen;{% endif %}"
+    term={{term}} year={{year}} startdate={{startdate}} enddate={{enddate}} comptable={{comptable}}
+  >
+    <td>{{ order.facture_no }}</td>
+    <td>{{ order.date|date:'d/m/Y' }}</td>
+    <td>{{ order.total|floatformat:2|intspace}}</td>
+    <td>{{ order.tva|floatformat:2|intspace}}</td>
+    <td>{{ order.client.name }}</td>
+    <td>{{ order.client.code }}</td>
+    <td>{{ order.client.region }}</td>
+    <td>{{ order.client.city }}</td>
+    <td>{{ order.client.soldfacture|floatformat:2|intspace }}</td>
+    <td>{{ order.salseman }}</td>
+    {% if order.ispaid %}
     <td class="d-flex">
-      {% if order.isaccount %}
-      <i class="bi bi-check h3"></i>c
-      {% endif %}
-      <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{target}}', '{{order.id}}')">C</button>
-      <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfactureproductname('{{target}}', '{{order.id}}')">N</button>
+      R0
+      <div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
     </td>
-</tr>
+    {% else %}
+
+    <td class="d-flex">
+      N1
+      <div style="width:15px; height:15px; border-radius:50%; background:orange;" ></div>
+    </td>
+    {% endif %}
+    <td>
+      {{order.note}}
+    </td>
+    <td style="white-space:nowrap;">
+      {{order.getreglement|slice:'16' }}
+    </td>
+    {%if not facturesection%}
+      <td>{{ order.bon.bon_no }}</td>
+    {% endif %}
+      <td class="d-flex">
+        {% if order.isaccount %}
+        <i class="bi bi-check h3"></i>c
+        {% endif %}
+        <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{order.id}}')"></button>
+      </td>
+  </tr>
 {% endfor %}

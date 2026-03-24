@@ -3,61 +3,43 @@
 
 <div class="bg-white shadow rounded">
   <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-    <div>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active')">Tous</button>
-      <button class="btn border btnselect btn-dark active" style="
-      border-radius: 11px;" onclick="ajaxpage('addlistbonachat', 'tt', '/products/listbonachat?target={{target}}')">En attend</button>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); getbonachatvalider()">Validé</button>
-      <!-- <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); getcanceledbons()">Annulé</button> -->
-    </div>
-    <div>
-      {{title}}
-    </div>
-    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addlistbonachat', 'tt', '/products/listbonachat?target={{target}}')">↻</button>
-  </div>
-  {% include 'validationbachtaccodrion.html' %}
-
-  <!-- <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
     <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('listbonachat')">x</button>
     <div>
       {{title.upper}} {% if facturesection %}FACTURE{% endif %}
     </div>
     <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistbonachat', '/products/listbonachat?facture={% if facturesection %}1{% endif %}')">↻</button>
-  </div> -->
+  </div>
   <div class="d-flex justify-content-between">
-    <div class="d-flex">
+    <!-- <div class="d-flex">
       <div class="me-2">
-        
+        Du <br>
         <input type="date" name="" id="" class="startdatelistachat">
       </div>
       <div>
+        Au <br>
         <input type="date" name="" id="" class="enddatelistachat">
       </div>
       <button class="btn btn-sm bg-dark text-white filterachatdate">Filtrer</button>
 
-    </div>
-    <!-- {% if not facturesection %}
+    </div> -->
+    {% if not facturesection %}
     <button class="btn btn-success" onclick="getachatfacture()">
       Factures
     </button>
-    {% endif %} -->
-  <input style="width:20em; border-radius:7px; background: aliceblue;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistachat">
-
-    <div class="d-flex">
-      <select name="yearsachat" hidden class="populateyears disabled" hidden onchange="yeardatabachat()">
+    {% endif %}
+    <div class="d-flex flex-column">
+      <select name="yearsachat" class="populateyears" onchange="yeardatabachat()">
 
       </select>
       {% if not facturesection %}
-      <button class="btn btn-success" onclick="ajaxpage('addrecevoir', '+Achat', '/products/recevoir?target={{target}}')">
+      <button class="btn btn-success" onclick="createtab('addrecevoir', '+Achat', '/products/recevoir')">
         +Ajouter
       </button>
       {% endif %}
-      
+
     </div>
   </div>
+  <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputlistachat">
   <!-- <div class="d-flex justify-content-between fixed-bottom p-2 bg-white">
     <div>
       Total
@@ -65,7 +47,7 @@
     <div class="">
       345666
     </div>
-    <button class="btn btn-success" onclick="ajaxpage('addbonlivraison', '+livraison', '/products/bonlivraison')">
+    <button class="btn btn-success" onclick="createtab('addbonlivraison', '+livraison', '/products/bonlivraison')">
       +Ajouter
   </button>
   </div> -->
@@ -111,7 +93,7 @@
       </tr>
     </tbody>
   </table> -->
-  <div style="height: 65vh; overflow: scroll;" class="listachatholder">
+  <div style="height: 70vh; overflow: scroll;" class="listachatholder">
     <table class="listachattable table table-bordered table-hover table-striped achattable" style="font-size: 12px;" id="addbonlivraisonle">
       <thead style="position: sticky; top: 0; background: gray;">
         <tr>
@@ -119,35 +101,31 @@
           <td style="width: 8%;">Date</td>
           <td style="width: 12%;" onclick="sorttable(event)">Fournisseur</td>
           <td style="width: 5%;" onclick="intsorttable(event)">Total</td>
-          <td style="width: 5%;" onclick="sorttable(event)">Facture</td>
-          <td style="width: 5%;" onclick="sorttable(event)">Staus</td>
+          <td style="width: 5%;" onclick="intsorttable(event)">TVA</td>
+          <td style="width: 5%;" onclick="sorttable(event)">type</td>
+          <td style="width: 5%;" onclick="intsorttable(event)">Solde fourn.</td>
+          <td style="width: 4%;" onclick="sorttable(event)">Reglé</td>
           <td style="width: 4%;"></td>
         </tr>
       </thead>
-      <tbody class="listbachatbody">
+      <tbody>
         {% for order in bons %}
-          <tr class="ord {% if loadmore %}achat-row{% endif %}" orderid="{{order.id}}" ondblclick="ajaxpage('bonachat{{order.id}}', 'Bon achat {{order.nbon}}', '/products/bonachatdetails/{{order.id}}?target={{target}}')">
+          <tr class="ord {% if loadmore %}achat-row{% endif %}" orderid="{{order.id}}" ondblclick="createtab('bonachat{{order.id}}', 'Bon achat {{order.nbon}}', '/products/bonachatdetails/{{order.id}}')">
             <td>{{ order.nbon }}</td>
             <td>{{ order.date|date:'d/m/Y' }}</td>
             <td>{{ order.supplier.name }}</td>
             <td>{{ order.total|floatformat:2|intspace}}</td>
-            <td>{% if order.isfacture %} {{order.facture.facture_no}} {% endif %}</td>
-            <td>
+            <td>{{ order.tva|floatformat:2|intspace}}</td>
+            <td>{% if order.isfacture %} Facture {% else %} Bl {% endif %}</td>
+            <td>{{ order.supplier.rest|floatformat:2|intspace }}</td>
+            <td class="d-flex">
               {% if order.ispaid %}
-              <div  style="text-align: center; background: lightgreen;">
-                Reglé
-              </div>
-              
+              R0<div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
 
               {% else %}
-
-                <div class="" style="text-align: center; background: yellow;">
-                  En attend
-                </div> 
+              N1<div style="width:15px; height:15px; border-radius:50%; background:red;" ></div>
               {% endif %}
             </td>
-            <!-- <td>{{ order.supplier.rest|floatformat:2|intspace }}</td> -->
-            
             <td>
               <button class="btn bi bi-download" onclick="printbonachat('{{order.id}}')"></button>
             </td>
@@ -155,18 +133,7 @@
           </tr>
         {% endfor %}
       </tbody>
-      <tfoot style="background: yellowgreen;position: sticky; bottom: 0;">
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td class="total">{{total}}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tfoot>
-      <!-- <thead style="position: sticky; bottom: 0; background: white;">
+      <thead style="position: sticky; bottom: 0; background: white;">
         <tr>
           <td style="width: 8%;"></td>
           <td style="width: 8%;"></td>
@@ -177,7 +144,7 @@
           <td style="width: 5%;"></td>
           <td style="width: 4%;"></td>
         </tr>
-      </thead> -->
+      </thead>
       <!-- <tfoot>
         <tr>
           <td>N° bon</td>
@@ -196,61 +163,29 @@
       </tfoot> -->
     </table>
   </div>
-  <button class="btn btn-success w-100 loadmorebtn" wanted="nonvalid" onclick="loadbonachat(event)">Plus</button>
+  <div ></div>
 </div>
 
 
 
 
-
 <script>
-  page=2;
-  hasmore=true
-  function loadbonachat(even){
-    // what we want, valid or not valid bons
-    wanted=$(event.taget).attr('wanted')
-    if (!hasmore){return}
-
-    $('.listbachatbody').addClass('blurred')
-    $.get('/products/loadbonachat?target={{target}}',{
-      'page':page,
-      'wanted':wanted
-    }, (data)=>{
-      page+=1
-      $('.listbachatbody').removeClass('blurred')
-      $('.listbachatbody').append(data.html)
-      hasmore=data.has_more
-
-    })
-  }
-  function getbonachatvalider(){
-    $('.listbachatbody').addClass('blurred')
-    $('.loadmorebtn').attr('wanted', 'valid')
-    $('.searchinputlistachat').attr('wanted', 'valid')
-    $('.filterachatdate').attr('wanted', 'valid')
-    $.get('/products/getbonachatvalider?target={{target}}', (data)=>{
-      console.log(data)
-      $('.listbachatbody').html(data.html)
-      $('.total').html(data.total)
-      $('.listbachatbody').removeClass('blurred')
-    })
-  }
   populateyears()
   function yeardatabachat(){
     let year=$('[name="yearsachat"]').val()
     if (year==''){return}
-    currentPagelistbl=1
-    loadinglistbl = false;
-    //$('.listachatholder').on('scroll', handleScrolllistachat)
+    //loadinglistachat=1
+    //loadinglistachat = false;
+    $('.listachatholder').off('scroll', handleScrolllistachat)
 
-    $.get('/products/yeardatabachat?target={{target}}', {year:year}, (data)=>{
+    $.get('/products/yeardatabachat?facture={%if facturesection%}1{%endif%}', {year:year}, (data)=>{
       $(".listachattable tbody").html(data.trs)
       $('.totalbbonachat').text(data.total)
       $('.totaltvabbonachat').text(data.totaltva)
     })
   }
   function getachatfacture(){
-    $.get('/products/getachatfacture?target={{target}}', {
+    $.get('/products/getachatfacture', {
 
       'year':$('[name="yearsachat"]').val()
     }, (data)=>{
@@ -269,18 +204,17 @@
     // var filterTerms = filterValue.split('+').map(function(term) {
     //     return term.trim();
     // });
-    wanted=$(this).attr('wanted')
     let startdate=$('.startdatelistachat').val()==""?0:$('.startdatelistachat').val()
     let enddate=$('.enddatelistachat').val()==""?0:$('.enddatelistachat').val()
-    $.get('/products/searchforlistachat?target={{target}}', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year, 'wanted':wanted}, (data)=>{
-      //$(".listachattable tbody").html('')
+    $.get('/products/searchforlistachat?facture={% if facturesection %}1{% endif %}&startdate=0&enddate=0', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year}, (data)=>{
+      $(".listachattable tbody").html('')
       $(".listachattable tbody").html(data.trs)
       $('.totalbbonachat').text(data.total)
-      $('.total').text(data.total)
-    });
-      //$('.listachatholder').on('scroll', handleScrolllistachat)
-    // currentPagelistbl=1
-    // loadinglistbl = false;
+      });
+      $('.listachatholder').on('scroll', handleScrolllistachat)
+
+    loadinglistachat=1
+    loadinglistachat = false;
   })
 
 
@@ -292,7 +226,7 @@
     // $('.totalbbonachat').text(total)
   function loadMoreRecordslistachat (year, startdate, enddate, term)  {
     loadinglistachat = true;
-    $.get(`/products/loadlistachat/?target={{target}}&page=${currentPagelistachat}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
+    $.get(`/products/loadlistachat/?page=${currentPagelistachat}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
 
       const tbody = $('.listachattable tbody');
       tbody.append(data.trs);
@@ -303,7 +237,7 @@
           if (!data.has_more) {
 
               // Remove the scroll event listener when there are no more records
-              //$('.listachatholder').on('scroll', handleScrolllistachat)
+              $('.listachatholder').off('scroll', handleScrolllistachat)
 
           }
         })
@@ -315,42 +249,41 @@
     function handleScrolllistachat () {
       const container = $('.listachatholder')[0]; // Get the native DOM element
       const lastRow = document.querySelector('.achat-row:last-child');
-      let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
+      let year=$('[name="yearsachat"]').val()
       let startdate=$('.startdatelistachat').val()==""?0:$('.startdatelistachat').val()
       let enddate=$('.enddatelistachat').val()==""?0:$('.enddatelistachat').val()
       let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
       const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
 
       const containerBottom = container.scrollTop + container.clientHeight;
-
+      console.log('scrolling>>')
 
       if (containerBottom+900 >= lastRowOffset && !loadinglistachat) {
           currentPagelistachat++;
+          console.log('getting')
           loadMoreRecordslistachat(year, startdate, enddate, term);
+          console.log('loaded')
       }
     };
 
     // Attach the scroll event listener
-    //$('.listachatholder').on('scroll', handleScrolllistachat)
+    $('.listachatholder').on('scroll', handleScrolllistachat)
 
 
 
 
 $('.filterachatdate').on('click', function(){
-    wanted=$(this).attr('wanted')
+
     let parentdiv= $(this).parent().parent().parent()
-    startdate=parentdiv.find('.startdatelistachat').val()
-    enddate=parentdiv.find('.enddatelistachat').val()
+    startdate=parentdiv.find('.startdate').val()
+    enddate=parentdiv.find('.enddate').val()
     if (startdate=='' || enddate==''){
       alertify.error('Date')
       return
     }
-    $('.listbachatbody').addClass('blurred')
-    $.get('/products/filterachatdate?target={{target}}', {startdate:startdate, enddate:enddate, 'wanted':wanted, 'target':'{{target}}'},(data)=>{
+    $.get('/products/filterachatdate', {startdate:startdate, enddate:enddate},(data)=>{
       parentdiv.find('tbody').html(data.html)
       parentdiv.find('.totalbbonachat').text(data.total)
-      $('.total').text(data.total)
-      $('.listbachatbody').removeClass('blurred')
     })
   })
 

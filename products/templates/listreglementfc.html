@@ -99,6 +99,7 @@
                                 <option value="effet">effet</option>
                                 <option value="espece">espece</option>
                                 <option value="avoir">avoir</option>
+                                <option value="verement">verement</option>
                             </select>
                         </div>
                         <div class="col-3">
@@ -229,7 +230,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-3">
                                             <small>Mantant:</small> <br>
-                                            <input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant">
+                                            <input onchange="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant">
                                         </div>
                                         <div class="col-3">
                                             <small>N° piece:</small> <br>
@@ -242,6 +243,7 @@
                                                 <option value="effet">effet</option>
                                                 <option value="espece">espece</option>
                                                 <option value="avoir">avoir</option>
+                                                <option value="verement">verement</option>
                                             </select>
                                         </div>
                                         <div class="col-3">
@@ -345,7 +347,7 @@
             </div>
             <div>
                 <div class="text-end">
-                    <select name="yearsreglfc" hidden class="populateyears disabled" hidden onchange="yeardatareglfc()" style="background: #eaeaea;
+                    <select name="yearsreglfc" class="populateyears" onchange="yeardatareglfc()" style="background: #eaeaea;
                     margin: 0 6px 10px;
                     width: 5em;
                     border-radius: 10px;">
@@ -426,7 +428,7 @@
 
                             </div>
                         </div>
-                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.factures.all %}{{ bon.facture_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="ajaxpage('viewreg{{i.id}}', 'reglement #{{i.id}}', '/products/viewreglementfc/{{i.id}}')">
+                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" data-tooltip=" {% for bon in i.factures.all %}{{ bon.facture_no }}{% if not forloop.last %}, {% endif %}{% endfor %}" onclick="createtab('viewreg{{i.id}}', 'reglement #{{i.id}}', '/products/viewreglementfc/{{i.id}}')">
                         </button> -->
 
                         <button class="btn btn-success btn-sm" onclick="updatereglementfc({{i.id}})" style="font-size: 12px;
@@ -585,7 +587,7 @@
 
         // Format the date as "yyyy-mm-dd"
         var currentDate = yyyy + '-' + mm + '-' + dd;
-        parentdiv.append(`<div class="row align-items-center mt-2"><div class="col-3"> <input oninput="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrowfc(event)"></button></div></div>`)
+        parentdiv.append(`<div class="row align-items-center mt-2"><div class="col-3"> <input onchange="totalreglementfc(event)" type="number" name="mantantreglementclientfc" class="w-100 notempty" placeholder="Mantant"></div><div class="col-3"> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class="col-3"> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option><option value="verement">verement</option></select></div><div class="col-3 d-flex"> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"><button class="btn btn-sm bg-danger" onclick="removereglrowfc(event)"></button></div></div>`)
     }
 
     function yeardatareglfc(){
@@ -912,7 +914,7 @@
         tbody.html('')
         console.log(date, mantant)
         // get regl data
-        $.get('products/getreglementfc/'+reglementid, {
+        $.get('/products/getreglementfc/'+reglementid, {
 
             }, function(data){
                 $('.searchinputlistreglfcupdate').attr('clientid', data.clientid)
@@ -1010,22 +1012,22 @@
     })
 
     // check for npiece existence
-    // $('.npiecereglementclient').on('change', function(){
-    //     npiece=$(this).val()
-    //     console.log('check npiece', npiece)
-    //     $.get('/products/checknpiece', {
-    //         npiece:npiece,
-    //         csrfmiddlewaretoken: '{{ csrf_token }}'
-    //         }, function(data){
-    //             console.log(data)
-    //             if (data.exist){
-    //                 alertify.error('N° piece existe deja')
-    //                 $('.submitaddreglemntclientbtnfc').addClass('disabled')
-    //             }else{
-    //                 $('.submitaddreglemntclientbtnfc').removeClass('disabled')
-    //             }
-    //         })
-    // })
+    $('.npiecereglementclient').on('change', function(){
+        npiece=$(this).val()
+        console.log('check npiece', npiece)
+        $.get('/products/checknpiece', {
+            npiece:npiece,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            }, function(data){
+                console.log(data)
+                if (data.exist){
+                    alertify.error('N° piece existe deja')
+                    $('.submitaddreglemntclientbtnfc').addClass('disabled')
+                }else{
+                    $('.submitaddreglemntclientbtnfc').removeClass('disabled')
+                }
+            })
+    })
 
 
     $('.submitaddreglemntclientbtnfc').on('click', function(event){
@@ -1082,8 +1084,7 @@
             bons:JSON.stringify(selectedValues),
             csrfmiddlewaretoken: '{{ csrf_token }}'
             }, function(data){
-                forceupdatetab('addlistreglementfc', '/products/listreglementfc')
-                alertify.success('Reglement ajouté')
+                createtab('addlistreglementfc', 'REGLEMENT FACTURE', '/products/listreglementfc')
         })
     })
 

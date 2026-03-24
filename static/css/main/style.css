@@ -115,7 +115,7 @@ footer .uk-icon-button {
 }
 
 .in-slide-container .uk-slideshow-items {
-  background: url(/media/wh.jpg);
+  background: url(/static/images/aboutusbg.jpg);
   background-size: cover;
   background-position: center center;
   height: 70vh;

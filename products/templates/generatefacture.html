@@ -118,7 +118,7 @@ Facturé
                     <tr class="itemrow">
                         <td class="ref">{{i.product.ref}}</td>
                         <td class="name">{{i.product.name}}</td>
-                        <td>{{i.product.buyprice}}</td>
+                        <td>--</td>
                         <td>{{i.product.stocktotal}}</td>
                         <td>{{i.product.stockfacture}}</td>
                         <!-- <td>{{i.product.sellprice}}</td> -->
@@ -219,7 +219,7 @@ Facturé
                         // $('.facture{{livraison.id}}body').html('')
                         $('.submitfacture{{livraison.id}}').addClass('disabled')
                         deletetab('generatefacturetab{{livraison.id}}')
-                        ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
+                        createtab('addlistfactures', 'Factures', '/products/listfactures')
                         alertify.success('Facture créée avec succès')
                       }
                     }

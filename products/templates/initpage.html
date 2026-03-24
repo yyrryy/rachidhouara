@@ -1,33 +1,101 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Initital System</title>
-    <link rel="stylesheet" href="/static/css/bootstrap.css">
-  </head>
-  <body>
-    <div class="container">
-      <h3 class="text-center">
-        Configuration page
-      </h3>
-      <div class="row">
-        <div class="col-4">
-          Clients
-        </div>
-        <div class="col-4">
-          Fournisseurs
-        </div>
-        <div class="col-4">
-          Produits
-        </div>
-      </div>
 
+<div class="container">
+  <h3 class="text-center">
+    Configuration page
+  </h3>
+  <form action="saveconfiguration" method="post" enctype="multipart/form-data" id="saveconfiguration" class="row">
+    {% csrf_token %}
+    <div class="col-12">
+      <img src="{% if setting.logoheadfacture%}{{setting.logoheadfacture.url}}{%endif%}" alt=""><br>
+      logo:
+      <input type="file" name="logo" id="">
     </div>
+    <div class="col-4">
+
+      <strong>Nom de societe</strong>
+      <input type="text" class="form-control mb-2 name" name="name" placeholder="Nom de la societé" required value="{{setting.name.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>Addresse</strong>
+      <input type="text" class="form-control mb-2" name="address" placeholder="Adresse de la societé" required  value="{{setting.address.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>Fix</strong>
+      <input type="text" class="form-control mb-2" name="fix" placeholder="Fix de la societé" required  value="{{setting.fix.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>Phone</strong>
+      <input type="text" class="form-control mb-2" name="phone" placeholder="Téléphone" required  value="{{setting.phone.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>ICE</strong>
+      <input type="text" required class="form-control mb-2" name="ice" placeholder="ICE" value="{{setting.ice.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>IF</strong>
+      <input type="text" required class="form-control mb-2" name="id_fiscal" placeholder="id_fiscal" value="{{setting.idfiscal.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>PT</strong>
+      <input type="text" required class="form-control mb-2" name="pt" placeholder="pt" value="{{setting.pt.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>Registre Commerce</strong>
+      <input type="text" required class="form-control mb-2" name="rc" placeholder="rc" value="{{setting.rc.upper}}">
+    </div>
+    <div class="col-4">
+
+      <strong>Cnss</strong>
+      <input type="text" required class="form-control mb-2" name="cnss" placeholder="cnss" value="{{setting.cnss.upper}}">
+    </div>
+    <button class="btn btn-primary" onclick="saveconfiguration(event)">
+        Enregistrer
+    </button>
+  </form>
+  
+
+</div>
 
 
+<script>
+function saveconfiguration(event){
+event.preventDefault()
+console.log('sending configuration')
+name=$('[name="name"]').val()
+address=$('[name="address"]').val()
+phone=$('[name="phone"]').val()
+ice=$('[name="ice"]').val()
+logo=$('[name="logo"]').val()
+id_fiscal=$('[name="id_fiscal"]').val()
+pt=$('[name="pt"]').val()
+rc=$('[name="rc"]').val()
+// $.post('/products/saveconfiguration/',{name:name,address:address,phone:phone,ice:ice,id_fiscal:id_fiscal,pt:pt,rc:rc},function(data){
+//   if(data.status=='success'){
+//     alert('Configuration saved successfully')
+//   }
+// })
+if (name == "" || address == "" || phone == "" || ice == "" || id_fiscal == "" || pt == "" || rc ==""){
+    $('#saveconfiguration').css('border', '1px solid red')
+    return
+}
+var formData = new FormData($('#saveconfiguration')[0]);
 
-
-
-
-  </body>
-</html>
+$.ajax({
+    type: 'POST',
+    url: '{% url "products:saveconfiguration" %}',  // Replace with your Django URL
+    data: formData,
+    processData: false,
+    contentType: false,
+    success:((data)=>{
+      createtab('addreplist', 'REPRESENTANTS', '/products/initpage')
+    })
+})
+}
+</script>

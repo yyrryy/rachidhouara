@@ -17,13 +17,21 @@
   }
 </style>
 <body style="background: white; font-family: monospace;">
-  <div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-between p-2">
     <h5>Liste des Etude</h5>
+    <div class="col-4">
+      <select class="populateyears etudeyear" onchange="getetudesofyear()">
+
+      </select>
+    </div>
+    <div class="col-4">
+      <input type="text" class="form-control" placeholder="Chercher" onchange='searchetudetable()' id="searchInput">
+    </div>
     <button class="btn btn-primary" onclick="window.location='/products/addetude'">+</button>
   </div>
   <div class="p-2">
-    <table class="table table-bordered">
-      <thead>
+    <table class="table table-bordered table-hover">
+      <thead style="background: #38385a;color:white;">
         <td>Date saise</td>
         <td>Date Facture</td>
         <td>N° Facture</td>
@@ -33,7 +41,7 @@
         <td>Facture DH</td>
         <td></td>
       </thead>
-      <tbody>
+      <tbody class="etudesbody">
         {%for i in etudes%}
         <tr >
           <td>{{i.created_at|date:'d/m/y'}}</td>
@@ -42,7 +50,7 @@
           <td>{{i.supplier.name}}</td>
           <td>{{i.facturedevise}}</td>
           <td>{{i.tauxChange}}</td>
-          <td>{{i.facturedh}}</td>
+          <td>{{i.chargeandfacture}}</td>
           <td>
             <a href="updateetudepage?etudeid={{i.id}}">Modifier</a>
           </td>
@@ -51,6 +59,48 @@
       </tbody>
     </table>
   </div>
+  <script type="text/javascript">
+    function searchetudetable() {
+      // Get the search term
+      const searchInput = document.getElementById("searchInput").value.toLowerCase();
+
+      // Get all rows in the table body
+      const rows = document.querySelectorAll(".etudesbody tr");
+
+      // Loop through each row
+      rows.forEach(row => {
+          // Convert row text to lowercase and check if it includes the search term
+          const rowText = row.textContent.toLowerCase();
+          if (rowText.includes(searchInput)) {
+              row.style.display = ""; // Show the row
+          } else {
+              row.style.display = "none"; // Hide the row
+          }
+      });
+  }
+
+    function getetudesofyear(){
+      year=$('.populateyears').val()
+      $.get('/products/getetudesofyear', {'year':year}, (data)=>{
+        $('.etudesbody').html(data.trs)
+      })
+    }
+    console.log('>> populating years')
+    const $select = $('.populateyears');
+    $select.html('')
+    const currentYear = new Date().getFullYear();
+    const startYear = 2024;
+    console.log('startYear, currentYear', startYear, currentYear)
+
+    for (let year = startYear; year <= currentYear; year++) {
+        $select.prepend($('<option>', {
+            value: year,
+            text: year
+        }));
+    }
+    $select.val(currentYear);
+
+  </script>
 </body>
 
 </html>

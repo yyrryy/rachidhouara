@@ -4,26 +4,166 @@
 
 
 {% block content %}
+
+
+
 <div class="block">
-    <div class="container">
+    <div class="container position-relative">
+      <div class="col-12 shadow-lg rounded p-2 categorytitle fixed-bottom container border border-2" style="
+  background:#0d44a2; height: 6em;">
+    
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+
+          <select class="form-control mb-2 modes" aria-label="Default select example" name="modpymnt">
+            <option selected value="0">Mode de payement</option>
+            <option value="espece">Espece (-5%/article)</option>
+            <option value="cheque">Cheque</option>
+            <option value="effet">Effet</option>
+          </select>
+        </div>
+
+        <div>
+          <select class="form-control mb-2 modes" aria-label="Default select example" name="modlvrsn">
+            <option selected value="0">Mode de livraison</option>
+            <option value="LUX">LUX</option>
+            <option value="SDTM">SDTM</option>
+            <option value="GHAZALA">GHAZALA</option>
+            <option value="BAHA">BAHA express</option>
+            <option value="BG">BG</option>
+            <option value="VOIE EXPRESS">VOIE EXPRESS</option>
+          </select>
+        </div>
+        <button class="btn btn-primary valider">
+          valider le panier
+        </button>
+          
+      </div>
+      {% if user.groups.all.0.name != 'admin' %}
+      <div type="text" class="text-center" placeholder="Input group example" aria-label="Input group example" aria-describedby="basic-addon1">
+
+      </div>
+      {% endif %}
+  </div>
       <div class="cart">
-        <div class="cart__totals">
+        <div class="cart__table cart-table position-relative" style="height: 75vh;overflow-y: scroll;">
+          <div class="loadingcartitems flex-column align-items-center justify-content-center w-100 h-100 top-0 bg-dark" style="z-index:1199; position: absolute;">
+            <div class="spinner-border text-light"></div>
+          </div>
+        
+        
+          <table class="table table-bordered table-hover">
+            <thead class="">
+              <tr class="">
+                <th class="">Ref</th>
+                <th class="" style="width: 50%;">Article</th>
+                <th class="">Prix</th>
+                <th class="">Quantité</th>
+                <!-- <th class="">Total</th> -->
+                <th class=""></th>
+              </tr>
+            </thead>
+            <tbody class="">
+              {% for i in cartitems %}
+              <tr class="" ref="{{i.product.ref}}" n="{{i.product.name}}" id="{{i.product.id}}">
+          
+                <td class="">
+                  <a src="{{i.product.image}}" data-toggle="modal" data-target="#imagedisplaymodal" class="imagedisplaybtn" imgsrc="{{i.product.image}}">{{i.product.ref}}</a>
+                </td>
+                <td class="">
+                  <strong>{{i.product.name}}</strong>
+                </td>
+                <td class="price" data-title="Price">
+                <small class="priceholder" price={{i.product.price}}>{{i.product.price}} NET</small>
+                </td>
+                <td class="qtyholder" data-title="Quantity">
+                  <div class="cart-table__quantity input-number">
+                    <input onchange="edititemincart(event, '{{i.id}}')" class="form-control input-number__input qty" type="number" min="1" value="{{i.qty}}" price={{i.product.price}} name="qtytosub">
+                    
+                  </div>
+                </td>
+                <!-- <td class=" subtotal" data-title="Total">
+                <small>{{i.total}} NET</small>
+                </td> -->
+                <td class="">
+                  <button onclick="deleteitemcart(event, '{{i.id}}')" type="button" class="btn btn-sm btn-icon btn-muted" id="{{i.product.id}}">
+                    <svg width="12" height="12">
+                      <path d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6
+      c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4
+      C11.2,9.8,11.2,10.4,10.8,10.8z"></path>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot class="cart-table__foot">
+              <tr>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <!-- <div class="cart__totals">
           <div class="card">
             <div class="card-body card-body--padding--2">
               <table class="cart__totals-table">
                 
                 <tfoot>
-                  <tr hidden>
+                  <tr>
                     <th>Total NET</th>
                     <td class="total text-success"></td>
                   </tr>
-                  
+                  <tr class="remise d-none">
+                    <td>
+                      -5%
+                    </td>
+                    
+                  </tr>
+                  <tr class="remise d-none">
+                    <th>Total NET - REMISE</th>
+                    <td class="totalremise">
+                      0
+                    </td>
+                  </tr>
                   <!-- <tr>
                     <td>
                       <p class="text-cennter">
                         {{ request.user.client.name }}
                       </p>
                   </tr> -->
+                  <tr>
+                    <td>
+                    <div class="d-flex justify-content-between border flex-column">
+                      <!-- add a list od mod pyem -->
+                      <select class="form-control mb-2 modes" aria-label="Default select example" name="modpymnt">
+                          <option selected value="0">Mode de payement</option>
+                          <option value="espece">Espece (-5%/article)</option>
+                          <option value="cheque">Cheque</option>
+                          <option value="effet">Effet</option>
+                        </select>
+                  
+                  
+                      <!-- add a list od mod lvrs -->
+                  
+                      <select class="form-control mb-2 modes" aria-label="Default select example" name="modlvrsn">
+                          <option selected value="0">Mode de livraison</option>
+                          <option value="LUX">LUX</option>
+                          <option value="SDTM">SDTM</option>
+                          <option value="GHAZALA">GHAZALA</option>
+                          <option value="BAHA">BAHA express</option>
+                          <option value="BG">BG</option>
+                          <option value="VOIE EXPRESS">VOIE EXPRESS</option>
+                        </select>
+                    </div>
+                    <hr>
+                    </td>
+                  </tr>
+                  
+                  
+
+                  
+                  
                   {% if user.groups.all.0.name == 'salsemen' %}
                   <tr>
                     
@@ -31,11 +171,11 @@
                       <strong>
                         Client:
                       </strong>
-                      <select name="client" class="clientid modes clientscartselect" style="width: 100%;">
-                        <!-- <option value="0">---</option>
+                      <select name="client" class="form-control clientid modes">
+                        <option value="0">---</option>
                         {% for client in clients %}
-                        <option value="{{client.id}}">{{client.code}} | {{client.name}} | {{client.city}}</option>
-                        {% endfor %} -->
+                        <option value="{{client.id}}">{{client.name}} | {{client.city}}</option>
+                        {% endfor %}
                       </select>
                     </td>
                   </tr>
@@ -44,7 +184,7 @@
                       <div class="accordion" id="accordionExample">
                         <div class="">
                             
-                            <button class="btn w-100 bg-darkblue text-white" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button class="btn w-100" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                               + Nouveau client
                             </button>
                       
@@ -79,80 +219,21 @@
                   {% if user.groups.all.0.name == 'clients' %}
                   <tr class="text-center">
                     <td>
-                      <input type="hidden" class="clientid" name="clientid" value="{{user.client.id}}">
-                      <input type="hidden" class="cmndfromclient" name="clientid" value="true">
-                      <div class="text-center">{{ request.user.client.name }}</div>
+                      <input type="hidden" class="clientid" value="{{user.client.id}}">
+                    <div class="text-center">{{ request.user.client.name }}</div>
                     </td>
                   </tr>
-                  
+                        
                   {% endif %}
-                  <tr>
-                    <td>
-                      <input type="hidden" class="cmndfromclient" name="clientid" value="false">
-                    <div class="d-flex justify-content-between border flex-column">
-                      <!-- add a list od mod pyem -->
-                      <select class="form-control mb-2 modes" aria-label="Default select example" name="modpymnt">
-                          <option selected value="0">Mode de payement</option>
-                          <option value="espece">Espece</option>
-                          <option value="cheque">Cheque</option>
-                          <option value="effet">Effet</option>
-                        </select>
-                  
-                  
-                      <!-- add a list od mod lvrs -->
-                  
-                      <select class="form-control mb-2 modes" aria-label="Default select example" name="modlvrsn">
-                          <option selected value="0">Mode de livraison</option>
-                          <option value="LUX">LUX</option>
-                          <option value="SDTM">SDTM</option>
-                          <option value="GHAZALA">GHAZALA</option>
-                          <option value="BAHA">BAHA express</option>
-                          <option value="BG">BG</option>
-                          <option value="VOIE EXPRESS">VOIE EXPRESS</option>
-                        </select>
-                    </div>
-                    <hr>
-                    </td>
-                  </tr>
-                  
-                  
-
-                  
-                  
-                  
                 </tfoot>
               </table>
               <!-- <input type="hidden" class="clientid" value="{{request.user.client.id}}"> -->
-              <button class="btn btn-primary valider w-100" disabled>
+              <button class="btn btn-primary valider w-100">
                 valider le panier
                 </button>
             </div>
           </div>
-        </div>
-        <div class="cart__table cart-table position-relative">
-          <div class="loadingcartitems flex-column align-items-center justify-content-center w-100 h-100 top-0 bg-dark200" style="z-index:1199; position: absolute;">
-            <div class="spinner-border text-light"></div>
-        </div>
-        
-        
-          <table class="table table-bordered table-responsive" style="overflow: scroll;">
-            <thead class="">
-              <tr class="">
-                <th class="">Ref</th>
-                <th class="" style="width: 50%;">Article</th>
-                <th class="">Prix</th>
-                <th class="">Remise</th>
-                <th class="">Quantité</th>
-                <th class=""></th>
-              </tr>
-            </thead>
-            <tbody class="">
-              
-            </tbody>
-            
-          </table>
-        </div>
-        
+        </div> -->
       </div>
     </div>
 </div>
@@ -160,7 +241,35 @@
 
 {% block js %}
 <script>
-  
+  function edititemincart(event, id){
+    $('.loadingcartitems').toggleClass('d-none');
+    $.get({
+      url: '/edititemincart',
+      data: {
+        'cartitemid': id,
+        'qty': event.target.value,
+      },
+      success: function (data) {
+        $('.loadingcartitems').toggleClass('d-none');
+
+      }
+    });
+  }
+  function deleteitemcart(event, id){
+    $('.loadingcartitems').toggleClass('d-none');
+
+    $.get({
+      url: '/removeitemincart',
+      data: {
+        'cartitemid': id,
+      },
+      success: function (data) {
+        event.target.parentElement.parentElement.parentElement.remove();
+        $('.loadingcartitems').toggleClass('d-none');
+        
+      }
+    });
+  }
   // get the input element
   const input = document.getElementById('onlynumbers');
 

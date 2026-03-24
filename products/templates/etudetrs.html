@@ -1,0 +1,14 @@
+{%for i in etudes%}
+<tr >
+  <td>{{i.created_at|date:'d/m/y'}}</td>
+  <td>{{i.date|date:'d/m/y'}}</td>
+  <td>{{i.facture_no}}</td>
+  <td>{{i.supplier.name}}</td>
+  <td>{{i.facturedevise}}</td>
+  <td>{{i.tauxChange}}</td>
+  <td>{{i.facturedh}}</td>
+  <td>
+    <a href="updateetudepage?etudeid={{i.id}}">Modifier</a>
+  </td>
+  </tr>
+{% endfor %}

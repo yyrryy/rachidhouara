@@ -5,7 +5,7 @@
 </div> -->
 <div class="exportpdctsholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
   <div class="d-flex">
-    <select name="exportcategory" class="form-control col-6">
+    <select name="exportcategory">
       <option value="0">
         Tous
       </option>
@@ -20,9 +20,9 @@
       <button class="btn btn-success" onclick="exportcategory()">
         Copie Exc.
       </button>
-      <!-- <button class="btn btn-success" onclick="exportinventaire()">
+      <button class="btn btn-success" onclick="exportinventaire()">
         INVANTAIRE
-      </button> -->
+      </button>
 
     </div>
   </div>
@@ -45,19 +45,16 @@
 
     <div class="d-flex justify-content-between" style="width: 12em;">
       <button class="btn btn-info btn-sm" style="height: 15px;" onclick="$('.productstable tbody span.stockfacture').toggleClass('invisible')"></button>
-    <!-- <button class="btn btn-danger btn-sm" style="height: 15px;" onclick="showdeactivated()"></button> -->
+    <!-- <button class="btn btn-danger btn-sm" style="height: 15px;" onclick="showdeactivated()"></button>
     <button class="btn bi bi-download text-white" onclick="$('.exportpdctsholder').css('top', '10vh')"
     style="width: 2.7em;
     background: #df691a;
     height: 21px;
-    border-radius: 11px;"></button>
+    border-radius: 11px;"></button> -->
   </div>
   <!-- <button class="btn btn-sm bi bi-plus btn-success" onclick="ajaxpage('add', '+ Article', '/products/addproductspage')"></button> -->
   <!-- <div class="d-flex" > -->
-  <div class="d-flex" >
-    <button class="btn-success btn-sm" onclick="excelqtypdcts(event)" style="
-      height: 36px;
-    ">Quantité</button>
+  <div class="d-none" >
     <input type="file" class="form-control excelfile">
     <button class="btn-success btn-sm" onclick="excelpdcts(event)" style="
       height: 36px;
@@ -80,7 +77,7 @@
             <li class="list-group-item cat{{i.id}}" onclick="getproductsbycategory('{{i.id}}', '{{i.name}}', 'cat{{i.id}}')" style="background: #676767; color:white;">
                 <b type="button" class="categoriesbtn" data-catgoryid="{{i.id}}">
 
-                  {{i.name}} ({{i.produit_set.all.count}})
+                        {{i.name}} ({{i.produit_set.all.count}})
 
                 </b>
             </li>
@@ -101,14 +98,21 @@
                 <td style="width: 9%"  onclick="sorttable(event)">Ref</td>
                 <td style="width:30%;"  onclick="sorttable(event)">Designation</td>
                 <td  onclick="intsorttable(event)">Prix achat</td>
-                <td  onclick="intsorttable(event)">Remise achat</td>
-                <td  onclick="intsorttable(event)">Prix Vente</td>
-                <td  onclick="intsorttable(event)">Remise Vente</td>
+                <td  onclick="intsorttable(event)">Prix vente</td>
+                <td  onclick="intsorttable(event)">Remise</td>
+                <td  onclick="intsorttable(event)">Prix net</td>
                 <td  onclick="sorttable(event)">Stock</td>
+                <td class="text-center"  onclick="sorttable(event)">Q</td>
+                <td  onclick="sorttable(event)">Diametre</td>
                 <td class=""  onclick="sorttable(event)">block</td>
-                <!-- <td  onclick="sorttable(event)">Coutmoyen</td> -->
+                <td  onclick="sorttable(event)">Code</td>
+                <td  onclick="sorttable(event)">Coutmoyen</td>
+                <td  onclick="sorttable(event)">Ref 1</td>
+                <td  onclick="sorttable(event)">Ref 2</td>
+                <td  onclick="sorttable(event)">Ref 3</td>
                 <td  onclick="sorttable(event)">Marque</td>
-                <!-- <td>%</td> -->
+                <td  onclick="sorttable(event)">order</td>
+                <td></td>
               </tr>
             </thead>
             <tbody class="product-table-body">
@@ -117,11 +121,10 @@
                 <!--
                 -->
                 <!-- style="background:{% if not i.isactive %}#f3d6d694;{% endif %}" -->
-                <tr ondblclick="openwindow('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}?target={{target}}')"
+                <tr ondblclick="ajaxpage('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}?target={{target}}')"
                 
                 data-product-id="{{ i.id }}" class="product-row ">
-                    <td style="padding: 5px; font-weight: bold;" class="d-flex">
-                      <!-- <button class="btn btn-sm bi bi-eye"></button> -->
+                    <td style="padding: 5px; font-weight: bold;" class="pe-2">
                         {{i.ref.upper}}
                     </td>
                     <td style="padding: 5px; font-weight: bold;">
@@ -129,53 +132,88 @@
                     </td>
 
                     <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
-                      {%if isfarah%}{{i.frbuyprice}}{%else%}{{i.buyprice}}{%endif%}
+                       <!-- {% if i.buyprice %} -- {% else %} 0 {% endif %} -->
+                        -- 
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center">
-                      {%if isfarah%}{{i.frremise1}}{%else%}{{i.remise1}}{%endif%}
+                       {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}
                     </td>
                     <td style="padding: 5px; font-weight: bold; font-size: 14px; color: var(--orange);" class="text-center">
-                      {%if isfarah%}{{i.frsellprice}}{%else%}{{i.sellprice}}{%endif%}
+                        {{i.remise}}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center">
-                      {%if isfarah%}{{i.frremisesell}}{%else%}{{i.remisesell}}{%endif%}
+                        {{i.prixnet|floatformat:2}}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
-                        {% if isfarah %} {{i.stocktotalfarah}} {% else %} {{i.stocktotalorgh}} {% endif %}
+                        {% if target == 'f' %} {{i.stocktotalfarah}} {% else %} {{i.stocktotalorgh}} {% endif %}
                     </td>
-                    
+                    <td style="padding: 5px; font-weight: bold;" class="text-center stockfacture" style="color: blue;">
+                      <span class="stockfacture invisible">
+                        {% if target == 'f' %} {{i.stockfacturefarah}} {% else %} {{i.stockfactureorgh}} {% endif %}
+                      </span>
+                  </td>
 
-                    
+                    <td style="padding: 5px; font-weight: bold;">
+                      {{i.diametre}}
+                  </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-success">
                       {{i.block}}
                   </td>
-                  
-                  <!-- <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                  <td style="padding: 5px; font-weight: bold;">
+                    {{i.coderef}}
+                  </td>
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
                     {%if i.coutmoyen%}{{i.coutmoyen}}{%endif%}
-                </td> -->
-                   
+                </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.0}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.1}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.2}}
+                    </td>
                     <td style="padding: 5px; font-weight: bold;">
                       {{i.mark.name}}
                   </td>
-                  
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                    {{i.code}}
+                </td>
 
 
-                <!-- <td style="padding: 5px; font-weight: bold;" class="text-danger">
-                  <span class="percentage">
-                    {% if isfarah %}
-                    {{i.frgetpercentage|floatformat:2}}
-                    {% else %}
+                <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                  <span class="percentage invisible">
                     {{i.getpercentage|floatformat:2}}
-                    {% endif %}
                   </span>
-                </td> -->
+                </td>
 
                 </tr>
               {% endfor %}
 
 
             </tbody>
-            
+            <tfoot style="background: rgb(231, 231, 231); position: sticky; bottom: 0;" class="tfootlistproduct">
+              <tr>
+
+                <td></td>
+                <td class="text-end text-center" style="background: yellowgreen;">B</td>
+                <td class="totalprachstock text-center" style="background: yellowgreen;">{{totalbuyprice}}</td>
+                <td></td>
+                <td class="text-end text-center" style="background: yellowgreen;">F</td>
+                <td class="totalprachstockfc text-center" style="background: yellowgreen;">{{totalprixnet}} </td>
+                <td class="totalstock text-danger text-center" style="background: yellowgreen;">{{stocktotal}}</td>
+                <td class="totalstockfacture text-center" style="background: yellowgreen;color: blue;">{{stockfacture}}</td>
+                <td></td>
+                <td></td>
+                <td class="text-success"></td>
+                <td></td>
+                <td></td>
+                <td>
+                </td>
+                <td></td>
+              </tr>
+            </tfoot>
         </table>
       </div>
 
@@ -231,7 +269,7 @@
   }
   function exportcategory(){
     let categoryid = $('select[name="exportcategory"]').val();
-    let url = '/products/exportproducts?target={{target}}&categoryid=' + categoryid;
+    let url = '/products/exportproducts?categoryid=' + categoryid;
 
     // Create a hidden iframe to trigger the file download
     var iframe = $('<iframe>', {
@@ -286,7 +324,7 @@
 
     // Attach the scroll event listener
     $('.listproductsholder').on('scroll', handleScroll)
-    function excelpdcts(event){
+  function excelpdcts(event){
         let parentdiv=$(event.target).parent().parent()
         excelfile=parentdiv.find('.excelfile')
         // send excel file data in a ajax request
@@ -295,12 +333,11 @@
         // Append the Excel file to the FormData object
         formData.append('excelFile', excelfile[0].files[0]);
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        formData.append('target', '{{ target }}');
       // Make an AJAX request to send the file data
-        //$('.loadingscreen').removeClass('d-none')
+        $('.loadingscreen').removeClass('d-none')
         $.ajax({
-          url: '/products/excelpdcts', // to get products to databese
-          //url: '/products/updatestockinv', // Replace with your server endpoint
+          //url: '/products/excelpdcts', // to get products to databese
+          url: '/products/updatestockinv', // Replace with your server endpoint
           type: 'POST', // Use POST or other HTTP method as needed
           data: formData,
           processData: false,
@@ -309,7 +346,7 @@
             // Handle the success response from the server
             $('.loadingscreen').addClass('d-none')
             alertify.success('File uploaded successfully')
-            //updatetab('pducts', '/products/stock')
+            updatetab('pducts', '/products/stock')
 
           },
           error: function(xhr, status, error) {
@@ -319,51 +356,6 @@
           }
         });
     }
-
-    function excelqtypdcts(event){
-        let parentdiv=$(event.target).parent().parent()
-        excelfile=parentdiv.find('.excelfile')
-        // send excel file data in a ajax request
-        let formData = new FormData();
-
-        // Append the Excel file to the FormData object
-        formData.append('excelFile', excelfile[0].files[0]);
-        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        formData.append('target', '{{ target }}');
-      // Make an AJAX request to send the file data
-        //$('.loadingscreen').removeClass('d-none')
-        alertify.prompt( 'Confirmer', 'Mot de pass', '*****', function(evt, value) { 
-          if (value=='ORGHAD'){
-            $.ajax({
-              url: '/products/excelqtypdcts', // to get products to databese
-              //url: '/products/updatestockinv', // Replace with your server endpoint
-              type: 'POST', // Use POST or other HTTP method as needed
-              data: formData,
-              processData: false,
-              contentType: false,
-              success: function(response) {
-                // Handle the success response from the server
-                $('.loadingscreen').addClass('d-none')
-                alertify.success('File uploaded successfully')
-                //updatetab('pducts', '/products/stock')
-
-              },
-              error: function(xhr, status, error) {
-                $('.loadingscreen').addClass('d-none')
-                // Handle errors if the AJAX request fails
-                alertify.error('Error uploading file');
-              }
-            });
-          }else{
-            alertify.error('Mot de passe')
-          }
-      }
-      , function() { alertify.error('Cancel') });
-        
-    }
-
-
-    
 
   function totalsproductslist(){
     // let totalstock=0
@@ -392,16 +384,17 @@
     $('.listproductsholder').css('filter', 'blur(3px)')
     // Get the values from all filter input fields
     var filterValue = $(this).val().toLowerCase();
+    loadingproducts=false
+    currentPage=1
+    $('.listproductsholder').on('scroll', handleScroll);
+    // Split the filter value into individual terms based on the '&' sign
+    // var filterTerms = filterValue.split('+').map(function(term) {
+    //     return term.trim();
+    // });
     if (filterValue==""){
-      //ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
-    }
-    if (filterValue.length>=2){
-      
-      loadingproducts=false
-      currentPage=1
-      $('.listproductsholder').on('scroll', handleScroll);
-      
-      $.get('/products/searchproductsforstock?target={{target}}', {'term':filterValue.trim()}, (data)=>{
+        ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
+    }else
+      {$.get('/products/searchproductsforstock?target={{target}}', {'term':filterValue.trim()}, (data)=>{
 
               $(".productstable tbody").html('')
               $(".productstable tbody").html(data.trs)

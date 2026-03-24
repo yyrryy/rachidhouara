@@ -1,5 +1,11 @@
 <div class="row">
-    
+    <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('situationsupplier')">x</button>
+        <div>
+          {{title}}
+        </div>
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addsituationsupplier', '/products/situationsupplier')">↻</button>
+      </div>
     <div class="col-3 shadow rounded p-2">
       <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectsupp(event)">↻</button>
 
@@ -19,14 +25,9 @@
         </div>
 
         <button class="btn btn-success w-100 mt-2 genererrelvesupplier">Generer BL</button>
-        <button class="btn btn-success w-100 mt-2 genererrelvefcsupplier">Generer FC</button>
         <button class="btn btn-success w-100 mt-2" onclick="printsituationsupp()">Imprimer</button>
-        
-    </div>
-
-    <div>
-      <button class="btn btn-success w-100 mt-2 genererrelvesuppliernonregle">Generer BL non reglé</button>
-      <button class="btn btn-success w-100 mt-2 genererrelvefcsuppliernonregle">Generer FC non reglé</button>
+        <button class="btn btn-info w-100 mt-5 genererrelvefcsupplier">Generer FC</button>
+        <button class="btn btn-info w-100 mt-2" onclick="printsituationfcsupp()">Imprimer FC</button>
     </div>
 
     <div class="col-9 relevesuppholder" id="relevesuppholder">
@@ -51,7 +52,7 @@
       // $('body').addClass('d-flex flex-column vh-100 p-3')
       window.print();
       document.body.innerHTML = originalContents;
-      forceupdatetab('addsituationcl', 'products/situationcl')
+      forceupdatetab('addsituationcl', '/products/situationcl')
       */
       parentdiv=$(event.target).parent()
 
@@ -62,7 +63,7 @@
         alertify.error('ERRO')
         return
       }
-      var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevsuppprint?target={{target}}&supplierid='+suppid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
+      var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/relevsuppprint?supplierid='+suppid+'&datefrom='+datefrom+'&dateto='+dateto, '', 'width=900,height=900');
 
         myWindow.focus();
         setTimeout(function() {
@@ -188,7 +189,6 @@
                 'supplierid': supplierid,
                 'datefrom': datefrom,
                 'dateto': dateto,
-                "target": "{{target}}"
             },
             success: function(data){
                 $('.loader').addClass('d-none')
@@ -212,46 +212,13 @@
             return
         }
         $.ajax({
-            url: '/products/relevsupplier',
-            type: 'POST',
-            data: {
-              'target':'{{target}}',
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              'supplierid': supplierid,
-              'facture': '1',
-              'datefrom': datefrom,
-              'dateto': dateto,
-            },
-            success: function(data){
-                $('.loader').addClass('d-none')
-                $('.relevesuppholder').html(data.html)
-                // this used to reset date to today
-                //dateInput.value = currentDate;
-                //datetoInput.value = currentDate;
-            }
-        })
-    })
-    $('.genererrelvesuppliernonregle').on('click', function(){
-        parentdiv=$(this).parent()
-        console.log(parentdiv)
-        // check notempty
-        supplierid=parentdiv.find('select[name="suppliersituationselect"]').val()
-        datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
-        dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
-        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
-        if (supplierid==null || datefrom=='' || dateto==''){
-            alertify.error('Remplir les champs')
-            return
-        }
-        $.ajax({
-            url: '/products/relevsuppliernonregle',
+            url: '/products/relevsupplierfc',
             type: 'POST',
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 'supplierid': supplierid,
                 'datefrom': datefrom,
                 'dateto': dateto,
-                "target": "{{target}}"
             },
             success: function(data){
                 $('.loader').addClass('d-none')
@@ -262,37 +229,4 @@
             }
         })
     })
-    $('.genererrelvefcsuppliernonregle').on('click', function(){
-        parentdiv=$(this).parent()
-        console.log(parentdiv)
-        // check notempty
-        supplierid=parentdiv.find('select[name="suppliersituationselect"]').val()
-        datefrom=parentdiv.find('input[name="situationsuppdatefrom"]').val()
-        dateto=parentdiv.find('input[name="situationsuppdateto"]').val()
-        var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
-        if (supplierid==null || datefrom=='' || dateto==''){
-            alertify.error('Remplir les champs')
-            return
-        }
-        $.ajax({
-            url: '/products/relevsuppliernonregle',
-            type: 'POST',
-            data: {
-              'target':'{{target}}',
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              'supplierid': supplierid,
-              'facture': '1',
-              'datefrom': datefrom,
-              'dateto': dateto,
-            },
-            success: function(data){
-                $('.loader').addClass('d-none')
-                $('.relevesuppholder').html(data.html)
-                // this used to reset date to today
-                //dateInput.value = currentDate;
-                //datetoInput.value = currentDate;
-            }
-        })
-    })
-
 </script>

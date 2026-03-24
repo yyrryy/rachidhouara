@@ -1,0 +1,112 @@
+
+<div class="row">
+    <div class="col-3">
+        <div class="bg-white rounded shadow p-2">
+            <form action="createcategory" method="post" enctype="multipart/form-data" id="createcategory">
+                {% csrf_token %}
+                <input name="categoryname" type="text" class="form-control mb-2" placeholder="Categorie" required>
+                <input name="categorycode" type="text" class="form-control mb-2" placeholder="Code" required>
+                <select hidden name="categoryaffichage" class="form-control mb-2" required>
+                    <option value="full">full</option>
+                    <option value="table">table</option>
+                    <option value="double">double</option>
+                </select>
+                <strong>Image</strong>
+                <input name="categoryimage" type="file" class="form-control" required>
+                
+                
+                
+                <button class="btn btn-success mt-2 createcategorybtn">Ajouter</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-9">
+        
+        <div class="bg-white border p-2">
+            <div class="row">
+                {% for i in categories %}
+                <div class="col-4 mb-2 searchcards">
+                    <p hidden>
+                        {{i.name}}
+                    </p>
+                    <div class="bg-white rounded shadow p-2">
+                        <form action="{% url 'products:updatecategory' %}" method="post" enctype="multipart/form-data" id="updateform{{i.id}}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{i.id}}">
+                            {{i.id}}
+                            {% if i.image %}
+                            <img class="text-center w-100 mb-2" src="{{i.image.url}}" alt="">
+                            {% endif %}
+                            <input type="file" name="updatecategoryimage" class="form-control imageinp">
+                            <input type="text" name="updatecategoryname" class="form-control nameinp mb-2" value="{{i.name}}" placeholder="Nom de categorie">
+                            <input type="text" name="updatecategorycode" class="form-control codeinp" value="{{i.code}}" placeholder="Code">
+                            
+                            <button class="btn btn-sm btn-success w-100 updatecategorybtn" id="{{i.id}}">Mise à jour</button>
+                        </form>
+                    </div>
+                </div>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script>
+    $(function(){
+     $('.select').select2()
+    })
+
+    $('.updatecategorybtn').on('click', function(event){
+        event.preventDefault()
+        id=$(event.target).attr('id')
+        form=$(event.target).parent()
+        name=$($(event.target).parent().find('input')[3]).val()
+        code=$($(event.target).parent().find('input')[4]).val()
+        console.log(name, code)
+        if (name=="" || code==""){
+            $($(event.target).parent()[0]).css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($(event.target).parent()[0]);
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:updatecategory" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                createtab('add', '+ ARTICLE', '/products/categoriespage')
+                //$(`#ctg`).html(data.html)
+                //location.reload()                
+            })
+        })
+        
+    
+    })
+    $('.createcategorybtn').on('click', function(event){
+        event.preventDefault()
+        console.log('sending')
+        if ($('[name="categoryname"]').val()==""){
+            $('#createcategory').css('border', '1px solid red')
+            return
+        }
+        var formData = new FormData($('#createcategory')[0]);
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "products:createcategory" %}',  // Replace with your Django URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:((data)=>{
+                if(data.success){
+                    createtab('categories', 'categories', '/products/categoriespage')
+                }else{
+                    alertify.error('Erreur lors de la création de la catégorie');
+                }
+                //$(`#ctg`).html(data.html)
+                //location.reload()
+            })
+        })
+    })
+ </script>

@@ -16,7 +16,7 @@
     </div>
   
       <div class="d-flex justify-content-between align-items-center row">
-        <a href="/catalogpage" class="bi bi-arrow-left col-md-6"></a>
+        <a href="/catalog" class="bi bi-arrow-left col-md-6"></a>
         <div class="form-group col-md-6">
           <input type="text" class="form-control " placeholder="Chercher" id="searchbox">
         </div>
@@ -169,30 +169,30 @@
 
 <script>
 
-  // let cards = document.querySelectorAll('.products-list__item')
+  let cards = document.querySelectorAll('.products-list__item')
 
-  //   function liveSearch() {
-  //       let search_query = document.getElementById("searchbox").value;
-  //       //Use innerText if all contents are visible
-  //       //Use textContent for including hidden elements
-  //       for (var i = 0; i < cards.length; i++) {
-  //           if(cards[i].textContent.toLowerCase()
-  //                   .includes(search_query.toLowerCase())) {
-  //                     cards[i].classList.remove("d-none");
-  //           } else {
-  //               cards[i].classList.add("d-none");
-  //           }
-  //       }
-  //   }
+    function liveSearch() {
+        let search_query = document.getElementById("searchbox").value;
+        //Use innerText if all contents are visible
+        //Use textContent for including hidden elements
+        for (var i = 0; i < cards.length; i++) {
+            if(cards[i].textContent.toLowerCase()
+                    .includes(search_query.toLowerCase())) {
+                      cards[i].classList.remove("d-none");
+            } else {
+                cards[i].classList.add("d-none");
+            }
+        }
+    }
     
-  //   //A little delay
-  //   let typingTimer;               
-  //   let typeInterval = 500;  
-  //   let searchInput = document.getElementById('searchbox');
+    //A little delay
+    let typingTimer;               
+    let typeInterval = 500;  
+    let searchInput = document.getElementById('searchbox');
     
-  //   searchInput.addEventListener('keyup', () => {
-  //       clearTimeout(typingTimer);
-  //       typingTimer = setTimeout(liveSearch, typeInterval);
-  //   });
+    searchInput.addEventListener('keyup', () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(liveSearch, typeInterval);
+    });
 </script>
 {% endblock %}

@@ -37,11 +37,12 @@
             <td>
                 <!-- {% if not i.ispointage and i.isempty %}ondblclick="getfacturedata(event)"{% endif %} -->
                 <input ondblclick="getfacturedata(event)" style="width:20em; background:{% if i.isempty %}yellowgreen;{% endif %}" value="{% if i.factures %}{{ i.factures }}{% endif %}" class="factures col-10 {% if i.iscontable %}bg-warning{% endif %}" isempty='{{ i.isempty }}'>
+                <!-- <button class="btn btn-sm border" onclick="comptabilise(event)">c</button> -->
                 {% if not i.isprinted %}<button class="btn btn-sm bi bi-download" onclick="makethisprint(event, '{{i.id}}', '{{i.factures}}')"></button>{% endif %}
                 <button class="btn btn-success btn-sm" title="Reglement" onclick="reglementech(event)"></button>
                 <!-- this to make facture comptabilisé -->
-                {% if i.ispaid and not i.facturesaccount %}
-                <button class="btn border btn-sm" title="Comptabite" onclick="comptabilise(event, {{i.id}})">C</button>
+                {% if not i.facturesaccount %}
+                <button class="btn border btn-sm border bg-dark rounded text-white" title="Comptabite" onclick="comptabilise(event, {{i.id}})">CC</button>
                 {% endif %}
                 <!-- this to know that ther is more than one facture -->
                 {% if i.factures|length > 8 %}

@@ -233,7 +233,7 @@
                         </div>DH
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-3" hidden>
                     <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
                         Result HT
@@ -248,7 +248,7 @@
 
                         Charges
                         <div class="">
-                            <input type="text" style="width: 100%" class="totalcharges" onchange="getrepresults(event)">DH
+                            <input type="number" style="width: 100%" class="totalcharges" onchange="getrepresults(event)">DH
                         </div>
                     </div>
                 </div>
@@ -256,7 +256,7 @@
                 <div class="col-3">
                     <div class="bg-success text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
-                        apres charges HT
+                        apres charges TTC
                         <div class="aftercharges">
                             --
                         </div>DH
@@ -275,7 +275,7 @@
                 <div class="col-3">
                     <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
-                        Resultat
+                        REST
                         <div class="finalresult" >
                             --
                         </div>DH
@@ -313,7 +313,7 @@
                         </div>DH
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-3" hidden>
                     <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
                       Difference
@@ -340,7 +340,7 @@
                         </div>DH
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-3" hidden>
                     <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
                         Result HT
@@ -355,7 +355,7 @@
 
                         Charges
                         <div class="">
-                            <input type="text" style="width: 100%" class="reptotalcharges" onkeyup="getrepresultsrep(event)">DH
+                            <input type="number" style="width: 100%" class="reptotalcharges" onchange="getrepresultsrep(event)">DH
                         </div>
                     </div>
                 </div>
@@ -372,17 +372,17 @@
                 <div class="col-3">
                     <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
-                        Pourcentage
-                        <div>
-                            <input type="text" style="width: 80%"  class="reppercentage" onkeyup="getrepresultsrep(event)">%
-                        </div>
+                        Reglements
+                        <div  class="totalreglements">
+                            --
+                        </div>Dh
                     </div>
                 </div>
 
                 <div class="col-3">
                     <div class="bg-darkblue text-white rounded shadow d-flex align-items-center text-center mb-2 p-2 d-flex flex-column align-items-center">
 
-                        Resultat
+                        REST
                         <div class="repfinalresult" >
                             --
                         </div>DH
@@ -390,6 +390,7 @@
                 </div>
             </div>
         </div>
+        <h1>BONS</h1>
         <div class="mt-2">
              <div style="height: 45vh; overflow: scroll;" class="">
                 <table class="table table-bordered table-hover table-striped " style="font-size: 12px;" id="addbonlivraisonle">
@@ -450,9 +451,72 @@
                     </td>
                   </tfoot>
                 </table>
+            </div>
+        </div>
+        
+        <h1>AVOIRS</h1>
+        <div class="mt-2">
+            <div style="height: 70vh; overflow: scroll;">
+                <table class="table table-bordered table-hover table-striped listavcltable" style="font-size: 12px;">
+                <thead style="background: #676767; color: white; position: sticky; top: 0; z-index: 99;">
+                    <tr>
+                    <td style="width: 8%;">N° bon</td>
+                    <td style="width: 8%;">Date</td>
+                    <td style="width: 12%;">Client</td>
+                    <td style="width: 5%;">Code client</td>
+                    <td style="width: 5%;">Total</td>
+                    <td style="width: 5%;">Region</td>
+                    <td style="width: 5%;">Ville</td>
+                    {% if facturesection %}<td style="width: 5%;">Solde</td>{% endif %}
+                    <td style="width: 5%;">Repr</td>
+                    <td style="width: 5%;">status</td>
+                    <td style="width: 5%;">Note</td>
+                    </tr>
+                </thead>
+                <tbody class="listavclbody">
+                    
+                </tbody>
+                
+                </table>
+            </div>
+        </div>
+
+        <h1>REGLEMENTS</h1>
+        <div class="mt-2">
+            <div style="height: 62vh; overflow: scroll;" class="reglbltableholder mt-2">
+                <table class="table table-bordered reglbltable text-center table-hover" style="font-size: 12px;">
+                    <thead style="position: sticky; top: 0;" class="bg-darkblue text-white">
+                        <th onclick="sorttable(event)">
+                            Type
+                        </th>
+                        <th onclick="sorttable(event)">
+                            N°
+                        </th>
+                        <th onclick="sorttable(event)">
+                            Mantant
+                        </th>
+                        <th onclick="sorttable(event)">
+                            Date saisie
+                        </th>
+                        <th onclick="sorttable(event)" class="text-start">
+                            Client
+                        </th>
+                        <th onclick="sorttable(event)">
+                            Code cl.
+                        </th>
+                        <th onclick="sorttable(event)">
+                            Echeance
+                        </th>
+                        <th onclick="sorttable(event)">
+                            N° Bons
+                        </th>
+                    </thead>
+                    <tbody class="listreglement">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 <script>
     function getrepresults(event){
 
@@ -461,12 +525,14 @@
         totalfactures=parseFloat(parent.find('.totalfactures').text())
         totalavoirs=parseFloat(parent.find('.totalavoirs').text())
         resultht=parseFloat(parent.find('.resultht').text().replace(/\s/g, ''))
+        totalreglements=parseFloat(parent.find('.totalreglements').text().replace(/\s/g, ''))
+        resultttc=parseFloat(parent.find('.resultttc').text().replace(/\s/g, ''))
         console.log(resultht)
         totalcharges=parseFloat(parent.find('.totalcharges').val())
         percentage=parseFloat(parent.find('.percentage').val())
-        aftercharges=(resultht-totalcharges).toFixed(2)
+        aftercharges=(resultttc-totalcharges).toFixed(2)
         $('.aftercharges').text(aftercharges)
-        afterpercentage=((aftercharges*percentage)/100).toFixed(2)
+        afterpercentage=(aftercharges-totalreglements).toFixed(2)
         $('.finalresult').text(afterpercentage)
         console.log(totalcharges, totalavoirs, totalfactures, resultht)
     }
@@ -476,8 +542,22 @@
         totalfactures=parseFloat(parent.find('.totalrepfactures').text())
         totalavoirs=parseFloat(parent.find('.totalrepavoirs').text().replace(/\s/g, ''))
         resultht=parseFloat(parent.find('.represultht').text().replace(/\s/g, ''))
+        resultttc=parseFloat(parent.find('.represultttc').text().replace(/\s/g, ''))
         totalblfc=parseFloat(parent.find('.reptotalblfc').text().replace(/\s/g, ''))
         totalcharges=parseFloat(parent.find('.reptotalcharges').val()?parent.find('.reptotalcharges').val():0)
+        $.get("/products/addcharges", {
+            'repid':"{{rep.id}}",
+            'charge': totalcharges,
+            'startdate':$('.startdatefilterreponfo{{rep.id}}').val(),
+            'enddate':$('.enddatefilterreponfo{{rep.id}}').val(),
+        }, (data)=>{
+            if (data.success){
+                console.log('charge added')
+            }else{
+                console.log('error adding charge')
+            }
+        })
+        // # add charges to database uning the start date
         totaldiff=parseFloat(parent.find('.reptotaldiff').val()?parent.find('.reptotaldiff').val():0)
         percentage=parseFloat(parent.find('.reppercentage').val()?parent.find('.reppercentage').val():0)
         console.log('afterdiff',totalblfc,totaldiff,totalavoirs)
@@ -485,9 +565,10 @@
         htafterdif=(afterdiff/1.2).toFixed(2)
         parent.find('.represultttc').text(afterdiff)
         parent.find('.represultht').text(htafterdif)
-        aftercharges=(htafterdif-totalcharges).toFixed(2)
+        totalreglements=parseFloat(parent.find('.totalreglements').text().replace(/\s/g, ''))
+        aftercharges=(resultttc-totalcharges).toFixed(2)
         $('.repaftercharges').text(aftercharges)
-        afterpercentage=((aftercharges*percentage)/100).toFixed(2)
+        afterpercentage=(aftercharges-totalreglements).toFixed(2)
         $('.repfinalresult').text(afterpercentage)
         console.log(totalcharges, totalavoirs, totalfactures, resultht)
     }
@@ -500,6 +581,7 @@
             $('.totalsystembons').text('loading.........')
             $('.totalrepbons').text('loading.........')
             $('.totalrepfactures').text('loading.........')
+            $('.totalreglements').text('loading.........')
             $('.reptotalcharges').val('')
             $('.reptotaldiff').val('')
             $('.totalcharges').val('')
@@ -523,8 +605,10 @@
             }, (data)=>{
                 $('.totalsystembons').text(data.totalbons.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.totalrepbons').text(data.totalrepbons.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.totalreglements').text(data.totalreglements.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.totalrepfactures').text(data.totalrepfactures.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.totalfactures').text(data.totalfactures.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+                $('.reptotalcharges').val(data.charges)
                 //$('.totalavoirs').text(data.totalavoirs.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.totalrepavoirs').text(data.totalavoirs.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.totalblfc').text(data.totalblfc.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
@@ -534,9 +618,12 @@
                 $('.resultht').text(data.resultht.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.represultht').text(data.represultht.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
                 $('.listblbodyinreponfo').html(data.bons)
+                $(".listavclbody").html(data.avoir_html)
+                $(".listreglement").html(data.reglement_html)
                 $('.listblbodyinreponfo').append(data.factures)
                 $('.totalbonfc').text(data.totalblfctable)
-
+                $('.repaftercharges').text(data.aftercharges)
+                $('.repfinalresult').text(data.repfinalresult)
             })
         }
     }
@@ -586,7 +673,7 @@
             success: function (data) {
                 if(data.success){
                     alertify.success('OK')
-                    updatetab('rep{{rep.id}}', 'products/onereppage/{{rep.id}}')
+                    updatetab('rep{{rep.id}}', '/products/onereppage/{{rep.id}}')
                 }else{
                     alertify.error(data.error);
                 }
@@ -615,7 +702,7 @@
             dataType: 'json',
             success: function (data) {
                 if(data.success){
-                    updatetab('rep{{rep.id}}', 'products/onereppage/{{rep.id}}')
+                    updatetab('rep{{rep.id}}', '/products/onereppage/{{rep.id}}')
                 }else{
                     alertify.error(data.error);
                 }
@@ -646,7 +733,7 @@
             dataType: 'json',
             success: function (data) {
                 if(data.success){
-                    //updatetab('rep{{rep.id}}', 'products/onereppage/{{rep.id}}')
+                    //updatetab('rep{{rep.id}}', '/products/onereppage/{{rep.id}}')
                 }else{
                     alertify.error(data.error);
                 }

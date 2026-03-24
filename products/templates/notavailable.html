@@ -15,7 +15,7 @@
     height: 21px;
     border-radius: 11px;"></button>
   </div>
-  <button class="btn btn-sm bi bi-plus btn-success" onclick="ajaxpage('add', '+ Article', '/products/addproductspage')"></button>
+  <button class="btn btn-sm bi bi-plus btn-success" onclick="createtab('add', '+ Article', '/products/addproductspage')"></button>
   <div class="d-flex" >
     <input type="file" class="form-control excelfile">
     <button class="btn-success btn-sm" onclick="excelnotav(event)" style="
@@ -63,7 +63,7 @@
                     </td>
                     
                     <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
-                       {% if i.buyprice %} {{i.buyprice|floatformat:2}} {% else %} 0 {% endif %}
+                       {% if i.buyprice %} -- {% else %} 0 {% endif %}
                     </td>
                     <td style="padding: 5px; font-weight: bold;" class="text-center">
                        {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}

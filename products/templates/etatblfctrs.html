@@ -1,4 +1,20 @@
 {% load global_tags %}
+<table class="table table-bordered table-hover" style="font-size: 12px; border-color: black;" id="etattable">
+  <thead class="bg-darkblue text-white" style="position:sticky; top:0;">
+    <td style="width: 15%; white-space: nowrap;">Client</td>
+    <td style="text-align: center; width: 5%;" onclick="$('.clientespece').toggleClass('d-none')">Code</td>
+    <td style="text-align: center; width: 5%">Ville</td>
+    <td style="text-align: center; width: 5%">Region</td>
+    <td style="text-align: center; width: 5%">Repr.</td>
+    <td style="text-align: center; width: 2%"></td>
+    {% for i in months %}
+    <td style="text-align: center" onclick="intsorttable(event)">{{i}}</td>
+    {% endfor %}
+    <td onclick="intsorttable(event)">Situation</td>
+    <td style="text-align: center; width: 2%">Impr.</td>
+  </thead>
+  <tbody class="etatblfctrs">
+
 {% for i in data %}
 <tr>
   <td>{{i.client_name}}</td>
@@ -53,3 +69,15 @@
 </td>
 </tr>
 {% endfor %}
+<tr>
+  <td>Total solb bl</td>
+  <td>{{totalsoldbl|intspace}}</td>
+</tr>
+<tr>
+  <td>Total solb fc</td>
+  <td>{{totalsoldfc|intspace}}</td>
+</tr>
+
+  </tbody>
+
+</table>

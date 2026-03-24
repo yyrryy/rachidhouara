@@ -1,0 +1,17 @@
+{% load global_tags %}
+
+{% for order in bons %}
+  <tr class="ord" orderid="{{order.code}}" ondblclick="createtab('avoir{{order.id}}', 'avoir {{order.no}}', '/products/avoirdetails/{{order.id}}')">
+    <td>{{ order.no }}</td>
+    <td>{{ order.date|date:'d/m/Y' }}</td>
+    <td>{{ order.client.name }}</td>
+    <td>{{ order.client.code }}</td>
+    <td>{{ order.total}}</td>
+    <td>{{ order.client.region }}</td>
+    <td>{{ order.client.city }}</td>
+    {% if facturesection %}<td>{{ order.client.methodsoldfc|floatformat:2 }}</td>{% endif %}
+    <td>{{ order.representant }}</td>
+    <td>{% if order.avoirfacture %} facture {% else %}  BL {% endif %} </td>
+    <td>{% if order.note %} {{ order.note }} {% endif %}</td>
+  </tr>
+{% endfor %}

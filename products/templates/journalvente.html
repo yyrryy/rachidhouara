@@ -1,16 +1,14 @@
 {% load global_tags %}
 <div class="row position-relative">
     <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('journalvente')">x</button> -->
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('journalvente')">x</button>
         <div>
           {{title}}
         </div>
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('journalvente', '/products/journalvente')">↻</button> -->
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('journalvente', '/products/journalvente')">↻</button>
     </div>
     <div style="background: #ffc39a; padding: 5px;">
         <div class="d-flex">
-            
-            <select class="productsearch" style="width: 80%;" id=""></select>
             <div>
                 <input type="date" name="jvdatefrom" class="form-control notempty jvdatefrom" value="{{today|date:'Y-m-d'}}">
             </div>
@@ -20,14 +18,14 @@
             <button class="btn btn-sm-success bg-darkblue text-white" onclick="getdatefilter()">Filtrer</button>
         </div>
 
-        <!-- <div class="d-flex justify-content-between mt-2">
+        <div class="d-flex justify-content-between mt-2">
 
             <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputjournalv">
 
-            <select onchange="getjvdatayear(event)" class="jvyear populateyears disabled" hidden>
+            <select onchange="getjvdatayear(event)" class="jvyear populateyears">
 
             </select>
-        </div> -->
+        </div>
     </div>
 
     <div style="height: 70vh; overflow: scroll;" class="journalvtableholder">
@@ -36,20 +34,23 @@
                 <tr>
                     <td onclick="datesorttable(event)">Date</td>
                     <td onclick="sorttable(event)">N° bon</td>
-                    <td onclick="sorttable(event)">REF</td>
-                    <td onclick="sorttable(event)">Designation</td>
+                    <td onclick="sorttable(event)">REf</td>
+                    <td onclick="sorttable(event)">Product</td>
                     <td onclick="intsorttable(event)">Prix vente</td>
-                    <td onclick="intsorttable(event)">Remise</td>
+                    <td onclick="intsorttable(event)">Prix V. Net</td>
+                    <td onclick="intsorttable(event)">Cout moyen</td>
+                    <td onclick="intsorttable(event)">D. prix achat</td>
                     <td class="text-danger" onclick="intsorttable(event)">Qté</td>
                     <td onclick="intsorttable(event)">Total</td>
                     <td onclick="sorttable(event)">Client</td>
-                    <!-- <td onclick="sorttable(event)">Code client</td> -->
-                    <!-- <td class="text-success" onclick="intsorttable(event)">Marge</td> -->
+                    <td onclick="sorttable(event)">Code</td>
+                    <td onclick="sorttable(event)">Rep.</td>
+                    <td class="text-success" onclick="intsorttable(event)">Marge</td>
                 </tr>
             </thead>
             <tbody>
                 <!-- (prix vente net - cout moyen)*qty=la marge -->
-                <!-- {% for i in items %}
+                {% for i in items %}
                 <tr class="journalvente-row">
                     <td>{{i.date|date:"d/m/Y"}}</td>
                     <td>{{i.bon.bon_no}}</td>
@@ -68,11 +69,12 @@
 
                     </td>
                 </tr>
-                {% endfor %} -->
+                {% endfor %}
             </tbody>
             <thead style="position: sticky; bottom: 0; background: white;">
                 <tr class="text-white">
-                    
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -81,76 +83,26 @@
                     <td></td>
                     <td class="bg-success totalqtyjv">{{totalqty|intspace}}</td>
                     <td class="bg-success totaltotaljv">{{totaltotal|intspace}}</td>
-                    <!-- <td></td> -->
                     <td></td>
-                    <!-- <td></td>
-                    <td class="bg-success totalmargejv"></td> -->
+                    <td></td>
+                    <td></td>
+                    <td class="bg-success totalmargejv"></td>
                 </tr>
             </thead>
         </table>
     </div>
 </div>
 <script>
-    $('.productsearch').select2({
-
-
-        ajax: {
-        type:'get',
-        dataType: 'json',
-        url: '/products/searchproduct?target={{target}}',
-        data: function (params) {
-            var query = {
-            term: params.term,
-            }
-            // Query parameters will be ?search=[term]&type=public
-            return query;
-        },
-        proccessresults: function (data) {
-            return {
-                results:data.results
-            }
-        },
-        cache:true
-        },
-        minimumInputLength: 2,
-        placeholder:'Chercher Produits',
-        templateResult: formatRepo,
-        templateSelection: formatRepoSelection,
-        });
-        function formatRepo (repo) {
-        if (repo.loading) {
-            return repo.text;
-        }
-
-        console.log('>>> repo', repo)
-        var $container = $(
-            `<div class="row"><strong class="col-10" style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div class="col-2"><img src="${repo.image}" style="width:100%;">${repo.mark}</div></div>`
-            );
-
-
-            return $container;
-        }
-
-        function formatRepoSelection (repo) {
-        return repo.text;
-        }
-  //populateyears()
+  currentPagejournalvente=1
+  oadingjournalvente=false
+  $('.journalvtableholder').on('scroll', handleScrolljv);
+  populateyears()
     function getdatefilter(){
       currentPagejournalvente=1
       loadingjournalvente=false
         datefrom=$('.jvdatefrom').val()
         dateto=$('.jvdateto').val()
-        productid=$('.productsearch').val()
-        // if (productid==null || productid=='' || datefrom=='' || dateto==''){
-        //     alertify.error('Selectionner un produit/date')
-        //     return
-        // }
-        $.get('/products/filterjvdate', {
-            'datefrom':datefrom, 
-            'dateto':dateto,
-            'productid':productid==null?null:productid.split('§')[5],
-            'target':'{{target}}'
-        }, (data)=>{
+        $.get('/products/filterjvdate', {'datefrom':datefrom, 'dateto':dateto}, (data)=>{
             $('.journalvtable tbody').html(data.trs)
             $('.totaltotaljv').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
             $('.totalqtyjv').text(data.totalqty)
@@ -213,7 +165,7 @@
 
       const lastRow = document.querySelector('.journalvente-row:last-child');
       const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
-      let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
+      let year=$('.jvyear').val()
       let startdate=lastRow.getAttribute('startdate')?lastRow.getAttribute('startdate'):0
       let enddate=lastRow.getAttribute('enddate')?lastRow.getAttribute('enddate'):0
       let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
@@ -227,10 +179,10 @@
     function getjvdatayear(event){
         currentPagejournalvente=1
         loadingjournalvente=false
-        // $('.journalvtableholder').on('scroll', handleScrolljv);
+        $('.journalvtableholder').on('scroll', handleScrolljv);
         year=$(event.target).val()
         if (year != ''){
-            $.get('products/yeardatajournalv', {'year':year}, (data)=>{
+            $.get('/products/yeardatajournalv', {'year':year}, (data)=>{
                 console.log(data)
                 $('.journalvtable tbody').html(data.trs)
                 $('.totaltotaljv').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))

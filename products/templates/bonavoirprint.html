@@ -45,8 +45,8 @@
     <!-- last iteration -->
     <div class="px-5 d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
-      <div class="">
-        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+      <div class="mt-5">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="avoirlogo invisible">
 
         <div class="d-flex justify-content-between mt-3">
           <div class="">
@@ -60,14 +60,15 @@
           </div>
           <h3>
               <b>
-                Bon Avoir
+                Avoir
               </b>
             </h3>
 
           <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
-            
+
             <div>{{order.client.name.upper}}</div>
             <div>{{order.client.code.upper}}</div>
+            <div>ICE: {{order.client.ice}}</div>
             <div>{{order.client.city.upper}}</div>
           </div>
         </div>
@@ -79,12 +80,12 @@
 
       <!-- livraison items -->
       <div class="orderitems bg-white rounded p-2 position-relative">
-        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+        <img width="1000em" class="avoirlogo invisible" src="/media/logos/dd.png" style="
           position: absolute !important;
           right: 9.3em;
           opacity: 0.1;
           top: 5em;
-          visibility: hidden;
+
           ">
         <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
           <thead style="background: #c9c9c967; font-size: 10px;
@@ -92,6 +93,9 @@
             <tr>
               <td style="">Ref</td>
               <td style="width:53%;">Designation</td>
+              {% if order.avoirfacture %}
+              <td>N° Facture</td>
+              {% endif %}
               <td style="width: 5%;">Qté</td>
               <td style="width: 7%;">P.U</td>
               <td style="width: 5%;">Rem</td>
@@ -100,7 +104,7 @@
           </thead>
           <tbody>
             <tr>
-              <td style="height: 200mm;white-space: nowrap; padding:3px">
+              <td style="height: 175mm;white-space: nowrap; padding:3px">
                   {% for v in i %}
 
                   {{v.product.ref.upper}}
@@ -114,6 +118,14 @@
                   <br>
                   {% endfor %}
               </td>
+              {% if order.avoirfacture %}
+              <td>
+                {% for v in i %}
+                  {{v.source}}
+                  <br>
+                {% endfor %}
+            </td>
+            {% endif %}
               <td class="text-center">
                   {% for v in i %}
 
@@ -148,7 +160,25 @@
 
         </table>
         <!-- footer total -->
-        <div class="d-flex justify-content-between">
+        <table class="table table-bordered" style="border:1px solid;">
+          <tr>
+            <td>
+              <b>Total HT: {{ht|floatformat:2}}</b>
+            </td>
+            <td>
+              <b>TVA: {{tva|floatformat:2}}</b>
+            </td>
+            <td class="text-end">
+              <b>Total TTC: {{order.total|floatformat:2}}</b>
+            </td>
+          </tr>
+        </table>
+        <!-- <div style="font-size:11px">
+          LOT ARGANA N° B25 - AIT MELLOUL <br>
+          IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - ICE: 001667720000027 <br>
+          Fixe: +212 528 24 35 17 - Tel: 06 66 03 72 81
+        </div> -->
+        <!-- <div class="d-flex justify-content-between">
           <small>
             page: {{forloop.counter}}/{{orderitems|length}}
           </small>
@@ -163,7 +193,7 @@
           </div>
 
 
-        </div>
+        </div> -->
 
       </div>
     </div>
@@ -173,8 +203,8 @@
     <!-- other pages -->
     <div class="px-5 d-flex flex-column postion-relative livraison{{order.id}}holder p-3" style="height: 1123px;width: 21cm; page-break-before: always;">
       <!-- header -->
-      <div class="">
-        <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+      <div class="mt-5">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="avoirlogo invisible">
 
         <div class="d-flex justify-content-between mt-3">
           <div class="">
@@ -188,14 +218,15 @@
           </div>
           <h3>
               <b>
-                Bon Avoir
+                Avoir
               </b>
             </h3>
 
           <div style="width: 15em; text-align: center;margin-right: 10px; border: 3px solid; padding: 3px; box-shadow: 4px 3px black;border-radius: 12px">
-            
+
             <div>{{order.client.name.upper}}</div>
             <div>{{order.client.code.upper}}</div>
+            <div>ICE: {{order.client.ice}}</div>
             <div>{{order.client.city.upper}}</div>
           </div>
         </div>
@@ -207,12 +238,12 @@
 
       <!-- livraison items -->
       <div class="orderitems bg-white rounded p-2 position-relative">
-        <img width="1000em" class="bgbl" src="/media/logos/dd.png" style="
+        <img width="1000em" class="avoirlogo invisible" src="/media/logos/dd.png" style="
           position: absolute !important;
           right: 9.3em;
           opacity: 0.1;
           top: 5em;
-          visibility: hidden;
+
           ">
         <table class="table table-bordered blitems" style="font-size: 13px; font-family: serif; border-color: black;">
           <thead style="background: #c9c9c980; font-size: 10px;
@@ -220,6 +251,9 @@
             <tr>
               <td style="">Ref</td>
               <td style="width:53%;">Designation</td>
+              {% if order.avoirfacture %}
+              <td>N° Facture</td>
+              {% endif %}
               <td style="width: 5%;">Qté</td>
               <td style="width: 7%;">P.U</td>
               <td style="width: 5%;">Rem</td>
@@ -228,7 +262,7 @@
           </thead>
           <tbody>
             <tr>
-              <td style="height: 200mm;white-space: nowrap; padding:3px">
+              <td style="height: 175mm;white-space: nowrap; padding:3px">
                   {% for v in i %}
 
                   {{v.product.ref.upper}}
@@ -242,6 +276,14 @@
                   <br>
                   {% endfor %}
               </td>
+              {% if order.avoirfacture %}
+              <td>
+                {% for v in i %}
+                  {{v.source}}
+                  <br>
+                {% endfor %}
+            </td>
+            {% endif %}
               <td class="text-center">
                   {% for v in i %}
 
@@ -293,7 +335,9 @@
 
 
 <script>
-
+  if (localStorage.getItem('showenteteavoir') === 'true'){
+    $('.avoirlogo').removeClass('invisible')
+  }
 
   function livraison(divName){
          var printContents = document.getElementById(divName).innerHTML;

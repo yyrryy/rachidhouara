@@ -37,7 +37,7 @@
 
                     </select>
                 </div>
-                <div hidden class="mb-2 cerpselectholderfacture">
+                <div class="mb-2 cerpselectholderfacture">
                     <small>Representant:</small>
                     <select name="representant" id="" style="width:100%;" class="select2 repsselectsfacture form-select notemptyfacture">
                         <option value="">---</option>
@@ -148,7 +148,7 @@
                   </td>
                 </tr>
               </tfoot> -->
-              <tbody class="facturebody">
+              <tbody class="bonlivraisonbody">
 
               </tbody>
             </table>
@@ -197,39 +197,7 @@
           clicksinfc = 0;
       }
   }
-  $(document).ready(function(){
-      // $('.clientselectfacture').select2('open')
-      // get products from localstorage
-      console.log('>>')
-      pdcts=JSON.parse(localStorage.getItem('facture')) || []
-      total=localStorage.getItem('totalfacture') || 0
-      parentdiv=$('.facturebody')
-      for (let i=0; i<pdcts.length; i++){
-        item=pdcts[i]
-        let tr = `
-        <tr class="itemrow ${item.stock<=0? "text-danger":"" }" id=${item.id}>
-            <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${item.id})">${item.ref}</td>
-            <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${item.name}</td>
-            <td style="paddingpx 0; font-size: 13px;" class="dp">${item.dp}</td>
-            <td style="padding: 2px 0; font-size: 13px;" class="stock">${item.stock}</td>
-            <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${item.clientprice}</td>
-            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${item.id})" name="qty" value="${item.qty}" style="height:23px; width:100%;"></td>
-            <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${item.id})" name="price" value="${item.price}" step=0.01 style="height:23px; width:100%;"></td>
-            <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${item.remise}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bondevi', ${item.id})" name="remise" style="height:23px; width:100%;"></td>
-            <td style="padding: 2px 0; font-size: 13px;" class="netprice">${item.netprice}</td>
-            <td style="padding: 2px 0; font-size: 13px;" class="total">${item.total}</td>
-            <input type="hidden" name="productid" value="${item.id}">
 
-        </tr>
-        `
-        parentdiv.prepend(tr)
-      }
-      $('.totalbon').text(total)
-      
-      console.log(pdcts)
-
-    })
-    
   function addrowfacture(event){
     let target=$(event.target)
     parentdiv=target.parent().parent().parent().parent()
@@ -237,7 +205,7 @@
     // this reset the select2 value
     // $('.resultsholderbonlivraison').val('').trigger('change')
     // ids of products in bon stored in localstorage
-    let bonachatbody = parentdiv.find('.facturebody')
+    let bonachatbody = parentdiv.find('.bonlivraisonbody')
     let addname=parentdiv.find('[name="addname"]')
     let addqty=parentdiv.find('[name="addqty"]')
     let addprice=parentdiv.find('[name="addprice"]')
@@ -262,7 +230,7 @@
       $('.resultsholderbonlivraison').select2('open')
       return
     }
-    
+
     // here is the case if qty is greater than stock
     console.log(addqty.val(), stockfacture)
     if (parseInt(addqty.val())>parseInt(stockfacture)){
@@ -304,19 +272,7 @@
 
         </tr>
         `
-        item={
-          'id': id,
-          'qty': addqty.val(),
-          'price': addprice.val(),
-          'remise': addremise.val(),
-          'total': addtotal,
-          'name': name,
-          'ref': ref,
-          'dp': dp,
-          'stock': stock,
-          'clientprice': priceclient,
-          'netprice': netprice
-        }
+
         bonachatbody.prepend(tr)
         // delete selected option
         parentdiv.find('.addstock').val('')
@@ -325,12 +281,10 @@
         addname.val('')
         addremise.val('')
         addprice.val('')
-        
         var totalSum = 0;
         parentdiv.find('.total').each(function() {
             totalSum += parseFloat($(this).text());
         });
-        savetolocalstorage(item, totalSum, 'facture')
         parentdiv.find('.totalbon').text(totalSum.toFixed(2))
         parentdiv.find('.resultsholderbonlivraison').select2('open')
       }, function(){
@@ -394,7 +348,7 @@
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproduct?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -434,7 +388,7 @@
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
+          url: '/products/searchclient',
           data: function (params) {
             var query = {
               term: params.term,
@@ -480,14 +434,17 @@
         return
       }else{
         parentdiv.find('.productsfactureholder').removeClass('d-none')
-        $.get('products/getclientrep/'+$(this).val(), function(data){
+        $.get('/products/getclientrep/'+$(this).val(), function(data){
           $('.repsselectsfacture').val(data.id).trigger('change')
         })
       }
     })
-    
+    localStorage.removeItem('pdctsinfacture')
+    localStorage.setItem('pdctsinfacture', '[]')
     // $('.select2').select2()
-    
+    $(document).ready(function(){
+      $('.clientselectfacture').select2('open')
+    })
         // fill today's date in .datebon input
         var dateInput = document.querySelector('.datebonfacture');
 
@@ -572,12 +529,10 @@
       })
 
       $('.submitfacture').on('click', (e)=>{
-        let clientid = parentdiv.find('.clientselectfacture').val()
-        let datebon = parentdiv.find('.datebonfacture').val()
         parentdiv=$(e.target).parent().parent().parent().parent()
-        if (parentdiv.find('.clientselectfacture').val()=='' || datebon==""){
-          parentdiv.find('.data').addClass('border border-danger')
-          return
+        if (parentdiv.find('.clientselectfacture').val()=='' || parentdiv.find('.repsselectsfacture').val()==''){
+            parentdiv.find('.data').addClass('border border-danger')
+            return
         }
         parentdiv.find('.data').removeClass('border border-danger')
         // check if .itemrow is exist
@@ -601,7 +556,7 @@
             }
 
           parentdiv.find('.submitfacture').addClass('disabled')
-          trs=parentdiv.find('.facturebody tr')
+          trs=parentdiv.find('.bonlivraisonbody tr')
           let products = []
           trs.each(function(){
               let tr = $(this)
@@ -625,7 +580,9 @@
               }
               products.push(product)
           })
-          
+          let clientid = parentdiv.find('.clientselectfacture').val()
+          let repid = parentdiv.find('.repsselectsfacture').val()
+          let datebon = parentdiv.find('.datebonfacture').val()
           let transport = parentdiv.find('.transport').val()
           let note = parentdiv.find('.note').val()
           //let orderno = parentdiv.find('.orderno').val()
@@ -637,6 +594,7 @@
           data={
               'totalbon': totalbon,
               'clientid': clientid,
+              'repid':repid,
               'transport':transport,
               'datebon': datebon,
               //'orderno': orderno,
@@ -649,7 +607,6 @@
               url: "{% url 'products:addfacture' %}",
               type: 'POST',
               data: {
-                  'target': '{{target}}',
                   'totalbon': totalbon,
                   'clientid': clientid,
                   'repid':repid,
@@ -664,11 +621,9 @@
               success: function(data){
                 console.log('sent')
                 // remove list in localstorage
-                // localStorage.removeItem('pdctsinfacture')
-                // deletetab('addfacture')
-                ajaxpage('addlistfactures', 'Factures', '/products/listfactures?target={{target}}')
                 localStorage.removeItem('pdctsinfacture')
-                localStorage.setItem('pdctsinfacture', '[]')
+                deletetab('addfacture')
+                createtab('addlistfactures', 'Factures', '/products/listfactures')
               }
           })
 

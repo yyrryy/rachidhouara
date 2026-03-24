@@ -34,15 +34,15 @@
     <script src="/static/js/jquerySpellingNumber.js"></script>
     <link href="/static/css/minified.css" rel="stylesheet" />
 </head>
-<body>
-  <div id="printbachat{{bon.id}}" class="bonbody">
+<body
+<div id="printbachat{{bon.id}}" class="bonbody">
   {% for i in orderitems %}
   {% if forloop.counter == orderitems|length %}
   <!-- last iteration -->
-  <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 1123px; page-break-before: always;">
+  <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 29.7cm; width: 21cm; page-break-before: always; border:1px solid;">
     <!-- header -->
     <div class="">
-      <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+      <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
 
       <div class="d-flex justify-content-between mt-3">
         <div class="">
@@ -89,10 +89,7 @@
             <td style="width:53%;">Designation</td>
             <td style="width: 5%;">Qté</td>
             <td style="width: 7%;">P.U</td>
-            <td style="width: 7%;">Rem1</td>
-            <td style="width: 5%;">Rem2</td>
-            <td style="width: 5%;">Rem3</td>
-            <td style="width: 5%;">Rem4</td>
+            <td style="width: 5%;">Rem</td>
             <td style="width: 13%;">Mantant</td>
           </tr>
         </thead>
@@ -100,16 +97,21 @@
           <tr>
             <td style="height: 190mm;white-space: nowrap;">
                 {% for v in i %}
-
-                
+                {% if v.ref == '-' %}
                 {{v.product.ref.upper}}
+                {% else %}
+                {{v.ref.upper}}
+                {% endif %}
                 <br>
                 {% endfor %}
             </td>
             <td style="white-space: nowrap;">
                 {% for v in i %}
-                
+                {% if v.name == '-' %}
                 {{v.product.name.upper|slice:'45'}}
+                {% else %}
+                {{v.name.upper|slice:'45'}}
+                {% endif %}
                 <br>
                 {% endfor %}
             </td>
@@ -128,38 +130,11 @@
                 {% endfor %}
             </td>
             <td class="text-center">
-              {% for v in i %}
-
-              {{v.remise1|floatformat:-2}}
-              <br>
-              {% endfor %}
-          </td>
-          <td class="text-center">
-              {% for v in i %}
-
-              {{v.remise2|floatformat:-2}}
-              %
-              <br>
-              {% endfor %}
-          </td>
-
-          <td class="text-center">
-            {% for v in i %}
-
-            {{v.remise3|floatformat:-2}}
-            %
-            <br>
-            {% endfor %}
-        </td>
-
-        <td class="text-center">
-          {% for v in i %}
-
-          {{v.remise4|floatformat:-2}}
-          %
-          <br>
-          {% endfor %}
-      </td>
+                {% for v in i %}
+                {{v.remise}}%
+                <br>
+                {% endfor %}
+            </td>
             <td class="text-center">
                 {% for v in i %}
 
@@ -198,10 +173,10 @@
 
   {% else %}
   <!-- other pages -->
-  <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 1123px; page-break-before: always;">
+  <div class="d-flex flex-column postion-relative bonachat{{bon.id}}holder p-3" style="height: 29.7cm; width: 21cm; page-break-before: always; border:1px solid;">
     <!-- header -->
     <div class="">
-      <img src="" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
+      <img src="/media/logos/logo2.jpg" alt="" style="width: 40%; visibility: hidden;" class="bllogo">
 
       <div class="d-flex justify-content-between mt-3">
         <div class="">
@@ -248,26 +223,29 @@
             <td style="width:53%;">Designation</td>
             <td style="width: 5%;">Qté</td>
             <td style="width: 7%;">P.U</td>
-            <td style="width: 7%;">Rem1</td>
-            <td style="width: 5%;">Rem2</td>
-            <td style="width: 5%;">Rem3</td>
-            <td style="width: 5%;">Rem4</td>
+            <td style="width: 5%;">Rem</td>
             <td style="width: 13%;">Mantant</td>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="height: 150mm;white-space: nowrap;">
+            <td style="height: 200mm;white-space: nowrap;">
                 {% for v in i %}
-                
+                {% if v.ref == '-' %}
                 {{v.product.ref.upper}}
+                {% else %}
+                {{v.ref.upper}}
+                {% endif %}
                 <br>
                 {% endfor %}
                 </td>
               <td style="white-space: nowrap;">
                 {% for v in i %}
-                
+                {% if v.name == '-' %}
                 {{v.product.name.upper|slice:'45'}}
+                {% else %}
+                {{v.name.upper|slice:'45'}}
+                {% endif %}
                 <br>
                 {% endfor %}
             </td>
@@ -288,36 +266,10 @@
             <td class="text-center">
                 {% for v in i %}
 
-                {{v.remise1|floatformat:-2}}
+                {{v.remise}}%
                 <br>
                 {% endfor %}
             </td>
-            <td class="text-center">
-                {% for v in i %}
-
-                {{v.remise2|floatformat:-2}}
-                %
-                <br>
-                {% endfor %}
-            </td>
-
-            <td class="text-center">
-              {% for v in i %}
-
-              {{v.remise3|floatformat:-2}}
-              %
-              <br>
-              {% endfor %}
-          </td>
-
-          <td class="text-center">
-            {% for v in i %}
-
-            {{v.remise4|floatformat:-2}}
-            %
-            <br>
-            {% endfor %}
-        </td>
             <td class="text-center">
                 {% for v in i %}
 

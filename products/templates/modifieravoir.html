@@ -32,7 +32,7 @@ margin: 0;
 <div class="">
        <div class="bg-white rounded shadow p-2 mb-3 data d-flex justify-content-between">
           <div class="col-5">
-            <select name="mode" id="" style="width:100%;" class="form-select notemptylivraison modeselectav{{avoir.id}}" hidden>
+            <select name="mode" id="" style="width:100%;" class="form-select notemptylivraison modeselectav{{avoir.id}}">
 
 
               <option value="bl">BL</option>
@@ -45,9 +45,9 @@ margin: 0;
 
                   </select>
               </div>
-              <div class="mb-2" hidden>
+              <div class="mb-2">
                   <small>Representant:</small>
-                  <select name="representant" id="" style="width:100%;" class="select2 repsselectsavoir{{avoir.id}} form-select">
+                  <select name="representant" id="" style="width:100%;" class="select2 repsselectsavoir{{avoir.id}} form-select notemptyavoir{{avoir.id}}">
                       <option value="{{avoir.representant.id}}">{{avoir.representant.name}}</option>
                       {% for i in commercials %}
                       <option value="{{i.id}}">{{i.name}}</option>
@@ -59,7 +59,7 @@ margin: 0;
 
                   <input type="date" class="form-control datebonavoir{{avoir.id}}" name="datebonavoir{{avoir.id}}" value="{{avoir.date|date:'Y-m-d'}}" placeholder="Date bon">
               </div>
-              <div class="mb-2" hidden>
+              <div class="mb-2">
                 <small>N° avoir:</small>
                   <input type="text" class="form-control ordernoavoir{{avoir.id}}" name="ordernoavoir{{avoir.id}}" value="{{avoir.no}}">
               </div>
@@ -83,6 +83,7 @@ margin: 0;
             <div class="col-4">
               <input type="number" class="form-control" placeholder="Quantité" name="addqty">
               <div class="addstock text-danger"></div>
+              <div class="addsource text-danger"></div>
             </div>
             <div class="col-4">
               <input type="number" class="form-control" placeholder="Prix" name="addprice">
@@ -95,7 +96,7 @@ margin: 0;
               <input hidden readonly type="text" name="addname" class="form-control">
             </div>
             <div class="col-12">
-              <button class="btn btn-outline-secondary" onclick="addrowupdateavoir(event, '{{avoir.id}}')">Ajouter</button>
+              <button class="btn btn-primary" onclick="addrowupdateavoir(event, '{{avoir.id}}')">+ Ajouter</button>
             </div>
           </div>
 
@@ -133,6 +134,7 @@ margin: 0;
                     <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
                     <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
                     <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
+                    <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Source</td>
                     <!-- <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix Net</td> -->
                     <td style="padding: 2px 0; font-size: 13px;">Total</td>
                 </tr>
@@ -157,12 +159,14 @@ margin: 0;
               <tr class="itemrow">
                   <td class="ref" onclick="removelineupdateavoircl(event, '{{avoir.id}}', '{{i.product.id}}')">{{i.product.ref}}</td>
                   <td class="name">{{i.product.name}}</td>
-                  <td>{{i.product.buyprice}}</td>
+                  <td>--</td>
                   <td>{{i.product.stocktotal}}</td>
                   <td class="clientprice">{{i.clientprice}}</td>
-                  <td><input type="number" class="calculate qty" onkeyup="calculate(event)" name="qty" value="{{i.quantity}}"></td>
+                  <td><input type="number" class="calculate qty" onkeyup="calculate(event)" name="qty" value="{{i.qty}}"></td>
                   <td><input type="number" class="calculate price" onkeyup="calculate(event)" name="price" value="{{i.price}}"></td>
-                  <td><input type="number" class="calculate remise" onkeyup="calculate(event)" name="remise" value="{{i.remise1}}"></td>
+                  <td><input type="number" class="calculate remise" onkeyup="calculate(event)" name="remise" value="{{i.remise}}"></td>
+                  <td>{{i.source}}</td>
+
                   <!-- <td>{{i.product.prixnet}}</td> -->
                   <td class="total">{{i.total}}</td>
                   <input type="hidden" name="productid" value="{{i.product.id}}">
@@ -185,39 +189,6 @@ margin: 0;
         </div>
     </div>
     {{avoir.id}}
-    <div class="reglementbonsholder border position-relative mt-5">
-
-      <div class="inputsholder">
-          <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button>
-          <strong class="totalreglblfields">0.00</strong>
-              <div class="d-flex align-items-center justify-content-between">
-                    <div class="">
-                        <small>Mantant:</small> <br>
-
-                    </div>
-                    <div class="">
-                        <small>N° piece:</small> <br>
-
-                    </div>
-                    <div class="">
-                        <small>Mode Paiment:</small> <br>
-
-                    </div>
-                    <div class="">
-                      <small>Echeance:</small> <br>
-
-                  </div>
-                  <div class="">
-                    <small>Bank:</small> <br>
-
-                </div>
-                </div>
-              <div class="reglements">
-                <div class="d-flex justify-content-between align-items-center mt-2"><div class=""> <input type="number" name="mantantreglementclient" onkeyup="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant"></div><div class=""> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class=""> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"></div><div class="d-flex"><div><input type="text" name="bank" class="w-100" placeholder="Nom bank"></div>
-                </div></div>
-              </div>
-          </div>
-    </div>
 </div>
 
 <script>
@@ -277,7 +248,7 @@ margin: 0;
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproduct?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -308,6 +279,7 @@ margin: 0;
     // this reset the select2 value
     // parentdiv.find('.resultsholderbonlivraison').val('').trigger('change')
     // ids of products in bon stored in localstorage
+    let addsource = parentdiv.find('.addsource')
     let bonachatbody = parentdiv.find('tbody')
     let addname=parentdiv.find('[name="addname"]')
     let addqty=parentdiv.find('[name="addqty"]')
@@ -327,6 +299,7 @@ margin: 0;
       addname.val('')
       addremise.val('')
       addprice.val('')
+      addsource.text('')
       alertify.error('Ce produit est deja dans le bon')
       $('.productsavoir{{avoir.id}}').select2('open')
 
@@ -346,6 +319,7 @@ margin: 0;
         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
         <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
         <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
+        <td style="paddingpx 0; font-size: 13px;" class="source">${addsource.text()}</td>
         <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
         <input type="hidden" name="productid" value="${id}">
 
@@ -358,6 +332,7 @@ margin: 0;
     addname.val('')
     addremise.val('')
     addprice.val('')
+    addsource.text('')
     totals=parentdiv.find('.total')
     totalbon=parentdiv.find('.totalbon')
     var totalSum = 0;
@@ -389,6 +364,7 @@ margin: 0;
         let addremise=parent.find('input[name="addremise"]')
         let addqty=parent.find('input[name="addqty"]')
         parent.find('.addstock').text(stock)
+
         addqty.val('')
         addremise.val('')
         addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
@@ -432,6 +408,7 @@ margin: 0;
                 addremise.val(0)
               }else{
 
+                parent.find('.addsource').text(data.source)
                 addprice.val(data.price)
                 addremise.val(data.remise)
               }
@@ -445,7 +422,7 @@ margin: 0;
 
     $('.submitbonavoir{{avoir.id}}').on('click', (e)=>{
       let parentdiv=$(e.target).parent().parent().parent().parent()
-      if ($('.datebonavoir{{avoir.id}}').val()==''){
+      if ($('.repsselectsavoir{{avoir.id}}').val()=='' || $('.datebonavoir{{avoir.id}}').val()=='' || $('.ordernoavoir{{avoir.id}}').val()==''){
           parentdiv.find('.data').addClass('border border-danger')
           return
       }
@@ -470,7 +447,7 @@ margin: 0;
               return
           }
 
-        
+        $('.submitbonavoir{{avoir.id}}').addClass('disabled')
         trs=$('.avoirbodyupdate{{avoir.id}} tr')
         let avclproducts = []
         trs.each(function(){
@@ -480,6 +457,7 @@ margin: 0;
             let ref = tr.find('.ref').text()
             let price = tr.find('.price').val()
             let remise = tr.find('.remise').val()
+            let source = tr.find('.source').text()
             let total = tr.find('.total').text()
             let productid = tr.find('input[name="productid"]').val()
             let product = {
@@ -488,6 +466,7 @@ margin: 0;
                 'ref': ref,
                 'price': price,
                 'remise': remise,
+                'source': source,
                 'total': total,
                 'productid': productid,
             }
@@ -501,26 +480,6 @@ margin: 0;
         let datebon = $('.datebonavoir{{avoir.id}}').val()
         let orderno = $('.ordernoavoir{{avoir.id}}').val()
         let totalbon=parseFloat($('.totalbonavoir{{avoir.id}}').text())
-        if (parseFloat($('.totalreglblfields').text())>0 && parseFloat($('.totalreglblfields').text())!=totalbon){
-          alertify.error('Total payement doit etre egale au total bon')
-          return
-        }
-        mantant=parentdiv.find('[name="mantantreglementclient"]').map(function() {
-              return parseFloat(this.value);
-          }).get();
-          mode=parentdiv.find('[name="modereglementclient"]').map(function() {
-              return this.value;
-          }).get();
-          npiece=parentdiv.find('[name="npiece"]').map(function() {
-              return this.value;
-          }).get();
-          bank=parentdiv.find('[name="bank"]').map(function() {
-              return this.value;
-          }).get();
-          echeance=parentdiv.find('[name="echeance"]').map(function() {
-              return this.value;
-          }).get();
-        $('.submitbonavoir{{avoir.id}}').addClass('disabled')
         console.log(totalbon)
         console.log('sending')
         localStorage.removeItem('pdctsinbonavoir{{avoir.id}}')
@@ -529,16 +488,11 @@ margin: 0;
             url: "{% url 'products:updatebonavoir' %}",
             type: 'POST',
             data: {
-              'mantant':JSON.stringify(mantant),
-              'mode':JSON.stringify(mode),
-              'npiece':JSON.stringify(npiece),
-              'echeance':JSON.stringify(echeance),
-              'bank':JSON.stringify(bank),
-              'target':'{{target}}',
               'bonid': '{{avoir.id}}',
               'totalbon': totalbon,
               'clientid': clientid,
               'repid':repid,
+              'mode':mode,
               'datebon': datebon,
               'orderno': orderno,
               'products': JSON.stringify(avclproducts),
@@ -549,7 +503,7 @@ margin: 0;
                 alertify.success('Bon avoir modifié')
                 // delerte this tab
                 deletetab('addmodifieravoir{{avoir.id}}')
-                ajaxpage('avoircl', 'AvoirCL', '/products/listavoirclient?target={{target}}')
+                createtab('avoircl', 'AvoirCL', '/products/listavoirclient')
               }
               else{
                 alertify.error('ERROR')

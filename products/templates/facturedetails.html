@@ -1,20 +1,16 @@
 {% load global_tags %}
 <div class="d-flex mb-5" style="position: sticky;top: 0; background: white;z-index: 999;">
   <div>
-    <button class="btn btn-success" onclick="printfacture('{{target}}', '{{facture.id}}')">
-      Telecharger (Categorie)
-    </button>
-    <button class="btn btn-success" onclick="printfactureproductname('{{target}}', '{{facture.id}}')">
-      Telecharger (Designation)
-    </button>
-  <!-- <button class="btn btn-sm btn-success" onclick="entete()">
+     <button class="btn btn-success" onclick="printfacture('{{facture.id}}')">
+    Telecharger
+  </button>
+  <button class="btn btn-sm btn-success" onclick="entete()">
     entette
-  </button> -->
-  {% if not facture.bons.all %}
-  <button class="btn btn-danger" onclick="ajaxpage('addmodifierfacture{{facture.id}}', 'Modifier facture {{facture.facture_no}}', '/products/modifierfacture/{{facture.id}}')">
+  </button>
+
+  <button class="btn btn-danger" onclick="createtab('addmodifierfacture{{facture.id}}', 'Modifier facture {{facture.facture_no}}', '/products/modifierfacture/{{facture.id}}')">
     Modifier
   </button>
-  {% endif %}
   <button class="btn btn-success" onclick="comptable(event, '{{facture.id}}')">
   {% if facture.isaccount %}
     Normal
@@ -24,7 +20,12 @@
   </button>
   <input placeholder="Note" class="notefacture{{facture.id}}input" value="{%if facture.note%}{{facture.note}}{%endif%}"><button class="btn btn-info" onclick="updatenotefacture('{{facture.id}}')">+</button>
   </div>
-  
+  <select class="ms-2 updaterepfacture{{facture.id}}">
+    <option value="{{facture.salseman.id}}">{{facture.salseman.name}}</option>
+    {% for i in reps %}
+    <option value="{{i.id}}">{{i.name}}</option>
+    {% endfor %}
+  </select>
 
   {% if not facture.printed %}
   <button class="ms-2 btn btn-success" onclick="printed(event, '{{facture.id}}')">
@@ -33,22 +34,7 @@
   {% endif %}
 </div>
 <div class="d-flex justify-content-between">
-  
   <div id="printfc{{facture.id}}" style="position:relative;">
-    <div class="row">
-      <div class="col-6">
-        <select class="ms-2 updatefactureclient" style="width: 100%;">
-        
-        </select>
-        <button class="btn btn-dark w-100" onclick="updatefactureclient()">Modifier client</button>
-      </div>
-      <div class="col-6">
-        <input type="date" class="ms-2 updatefacturedate form-control" value="{{facture.date|date:'Y-m-d'}}">
-        
-        <button class="btn btn-dark w-100" onclick="updatefacturedate()">Modifier date</button>
-      </div>
-      
-    </div>
     {% for i in orderitems %}
     {% if forloop.counter == orderitems|length %}
     <!-- last iteration -->
@@ -57,7 +43,7 @@
 
       <!-- facture header -->
       <div class="">
-        <img src="" alt="" style="width: 40%;" class="factureheader">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="factureheader">
           <div class="d-flex justify-content-between mt-5">
             <div>
               <h5 style="
@@ -203,11 +189,11 @@
             Arreter la presente facture à la somme de: <br>
           <span class="totalfactureprint" style="font-size:10px ;"></span>
         </div>
-        <div style="font-size:11px">
-          adress <br>
-          IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
-          Fixe: +212 500000000 - Tel: 06 0000
-        </div>
+        <!-- <div style="font-size:11px">
+          LOT ARGANA N° B25 - AIT MELLOUL <br>
+          IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - ICE: 001667720000027 <br>
+          Fixe: +212 528 24 35 17 - Tel: 06 66 03 72 81
+        </div> -->
       </div>
     </div>
     {% else %}
@@ -216,7 +202,7 @@
 
       <!-- facture header -->
       <div class="">
-        <img src="" alt="" style="width: 40%;" class="factureheader">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="factureheader">
           <div class="d-flex justify-content-between mt-5">
             <div>
               <h5 style="
@@ -313,12 +299,12 @@
 
       <!-- facture footer -->
 
-      <div class="text-center" style="font-size:11px">
+      <!-- <div class="text-center" style="font-size:11px">
 
-        adress <br>
-        IF: 00000- Patente: 00000- CNSS: 0000000- ICE: 00000 <br>
-        Fixe: +212 500000000 - Tel: 06 0000
-      </div>
+        LOT ARGANA N° B25 - AIT MELLOUL <br>
+        IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - ICE: 001667720000027 <br>
+        Fixe: +212 528 24 35 17 - Tel: 06 66 03 72 81
+      </div> -->
 
     </div>
     {% endif %}
@@ -326,209 +312,19 @@
 
   </div>
 
-  <div class="col-5">
+  <div class="">
     Reglement
     {% for i in reglements %}
-    <div class="alert alert-danger">
-      Reglement de bon: REG#{{i.id}} <br>
-      <strong>Mantant: {{i.amount}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      <strong>N° piece: {{i.npiece}}</strong> <br>
-      <strong>echeance: {{i.echance|date:'d/m/y'}}</strong> <br>
-      <strong>Mode: {{i.mode}}</strong> <br>
-      {% for avoir in i.avoirs.all %}
-      <strong>
-        Avoir N° {{avoir.no}}: {{avoir.total}}
-      </strong> <br>
-      {% endfor %}
-      {% for avance in i.avances.all %}
-      <strong>
-        avance N° AVANCEF#{{avance.id}}: {{avance.amount}}
-      </strong>
-      {% endfor %}
+    <div class="">
+      {{i.mode}}{{i.npiece}} {{i.amount|floatformat:2}}Dh
     </div>
     {% endfor %}
-    <br>
-
-    <strong>
-      bons:
-    </strong> <br>
-    {% for i in facture.bons.all %}
-    <div class="alert alert-success">
-      <strong>N°: {{i.bon_no}}</strong> <br>
-      {% if facture.bons.all|length > 1%}
-      {% if not facture.ispaid %}
-      <button class="w-100" onclick="removebonfromfacture(event, '{{facture.id}}', '{{i.id}}')">Decrocher</button>
-      {% endif %}
-      {% endif %}
-    </div>
-    
-    {% endfor %}
-    <!-- add bons to facture -->
-     {% if not facture.ispaid %}
-    <div class="mt-5">
-      <div class="accordion" id="accordionreglbl">
-        <div class="">
-    
-            <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
-            style="border-radius: 10px;"
-            onclick="getclientbonsforfacture('{{target}}', '{{facture.client.id}}')"
-            >
-                Ajouter facture global
-            </button>
-    
-          <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
-            <div class="card-body border shadow rounded">
-                <div class="row">
-    
-                    <div class="d-flex justify-content-between">
-                        <!-- <div class="">
-                            <small>Date:</small> <br>
-                            <input type="date" name="datereglementclientbl" class="w-100 notempty datereglement mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
-                            <small class="errordatereglclbl text-danger d-none">
-                              Date incorrect
-                            </small>
-                        </div> -->
-                        <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
-                        <!-- <div class="col-3">
-                          <button class="btn btn-dark" onclick="getclientbonsforfacture('{{facture.client.id}}')">Les bons</button>
-                        </div> -->
-                    </div>
-    
-                    
-    
-                        <div class="d-flex justify-content-between mt-3">
-                            <div>
-                                <small>Bons:</small> <strong class="totalcheckedbl">0.00</strong><br>
-                            </div>
-                            
-                            
-                        </div>
-    
-                        <div class="mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
-    
-                            <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
-                                <thead style="position: sticky; top: 0; background: white;">
-                                    <tr>
-                                        <td>
-                                            Date
-                                        </td>
-                                        <td>
-                                            N° Bon
-                                        </td>
-                                        <td>
-                                            Client
-                                        </td>
-                                        <td>
-                                            total
-                                        </td>
-                                        <td>
-                                          <input type="checkbox">
-                                        </td>
-                                    </tr>
-                                </thead>
-                                <tbody class="reglementclientbonholder">
-                                </tbody>
-                                
-    
-                            </table>
-                            <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-    
-                            </select> -->
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <!-- <div>
-                                <small>Client facture:</small><br>
-                                <select name="clientoffacture" id="" class="clientoffacture"></select>
-                            </div> -->
-                            <!-- <div>
-                              <small>Date:</small><br>
-                              <input type="date" class="dateoffacture form-control" value="{{today|date:'Y-m-d'}}">
-                          </div> 
-                          <div>
-                            <small>N° facture:</small><br>
-                            <input readonly value="{{facture.facture_no}}" type="text" class="facture_no form-control">
-                          </div>-->
-                        </div>
-                        <button class="btn text-white w-100" onclick="updatebonsoffacture('{{target}}', '{{facture.id}}')" style="background: #00538c;">
-                            Modifier
-                        </button>
-                        <!-- <div class="mb-2">
-                            <small>Facture</small>
-                            <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-    
-                            </select>
-                        </div>
-    
-                        <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
-    
-                        </select> -->
-    
-                    </div>
-                    <div class="mt-3">
-                        {% csrf_token %}
-    
-    
-                    </div>
-    
-                </div>
-            </div>
-          </div>
-    </div>
-    </div>
-    {% endif %}
   </div>
 </div>
 
 
 
 <script>
-  $(function(){
-      
-      $('.updatefactureclient').select2({
-
-        ajax: {
-          type:'get',
-          dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
-          data: function (params) {
-            var query = {
-              term: params.term,
-            }
-            // Query parameters will be ?search=[term]&type=public
-            return query;
-          },
-          proccessresults: function (data) {
-              return {
-                results:data.results
-              }
-          },
-          cache:true
-        },
-        minimumInputLength: 1,
-        placeholder:'Chercher client',
-        templateResult: formatclientfc,
-        templateSelection: formatclientSelectionfc,
-      });
-      function formatclientfc (client) {
-          if (client.loading) {
-            return client.text;
-          }
-
-          var $container = $(
-            `<strong style="color:${client.diver>0?"red":""};">${client.text}</div>`
-            );
-
-
-
-            return $container;
-        }
-
-        function formatclientSelectionfc (client) {
-          return client.text;
-        }
-
-    })
   $('.updaterepfacture{{facture.id}}').on('change', function(){
     console.log(">>>>>>>>up")
     rep=$(this).val()
@@ -545,33 +341,8 @@
       'factureid':'{{facture.id}}',
       'note':$('.notefacture{{facture.id}}input').val()
     },(data)=>{
-      ajaxpage('addlistfactures', 'Factures', '/products/listfactures')
-    }
-  )}
-  function updatefactureclient(id){
-    clientid=$('.updatefactureclient').val()
-    if (clientid==null){
-      alertify.error('Selectionner un client')
-      return
-    }
-    $.get('/products/updatefactureclient', {
-      'factureid':'{{facture.id}}',
-      'clientid':clientid
-    },(data)=>{
-      ajaxpage('facture2', 'Facture FR-FC25000000001', '/products/facturedetails/{{facture.id}}?target={{target}}')
-    }
-  )}
-  function updatefacturedate(id){
-    date=$('.updatefacturedate').val()
-    if (date==""){
-      alertify.error('Selectionner un client')
-      return
-    }
-    $.get('/products/updatefacturedate', {
-      'factureid':'{{facture.id}}',
-      'date':date
-    },(data)=>{
-      ajaxpage('facture2', 'Facture FR-FC25000000001', '/products/facturedetails/{{facture.id}}?target={{target}}')
+      deletetab('facture{{facture.id}}')
+      createtab('addlistfactures', 'Factures', '/products/listfactures')
     }
   )}
   // facture is comptablisé

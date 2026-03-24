@@ -1,0 +1,378 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+{% load global_tags %}
+
+
+
+
+<script>
+  
+  function loadmore(){}
+  function getbonswhite(event){
+    $('.listblbody').addClass('blurred')
+    $.get('/products/getbonswhite', (data)=>{
+      $('.listblbody').html(data.html)
+      $('.listblbody').removeClass('blurred')
+    })
+  }
+  $(document).ready(function () {
+    // popukate years starting from 2024
+    populateyears()
+  })
+  function filtersearch(event){
+    var $el = $('.productsbrand' + $(event.target).attr('id')).fadeIn(450);
+    $('.itemsforlistblresult > tr').not($el).hide();
+    //$btns.removeClass('active');
+    //$(this).addClass('active');
+  }
+  function getitemsforlistbl(event){
+    let term=$('.searchitemsforlistbl').val()
+    if (term.length>=2){
+      $('.itemsforlistblresult').html('<tr><td>searching....</td></tr>')
+      $.get('/products/getitemsforlistbl', {'term':term}, (data)=>{
+        console.log(data)
+        $('.brands').html('')
+        $('.categoriesfilter').html('')
+        for (i of data.brands){
+          $('.brands').append(`
+            <img class="tag-badge tag-badge--hot" id='${i.id}' onclick="filtersearch(event)" src='${i.image}'>
+          `)
+        }
+        for (i of data.categories){
+          $('.categoriesfilter').append(`
+            <div class="tag-badge tag-badge--hot" id='cat${i.id}' onclick="filtercategories(event)" style="font-size:15px;">${i.name}</div>
+          `)
+        }
+        $('.itemsforlistblresult').html(data.trs)
+      })
+    }else{
+      $('.itemsforlistblresult').html('<tr><td>....</td></tr>')
+    }
+
+
+  }
+  function makedelivered(orderid, event){
+    $.get('/products/makebondelivered', {'id': orderid}, (data)=>{
+      $(event.target).parent().parent().css('background','lightgreen')
+    })
+  }
+  // always append years to $('select[name="yearsbl"]') starting from current, if it's 2024 options will have 2023 and 2024, if it's 2025 options will have 2023, 2024 and 2025, and so on
+  function exportbl(event){
+    let startdate=$('.exportdatefrom').val()
+    let enddate=$('.exportdateto').val()
+    let rep=$('.repexport').val()
+    let region=$('.regionblexport').val()
+    if (startdate!='' || enddate!=''){
+      let url = `/products/exportbl?rep=${rep}&startdate=${startdate}&enddate=${enddate}&region=${region}`;
+      var iframe = $('<iframe>', {
+        id: 'download-frame',
+        src: url,
+        style: 'display: none;',
+      }).appendTo('body');
+
+      // Remove the iframe after download
+      iframe.on('load', function () {
+          iframe.remove();
+      });
+    }
+    else{
+      alertify.error('Date')
+    }
+    // Create a hidden iframe to trigger the file download
+
+  }
+
+  // date=new Date()
+  // year=date.getFullYear()
+  // $('select[name="yearsbl"]').append('<option value="'+year+'">'+year+'</option>')
+  function yeardatabl(){
+    let year=$('select[name="yearsbl"]').val()
+    if (year==''){return}
+    currentPagelistbl=1
+    loadinglistbl = false;
+    $('.listblholder').on('scroll', handleScrolllistbl);
+    $.get('/products/yeardatabl', {year:year}, (data)=>{
+      $('.listblbody').html(data.trs)
+      $('.totalbons').text(data.total)
+    })
+  }
+  function loadMoreRecordslistbl (year, startdate, enddate, term)  {
+    loadinglistbl = true;
+    $.get(`/products/loadlistbl/?facture={%if facturesection%}1{% endif %}&page=${currentPagelistbl}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
+
+      const tbody = $('.listbltable tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadinglistbl = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listblholder').off('scroll', handleScrolllistbl);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrolllistbl () {
+      const container = $('.listblholder')[0]; // Get the native DOM element
+      const lastRow = document.querySelector('.bl-row:last-child');
+      // year used to be catched from the last row's year attribute, since we have now years populated and the current yrear is selected by deafault,, it's better to assign year to year directly
+      // let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
+      let year=$('[name="yearsbl"]').val()
+      let startdate=$('.startdatefilterbl').val()==""?0:$('.startdatefilterbl').val()
+      let enddate=$('.enddatefilterbl').val()==""?0:$('.enddatefilterbl').val()
+      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+
+      const containerBottom = container.scrollTop + container.clientHeight;
+
+      console.log(lastRow, containerBottom+900 >= lastRowOffset && !loadinglistbl)
+
+      if (containerBottom+900 >= lastRowOffset && !loadinglistbl) {
+          currentPagelistbl++;
+          loadMoreRecordslistbl(year, startdate, enddate, term);
+      }
+    };
+
+    // Attach the scroll event listener
+    $('.listblholder').on('scroll', handleScrolllistbl)
+
+  function sortupbl(event){
+    let parentdiv=$(event.target).parent().parent().parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get('/products/sortupbl', (data)=>{
+      tbody.html(data.html)
+    })
+  }
+  function sortdownbl(event){
+    let parentdiv=$(event.target).parent().parent().parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get('/products/sortdownbl', (data)=>{
+      tbody.html(data.html)
+    })
+  }
+  function getnotpaid(event) {
+    $('.listblbody').addClass('blurred')
+    let parentdiv=$(event.target).parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get(
+      'products/getnotpaid',
+      (data)=>{
+        console.log(tbody)
+        $('.listblbody').removeClass('blurred')
+
+        $('.listblbody').html(data.html)
+      $('.totalbons').text(data.total)
+      }
+    )
+  }
+  function getcontrenonpaid(event) {
+    $('.listblbody').addClass('blurred')
+    let parentdiv=$(event.target).parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get(
+      '/products/getcontrenonpaid',
+      (data)=>{
+        console.log(tbody)
+        $('.listblbody').removeClass('blurred')
+
+        $('.listblbody').html(data.html)
+      $('.totalbons').text(data.total)
+      }
+    )
+  }
+  $('.filterbldate').on('click', function(){
+
+    let parentdiv= $(this).parent().parent()
+    startdate=parentdiv.find('.startdatefilterbl').val()
+    enddate=parentdiv.find('.enddatefilterbl').val()
+    console.log(parentdiv)
+    if (startdate=='' || enddate==''){
+      alertify.error('Date')
+      return
+    }
+    $.get('/products/filterbldate?facture={% if facturesection %}1{% endif %}', {startdate:startdate, enddate:enddate},(data)=>{
+      console.log(data)
+      $('.listblbody').html(data.trs)
+      $('.totalbons').text(data.total)
+    })
+    $('.listblholder').on('scroll', handleScrolllistbl);
+      currentPagelistbl=1
+      loadinglistbl = false;
+  })
+  $('.searchinputlistbl').on("change", function() {
+    // Get the values from all filter input fields
+    var filterValue = $(this).val().toLowerCase();
+    //if (filterValue!=""){
+      let year=$('select[name="yearsbl"]').val()?$('select[name="yearsbl"]').val():0
+      console.log(year)
+      // Split the filter value into individual terms based on the '&' sign
+      // var filterTerms = filterValue.split('+').map(function(term) {
+      //     return term.trim();
+      // });
+      let startdate=$('.startdatefilterbl').val()==""?0:$('.startdatefilterbl').val()
+      let enddate=$('.enddatefilterbl').val()==""?0:$('.enddatefilterbl').val()
+      $.get('/products/searchforlistbl?facture={% if facturesection %}1{% endif %}', {'term':filterValue.trim(), 'startdate':startdate, 'enddate':enddate, 'year':year}, (data)=>{
+        console.log('eee')
+        $(".listbltable tbody").html('')
+        $(".listbltable tbody").html(data.trs)
+        $('.totalbons').text(data.total)
+        });
+      $('.listblholder').on('scroll', handleScrolllistbl);
+      currentPagelistbl=1
+      loadinglistbl = false;
+    //}
+
+
+    // Iterate through the table rows
+    // total=0
+    // $('.listbltable tbody tr:visible').each(function(){
+    //   total+=parseFloat($(this).find('td:nth-child(5)').text())
+    // })
+    // $('.totalbons').text(total)
+  })
+
+
+  //  $('.clientinputbl').on("keyup", function() {
+  //   var value = $(this).val().toLowerCase();
+  //   $(".listbltable tbody tr").filter(function() {
+  //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  //   });
+  // });
+  // $('.repinputbl').on("keyup", function() {
+  //   var value = $(this).val().toLowerCase();
+  //   $(".listbltable tbody tr").filter(function() {
+  //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  //   });
+  // });
+  // $('.anotherinputbl').on("keyup", function() {
+  //   var value = $(this).val().toLowerCase();
+  //   $(".listbltable tbody tr").filter(function() {
+  //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  //   });
+  // });
+  // $('.another2inputbl').on("keyup", function() {
+  //   var value = $(this).val().toLowerCase();
+  //   $(".listbltable tbody tr").filter(function() {
+  //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  //   });
+  // });
+  // $('.another3inputbl').on("keyup", function() {
+  //   var value = $(this).val().toLowerCase();
+  //   $(".listbltable tbody tr").filter(function() {
+  //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  //   });
+  // });
+  // $('.another4inputbl').on("keyup", function() {
+  //   var value = $(this).val().toLowerCase();
+  //   $(".listbltable tbody tr").filter(function() {
+  //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  //   });
+  // });
+
+  // tabulatpr
+  // new Tabulator('#addbonlivraisonle', {})
+
+
+  // $('#addbonlivraisonle').DataTable({
+  //   paging: false,
+  //   responsive: true,
+  //   scrollY: '50vh',
+  //   // remove sort icon on header
+  //   ordering:false,
+  //   initComplete: function () {
+  //       this.api()
+  //           .columns()
+  //           .every(function () {
+  //               let column = this;
+  //               let title = column.header().textContent;
+
+  //               // Create input element
+  //               let input = document.createElement('input');
+  //               // add style to input
+  //               input.style.width = '100%';
+  //               input.placeholder = title;
+  //               column.header().append(input);
+
+  //               // Event listener for user input
+  //               input.addEventListener('keyup', () => {
+  //                   if (column.search() !== this.value) {
+  //                       column.search(input.value).draw();
+  //                   }
+  //               });
+  //           });
+  //   }
+  // });
+
+//   new DataTable('#addbonlivraisonle', {
+//     paging: false,
+//     responsive: true,
+//     scrollY: '60vh',
+//     // remove sort icon on header
+//     ordering:false,
+//     initComplete: function () {
+//         this.api()
+//             .columns()
+//             .every(function () {
+//                 let column = this;
+//                 let title = column.header().textContent;
+
+//                 // Create input element
+//                 let input = document.createElement('input');
+//                 // add style to input
+//                 input.style.width = '100%';
+//                 input.placeholder = title;
+//                 column.header().replaceChildren(input);
+
+//                 // Event listener for user input
+//                 input.addEventListener('keyup', () => {
+//                     if (column.search() !== this.value) {
+//                         column.search(input.value).draw();
+//                     }
+//                 });
+//             });
+//     }
+// });
+
+
+
+    // wrap the code bellow inside document ready function
+
+
+
+
+
+    // $('.ord').each(function(){
+    //   $(this).click(function(){
+
+    //     id=$(this).attr('orderid');
+    //     window.location.href='/salsemanorders/'+id
+    //         // $.ajax({
+    //         //     url: '/salsemanorders/'+id,
+    //         //     type: 'POST',
+    //         //     data:{
+    //         //       'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //         //     },
+    //         //     success: function(data){
+    //         //       $('.orderitems').html(data.data);
+    //         //       stoploading()
+    //         //       $('.closeorderitems').click(function(){
+    //         //         $('.orderitems').removeClass('openorder');
+    //         //       })
+    //         //     }
+    //         // });
+    //     });
+    // })
+
+</script>
+
+{% endblock %}
+
+
+

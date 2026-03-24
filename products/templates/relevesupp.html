@@ -31,17 +31,8 @@ background: #b7b7b7;">
         <tr>
             <td>{{i.0.date|date:'d/m/Y'}}</td>
             {% if i.1 == 'Itemsbysupplier' %}
-            <td {% if i.0.ismanual %}style="color:red;"{% endif %}>
+            <td {% if i.0.ismanual %}style="color:red;"{% endif %}">
                 Bon achat N° {{i.0.nbon}}
-            </td>
-            <td class="debitsoldsupp">
-                {{i.0.total|floatformat:2|intspace}}
-            </td>
-            <td></td>
-            <td class="soldsupp"></td>
-            {% elif i.1 == 'factureachat' %}
-            <td {% if i.0.ismanual %}style="color:red;"{% endif %}>
-                Facture achat N° {{i.0.facture_no}}
             </td>
             <td class="debitsoldsupp">
                 {{i.0.total|floatformat:2|intspace}}
@@ -50,19 +41,14 @@ background: #b7b7b7;">
             <td class="soldsupp"></td>
             {% elif i.1 == 'Paymentsupplier' %}
             <td>
-                Regl. BL {{i.0.mode}} {{i.0.npiece}} {%if i.0.isavoir %}(avoir){% endif %}
+                Regl. BL {{i.0.mode}} {{i.0.npiece}}
             </td>
-            {%if i.0.isavoir %}
-            <td class="debitsoldsupp">
-                {{i.0.amount|floatformat:2|intspace}}
+            <td>
+
             </td>
-            <td></td>
-            {% else %}
-            <td></td>
             <td class="creditsoldsupp">
                 {{i.0.amount|floatformat:2|intspace}}
             </td>
-            {% endif %}
             <td class="soldsupp"></td>
             {% elif i.1 == 'Avoirsupplier' %}
             <td>
@@ -74,17 +60,6 @@ background: #b7b7b7;">
             </td>
             <td class="creditsoldsupp">
                 {{i.0.total|floatformat:2|intspace}}
-            </td>
-            <td class="soldsupp"></td>
-            {% elif i.1 == 'avancesupplier' %}
-            <td>
-                AvanceF#{{i.0.id}}
-            </td>
-            <td>
-
-            </td>
-            <td class="creditsoldsupp">
-                {{i.0.amount|floatformat:2|intspace}}
             </td>
             <td class="soldsupp"></td>
             {% endif %}

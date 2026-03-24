@@ -5,15 +5,25 @@
 </style>
 {% endblock %}
 {% block content %}
-
-<button class="btn btn-primary" onclick="Printorder('avances')">
-  Telecharger
-</button>
+<div class="d-flex">
+  <button class="btn btn-primary mt-2 me-2" onclick="PrintInvoice('avances')">
+    Telecharger
+  </button>
+  <button class="btn btn-info mt-2 me-2" onclick="window.location.href='/excel?id={{order.id}}'">
+    Telecharger excel
+  </button>
+  {% if user.groups.all.0.name == 'admin' and not order.isdelivered %}
+  <button class="btn btn-success mt-2 me-2" onclick="confirm('{{order.id}}')">
+    Confirmer
+  </button>
+  {%endif%}
+  
+</div>
 <div id="avances">
   <div class="">
     <div class="card">
       <div class="card-header d-flex flex-column">
-        <div class="d-lg-flex d-block justify-content-between">
+        <div class="d-flex d-block justify-content-between">
           <h5>Bon de Commande: #{{order.id}}</h5>
         <p>
           paiment: {{order.modpymnt.upper}}
@@ -22,38 +32,26 @@
           mode de livraison: {{ order.modlvrsn.upper}}
         </p>
         </div>
-        <div class="">
-          <h5>Client: {{order.client.name.upper}}</h5>
-          <p>
-            {{order.client.phone}} <br> {{order.client.address}} - {{order.client.city}}
-          </p>
-          <p>
+        <div class="d-flex justify-content-between">
+          <div>
+            <h5>Client: {{order.client.name.upper}}</h5>
+            <!-- <p>
+              {{order.client.phone}} <br> {{order.client.address}} - {{order.client.city}}
+            </p> -->
+          </div>
+          <h5>Date: {{order.date|date:"d/m/Y"}}</h5>
+          
+          <div>
+            <h5>Representant: {{order.salseman.name.upper}}</h5>
             
-          </p>
+          </div>
+          
         </div>
       </div>
       <div class="card-divider"></div>
       <div class="card-table">
         <div class="table-responsive-sm">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Representant</th>
-                <th>Total</th>
-                <!-- <th>Total Remise</th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ order.date|date:"d/m/Y" }}</td>
-                <td>{{ order.salseman }}</td>
-                <td>{{ order.total}}</td>
-                <!-- <td>{{ order.totalremise}}</td> -->
-              </tr>
-              
-            </tbody>
-          </table>
+          
         </div>
       </div>
       <div class="card-divider"></div>
@@ -62,7 +60,7 @@
   
   </div>
   
-  <div class="orderitems mt-3 bg-white rounded p-2">
+  <div class="orderitems mt-3 bg-white rounded p-2 container">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -75,18 +73,15 @@
         {% for i in items %}
               <tr>
                   <td>
-                      {{i.ref.upper}}
+                      {{i.product.ref.upper}}
                   </td>
                   <td>
-                    {{i.name.upper}}
+                    {{i.product.name.upper}}
                 </td>
                 <td>
                   {{i.qty}}
               </td>
-                  {% empty %}
-                  <td>
-                      none
-                  </td>
+                  
   
               </tr>
               {% endfor %}
@@ -156,15 +151,23 @@
 {% endblock %}
 {% block js %}
 <script>
-  function Printorder(divName){
+  function excel(){
+    window.location.href='/excel?id{order.id}}'
+  }
+  function confirm(id){
+    $.get('/dilevered/'+id, function(data){
+      location.reload()
+    })
+  }
+  function PrintInvoice(divName){
          var printContents = document.getElementById(divName).innerHTML;
          var originalContents = document.body.innerHTML;
          document.body.innerHTML = printContents;
-         $('body').css('font-size', '12px')
-         $('table').css('font-size', '9px');
+         //$('body').css('font-size', '12px')
+         $('table').css('font-size', '11px');
          $("table > thead > tr > th").css('padding', '0px');
          $("table > tbody > tr > td").css('padding', '0px');
-         $('body').addClass('d-flex flex-column vh-100 p-3')
+         //$('body').addClass('d-flex flex-column vh-100 p-3')
          window.print();
          document.body.innerHTML = originalContents;
     }

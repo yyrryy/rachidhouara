@@ -1,0 +1,56 @@
+<html>
+<head>
+  <script src="/static/js/jquery.min.js"></script>
+  <link href="/static/css/minified.css" rel="stylesheet" />
+  <script src="/static/js/chart.js"></script>
+  <script src="/static/js/xlsx.full.min.js"></script>
+
+</head>
+<style media="screen">
+  .blurred{
+    filter:blur(8px);
+  }
+
+  table {
+    border-color: black;
+  }
+</style>
+<body style="background: white; font-family: monospace;">
+
+  <div class="p-2 container">
+    <strong>Stock par année</strong>
+    <input type="date" class="form-control datestock" name="" value="" >
+    <button type="button" name="button" onclick="getstockyear(event)">Generer</button>
+    <table class="table mt-5 stockyeartable table-bordered">
+      <thead>
+        <tr>
+          <td>REf</td>
+          <td>desugnation</td>
+          <td>stocktotal</td>
+          <td>stock facture</td>
+          <td>prix achat</td>
+          <td>prix vente</td>
+          <td>remise</td>
+          <td>prix net</td>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+
+    </table>
+  </div>
+  <script>
+    function getstockyear(){
+      date=$('.datestock').val()
+      if (date !=''){
+        $('.stockyeartable').addClass('blurred')
+        $.get('/products/getstockyear', {'date':date}, (data)=>{
+          $('.stockyeartable tbody').html(data)
+          $('.stockyeartable').removeClass('blurred')
+        })
+      }
+    }
+  </script>
+</body>
+</html>

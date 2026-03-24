@@ -1,0 +1,2562 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <meta content="telephone=no" name="format-detection" />
+    <!-- favicon -->
+    <link href="/media/logos/favicon.ico" rel="icon" />
+    {% block meta %}
+    {% endblock %}
+    {% if title %}
+    <title>{{title}} - SYSTEM</title>
+    {% else %}
+    <title>Catalogue</title>
+    {% endif %}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet" />
+    <!-- css -->
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="{% static 'js/jquerySpellingNumber.js'%}"></script>
+    <link href="{% static 'css/minified.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/tabulator.min.css'%}" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/datepicker.css">
+    <style>
+    button{
+      border-bottom:5px solid black;
+    }
+    button:active {
+      box-shadow: 1px 1px 3px gray;
+      transform: translateY(3px);
+    }
+    .blurred{
+    	filter:blur(4px);
+    }
+    :root{--darkblue:#2b3e50;--orange:#df691a}
+    .matrix:hover{
+    cursor: pointer;
+    color: red;
+    transform: translate(0px, -4px);
+  }
+  .nav-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px; /* Adjust as needed */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    background: orange;
+    font-weight: bold;
+    color: white;
+}
+
+.prev-btn {
+    left: 0;
+}
+
+.next-btn {
+    right: 0;
+}
+  .matrix{
+    color: white;
+  }
+    .nav-item a span:hover{
+      background: var(--darkblue);
+    }
+    .sec-center {
+  position: relative;
+  max-width: 100%;
+  text-align: center;
+}
+[name="checkboxsidebar"]:checked,
+[name="checkboxsidebar"]:not(:checked){
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+.dark-light:checked + label,
+.dark-light:not(:checked) + label{
+  position: fixed;
+  top: 50px;
+  right: 40px;
+  z-index: 20000;
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  transition: all 200ms linear;
+  box-shadow: 0 0 25px rgba(255,235,167,.45);
+}
+.dark-light:checked + label{
+  transform: rotate(360deg);
+}
+.dark-light:checked + label:after,
+.dark-light:not(:checked) + label:after{
+  position: absolute;
+  content: '';
+  top: 1px;
+  left: 1px;
+  overflow: hidden;
+  z-index: 2;
+  display: block;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background-color: #102770;
+  background-image: url('https://assets.codepen.io/1462889/moon.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 200ms linear;
+  opacity: 0;
+}
+.dark-light:checked + label:after {
+  opacity: 1;
+}
+.dark-light:checked + label:before,
+.dark-light:not(:checked) + label:before{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  background-color: #48dbfb;
+  background-image: url('https://assets.codepen.io/1462889/sun.svg');
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 200ms linear;
+}
+.dark-light:checked + label:before{
+  background-color: #000;
+}
+.light-back{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background-color: #fff;
+  overflow: hidden;
+  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg');
+  background-position: center;
+  background-repeat: repeat;
+  background-size: 4%;
+  height: 100%;
+  width: 100%;
+  transition: all 200ms linear;
+  opacity: 0;
+}
+.dark-light:checked ~ .light-back{
+  opacity: 1;
+}
+.dropdown:checked + label,
+.dropdown:not(:checked) + label{
+  position: relative;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 2;
+  height: 50px;
+  transition: all 200ms linear;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  color:white;
+}
+.dark-light:checked ~ .sec-center .for-dropdown{
+  background-color: #102770;
+  color: #ffeba7;
+  box-shadow: 0 12px 35px 0 rgba(16,39,112,.25);
+}
+.dropdown:checked + label:before,
+.dropdown:not(:checked) + label:before{
+  position: fixed;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  cursor: auto;
+  pointer-events: none;
+}
+.dropdown:checked + label:before{
+  pointer-events: auto;
+}
+.dropdown:not(:checked) + label .uil {
+  font-size: 24px;
+  margin-left: 10px;
+  transition: transform 200ms linear;
+}
+.dropdown:checked + label .uil {
+  transform: rotate(180deg);
+  font-size: 24px;
+  margin-left: 10px;
+  transition: transform 200ms linear;
+}
+.section-dropdown {
+  position: absolute;
+  padding: 5px;
+  background-color: #111;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.4);
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .sec-center .section-dropdown {
+  background-color: #fff;
+  box-shadow: 0 14px 35px 0 rgba(9,9,12,0.15);
+}
+.dropdown:checked ~ .section-dropdown{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.section-dropdown:before {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  content: '';
+  display: block;
+  z-index: 1;
+}
+.section-dropdown:after {
+  position: absolute;
+  top: -7px;
+  left: 30px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #111;
+  content: '';
+  display: block;
+  z-index: 2;
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .sec-center .section-dropdown:after {
+  border-bottom: 8px solid #fff;
+}
+
+.section-dropdown a {
+  position: relative;
+  color: #fff;
+  transition: all 200ms linear;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 2px;
+  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 15px;
+  margin: 2px 0;
+  text-align: left;
+  text-decoration: none;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+    -ms-flex-pack: distribute;
+}
+.dark-light:checked ~ .sec-center .section-dropdown a {
+  color: #102770;
+}
+.section-dropdown a:hover {
+  color: #102770;
+  background-color: #ffeba7;
+}
+.dark-light:checked ~ .sec-center .section-dropdown a:hover {
+  color: #ffeba7;
+  background-color: #102770;
+}
+a .uil {
+  font-size: 22px;
+}
+.dropdown-sub:checked + label,
+.dropdown-sub:not(:checked) + label{
+  position: relative;
+  color: #fff;
+  transition: all 200ms linear;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 2px;
+  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 15px;
+  text-align: left;
+  text-decoration: none;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+    -ms-flex-pack: distribute;
+    cursor: pointer;
+}
+.dropdown-sub:checked + label .uil,
+.dropdown-sub:not(:checked) + label .uil{
+  font-size: 22px;
+}
+.dropdown-sub:not(:checked) + label .uil {
+  transition: transform 200ms linear;
+}
+.dropdown-sub:checked + label .uil {
+  transform: rotate(135deg);
+  transition: transform 200ms linear;
+}
+.dropdown-sub:checked + label:hover,
+.dropdown-sub:not(:checked) + label:hover{
+  color: #102770;
+  background-color: #ffeba7;
+}
+.dark-light:checked ~ .sec-center .section-dropdown .for-dropdown-sub{
+  color: #102770;
+}
+.dark-light:checked ~ .sec-center .section-dropdown .for-dropdown-sub:hover{
+  color: #ffeba7;
+  background-color: #102770;
+}
+
+.section-dropdown-sub {
+  position: relative;
+  display: block;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0;
+  max-height: 0;
+  padding-left: 10px;
+  padding-right: 3px;
+  overflow: hidden;
+  transition: all 200ms linear;
+}
+.dropdown-sub:checked ~ .section-dropdown-sub{
+  pointer-events: auto;
+  opacity: 1;
+  max-height: 999px;
+}
+.section-dropdown-sub a {
+  font-size: 14px;
+}
+.section-dropdown-sub a .uil {
+  font-size: 20px;
+}
+.logo {
+	position: fixed;
+	top: 50px;
+	left: 40px;
+	display: block;
+	z-index: 11000000;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+	transition: all 250ms linear;
+}
+.logo:hover {
+  background-color: transparent;
+}
+.logo img {
+	height: 26px;
+	width: auto;
+	display: block;
+  transition: all 200ms linear;
+}
+.dark-light:checked ~ .logo img{
+  filter: brightness(10%);
+}
+
+@media screen and (max-width: 991px) {
+.logo {
+	top: 30px;
+	left: 20px;
+}
+.dark-light:checked + label,
+.dark-light:not(:checked) + label{
+  top: 20px;
+  right: 20px;
+}
+}
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+      .dashboard-nav-list {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-item {
+    color: white;
+    min-height: 56px;
+    padding: 0 30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    letter-spacing: 0.02em;
+    transition: ease-out 0.5s;
+}
+.dashboard-nav-dropdown-toggle>a:hover{
+  color:#f06623;
+}
+.dashboard-nav-item i {
+    width: 36px;
+    font-size: 19px;
+    margin-left: -40px;
+}
+
+.dashboard-nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
+
+.dashboard-nav-dropdown {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown.show {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle {
+    font-weight: bold;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle:after {
+    -webkit-transform: none;
+    -o-transform: none;
+    transform: none;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-menu {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.dashboard-nav-dropdown-toggle:after {
+    content: "";
+    margin-left: auto;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(81, 81, 81, 0.8);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.dashboard-nav .dashboard-nav-dropdown-toggle:after {
+    border-top-color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-nav-dropdown-menu {
+    display: none;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background: aliceblue;
+}
+
+.dashboard-nav-dropdown-item {
+    min-height: 40px;
+    padding: 8px 20px 8px 70px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    transition: ease-out 0.5s;
+}
+
+.dashboard-nav-dropdown-item:hover {
+    background: rgba(226, 226, 226, 0.873);
+}
+
+.menu-toggle {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #443ea2;
+}
+
+.menu-toggle:hover, .menu-toggle:active, .menu-toggle:focus {
+    text-decoration: none;
+    color: #875de5;
+}
+
+.menu-toggle i {
+    font-size: 20px;
+}
+
+.dashboard-toolbar {
+    min-height: 84px;
+    background-color: #dfdfdf;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 8px 27px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.nav-item-divider {
+    height: 1px;
+    margin: 1rem 0;
+    overflow: hidden;
+    background-color: rgba(236, 238, 239, 0.3);
+}
+
+@media (min-width: 992px) {
+    .dashboard-app {
+        margin-left: 238px;
+    }
+
+    .dashboard-compact .dashboard-app {
+        margin-left: 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 15px 0px;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1070;
+    }
+
+    .dashboard-nav.mobile-show {
+        display: block;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-nav header .menu-toggle {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboard-toolbar {
+        left: 238px;
+    }
+
+    .dashboard-compact .dashboard-toolbar {
+        left: 0;
+    }
+}
+      .closetab {
+        float: none;
+        margin-left: 10px;
+      }
+        .fixedheader{
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+        .fitscreen{
+            height: 80vh;
+            overflow-y: scroll;
+
+
+        }
+
+        .cartholder{
+            top: 0;
+            z-index: 9999;
+            background: aliceblue;
+            box-shadow: -11px 2px 7px 0px grey;
+            width: 99%;
+            right: -500rem;
+            height: 100%;
+            transition: all .5s ease-in-out;
+        }
+        /* width */
+        ::-webkit-scrollbar {
+        width: 5px;
+        }
+
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+        }
+        #button {
+            display: inline-block;
+            background-color: #e82323;
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            border-radius: 8px;
+            position: fixed;
+            bottom: 136px;
+            right: 53px;
+            transition: background-color .3s, opacity .5s, visibility .5s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        #button::after {
+            content: "⬆";
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 2em;
+            line-height: 50px;
+            color: #fff;
+        }
+            #button:hover {
+            cursor: pointer;
+            background-color: #333;
+        }
+            #button:active {
+            background-color: #555;
+            }
+            #button.show {
+            opacity: 1;
+            visibility: visible;
+            }
+            /* .dataTables_scrollHeadInner{
+              width:100% !important;
+            }
+            .dataTables_scrollHeadInner table{
+              width:100% !important;
+            } */
+        .wrapper {
+  border-radius: 50%;
+  display: grid;
+  mask: repeating-conic-gradient(from 22.5deg, transparent 0deg 5deg, #000 5deg 40deg, transparent 40deg 45deg);
+}
+.wrapper .block {
+  --start: 100px;
+  --end: 130px;
+  width: 135px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  grid-area: 1/1;
+  clip-path: polygon(25% 0, 50% 50%, 75% 0);
+  animation: loading 2s steps(5) infinite;
+}
+.wrapper .block:nth-child(1) {
+  transform: rotate(0deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.2s;
+}
+.wrapper .block:nth-child(2) {
+  transform: rotate(45deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.4s;
+  background: var(--darkblue)
+}
+.wrapper .block:nth-child(3) {
+  transform: rotate(90deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.6s;
+}
+.wrapper .block:nth-child(4) {
+  transform: rotate(135deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 0.8s;
+}
+.wrapper .block:nth-child(5) {
+  transform: rotate(180deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1s;
+}
+.wrapper .block:nth-child(6) {
+  transform: rotate(225deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.2s;
+}
+.wrapper .block:nth-child(7) {
+  transform: rotate(270deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.4s;
+}
+.wrapper .block:nth-child(8) {
+  transform: rotate(315deg);
+  mask: radial-gradient(transparent 0 var(--start), #000 var(--start) var(--end), transparent var(--end));
+  animation-delay: 1.6s;
+}
+
+@keyframes loading {
+  15% {
+    --start: 110px;
+    --end: 150px;
+    background: orange;
+  }
+  45% {
+    --start: 100px;
+    --end: 130px;
+    background: var(--bg);
+  }
+}
+    </style>
+    {% block css%}
+    {% endblock %}
+</head>
+
+<body>
+
+    <!-- mobile header -->
+
+    <!-- site -->
+    <a id="button"></a>
+    <div class="site">
+
+      <!-- <button class="bi bi-list text-white btn bg-darkblue" style="position: absolute; bottom: 0; z-index: 999;" onclick="extendtabs()"></button> -->
+        <!-- site__body -->
+
+        <!-- screen loader -->
+
+        <div class="d-flex flex-column align-items-center justify-content-center d-none position-fixed"
+        style="height: 100vh;background:#171717bc ; width: 100vw; z-index: 9999;"
+        >
+          <div class="spinner-border text-white" role="status">
+          </div>
+        </div>
+        <div class="site__body d-flex">
+              <!-- side bar -->
+              <div class="sidebarholder p-0 position-relative" style="width: 13%;">
+                
+                <div class="bg-darkblue" style="height: 90vh; overflow-y: scroll;">
+                  <nav class="account-nav__list mt-2">
+                    <li class="account-nav__item" onclick="createtab('promotionstab', 'PROMOTIONS', '/products/promotionspage')">
+                        <a href="#" class="tab-link" data-target="Alert" url="">Promotions</a>
+                      </li>
+                      
+                  </nav>
+                </div>
+
+              </div>
+
+              <!-- tabs holder -->
+              <div class="tabsholder" style="width: 87%;">
+                <!-- tabs s -->
+                <div id="tabs-container">
+                  <div class="d-flex position-relative">
+                    <ul class="nav nav-tabs bg-darkblue" id="myTabs" role="tablist" style="width: 100%; overflow-y: hidden;">
+
+                      <li class="nav-item">
+
+                        </li>
+                      
+                        
+
+                    </ul>
+                    <!-- <button class="nav-btn next-btn">&gt;</button>
+                    <button class="nav-btn prev-btn">&lt;</button> -->
+                  </div>
+
+                  <div class="tab-content p-2 position-relative" id="myTabsContent" style="height: 92vh; overflow-y: scroll; overflow-x: hidden;">
+                    <div class="d-flex flex-column align-items-center justify-content-center loadingscreen position-fixed d-none"
+                    style="height: 100vh; width: 100vw; z-index: 9999;"
+                    >
+                    <div class="wrapper">
+                      <div class="block"></div>
+                      <div class="block"></div>
+                      <div class="block"></div>
+                      <div class="block"></div>
+                      <div class="block"></div>
+                      <div class="block"></div>
+                      <div class="block"></div>
+                      <div class="block"></div>
+                    </div>
+                    </div>
+                      <!-- Tab content will be dynamically loaded here -->
+                      <div class="tab-pane fade active show" id="maintab">
+
+                        {% block content %}
+                        {% endblock %}
+                      </div>
+                  </div>
+              </div>
+              </div>
+
+
+
+
+        </div><!-- site__body / end -->
+        <!-- site__footer -->
+
+    </div><!-- site / end -->
+    <!-- mobile-menu -->
+    <div class="mobile-menu">
+      <div class="mobile-menu__body">
+        <button class="mobile-menu__close" type="button">
+          <svg width="12" height="12">
+            <path d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6
+        c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4
+        C11.2,9.8,11.2,10.4,10.8,10.8z"></path>
+          </svg>
+        </button>
+        <div class="mobile-menu__panel">
+          <div class="mobile-menu__panel-header">
+            <div class="mobile-menu__panel-title">Menu</div>
+          </div>
+          <div class="mobile-menu__panel-body">
+            <!-- <div class="mobile-menu__settings-list">
+              <div class="mobile-menu__setting" data-mobile-menu-item="">
+                <button class="mobile-menu__setting-button" title="Language" data-mobile-menu-trigger="">
+                  <span class="mobile-menu__setting-icon">
+                    <img src="images/languages/language-5.png" alt="">
+                  </span>
+                  <span class="mobile-menu__setting-title">Italian</span>
+                  <span class="mobile-menu__setting-arrow">
+                    <svg width="6px" height="9px">
+                      <path d="M0.3,7.4l3-2.9l-3-2.9c-0.4-0.3-0.4-0.9,0-1.3l0,0c0.4-0.3,0.9-0.4,1.3,0L6,4.5L1.6,8.7c-0.4,0.4-0.9,0.4-1.3,0l0,0C-0.1,8.4-0.1,7.8,0.3,7.4z"></path>
+                    </svg>
+                  </span>
+                </button>
+                <div class="mobile-menu__setting-panel" data-mobile-menu-panel="">
+                  <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                    <div class="mobile-menu__panel-header">
+                      <button class="mobile-menu__panel-back" type="button">
+                        <svg width="7" height="11">
+                          <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                        </svg>
+                      </button>
+                      <div class="mobile-menu__panel-title">Language</div>
+                    </div>
+                    <div class="mobile-menu__panel-body">
+                      <ul class="mobile-menu__links">
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">
+                            <div class="mobile-menu__links-image">
+                              <img src="images/languages/language-1.png" alt="">
+                            </div>English
+                          </button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">
+                            <div class="mobile-menu__links-image">
+                              <img src="images/languages/language-2.png" alt="">
+                            </div>French
+                          </button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">
+                            <div class="mobile-menu__links-image">
+                              <img src="images/languages/language-3.png" alt="">
+                            </div>German
+                          </button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">
+                            <div class="mobile-menu__links-image">
+                              <img src="images/languages/language-4.png" alt="">
+                            </div>Russian
+                          </button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">
+                            <div class="mobile-menu__links-image">
+                              <img src="images/languages/language-5.png" alt="">
+                            </div>Italian
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mobile-menu__setting" data-mobile-menu-item="">
+                <button class="mobile-menu__setting-button" title="Currency" data-mobile-menu-trigger="">
+                  <span class="mobile-menu__setting-icon mobile-menu__setting-icon--currency">$ </span>
+                  <span class="mobile-menu__setting-title">US Dollar</span>
+                  <span class="mobile-menu__setting-arrow">
+                    <svg width="6px" height="9px">
+                      <path d="M0.3,7.4l3-2.9l-3-2.9c-0.4-0.3-0.4-0.9,0-1.3l0,0c0.4-0.3,0.9-0.4,1.3,0L6,4.5L1.6,8.7c-0.4,0.4-0.9,0.4-1.3,0l0,0C-0.1,8.4-0.1,7.8,0.3,7.4z"></path>
+                    </svg>
+                  </span>
+                </button>
+                <div class="mobile-menu__setting-panel" data-mobile-menu-panel="">
+                  <div class="mobile-menu__panel mobile-menu__panel--hidden">
+                    <div class="mobile-menu__panel-header">
+                      <button class="mobile-menu__panel-back" type="button">
+                        <svg width="7" height="11">
+                          <path d="M6.7,0.3L6.7,0.3c-0.4-0.4-0.9-0.4-1.3,0L0,5.5l5.4,5.2c0.4,0.4,0.9,0.3,1.3,0l0,0c0.4-0.4,0.4-1,0-1.3l-4-3.9l4-3.9C7.1,1.2,7.1,0.6,6.7,0.3z"></path>
+                        </svg>
+                      </button>
+                      <div class="mobile-menu__panel-title">Currency</div>
+                    </div>
+                    <div class="mobile-menu__panel-body">
+                      <ul class="mobile-menu__links">
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">€ Euro</button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">£ Pound Sterling</button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">$ US Dollar</button>
+                        </li>
+                        <li data-mobile-menu-item="">
+                          <button type="button" class="" data-mobile-menu-trigger="">₽ Russian Ruble</button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <div class="mobile-menu__divider"></div>
+            <div class="mobile-menu__indicators d-flex justify-content-between">
+              <!--   <a class="mobile-menu__indicator" href="/ordersforeach">
+                <span class="mobile-menu__indicator-icon">
+                  <svg width="20" height="20">
+                      <path d="M20,20h-2c0-4.4-3.6-8-8-8s-8,3.6-8,8H0c0-4.2,2.6-7.8,6.3-9.3C4.9,9.6,4,7.9,4,6c0-3.3,2.7-6,6-6s6,2.7,6,6
+          c0,1.9-0.9,3.6-2.3,4.7C17.4,12.2,20,15.8,20,20z M14,6c0-2.2-1.8-4-4-4S6,3.8,6,6s1.8,4,4,4S14,8.2,14,6z"></path>
+                    </svg>
+                </span>
+                <span class="mobile-menu__indicator-title">Commandes</span>
+              </a>
+
+              <a class="mobile-menu__indicator" href="account-dashboard.html">
+                <span class="mobile-menu__indicator-icon">
+                  <svg width="20" height="20">
+                    <path d="M20,20h-2c0-4.4-3.6-8-8-8s-8,3.6-8,8H0c0-4.2,2.6-7.8,6.3-9.3C4.9,9.6,4,7.9,4,6c0-3.3,2.7-6,6-6s6,2.7,6,6
+        c0,1.9-0.9,3.6-2.3,4.7C17.4,12.2,20,15.8,20,20z M14,6c0-2.2-1.8-4-4-4S6,3.8,6,6s1.8,4,4,4S14,8.2,14,6z"></path>
+                  </svg>
+                </span>
+                <span class="mobile-menu__indicator-title">Account</span>
+              </a>
+
+              <a class="mobile-menu__indicator" href="account-garage.html">
+                <span class="mobile-menu__indicator-icon">
+                  <svg width="20" height="20">
+                    <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1
+        c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2
+        C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9
+        c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z M4,10c-0.4-0.3-1.5-0.5-2,0
+        c-0.4,0.4-0.4,1.6,0,2c0.5,0.5,4,0.4,4,0C6,11.2,4.5,10.3,4,10z M14,12c0,0.4,3.5,0.5,4,0c0.4-0.4,0.4-1.6,0-2c-0.5-0.5-1.3-0.3-2,0
+        C15.5,10.2,14,11.3,14,12z"></path>
+                  </svg>
+                </span>
+                <span class="mobile-menu__indicator-title">Garage</span>
+              </a>
+              <a class="mobile-menu__indicator" href="/cart">
+                  <span class="mobile-menu__indicator-icon">
+                    <svg width="20" height="20">
+                      <circle cx="7" cy="17" r="2"></circle>
+                      <circle cx="15" cy="17" r="2"></circle>
+                      <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6
+          V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4
+          C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z"></path>
+                    </svg>
+                    <span class="mobile-menu__indicator-counter commanditems">0</span>
+                  </span>
+                  <span class="mobile-menu__indicator-title">Cart</span>
+                </a>-->
+            </div>
+            <div class="mobile-menu__divider"></div>
+            <!-- nav menu admin -->
+
+            
+            <div class="mobile-menu__spring"></div>
+            <div class="mobile-menu__divider"></div>
+            <a class="mobile-menu__contacts" href="{% url 'main:logoutuser' %}">
+              <!-- <div class="mobile-menu__contacts-subtitle">Probleme de system</div>
+              <div class="mobile-menu__contacts-title">800 060-0730</div> -->
+              Deconnexion
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+  <div class="modal fade" id="addclientmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			<div class="accordion mb-2" id="accordionExample">
+				<div class="accordion-item">
+				  <h2 class="accordion-header" id="headingOne">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					  +Ajouter
+					</button>
+				  </h2>
+				  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<form id="addclientform">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="exampleInputEmail1">Nom ou Nom commercial</label>
+								<input name="name" type="text" required class="form-control">
+							</div>
+
+							<div class="form-group">
+								<label for="exampleInputPassword1">Phone</label>
+								<input name="phone" type="text" required class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Ville</label>
+								<input name="city" type="text" required class="form-control">
+							</div>
+							<div class="form-group">
+								<label for="exampleInputPassword1">Addresse</label>
+								<input name="address" type="text" required class="form-control">
+							</div>
+							<button  class="btn btn-primary addclientbtn w-100">Submit</button>
+					  </form>
+					</div>
+				  </div>
+				</div>
+			</div>
+
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <!-- image display modal -->
+<div class="modal fade" id="imagedisplaymodal" tabindex="-1" aria-labelledby="eimagedisplaymodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-body text-center">
+            <img src="" alt="" class="imgproductmodal" style="max-width: 100%;">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- connected useres -->
+  <div class="fixed-bottomright bg-darkblue col-5 d-flex connectedholder">
+    <!-- <button class="btn text-white" style="border:1px solid var(--orange);" onclick="getconnected(); getconnectedoutside()">
+      ↻
+    </button> -->
+    
+  </div>
+
+  <audio id="notificationSound" src="/media/notif.wav" style="display: none"></audio>
+  <!-- scripts -->
+    <script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'js/select2.min.js'%}"></script>
+    <script src="{% static 'js/type.min.js'%}"></script>
+    <script src="{% static 'js/number.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/alertify.min.js'%}"></script>
+    <script>
+    function populateyears(){
+      console.log('>> populating years')
+      const $select = $('.populateyears');
+      $select.html('')
+      const currentYear = new Date().getFullYear();
+      const startYear = 2024;
+      console.log('startYear, currentYear', startYear, currentYear)
+
+      for (let year = startYear; year <= currentYear; year++) {
+          $select.prepend($('<option>', {
+              value: year,
+              text: year
+          }));
+      }
+      $select.val(currentYear);
+    }
+    function setdamagedqty(event, pdctid){
+      parentdiv=$(event.target).parent().parent()
+      qty=parentdiv.find('.qty').val()
+      password=parentdiv.find('.password').val()
+      console.log(pdctid, qty, password)
+      $.get('/products/damagedproducts', {
+        'pdctid':pdctid,
+        'qty':qty,
+        'password':password,
+      })
+    }
+    function showhiddenpartindamaged(event){
+      parentdiv=$(event.target).parent()
+      qty=parentdiv.find('.qty').val()
+      if (qty=='' || qty=='0'){
+        parentdiv.find('.qty').addClass('border-danger')
+      }else{
+        parentdiv.find('.qty').attr('readonly', 'true')
+        parentdiv.find('.qty').removeClass('border-danger')
+        parentdiv.find('.hiddenpart').removeClass('d-none')
+      }
+    }
+    function searchsortipdct(event, pdctid) {
+  	    const query = $(event.target).val().toLowerCase();
+  	    const terms = query.split('+');
+
+  	    $(`.pdctsoutbody${pdctid} tr`).each(function() {
+  	        const row = $(this);
+  	        let match = true;
+
+  	        terms.forEach(term => {
+  	            if (row.text().toLowerCase().indexOf(term.trim()) === -1) {
+  	                match = false;
+  	            }
+  	        });
+
+  	        if (match) {
+  	            row.removeClass('d-none');
+  	        } else {
+  	            row.addClass('d-none');
+  	        }
+  	    });
+  	}
+    function searchentrepdct(event, pdctid) {
+  	    const query = $(event.target).val().toLowerCase();
+  	    const terms = query.split('+');
+
+  	    $(`.pdctsinbody${pdctid} tr`).each(function() {
+  	        const row = $(this);
+  	        let match = true;
+
+  	        terms.forEach(term => {
+  	            if (row.text().toLowerCase().indexOf(term.trim()) === -1) {
+  	                match = false;
+  	            }
+  	        });
+
+  	        if (match) {
+  	            row.removeClass('d-none');
+  	        } else {
+  	            row.addClass('d-none');
+  	        }
+  	    });
+  	}
+    function datepdct(pdctid){
+      console.log($(`.pdctdatefrompdct${pdctid}`))
+        datefrom=$(`.pdctdatefrompdct${pdctid}`).val()
+        dateto=$(`.pdctdatetopdct${pdctid}`).val()
+        console.log(datefrom=='', dateto=='')
+        if (datefrom=='' || dateto==''){
+            alertify.error('DATE')
+            return
+        }
+        $.get('/products/datepdct', {'datefrom':datefrom, 'dateto':dateto, 'pdctid':pdctid}, (data)=>{
+            console.log(data)
+            $(`.pdctsinbody${pdctid}`).html('')
+            $(`.pdctsinbody${pdctid}`).html(data.trin)
+            $(`.pdctsoutbody${pdctid}`).html('')
+            $(`.pdctsoutbody${pdctid}`).html(data.trout)
+        })
+
+    }
+    function getconnected() {
+      $('.connectednbr').text('...')
+      $('.connectedtbody').html('...')
+      $.get('/products/getconnectedusers',
+
+      (data)=>{
+        $('.connectednbr').text(data.length)
+        $('.connectedtbody').html(data.trs)
+
+      }
+      )
+    }
+    function getconnectedoutside() {
+      $('.connectednbrserver').text('...')
+      $('.connectedtbodyserver').html('...')
+      $.get('/products/getconnected',
+
+
+      (data)=>{
+        $('.connectednbrserver').text(data.length)
+        $('.connectedtbodyserver').html(data.trs)
+
+      }
+      )
+    }
+    $('.connectedholder').on('mouseover', ()=>{
+      $('.connectedusersbar').removeClass('collapsed'); $('#collapsconnected').addClass('show');
+
+    })
+    $('.connectedholder').on('mouseleave', ()=>{$('.connectedusersbar').addClass('collapsed'); $('#collapsconnected').removeClass('show')})
+    function printlivraison(bonid){
+       /*var printContents = document.getElementById(divName).innerHTML;
+       var originalContents = document.body.innerHTML;
+       document.body.innerHTML = printContents;
+       $('.blitems').css({'font-size': '15px','font-family':'serif'})
+       $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+       //  $('body').addClass('d-flex flex-column vh-100 p-3')
+       window.print();
+       document.body.innerHTML = originalContents;*/
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonlivraisonprint/'+bonid, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+
+  function printavoir(bonid){
+     /*var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+     document.body.innerHTML = printContents;
+     $('.blitems').css({'font-size': '15px','font-family':'serif'})
+     $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+     //  $('body').addClass('d-flex flex-column vh-100 p-3')
+     window.print();
+     document.body.innerHTML = originalContents;*/
+     url = window.location.pathname.split( '/' );[0]
+     var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonavoirprint/'+bonid, '', 'width=900,height=900');
+
+      myWindow.focus();
+
+      myWindow.addEventListener('load', function() {
+        console.log('New window loaded.');
+
+        // Wait for 5 seconds before printing
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000); // 1000 milliseconds = 1 seconds
+      }, false);
+    }
+
+  function printcomande(cmndid){
+       /*var printContents = document.getElementById(divName).innerHTML;
+       var originalContents = document.body.innerHTML;
+       document.body.innerHTML = printContents;
+       $('.blitems').css({'font-size': '15px','font-family':'serif'})
+       $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+       //  $('body').addClass('d-flex flex-column vh-100 p-3')
+       window.print();
+       document.body.innerHTML = originalContents;*/
+       url = window.location.pathname.split( '/' );[0]
+       var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/boncmndprint/'+cmndid, '', 'width=900,height=900');
+
+        myWindow.focus();
+
+        myWindow.addEventListener('load', function() {
+      console.log('New window loaded.');
+
+      // Wait for 5 seconds before printing
+      setTimeout(function() {
+        try {
+          myWindow.print();
+          console.log('Print command issued.');
+          myWindow.close();
+          console.log('New window closed.');
+        } catch (e) {
+          console.error('Failed to print and close the window:', e);
+        }
+      }, 1000); // 1000 milliseconds = 1 seconds
+    }, false);
+  }
+  function printachat(bonid){
+     url = window.location.pathname.split( '/' );[0]
+     var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonachatprint/'+bonid, '', 'width=900,height=900');
+
+      myWindow.focus();
+
+      myWindow.addEventListener('load', function() {
+    console.log('New window loaded.');
+
+    // Wait for 5 seconds before printing
+    setTimeout(function() {
+      try {
+        myWindow.print();
+        console.log('Print command issued.');
+        myWindow.close();
+        console.log('New window closed.');
+      } catch (e) {
+        console.error('Failed to print and close the window:', e);
+      }
+    }, 1000); // 1000 milliseconds = 1 seconds
+  }, false);
+}
+function printfacture(bonid){
+     /*var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+     document.body.innerHTML = printContents;
+     $('.blitems').css({'font-size': '15px','font-family':'serif'})
+     $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+     //  $('body').addClass('d-flex flex-column vh-100 p-3')
+     window.print();
+     document.body.innerHTML = originalContents;*/
+     url = window.location.pathname.split( '/' );[0]
+     var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/factureprint/'+bonid, '', 'width=900,height=900');
+
+      myWindow.focus();
+
+      myWindow.addEventListener('load', function() {
+    console.log('New window loaded.');
+
+    // Wait for 5 seconds before printing
+    setTimeout(function() {
+      try {
+        myWindow.print();
+        console.log('Print command issued.');
+        myWindow.close();
+        console.log('New window closed.');
+      } catch (e) {
+        console.error('Failed to print and close the window:', e);
+      }
+    }, 300); // 1000 milliseconds = 1 seconds
+  }, false);
+}
+
+function printfacturecopy(bonid){
+     /*var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+     document.body.innerHTML = printContents;
+     $('.blitems').css({'font-size': '15px','font-family':'serif'})
+     $("table > tbody > tr > td").css({'padding':'5px', 'border-bottom':'0px', 'border-top':'0px'});
+     //  $('body').addClass('d-flex flex-column vh-100 p-3')
+     window.print();
+     document.body.innerHTML = originalContents;*/
+     url = window.location.pathname.split( '/' );[0]
+     var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/factureprintcopy/'+bonid, '', 'width=900,height=900');
+
+      myWindow.focus();
+
+      myWindow.addEventListener('load', function() {
+    console.log('New window loaded.');
+
+    // Wait for 5 seconds before printing
+    setTimeout(function() {
+      try {
+        myWindow.print();
+        console.log('Print command issued.');
+        myWindow.close();
+        console.log('New window closed.');
+      } catch (e) {
+        console.error('Failed to print and close the window:', e);
+      }
+    }, 300); // 1000 milliseconds = 1 seconds
+  }, false);
+}
+
+
+function printbonachat(bonid){
+
+         url = window.location.pathname.split( '/' );[0]
+         var myWindow = window.open('http://'+window.location.href.split( '/' )[2]+'/products/bons/bprint/12455t/bonachatprint/'+bonid, '', 'width=900,height=900');
+
+          myWindow.focus();
+
+          myWindow.addEventListener('load', function() {
+        console.log('New window loaded.');
+
+        // Wait for 5 seconds before printing
+        setTimeout(function() {
+          try {
+            myWindow.print();
+            console.log('Print command issued.');
+            myWindow.close();
+            console.log('New window closed.');
+          } catch (e) {
+            console.error('Failed to print and close the window:', e);
+          }
+        }, 1000); // 1000 milliseconds = 1 seconds
+      }, false);
+    }
+
+      /*document.addEventListener("DOMContentLoaded", function() {
+        const navTabs = document.querySelector(".nav-tabs");
+        const prevBtn = document.querySelector(".prev-btn");
+        const nextBtn = document.querySelector(".next-btn");
+        let scrollAmount = 0;
+
+        // Scroll left
+        prevBtn.addEventListener("click", function() {
+        const navItems = document.querySelectorAll(".nav-item");
+            scrollAmount += 100; // Adjust scroll amount as needed
+            scrollAmount = Math.min(scrollAmount, 0);
+            navItems.forEach(item => {
+              console.log(item)
+                item.style.transform = `translateX(${scrollAmount}px)`;
+            });
+
+        });
+
+        // Scroll right
+        nextBtn.addEventListener("click", function() {
+          const navItems = document.querySelectorAll(".nav-item");
+          scrollAmount -= 100; // Adjust scroll amount as needed
+            scrollAmount = Math.max(scrollAmount, -navTabs.offsetWidth);
+            navItems.forEach(item => {
+              console.log(item)
+                item.style.transform = `translateX(${scrollAmount}px)`;
+            });
+
+        });
+    });*/
+      function addrepnote(event, repid){
+        note=$(event.target).parent().find('textarea').val()
+        $.get('/products/addrepnote',{'note':note, 'repid':repid}, (data)=>{
+          console.log(data)
+        })
+
+      }
+      function printed(event, factureid){
+        $.get('/products/printed',{'factureid':factureid}, (data)=>{
+          updatetab(`facture${factureid}`, `/products/facturedetails/${factureid}`)
+        })
+      }
+      function updatetransportbl(event, blid){
+        let transport= $(event.target).parent().find('input').val()
+        if (transport!=''){
+          $.get('/products/updatetransportbl', {
+          'transport':transport,
+          'blid':blid
+          }, (data)=>{
+            updatetab(`bonl${blid}`, `/products/bonlivraisondetails/${blid}`)
+          })
+        }
+      }
+      function updatenotebl(event, blid){
+        let note= $(event.target).parent().find('input').val()
+        if (note!=''){
+          $.get('/products/updatenotebl', {
+          'note':note,
+          'blid':blid
+          }, (data)=>{
+            updatetab(`bonl${blid}`, `/products/bonlivraisondetails/${blid}`)
+          })
+        }
+      }
+      function updaterepbl(event, blid){
+        let rep= $(event.target).parent().find('select').val()
+        if (rep!=''){
+          $.get('/products/updaterepbl', {
+          'rep':rep,
+          'blid':blid
+          }, (data)=>{
+            updatetab(`bonl${blid}`, `/products/bonlivraisondetails/${blid}`)
+          })
+        }
+      }
+      function updateiscontrebon(event, blid){
+        let iscontre= $(event.target).val()
+          $.get('/products/updateiscontrebon', {
+          'iscontre':iscontre,
+          'blid':blid
+          }, (data)=>{
+            updatetab(`bonl${blid}`, `/products/bonlivraisondetails/${blid}`)
+          })
+        
+      }
+      function updateproductstock(event, productid){
+        let stock= $(event.target).parent().find('input').val()
+        if (stock!=''){
+          $.get('/products/updateproductstock', {
+          'stock':stock,
+          'productid':productid
+          }, (data)=>{
+            forceupdatetab(`addpdct${productid}`, `/products/viewoneproduct/${productid}`)
+          })
+        }
+
+      }
+      function updateproductstockfc(event, productid){
+        let stock= $(event.target).parent().find('input').val()
+        if (stock!=''){
+          $.get('/products/updateproductstockfc', {
+          'stock':stock,
+          'productid':productid
+          }, (data)=>{
+            forceupdatetab(`pdct${productid}`, `/products/viewoneproduct/${productid}`)
+          })
+        }
+
+      }
+      const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+
+      const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+          v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+          )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+      // do the work...
+      const sorttable=(event) => {
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+      const datesorttable = (event) => {
+        const th = event.target;
+        const table = th.closest('table').querySelector('tbody');
+        const columnIndex = Array.from(th.parentNode.children).indexOf(th);
+
+        // Custom comparer function to handle date sorting
+        const dateComparer = (idx, asc) => (a, b) => {
+          // Helper function to parse date strings in the format "dd/mm/yyyy" into Date objects
+           const parseDateString = (dateString) => {
+              const [day, month, year] = dateString.split('/');
+              // Ensure that we provide the year, month, and day in the correct order to the Date constructor
+              return new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+          };
+
+          // Retrieve the textual content of the cells in the specified column for the two rows
+          const aValue = parseDateString(getCellValue(a, idx));
+          const bValue = parseDateString(getCellValue(b, idx));
+
+          // Check if both values are valid dates
+          if (!isNaN(aValue.getTime()) && !isNaN(bValue.getTime())) {
+              // Compare the dates
+              return asc ? aValue - bValue : bValue - aValue;
+          } else {
+              // If one or both values are not valid dates, return 0 to maintain the current order
+              return 0;
+          }
+      };
+
+        // Determine sorting order (ascending/descending)
+        const asc = th.asc = !th.asc;
+
+        // Perform sorting and update table
+        Array.from(table.querySelectorAll('tr'))
+            .sort(dateComparer(columnIndex, asc))
+            .forEach(tr => table.appendChild(tr));
+      };
+      const getintCellValue = (tr, idx) => parseFloat(tr.children[idx].innerText.replace(' ', '')) || parseFloat(tr.children[idx].textContent.replace(' ', ''));
+
+      const intcomparer = (idx, asc) => (a, b) => ((v1, v2) =>
+          v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+          )(getintCellValue(asc ? a : b, idx), getintCellValue(asc ? b : a, idx));
+
+      const intsorttable=(event) => {
+        th=event.target
+          const table = th.closest('table').querySelector('tbody');
+          Array.from(table.querySelectorAll('tr'))
+              .sort(intcomparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+              .forEach(tr => table.appendChild(tr) );
+      };
+      $(document).on('keydown', function (e) {
+
+        // Check if the key combination is Ctrl + Shift + A
+        if (e.shiftKey && e.key === 'b') {
+          createtab('addlistbonlivraison', 'list bl', '/products/listbonlivraison')
+        }
+        if (e.altKey && e.key === 'B') {
+          console.log('Alt + b was pressed'); // Debugging line
+          createtab('addbonlivraison', '+livraison', '/products/bonlivraison');
+        }
+
+        if (e.shiftKey && e.key === 'f') {
+          createtab('addlistfactures', 'Factures', '/products/listfactures')
+        }
+        if (e.shiftKey && e.key === 'c') {
+          createtab('addCommandestab', 'lict BC', '/products/listboncommnd')
+        }
+      });
+      let clicksinbl = 0;
+      let clicksinupdateachat = 0;
+      let clicksinavcl=0;
+      let clicksinfc = 0;
+      let clicksinba = 0;
+      let clicksingenbl = 0;
+
+      let clicksinupdatebl = 0;
+      let clicksinupdateavcl = 0;
+      let clicksinupdateavsupp = 0;
+      let clicksinupdatefc = 0;
+      let clicksinupdateba = 0;
+      const requiredClicks = 3;
+      const requiredClicksachat = 3;
+      // loading table variables
+      let currentPage = 1;
+      let loadingproducts = false;
+      let currentPagelistbl=1
+      let loadinglistbl = false;
+      let currentPagelistachat=1
+      let loadinglistachat = false;
+      let currentPagereglbl=1
+      let currentPagelistreglfc=1
+      let loadingreglbl = false;
+      let currentPagelistbc=1
+      let currentPagelistbonacha=1
+      let loadinglistbonacha=false
+      let loadinglistbc = false;
+      let currentPageblregl=1
+      let loadingblregl = false;
+      let loadingreglsupp = false;
+      let currentPagereglsupp=1;
+      let currentPagefcregl=1;
+      let loadingfcregl = false;
+      let currentPagelistfc=1
+      let loadinglistfc = false;
+      let currentPageclients=1
+      let loadingclients = false;
+      let currentPagejournalacha=1
+      let loadingjournalacha = false;
+      let currentPagejournalachafc=1
+      let loadingjournalachafc = false;
+      let currentPagejournalventefc=1
+      let loadingjournalventefc = false
+      let currentPagejournalvente=1
+      let loadingjournalvente = false
+      let loadingupdateblregl=false
+      let currentPageupdateblregl=1
+      let loadingupdatefcregl=false
+      let currentPageupdatefcregl=1
+
+
+      // function getoutsideNotifications() {
+    //     $.ajax({
+    //         url: 'http://systemparts.ma/products/notifyadmin',  // Replace with the actual URL of your API endpoint
+    //         method: 'GET',
+    //         success: function (data) {
+    //             // Handle the retrieved notifications and display them
+    //             if (data.length > 0){
+    //               // var audio = document.getElementById('notificationSound');
+    //               console.log('notttttttif')
+    //               setTimeout(getoutsideNotifications, 24000);
+    //             }
+    //             else{
+    //               setTimeout(getoutsideNotifications, 24000);  // Poll every 5 seconds (adjust as needed)
+    //             }
+    //
+    //         },
+    //         complete: function () {
+    //             // Schedule the next AJAX request after a short delay
+    //         }
+    //     });
+    //
+    // }
+    function refreshselectclient(event){
+      selection=$(event.target).parent().find('.selection')
+      console.log($(event.target).parent().find('.select2client'))
+      selection.remove()
+      $(event.target).parent().find('.select2client').select2({
+          minimumInputLength: 1,
+          placeholder:'Chercher Client',
+          ajax: {
+            type:'get',
+            dataType: 'json',
+            url: '/products/searchclient',
+            data: function (params) {
+              var query = {
+                term: params.term,
+              }
+              // Query parameters will be ?search=[term]&type=public
+              return query;
+            },
+            proccessresults: function (data) {
+                return {
+                  results:data.results
+                }
+            },
+            cache:true
+          }
+        });
+
+    }
+
+    function refreshselectsupp(event){
+      selection=$(event.target).parent().find('.selection')
+      selection.remove()
+      console.log($(event.target).parent().find('.suppslect2'))
+      $(event.target).parent().find('.suppslect2').select2({
+        minimumInputLength: 1,
+        placeholder:'Chercher Fournisseur',
+        ajax: {
+          type:'get',
+          dataType: 'json',
+          url: '/products/searchsupplier',
+          data: function (params) {
+            var query = {
+              term: params.term,
+            }
+            // Query parameters will be ?search=[term]&type=public
+            return query;
+          },
+          proccessresults: function (data) {
+              return {
+                results:data.results
+              }
+          },
+          cache:true
+        }
+      });
+
+    }
+
+      function genererrelveclfc(event){
+        parentdiv=$(event.target).parent()
+        console.log(parentdiv)
+        // check notempty
+        // var isAnyEmpty = parentdiv.find('.notempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+        //     if (isAnyEmpty){
+        //         let emptyInputs = parentdiv.find('notempty').filter(function() {
+        //             return !this.value.trim();
+        //         });
+
+        //         // Add a red border to all empty input elements
+        //         alertify.error('Veuillez remplir tous les champs obligatoires')
+        //         emptyInputs.css('border', '1px solid red');
+        //         parentdiv.find('notempty').not(emptyInputs).css('border', '');
+        //         $(this).attr('disabled', false)
+        //         return
+        //     }
+        clientid=parentdiv.find('select[name="clientsituationfcselectfc"]').val()
+        datefrom=parentdiv.find('input[name="situationfccldatefrom"]').val()
+        dateto=parentdiv.find('input[name="situationfccldateto"]').val()
+        if (clientid==null || datefrom=='' || dateto==''){
+          alertify.error('ERRO')
+          return
+        }
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+            url: '/products/relevclientfc',
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'clientid': clientid,
+                'datefrom': datefrom,
+                'dateto': dateto,
+            },
+            success: function(data){
+                $('.loadingscreen').addClass('d-none')
+                $('.releveclfcholder').html(data.html)
+            }
+        })
+
+
+      }
+
+
+      $('.searchtablebon').on("keyup", function() {
+        let parentdiv=$(this).parent().parent()
+    // Get the values from all filter input fields
+        var filterValue = $(this).val().toLowerCase();
+
+        // Split the filter value into individual terms based on the '&' sign
+        var filterTerms = filterValue.split('+').map(function(term) {
+            return term.trim();
+        });
+
+        // Iterate through the table rows
+        parentdiv.find("tr").each(function() {
+            var rowText = $(this).text().toLowerCase();
+            var showRow = true;
+
+            // Check if all filter terms are present in the row text
+            $.each(filterTerms, function(index, term) {
+                if (term !== '' && rowText.indexOf(term) === -1) {
+                    showRow = false;
+                    return false; // Exit the loop early if a mismatch is found
+                }
+            });
+
+            // Toggle the visibility of the row based on the filter criteria
+            $(this).toggle(showRow);
+        });
+
+    });
+      function showimage(event){
+        let image=$(event.target).attr('src')
+        $('.imgproductmodal').attr('src', image)
+        $('#imagedisplaymodal').modal('show')
+      }
+      function extendtabs(){
+        let tabsholder=$('.tabsholder')
+        let sidebarholder=$('.sidebarholder')
+        // if already expended
+        if (tabsholder.hasClass('expended')){
+          tabsholder.removeClass('expended')
+          tabsholder.css('width', '87%')
+          sidebarholder.removeClass('d-none')
+      }
+      else{
+          tabsholder.addClass('expended')
+          tabsholder.css('width', '100%')
+          sidebarholder.addClass('d-none')
+      }
+      }
+
+      const refreshbonlivraison=(event)=>{
+        parentdiv=$(event.target).parent().parent().parent()
+        console.log(parentdiv)
+      }
+      const recevoirexcel = (event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        excelfile=parentdiv.find('.excelfile')
+        // send excel file data in a ajax request
+        let formData = new FormData();
+
+        // Append the Excel file to the FormData object
+        formData.append('excelFile', excelfile[0].files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      // Make an AJAX request to send the file data
+        $('.loadingscreen').removeClass('d-none')
+        $.ajax({
+          url: '/products/recevoirexcel', // Replace with your server endpoint
+          type: 'POST', // Use POST or other HTTP method as needed
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            // Handle the success response from the server
+            $('.bonachatbody').html(response.trs)
+            alertify.success('File uploaded successfully');
+            $('.loadingscreen').addClass('d-none')
+            $('.grandtotalbonachat').text((response.totalbon).toFixed(2))
+            for (let i of response.refnotexist){
+              $('.refnotexist').append(`<div>${i}</div>`)
+            }
+          },
+          error: function(xhr, status, error) {
+            $('.loadingscreen').addClass('d-none')
+            // Handle errors if the AJAX request fails
+            alertify.error('Error uploading file');
+          }
+        });
+      }
+      const checkmodereglement=(event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        if ($(event.target).val()=="cheque" || $(event.target).val()=="effet"){
+            // echeance n piece will be required
+            parentdiv.find('[name="npiece"]').addClass('notempty')
+            parentdiv.find('[name="echeance"]').addClass('notempty')
+        }else{
+            parentdiv.find('[name="npiece"]').removeClass('notempty')
+            parentdiv.find('[name="echeance"]').removeClass('notempty')
+        }
+    }
+    const checkmodereglementsupp=(event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        if ($(event.target).val()=="cheque" || $(event.target).val()=="effet"){
+            // echeance n piece will be required
+            parentdiv.find('[name="npiecereglementsupp"]').addClass('notempty')
+            parentdiv.find('[name="echeancereglementsupp"]').addClass('notempty')
+        }else{
+            parentdiv.find('[name="npiecereglementsupp"]').removeClass('notempty')
+            parentdiv.find('[name="echeancereglementsupp"]').removeClass('notempty')
+        }
+    }
+      const checkreglementbox=(event)=>{
+        let parentdiv=$(event.target).parent().parent()
+        if ($(event.target).is(':checked')){
+          parentdiv.css('background', '#ddfaed')
+          if($($(event.target).parent().parent().find('td')[1]).text().includes('BL')){
+            console.log('>> reg in bl')
+            bons=parseFloat($('.totalcheckedbl').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons+bontotal)
+            $('.totalcheckedbl').text((bons+bontotal).toFixed(2))
+          }else if($($(event.target).parent().parent().find('td')[1]).text().includes('FC')){
+            console.log('>> reg in fc')
+            bons=parseFloat($('.totalcheckedfc').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons+bontotal)
+            $('.totalcheckedfc').text((bons+bontotal).toFixed(2))
+          }else{
+            console.log('>> reg in supp')
+            bons=parseFloat($('.totalcheckedsupp').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons, bontotal)
+            $('.totalcheckedsupp').text((bons+bontotal).toFixed(2))
+          }
+        }else{
+          parentdiv.css('background', 'none')
+          if($($(event.target).parent().parent().find('td')[1]).text().includes('BL')){
+            bons=parseFloat($('.totalcheckedbl').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons-bontotal)
+            $('.totalcheckedbl').text((bons-bontotal).toFixed(2))
+          }else if($($(event.target).parent().parent().find('td')[1]).text().includes('FC')){
+            bons=parseFloat($('.totalcheckedfc').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons-bontotal)
+            $('.totalcheckedfc').text((bons-bontotal).toFixed(2))
+          }else{
+            bons=parseFloat($('.totalcheckedsupp').text())
+            bontotal=parseFloat($($(event.target).parent().parent().find('td')[3]).text())
+            console.log(bons-bontotal)
+            $('.totalcheckedsupp').text((bons-bontotal).toFixed(2))
+          }
+        }
+      }
+
+      const degenerer=(event, id, idtab, url)=>{
+        let parentdiv=$(event.target).parent().parent()
+        let bonholder=parentdiv.find('.bonbody')
+        // ajax call to degenerer
+        alertify.confirm('Degenerer', 'Degenerer le bon?', function(){
+          console.log('degenerer bon')
+          $.ajax({
+            url: 'products/degenerer',
+            type: 'POST',
+            data: {
+              bonid:id,
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+              deletetab(idtab)
+              createtab('addlistbonlivraison', 'list bl', '/products/listbonlivraison')
+              alertify.success('Bon dégénéré')
+              // bonholder.printThis({
+              //   importCSS: true,
+              //   loadCSS: "/static/css/bootstrap.min.css",
+              //   header: "<h1>Header</h1>",
+              //   footer: "<h1>Footer</h1>"
+              // });
+            }
+          })
+        }
+          , function(){ alertify.error('Cancel')});
+        // $.ajax({
+        //   url: 'products/degenerer',
+        //   type: 'POST',
+        //   data: {
+        //     bonid:id,
+        //     csrfmiddlewaretoken: '{{ csrf_token }}'
+        //   },
+        //   success: function (data) {
+        //     console.log(data)
+        //     // bonholder.html(data.html)
+        //     // bonholder.printThis({
+        //     //   importCSS: true,
+        //     //   loadCSS: "/static/css/bootstrap.min.css",
+        //     //   header: "<h1>Header</h1>",
+        //     //   footer: "<h1>Footer</h1>"
+        //     // });
+        //   }
+        // })
+      }
+      const calculate=(e)=>{
+        let target = $(e.target)
+        parentdiv=target.parent().parent().parent().parent().parent()
+        console.log('parentdiv in calculate',parentdiv)
+        let tr = target.parent().parent()
+        let qty = tr.find('.qty').val()
+        let price = tr.find('.price').val()
+        let remise = tr.find('.remise').val()
+        // net price will be prix achat
+        let netprice=price-(price*remise/100)
+
+        let total = tr.find('.total')
+        // update also net in tr row if it's in row
+        let net = tr.find('.netprice')
+        if (net.length){
+          net.text(netprice.toFixed(2))
+        }
+        let totalvalue=(netprice*qty).toFixed(2)
+        total.html(totalvalue)
+
+        totals=parentdiv.find('.total')
+        // let totalbon = parseFloat($('.totalbon').text())
+        // totalbonvalue = totalbon+totalvalue
+        // console.log(totalbon, totalvalue )
+        // $('.totalbon').html(totalbonvalue)
+        var totalSum = 0;
+        totals.each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        grandtotal=parentdiv.find('.totalbon')
+        console.log('parentdiv', parentdiv)
+        grandtotal.text(totalSum.toFixed(2))
+        // let totalbonvalue = 0
+        // $('.total').each(function(){
+        //   totalbonvalue += parseFloat($(this).html())
+        // })
+        // totalbon.html(totalbonvalue)
+    }
+
+      const calculatelivraison=(e, id)=>{
+        let target = $(e.target)
+        let tr = target.closest('tr')
+        let qty = tr.find('.qty').val()
+        let price = tr.find('.price').val()
+        let netprice = tr.find('.netprice')
+        let remise = tr.find('.remise').val()
+        let total = tr.find('.total')
+        let totalbon = $(`.totalbonlivraison${id}`)
+        let net=(parseFloat(price)-(parseFloat(price)*parseFloat(remise)/100)).toFixed(2)
+        netprice.text(net)
+        let totalbonval = parseFloat(totalbon.text())
+        let totalrow = qty*price*(1-remise/100)
+        total.text(totalrow.toFixed(2))
+        totals=tr.parent().parent().find('.total')
+        //console.log('totals in modifier', totalbon, totals)
+        let totalrowsval = 0
+        totals.each(function(){
+          totalrowsval+=parseFloat($(this).text())
+        })
+        totalbon.text(totalrowsval.toFixed(2))
+      }
+      // delete bonlivraison products in localstorag
+
+
+
+
+      function checkConsecutiveClicksupdatelivraison(event, id) {
+          let parentdiv=$(event.target).parent().parent().parent().parent().parent().parent()
+          console.log('PDCTS', localStorage.getItem('pdctsinbonlivraison'+id))
+          consecutiveClicks++;
+
+          if (consecutiveClicks === requiredClicks) {
+              // User has clicked the element four times consecutively
+              // Add your code to run when there are four consecutive clicks here
+              alertify.confirm('Supprimer', 'Supprimer la ligne', function(){
+                console.log('delete'),
+                // remove element
+                $(event.target).parent().remove()
+                // remove id from localstorage
+                let pdctid=$(event.target).parent().attr('id')
+                pdcts=JSON.parse(localStorage.getItem('pdctsinbonlivraison'+id))
+                pdcts.splice(pdcts.indexOf(pdctid), 1)
+                localStorage.setItem('pdctsinbonlivraison'+id, JSON.stringify(pdcts))
+                // update total
+                let totalbon = parseFloat(parentdiv.find('.totalbon').text())
+                let totalrow = parseFloat($(event.target).parent().find('.total').text())
+                let totalbonvalue = totalbon-totalrow
+                $
+              parentdiv.find('.totalbon').html(totalbonvalue)
+                // Reset the count
+                consecutiveClicks = 0;
+
+              }
+                , function(){ alertify.error('Cancel')});
+              // Reset the count
+              consecutiveClicks = 0;
+          }
+
+      }
+
+      const activerproduct=(id)=>{
+        $.ajax({
+          url: '/products/activerproduct',
+          type: 'POST',
+          data: {
+            id:id,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (data) {
+            alertify.success('Produit activé')
+            $(`pdct${id}`).html(data.html)
+            $(`.status${id}`).removeClass('bg-danger').addClass('bg-success')
+          }
+        })
+      }
+      const desactiverproduct=(id)=>{
+        $.ajax({
+          url: '/products/desactiverproduct',
+          type: 'POST',
+          data: {
+            id:id,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function (data) {
+            alertify.success('Produit Desactivé')
+            $(`pdct${id}`).html(data.html)
+            $(`.status${id}`).removeClass('bg-success').addClass('bg-danger')
+          }
+        })
+      }
+
+
+
+
+
+
+
+
+
+    const calculatebonachat=(e)=>{
+        console.log('ree from bon achat')
+        let target = $(e.target)
+        let tr = target.parent().parent()
+        let qty = tr.find('.qtybonachat').val()
+        let price = tr.find('.pricebonachat').val()
+        let remise = tr.find('.remisebonachat').val()
+        console.log(tr, qty, price)
+        // net price will be prix achat
+        let netprice=price-(price*remise/100)
+        let total = tr.find('.totalbonachat')
+        let totalvalue=(netprice*qty).toFixed(2)
+        total.html(totalvalue)
+        // let totalbon = parseFloat($('.totalbon').text())
+        // totalbonvalue = totalbon+totalvalue
+        // console.log(totalbon, totalvalue )
+        // $('.totalbon').html(totalbonvalue)
+        var totalSum = 0;
+        $('.totalbonachat').each(function() {
+            totalSum += parseFloat($(this).text());
+        });
+        $('.grandtotalbonachat').text(totalSum.toFixed(2))
+        // let totalbonvalue = 0
+        // $('.total').each(function(){
+        //   totalbonvalue += parseFloat($(this).html())
+        // })
+        // totalbon.html(totalbonvalue)
+    }
+
+      const addcarsinput = (e)=>{
+        e.preventDefault();
+        $(e.target).parent().parent().parent().parent().find('.carsholder').append('<div class="d-flex mb-3"><input type="text" class="form-control" name="cars" style="background: greenyellow;"><button class="btn btn-danger" onclick="deletecarinput(event)">-</button></div>');
+    }
+      const deletecarinput = (e)=>{
+        e.preventDefault();
+        var input = $(e.target).parent().find('input');
+        if (input.val().length > 0){
+            input.css('border', '1px solid red');
+        }
+        else{
+            $(e.target).parent().remove();
+        }
+    }
+    function updatetab(id, url){
+      currentPage = 1;
+      loadingproducts = false;
+      currentPagelistbl=1;
+      loadinglistbl = false;
+      currentPagereglbl=1;
+      currentPagelistreglfc=1
+      loadingreglbl = false;
+      currentPagelistbc=1;
+      loadinglistbc = false;
+      currentPagelistfc=1;
+      loadinglistfc = false;
+      currentPageclients=1;
+      loadingclients = false;
+      currentPagejournalacha=1
+      loadingjournalacha = false;
+      currentPagejournalachafc=1
+      loadingjournalachafc = false;
+      currentPagejournalvente=1
+      loadingjournalvente = false;
+      currentPagejournalventefc=1
+      loadingjournalventefc = false
+      currentPageblregl=1
+      loadingblregl = false;
+      currentPagefcregl=1
+      loadingfcregl = false;
+      document.title=id+' - SYSTEM ADMIN'
+      if (id != 'recevoir' && !id.includes('modifierlivraison') && !id.includes('add')){
+        $('.loadingscreen').toggleClass('d-none')
+
+        console.log("update tab")
+        tab=$(`#${id}`)
+        tab.find('script').remove()
+        tab.html('')
+        $.get(url, (data) => {
+          $('.loadingscreen').toggleClass('d-none')
+
+            tab.html(data)
+            //$('.select2').select2();
+        })
+
+      }
+      // $('.resultsholderbonlivraison').select2({
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   }
+      // })
+      console.log($(`#${id}`).find('.productselect'))
+      // $(`#${id}`).find('.productselect').select2({
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   }
+      // })
+      // $(`#${id}`).find('#productsselect2').select2({
+      //   minimumInputLength: 1,
+      //   placeholder:'Chercher Produits',
+      //   ajax: {
+      //     type:'get',
+      //     dataType: 'json',
+      //     url: '/products/searchproduct',
+      //     data: function (params) {
+      //       var query = {
+      //         term: params.term,
+      //       }
+      //       // Query parameters will be ?search=[term]&type=public
+      //       return query;
+      //     },
+      //     proccessresults: function (data) {
+      //         return {
+      //           results:data.results
+      //         }
+      //     },
+      //     cache:true
+      //   }
+      // });
+
+    }
+
+    function forceupdatetab(id, url){
+      currentPage = 1;
+      loadingproducts = false;
+      currentPagelistbl=1;
+      loadinglistbl = false;
+      currentPagelistfc=1;
+      loadinglistfc = false;
+      currentPageclients=1;
+      loadingclients = false;
+      currentPagejournalacha=1
+      loadingjournalacha = false;
+      currentPagejournalachafc=1
+      loadingjournalachafc = false;
+      currentPagejournalvente=1
+      loadingjournalvente = false;
+      currentPagejournalventefc=1
+      loadingjournalventefc = false
+      currentPageblregl=1
+      loadingblregl = false;
+      currentPagefcregl=1
+      loadingfcregl = false;
+      document.title=id+' - SYSTEM ADMIN'
+      tab=$(`#${id}`)
+      tab.find('script').remove()
+      tab.html('')
+      $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+      $.get(url, (data) => {
+          tab.html(data)
+          $('.select2').select2();
+      })
+    }
+
+
+
+    function deletetab(id){
+      // $(event.target).parent().parent().remove()
+      tab=$(`#${id}`)
+      tab.find('script').remove()
+      tab.html('')
+      tab.remove()
+      $(`li.${id}`).remove()
+      $('.tab-pane').removeClass('active show')
+      $('.nav-link').removeClass('active')
+      $($('.nav-link')[0]).addClass('active')
+      $($('.tab-pane')[0]).addClass('active show')
+    }
+
+    function createtab(id, title, url) {
+      $('.deletetabholder').attr('onclick', `deletetab(${id})`)
+      $('.loadingscreen').toggleClass('d-none')
+        tab=$(`#${id}`)
+        // check if tab already created
+        if (tab.length){
+          tabbtn=$('a[href="#'+id+'"]')
+          $('.tab-pane').removeClass('active show')
+          $('.nav-link').removeClass('active')
+          tabbtn.addClass('active')
+          tab.addClass('active show')
+          $('.loadingscreen').toggleClass('d-none')
+          updatetab(id, url)
+          document.title=title+' - SYSTEM ADMIN'
+          return
+        }
+        document.title=title+' - SYSTEM ADMIN'
+        // Create tab link with close button
+        var tabLink = $(`
+        <a class="nav-link d-flex justify-content-between p-2" data-toggle="tab" href="#${id}" >
+          <div style="width: max-content;" onclick="updatetab('${id}', '${url}')">${title}</div>
+          <span aria-hidden="true" class="ms-3 rounded-pill" style="padding:0 5px;" onclick="deletetab('${id}')">&times;</span>
+        </a>
+        `);
+
+        // Append tab link to tabs list
+        var tabListItem = $(`<li class="nav-item d-flex justify-content-between ${id}" style="border-left:1px solid gray;"></li>`).append(tabLink);
+        $('#maintabbutton').after(tabListItem);
+
+        // Load content
+        var tabContent = $('<div class="tab-pane fade" id="' + id + '">Loading...</div>');
+        $('#myTabsContent').append(tabContent);
+        $.get(url, (data) => {
+          $('.loadingscreen').toggleClass('d-none')
+
+            $(`#${id}`).html(data)
+            // $('.select2').select2();
+            // if ($('.productstable').length){
+
+            // }
+        })
+
+        // Show the newly created tab
+        tabLink.tab('show');
+        // updatetab(id, url)
+        // Handle tab close button
+
+    }
+
+
+      $(".dashboard-nav-dropdown-toggle").click(function () {
+        $(this).closest(".dashboard-nav-dropdown")
+            .toggleClass("show")
+            .find(".dashboard-nav-dropdown")
+            .removeClass("show");
+        $(this).parent()
+            .siblings()
+            .removeClass("show");
+    });
+      $('.select2').select2();
+
+
+
+
+
+
+        var btn = $('#button');
+
+        $(window).scroll(function() {
+        if ($(window).scrollTop() > 300) {
+            btn.addClass('show');
+        } else {
+            btn.removeClass('show');
+        }
+        });
+
+        btn.on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({scrollTop:0}, '300');
+        });
+        $(window).on('click', (e)=>{
+            if (e.target.className=='imagedisplaybtn'){
+                img=$(e.target).attr('imgsrc')
+                $('.imgproductmodal').attr('src', img)
+            }
+        })
+        const loading=()=>{
+		$('.loadingscreen').removeClass('d-none').addClass('d-flex');
+        }
+
+    const stoploading=()=>{
+        $('.loadingscreen').removeClass('d-flex').addClass('d-none');
+    }
+    $('.searchbtn').on('change', function(){
+            ref=$(this).val()
+            if (ref!=''){
+              loading()
+              $.ajax({
+                  url: '/searchref',
+                  type: 'POST',
+                  data: {
+                      'ref': ref,
+                      'csrfmiddlewaretoken': '{{ csrf_token }}'
+                  },
+                  success: function (data) {
+                      stoploading()
+                      if (data){
+                          $('.searchref').focus()
+                          $('.searchresults').html(data.data)
+                      }
+                  }
+              });
+            }
+        })
+    $('#thisyear').text(new Date().getFullYear())
+
+
+
+    function desactivercompte(userid, tabid, urltab){
+        // ask why should use post when I can simply use get
+        $.get('/products/deactivateaccount', {
+          'userid':userid
+        },
+        (data)=>{
+          if (data.success){
+            alertify.success('Compte desactivé')
+            updatetab(tabid, urltab)
+          }
+        }
+        )
+      }
+      function activercompte(userid, tabid, urltab){
+        // ask why should use post when I can simply use get
+        $.get('/products/activateaccount', {
+          'userid':userid
+        },
+        (data)=>{
+          if (data.success){
+            alertify.success('Compte desactivé')
+            updatetab(tabid, urltab)
+          }
+        }
+        )
+      }
+      let consecutiveClicksbl = 0;
+      let consecutiveClicksfc = 0;
+      const click = 6;
+
+      // script.js
+
+
+    // Initial load
+
+
+      // window ready
+      
+    </script>
+    {% block js %}
+
+    {% endblock %}
+</body>
+
+
+<!-- modals -->
+</html>

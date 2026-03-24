@@ -1,296 +1,165 @@
-{% load global_tags %}
-<div class="row position-relative">
+<div class="p-2">
     <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('journalvente')">x</button> -->
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('journalachat')">x</button>
         <div>
           {{title}}
         </div>
-        <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('journalvente', '/products/journalvente')">↻</button> -->
-    </div>
-    <div style="background: #ffc39a; padding: 5px;">
-        <div class="d-flex">
-            
-            <select class="productsearch" style="width: 80%;" id=""></select>
-            <div>
-                <input type="date" name="jvdatefrom" class="form-control notempty jvdatefrom" value="{{today|date:'Y-m-d'}}">
-            </div>
-            <div>
-                <input type="date" name="jvdateto" class="form-control notempty jvdateto" value="{{today|date:'Y-m-d'}}">
-            </div>
-            <button class="btn btn-sm-success bg-darkblue text-white" onclick="getdatefilter()">Filtrer</button>
+        <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('journalachat', '/products/journalachat')">↻</button>
+      </div>
+      <div class="d-flex">
+          <div>
+              <input type="date" name="jachdatefrom" class="form-control notempty jachdatefrom" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <div>
+              <input type="date" name="jachdateto" class="form-control notempty jachdateto" value="{{today|date:'Y-m-d'}}">
+          </div>
+          <button class="btn btn-success" onclick="getdatefilterjach()">Filtrer</button>
+      </div>
+      <div class="d-flex justify-content-between">
+        <input style="width:20em; height: 25px;" type="text" name="" id="" placeholder="Recherche" class="searchinpulistjournalachar">
+        <select onchange="getjachdatayear(event)" class="jachyear populateyears" style="width:9em; border-radius: 10em;">
+            <!-- <option value="0">----</option>
+            <option value="2024">2024</option> -->
+
+        </select>
+      </div>
+
+
+        <div class="d-flex flex-column align-items-center justify-content-center loader position-fixed d-none"
+        style="height: 100%;background:#171717bc ; width: 100%; z-index: 9999;"
+        >
+        <div class="spinner-border text-white" role="status">
+        </div>
+        </div>
+        <div style="height: 70vh; overflow: scroll;" class="listjournalachatholder">
+            <table style="font-size: 12px;" class="table table-bordered listjournalachat table-hover">
+                <thead style="position: sticky; top: 0; background: var(--darkblue); color: white">
+                    <tr>
+                        <td onclick="datesorttable(event)">Date</td>
+                        <td onclick="sorttable(event)">REf</td>
+                        <td onclick="sorttable(event)">Product</td>
+                        <td onclick="sorttable(event)">Prix achat</td>
+                        <td onclick="sorttable(event)">Fournisseur</td>
+                        <td onclick="sorttable(event)">Devise</td>
+                        <td onclick="sorttable(event)">Quantity</td>
+                        <td onclick="sorttable(event)">Total</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in items %}
+                    <tr class="journalacha-row">
+                        <td>{{i.date|date:"d/m/Y"}}</td>
+                        <td>{{i.product.ref.upper}}</td>
+                        <td>{{i.product.name}}</td>
+                        <td>{{i.price}}</td>
+                        <td>{{i.supplier.name}}</td>
+                        <td>{{i.devise}}</td>
+                        <td class="qtyjournalachat">{{i.quantity}}</td>
+                        <td class="totaljournalachat">{{i.total|floatformat:2}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot style="position: sticky; bottom: 0; background: white;">
+                    <tr >
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="totalqtyjach" style="background: yellowgreen;">{{totalqtyjach}}</td>
+                        <td class="totaljach" style="background: yellowgreen;">{{totaljach}}</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
 
-        <!-- <div class="d-flex justify-content-between mt-2">
-
-            <input style="width:20em" type="text" name="" id="" placeholder="Recherche" class="searchinputjournalv">
-
-            <select onchange="getjvdatayear(event)" class="jvyear populateyears disabled" hidden>
-
-            </select>
-        </div> -->
-    </div>
-
-    <div style="height: 70vh; overflow: scroll;" class="journalvtableholder">
-        <table style="font-size: 12px;" class="table table-bordered journalvtable table-hover">
-            <thead class="bg-darkblue" style="position: sticky; top: 0;color: white">
-                <tr>
-                    <td onclick="datesorttable(event)">Date</td>
-                    <td onclick="sorttable(event)">N° bon</td>
-                    <td onclick="sorttable(event)">REF</td>
-                    <td onclick="sorttable(event)">Designation</td>
-                    <td class="text-danger" onclick="intsorttable(event)">Qté</td>
-                    <td onclick="intsorttable(event)">Prix vente</td>
-                    <td onclick="intsorttable(event)">Remise1</td>
-                    <td onclick="intsorttable(event)">Remise2</td>
-                    <td onclick="intsorttable(event)">Remise3</td>
-                    <td onclick="intsorttable(event)">Remise4</td>
-                    <td onclick="intsorttable(event)">Total</td>
-                    <td onclick="sorttable(event)">Fournisseur</td>
-                    <!-- <td onclick="sorttable(event)">Code client</td> -->
-                    <!-- <td class="text-success" onclick="intsorttable(event)">Marge</td> -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- (prix vente net - cout moyen)*qty=la marge -->
-                <!-- {% for i in items %}
-                <tr class="journalvente-row">
-                    <td>{{i.date|date:"d/m/Y"}}</td>
-                    <td>{{i.bon.bon_no}}</td>
-                    <td>{{i.product.ref.upper}}</td>
-                    <td>{{i.product.name}}</td>
-                    <td>{{i.price}}</td>
-                    <td class="prnetjv">{% if i.product.prixnet %} {{i.product.prixnet}} {% else %} 0 {% endif %}</td>
-                    <td style="color:blue" class="">{% if i.product.coutmoyen %} {{i.product.coutmoyen}} {% else %} 0 {% endif %}</td>
-                    <td class="text-danger coutmoyenjv">{% if i.product.buyprice %} {{i.product.buyprice}} {% else %} 0 {% endif %}</td>
-                    <td class="text-danger qtyjv">{{i.qty}}</td>
-                    <td class="totaljv">{{i.total|floatformat:2|intspace}}</td>
-                    <td>{{i.bon.client.name}}</td>
-                    <td>{{i.bon.client.code}}</td>
-                    <td>{{i.bon.salseman.name}}</td>
-                    <td class="text-success margejv">
-
-                    </td>
-                </tr>
-                {% endfor %} -->
-            </tbody>
-            <thead style="position: sticky; bottom: 0; background: white;">
-                <tr class="text-white">
-                    
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="bg-success totalqtyjv">{{totalqty|intspace}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="bg-success totaltotaljv">{{totaltotal|intspace}}</td>
-                    <!-- <td></td> -->
-                    <td></td>
-                    <!-- <td></td>
-                    <td class="bg-success totalmargejv"></td> -->
-                </tr>
-            </thead>
-        </table>
-    </div>
 </div>
 <script>
-    $('.productsearch').select2({
-
-
-        ajax: {
-        type:'get',
-        dataType: 'json',
-        url: '/products/searchproduct?target={{target}}',
-        data: function (params) {
-            var query = {
-            term: params.term,
-            }
-            // Query parameters will be ?search=[term]&type=public
-            return query;
-        },
-        proccessresults: function (data) {
-            return {
-                results:data.results
-            }
-        },
-        cache:true
-        },
-        minimumInputLength: 2,
-        placeholder:'Chercher Produits',
-        templateResult: formatRepo,
-        templateSelection: formatRepoSelection,
-        });
-        function formatRepo (repo) {
-        if (repo.loading) {
-            return repo.text;
+  populateyears()
+    $('.searchinpulistjournalachar').on("change", function() {
+        var filterValue = $(this).val().toLowerCase();
+        let year=$('.jachyear').val()
+        if (filterValue!=""){
+          $('.listjournalachat tbody').addClass('blurred')
+          $.get('/products/searchforjach', {'term':filterValue.trim(), 'year':year}, (data)=>{
+            $('.listjournalachat tbody').html(data.trs)
+            $('.totaljach').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
+            $('.totalqtyjach').text(data.totalqty)
+            $('.listjournalachat tbody').removeClass('blurred')
+          })
         }
-
-        console.log('>>> repo', repo)
-        var $container = $(
-            `<div class="row"><strong class="col-10" style="color:${repo.stock>0?"blue":"red"};">${repo.text}</strong> <div class="col-2"><img src="${repo.image}" style="width:100%;">${repo.mark}</div></div>`
-            );
-
-
-            return $container;
-        }
-
-        function formatRepoSelection (repo) {
-        return repo.text;
-        }
-  //populateyears()
-    function getdatefilter(){
-      currentPagejournalvente=1
-      loadingjournalvente=false
-        datefrom=$('.jvdatefrom').val()
-        dateto=$('.jvdateto').val()
-        productid=$('.productsearch').val()
-        // if (productid==null || productid=='' || datefrom=='' || dateto==''){
-        //     alertify.error('Selectionner un produit/date')
-        //     return
-        // }
-        $.get('/products/filterjachdate', {
-            'datefrom':datefrom, 
-            'dateto':dateto,
-            'productid':productid==null?null:productid.split('§')[5],
-            'target':'{{target}}'
-        }, (data)=>{
-            $('.journalvtable tbody').html(data.trs)
-            $('.totaltotaljv').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
-            $('.totalqtyjv').text(data.totalqty)
-            calculatetotals()
+    });
+    function getdatefilterjach(){
+        currentPagejournalventefc=1
+        loadingjournalventefc=false
+        $('.listjournalachatholder').on('scroll', handleScrolljach)
+        datefrom=$('.jachdatefrom').val()
+        dateto=$('.jachdateto').val()
+        $.get('/products/filterjachdate', {'datefrom':datefrom, 'dateto':dateto}, (data)=>{
+            console.log(data)
+            $('.listjournalachat tbody').html(data.trs)
+            $('.totaljach').text(data.total?data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '):0)
+            $('.totalqtyjach').text(data.totalqty?data.totalqty:0)
         })
     }
-    function calculatetotals(){
-        console.log('totals')
-        $('.margejv').each(function(){
-            var prnet=$(this).parent().find('.prnetjv').text()
-            var coutmoyen=$(this).parent().find('.coutmoyenjv').text()
-            var qty=$(this).parent().find('.qtyjv').text()
-            var marge=(parseFloat(prnet)-parseFloat(coutmoyen))*parseFloat(qty)
-            $(this).text(marge.toFixed(2))
-        })
-        var totalqty=0
-        var totaltotal=0
-        var totalmarge=0
-        // $('.qtyjv').each(function(){
-        //     totalqty+=parseFloat($(this).text())
-        // })
-        // $('.totalqtyjv').text(totalqty)
 
-        // $('.totaljv').each(function(){
-        //     totaltotal+=parseFloat($(this).text())
-        // })
-        // $('.totaltotaljv').text(totaltotal.toFixed(2))
-
-        $('.margejv').each(function(){
-            totalmarge+=parseFloat($(this).text())
-        })
-        $('.totalmargejv').text(totalmarge.toFixed(2))
-    }
-
-    calculatetotals()
-    function loadMoreRecordsjv (year, startdate, enddate, term)  {
-        loadingjournalvente = true;
-        $.get(`/products/loadjournalvente/?page=${currentPagejournalvente}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}`, (data)=>{
-
-        const tbody = $('.journalvtable tbody');
-        tbody.append(data.trs);
-
-        calculatetotals()
-        console.log('products loaded')
-        loadingjournalvente = false;
-
-            if (!data.has_more) {
-
-                // Remove the scroll event listener when there are no more records
-                $('.journalvtableholder').off('scroll', handleScrolljv);
-            }
+    function getjachdatayear(event){
+        currentPagejournalventefc=1
+        loadingjournalventefc=false
+        $('.journalvfctableholder').on('scroll', handleScrolljach);
+        year=$(event.target).val()
+        if (year != '0'){
+            $.get('/products/yeardatajach', {'year':year}, (data)=>{
+                console.log(data)
+                $('.listjournalachat tbody').html(data.trs)
+                $('.totaljach').text(data.total?data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '):0)
+                $('.totalqtyjach').text(data.totalqty?data.totalqty:0)
             })
+        }
+    }
+
+    function loadMorejach ()  {
+    loadingjournalacha = true;
+    $.get(`/products/loadjournalachat/?page=${currentPagejournalacha}`, (data)=>{
+
+      const tbody = $('.listjournalachat tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadingjournalacha = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listjournalachatholder').off('scroll', handleScrolljach);
+          }
+        })
 
 
         // Append the new records to your table or update the DOM as needed
     };
 
-    function handleScrolljv () {
-      const container = $('.journalvtableholder')[0]; // Get the native DOM element
+    function handleScrolljach () {
+      console.log('scroll')
+      const container = $('.listjournalachatholder')[0]; // Get the native DOM element
 
-      const lastRow = document.querySelector('.journalvente-row:last-child');
+      const lastRow = document.querySelector('.journalacha-row:last-child');
       const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
-      let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
-      let startdate=lastRow.getAttribute('startdate')?lastRow.getAttribute('startdate'):0
-      let enddate=lastRow.getAttribute('enddate')?lastRow.getAttribute('enddate'):0
-      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
+
       const containerBottom = container.scrollTop + container.clientHeight;
-      if (containerBottom+900 >= lastRowOffset && !loadingjournalvente) {
-          currentPagejournalvente++;
-          loadMoreRecordsjv(year, startdate, enddate, term);
+      console.log(containerBottom+900, lastRowOffset, containerBottom+900 >= lastRowOffset)
+      if (containerBottom+900 >= lastRowOffset && !loadingjournalacha) {
+          currentPagejournalacha++;
+          loadMorejach();
       }
     };
 
-    function getjvdatayear(event){
-        currentPagejournalvente=1
-        loadingjournalvente=false
-        // $('.journalvtableholder').on('scroll', handleScrolljv);
-        year=$(event.target).val()
-        if (year != ''){
-            $.get('products/yeardatajournalv', {'year':year}, (data)=>{
-                console.log(data)
-                $('.journalvtable tbody').html(data.trs)
-                $('.totaltotaljv').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
-                $('.totalqtyjv').text(data.totalqty)
-                $('.totalmargejv').text(data.totalmarge)
-            })
-        }
-    }
-
     // Attach the scroll event listener
-    $('.journalvtableholder').on('scroll', handleScrolljv)
-    $('.searchinputjournalv').on("change", function() {
+    $('.listjournalachatholder').on('scroll', handleScrolljach)
+    total=0
+    totalqty=0
+    //
 
-        var filterValue = $(this).val().toLowerCase();
-        let year=$('.jvyear').val()
-        $.get('/products/searchforjv', {'term':filterValue.trim(), 'year':year}, (data)=>{
-            $('.journalvtable tbody').html(data.trs)
-            $('.totaltotaljv').text(data.total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '))
-            $('.totalqtyjv').text(data.totalqty)
-            currentPagejournalvente=1
-            loadingjournalvente=false
-            $('.journalvtableholder').on('scroll', handleScrolljv)
-            calculatetotals()
-        })
-        // // Get the values from all filter input fields
-        // var filterValue = $(this).val().toLowerCase();
-
-        // // Split the filter value into individual terms based on the '&' sign
-        // var filterTerms = filterValue.split('+').map(function(term) {
-        //     return term.trim();
-        // });
-
-        // // Iterate through the table rows
-        // $(".journalvtable tbody tr").each(function() {
-        //     var rowText = $(this).text().toLowerCase();
-        //     var showRow = true;
-
-        //     // Check if all filter terms are present in the row text
-        //     $.each(filterTerms, function(index, term) {
-        //         if (term !== '' && rowText.indexOf(term) === -1) {
-        //             showRow = false;
-        //             return false; // Exit the loop early if a mismatch is found
-        //         }
-        //     });
-
-        //     // Toggle the visibility of the row based on the filter criteria
-        // })
-    });
-
-    $('.marge').each(function(){
-        var prnet=$(this).parent().find('.prnet').text()
-        var coutmoyen=$(this).parent().find('.coutmoyen').text()
-        var qty=$(this).parent().find('.qty').text()
-        var marge=(parseFloat(prnet)-parseFloat(coutmoyen))*parseFloat(qty)
-        $(this).text(marge.toFixed(2))
-    })
 </script>

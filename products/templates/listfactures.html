@@ -2,6 +2,7 @@
 
 <div class="exportfcholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
   <div class="d-flex">
+
     <div class="me-2">
       Du <br>
       <input type="date" class="fcexportdatefrom" value="{{today|date:'Y-m-d'}}">
@@ -32,135 +33,15 @@
   <button class="btn btn-danger" onclick="$('.exportfcholder').css('top', '-10vh')"></button>
 
 </div>
-
 <div class="bg-white shadow rounded p-2 rounded">
   <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
-    <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addlistfactures')">x</button> -->
-    <div>
-      <!-- <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active')">Tous</button>-->
-      <button class="btn border btnselect btn-dark active" style="
-      border-radius: 11px;" onclick="ajaxpage('addlistbonlivraison', 'tt', '/products/listfactures?target={{target}}')">En attend</button>
-      <button class="btn border btnselect btn-dark" style="
-      border-radius: 11px;" onclick="$('.btnselect').removeClass('active'); $(this).addClass('active'); getfacturevalider()">Validé</button>
-    </div>
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addlistfactures')">x</button>
     <div>
       {{title}}
     </div>
-    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="ajaxpage('addlistbonlivraison', 'tt', '/products/listfactures?target={{target}}')">↻</button>
-    <!-- <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistfactures', '/products/listfactures')">↻</button> -->
+    <button class="btn bg-orange"
+    style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistfactures',  `/products/listfactures?facture={%if facturesection%}1{% endif %}`)">↻</button>
   </div>
-  {% include 'validationfcaccodrion.html' %}
-
-  <div class="accordion" id="accordionreglbl">
-    <div class="">
-
-        <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapsereglbl" aria-expanded="true" aria-controls="collapsereglbl"
-        style="border-radius: 10px;"
-        >
-            Ajouter facture global
-        </button>
-
-      <div id="collapsereglbl" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreglbl">
-        <div class="card-body border shadow rounded">
-            <div class="row">
-
-                <div class="d-flex justify-content-between">
-                    <!-- <div class="">
-                        <small>Date:</small> <br>
-                        <input type="date" name="datereglementclientbl" class="w-100 notempty datereglement mb-2" value="{{today|date:'Y-m-d'}}" onchange="checkyearreglbl(event)">
-                        <small class="errordatereglclbl text-danger d-none">
-                          Date incorrect
-                        </small>
-                    </div> -->
-                    <!-- <button type="button" name="button" class="btn bg-darkblue text-white" onclick="refreshselectclient(event)">↻</button> -->
-                    <div class="col-3">
-                      <select name="addreglementclientsbl" id="" class="form-select addreglementclientsbl select2client" style="width:100%;">
-
-                      </select>
-                    </div>
-                </div>
-
-
-
-                    <div class="d-flex justify-content-between mt-3">
-                        <div>
-                            <small>Bons:</small> <strong class="totalcheckedbl">0.00</strong><br>
-                        </div>
-
-
-                    </div>
-
-                    <div class="mb-2 mt-2 listaddreglblholder" style="max-height: 150px; overflow-y: scroll;">
-
-                        <table class="table table-bordered listaddreglbl table-hover" style="font-size: 12px;">
-                            <thead style="position: sticky; top: 0; background: white;">
-                                <tr>
-                                    <td>
-                                        Date
-                                    </td>
-                                    <td>
-                                        N° Bon
-                                    </td>
-                                    <td>
-                                        Client
-                                    </td>
-                                    <td>
-                                        total
-                                    </td>
-                                    <td>
-                                      <input type="checkbox">
-                                    </td>
-                                </tr>
-                            </thead>
-                            <tbody class="reglementclientbonholder">
-                            </tbody>
-
-
-                        </table>
-                        <!-- <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-
-                        </select> -->
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <small>Client facture:</small><br>
-                            <select name="clientoffacture" id="" class="clientoffacture"></select>
-                        </div>
-                        <div>
-                          <small>Date:</small><br>
-                          <input type="date" class="dateoffacture form-control" value="{{lastdatefacture|date:'Y-m-d'}}">
-                      </div>
-                      <div>
-                        <small>N° facture:</small><br>
-                        <input value="{{receipt_no}}" type="text" class="facture_no form-control">
-                      </div>
-                    </div>
-                    <button class="btn text-white w-100 facturemultiple" style="background: #00538c;">
-                        Valider
-                    </button>
-                    <!-- <div class="mb-2">
-                        <small>Facture</small>
-                        <select name="addreglementbons disabled" id="" class="select2 form-select " multiple="multiple">
-
-                        </select>
-                    </div>
-
-                    <select name="addreglementfactures disabled" id="" class="select2 form-select " multiple="multiple">
-
-                    </select> -->
-
-                </div>
-                <div class="mt-3">
-                    {% csrf_token %}
-
-
-                </div>
-
-            </div>
-        </div>
-      </div>
-</div>
   <div class="bg-orange text-white p-2">
     <div class="d-flex justify-content-between">
       <div>
@@ -174,40 +55,33 @@
           </div>
           <div>
             <button class="btn btn-sm bg-dark text-white filterfcdate">Filtrer</button>
-            <button class="btn btn-success bi bi-download" onclick="exportfc(event)">
-
-            </button>
           </div>
 
         </div>
-      <input style="width:20em; border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistfactures mt-2" waiting="1">
-      <select class="facturepaidtype" wanted="notvalid" onchange="getfacturepaidtype(event)">
-        <option value="">---</option>
-        <option value="cheque">Cheque</option>
-        <option value="effet">effet</option>
-        <option value="espece">espece</option>
-        <option value="remise">remise</option>
-        <option value="verement">verement</option>
-        <option value="versement">versement</option>
-        <option value="carte">carte banquaire</option>
-        <option value="nonpaye">non paye</option>
-        <option value="paye">paye</option>
-      </select>
-        <!-- waiting means the search is in waiting list -->
+      <input style="width:20em; border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistfactures mt-2">
+
       </div>
 
       <div class="d-flex flex-column">
-        <select name="yearsfc" hidden class="populateyears rounded" onchange="yeardatafc()">
+        {% if not facturesection %}<button class="btn btn-success" onclick="getcompatbilse()">
+          Comptabilisé
+        </button>{% endif %}
+        <select name="yearsfc" class="populateyears" onchange="yeardatafc()">
 
 
         </select>
-
       </div>
-      <!-- <div style="color: red; cursor: pointer; padding: 7px; border-radius: 12px; height: 2.5em; width: 4em;" title="BON 3 MOIS" class="bg-white text-center" onclick="getnotpaidfc(event)">
+      {% if not facturesection %}
+      <div style="color: red; cursor: pointer; padding: 7px; border-radius: 12px; height: 2.5em; width: 4em;" title="BON 3 MOIS" class="bg-white text-center" onclick="getnotpaidfc(event)">
         {{depasserfc}}
-
-      </div> -->
-
+      </div>
+      {% endif %}
+      <div class="d-flex flex-column">
+        <button class="btn btn-success" style="border-radius: 10px;" onclick="createtab('addfacture', '+ Facture', '/products/facture')">
+          + Facture
+        </button>
+        <button class="btn bi bi-download bg-white mt-2" style="border-radius: 10px;" onclick="$('.exportfcholder').css('top', '10vh')"></button>
+      </div>
 
     </div>
     <div class="d-flex">
@@ -219,129 +93,99 @@
         <thead style="background: rgb(231, 231, 231); position: sticky;top: 0;">
 
           <tr>
-            <td  onclick="sorttable(event)">N° facture</td>
-            <td  onclick="sorttable(event)">
+            <td style="width: 8%;" onclick="sorttable(event)">N° facture</td>
+            <td style="width: 8%;" onclick="sorttable(event)">
               <div class="d-flex justify-content-between align-items-center">
                 <!-- <button class="btn btn-sm" style="font-size: 6px; background: #f06623; color: white;" onclick="sortupfc(event)">↑</button>  -->
                 <div>Date</div>
                 <!-- <button class="btn btn-sm" style="font-size: 6px; background: #f06623; color: white;" onclick="sortdownfc(event)">↓</button>  -->
               </div>
             </td>
-            <td onclick="sorttable(event)">Total TTC</td>
-            <td onclick="sorttable(event)">HT</td>
-            <td onclick="sorttable(event)">TVA</td>
-            <td onclick="sorttable(event)">Client</td>
-            <td onclick="sorttable(event)">Code client</td>
-            <!-- <td onclick="sorttable(event)">Region</td> -->
-            <td onclick="sorttable(event)">Ville</td>
-            <!-- <td onclick="sorttable(event)">Solde fc cl.</td> -->
-            <!-- <td onclick="sorttable(event)">Repr</td> -->
-            <td onclick="sorttable(event)">Reglé</td>
-            <td onclick="sorttable(event)">Notes</td>
-            <td onclick="sorttable(event)">Reglements</td>
-            <td onclick="sorttable(event)">N° Bon livr.</td>
-            <!-- <td style="width: 5%;" onclick="sorttable(event)">Comptablisé</td> -->
+            <td style="width: 5%;" onclick="sorttable(event)">Total</td>
+            <td style="width: 5%;" onclick="sorttable(event)">TVA</td>
+            <td style="width: 12%;" onclick="sorttable(event)">Client</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Code client</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Region</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Ville</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Solde fc cl.</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Repr</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Reglé</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Notes</td>
+            <td style="width: 3%;" onclick="sorttable(event)">Reglements</td>
+            {%if not facturesection%}
+            <td style="width: 5%;" onclick="sorttable(event)">N° Bon livr.</td>
+            {% endif %}
+            <td style="width: 5%;" onclick="sorttable(event)">Comptablisé</td>
           </tr>
         </thead>
         <tbody class="listfcbody">
           {% for order in bons %}
-            <tr class="ord fc-row" orderid="{{order.code}}" ondblclick="ajaxpage('facture{{order.id}}', 'Facture {{order.facture_no}}', '/products/facturedetails/{{order.id}}?target={{target}}')" mode="waiting"
+            <tr class="ord {% if order.ispaid %}text-danger{% endif %} fc-row" orderid="{{order.code}}" ondblclick="createtab('facture{{order.id}}', 'Facture {{order.facture_no}}', '/products/facturedetails/{{order.id}}')"
+              style="{% if order.bon %} color: blue; {% endif %}{% if order.isaccount %}background:yellowgreen;{% endif %}"
             >
               <td>{{ order.facture_no }}</td>
               <td>{{ order.date|date:'d/m/Y' }}</td>
-              <td style="color: blue; font-size: 15px;">{{ order.total|floatformat:2|intspace}}</td>
-              <td>{{ order.ht|floatformat:2|intspace}}</td>
-              <td>{{ order.thistva|floatformat:2|intspace}}</td>
+              <td>{{ order.total|floatformat:2|intspace}}</td>
+              <td>{{ order.tva|floatformat:2|intspace}}</td>
               <td>{{ order.client.name }}</td>
               <td>{{ order.client.code }}</td>
-              <!-- <td>{{ order.client.region }}</td> -->
+              <td>{{ order.client.region }}</td>
               <td>{{ order.client.city }}</td>
-              <!-- <td>{{ order.client.soldfacture|floatformat:2|intspace }}</td> -->
-              <!-- <td>{{ order.salseman }}</td> -->
-              <td>
+              <td>{{ order.client.soldfacture|floatformat:2|intspace }}</td>
+              <td>{{ order.salseman }}</td>
               {% if order.ispaid %}
-              <div  style="text-align: center; background: lightgreen;">
-                Payé
-              </div>
-
+              <td class="d-flex justify-content-between">
+                <div>
+                R0
+                <div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
+                </div>
+                <button class="btn"></button>
+              </td>
               {% else %}
-              <div class="" style="text-align: center; background: rgb(255, 77, 0);">
-                Non payé
-              </div>
-              {% endif %}
-            </td>
 
+              <td class="d-flex justify-content-between">
+                <div style="width:15px; height:15px; border-radius:50%; background:orange;" ></div>
+                <button title="Facture Comptabilisé" class="btn border border-success" onclick="makefacturecompta(event, '{{order.id}}')"></button>
+              </td>
+
+              {% endif %}
               <td>
                 {{order.note}}
               </td>
-              <td>
-                {% for i in order.reglements %}
-                      -Mode: {{ i.mode }} {{ i.npiece }}<br>
-                      <!-- -N° piece: {{ i.npiece }} <br>
-                      -Mantant {{ i.amount }} <br>
-                      -Echeance: {{ i.echance|date:'d/m/Y' }} <br> -->
-                  {% endfor %}
-
-                <!-- <div class="accordion" id="accordionrr{{order.id}}">
-
-                  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsrr{{order.id}}" aria-expanded="true" aria-controls="collapsrr{{order.id}}">
-
-                    REGLEMENTS
-                  </button>
-
-                  <div id="collapsrr{{order.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionrr{{order.id}}">
-
-
-
-                  </div>
-                </div> -->
+              <td style="white-space:nowrap;">
+                {{order.getreglement|slice:'16' }}
               </td>
-                <td>
-                  {% if order.bon %}
-                  {{ order.bon.bon_no }}
-                  {% else %}
-                  <div class="accordion" id="accordionbons{{order.id}}">
-
-                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsbon{{order.id}}" aria-expanded="true" aria-controls="collapsbon{{order.id}}">
-
-
-                    </button>
-
-                    <div id="collapsbon{{order.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionbons{{order.id}}">
-                        {% for bon in order.bons.all %}
-                        -{{ bon.bon_no }} <br>
-                        {% endfor %}
-
-
-                    </div>
-                </div>
-                  {% endif %}
-                </td>
+              {%if not facturesection%}
+                <td>{{ order.bon.bon_no }}</td>
+              {% endif %}
                 <td class="d-flex">
                   {% if order.isaccount %}
                   <i class="bi bi-check h3"></i>c
                   {% endif %}
-                  <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{target}}', '{{order.id}}')">C</button>
-                  <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfactureproductname('{{target}}', '{{order.id}}')">N</button>
+                  <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{order.id}}')"></button>
                 </td>
             </tr>
           {% endfor %}
         </tbody>
-        <thead style="position: sticky;bottom: 0;">
+        <thead style="background: rgb(231, 231, 231); position: sticky;bottom: 0;">
 
           <tr>
-            <td></td>
-            <td></td>
-            <td class="totalfc" style="background: yellowgreen;">{{total}}</td>
-            <td class="totalfctva"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 5%; background: yellowgreen;" class="totalfc">{{total|floatformat:2|intspace}}</td>
+            <td style="width: 5%;" class="totalfctva">{{totaltva|floatformat:2|intspace}}</td>
+            <td style="width: 12%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
           </tr>
+        </thead>
         <!-- <tfoot>
           <tr>
             <td>N° bon</td>
@@ -367,92 +211,12 @@
 
 
 <script>
-  currentPagelistfc=1
-  loadinglistfc = false;
-  function getfacturepaidtype(event){
-    mode=$(event.target).val()
-    wanted=$(event.target).attr('wanted')
-    if (mode==''){
-      return
-    }
-    $('.listfcbody').addClass('blurred')
-    $.get('/products/getfacturepaidtype?target={{target}}' ,{
-      'mode':mode,
-      'wanted':wanted,
-      'startdate':$('.startdatelistfc').val(),
-      'enddate':$('.enddatelistfc').val(),
-    }, (data)=>{
-      $('.listfcbody').html(data.html)
-      $('.totalfc').html(data.total)
-      $('.listfcbody').removeClass('blurred')
-      $('.listfcholder').off('scroll', handleScrolllistfc);
-
-    })
-  }
-  function getfacturevalider(){
-    $('.searchinputlistfactures').attr('waiting', '0')
-    $('.facturepaidtype').attr('wanted', 'valid')
-    $('.listfcbody').addClass('blurred')
-    $.get('/products/getfacturevalider?target={{target}}', (data)=>{
-      $('.listfcbody').html(data.html)
-      $('.totalfc').html(data.total)
-      $('.listfcbody').removeClass('blurred')
-    })
-  }
-  $(function(){
-      $('.addreglementclientsbl').select2({
-        minimumInputLength: 1,
-        placeholder:'Chercher client',
-        ajax: {
-          type:'get',
-          dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
-          data: function (params) {
-            var query = {
-              term: params.term,
-            }
-            // Query parameters will be ?search=[term]&type=public
-            return query;
-          },
-          proccessresults: function (data) {
-              return {
-                results:data.results
-              }
-          },
-          cache:true
-        }
-      });
-      $('.clientoffacture').select2({
-        minimumInputLength: 1,
-        placeholder:'Chercher client',
-        ajax: {
-          type:'get',
-          dataType: 'json',
-          url: '/products/searchclient?target={{target}}',
-          data: function (params) {
-            var query = {
-              term: params.term,
-            }
-            // Query parameters will be ?search=[term]&type=public
-            return query;
-          },
-          proccessresults: function (data) {
-              return {
-                results:data.results
-              }
-          },
-          cache:true
-        }
-      });
-
-    })
-
   $(document).ready(function () {
     // popukate years starting from 2024
     console.log('>> populating years')
     const $select = $('.populateyears');
     const currentYear = new Date().getFullYear();
-    const startYear = 2025;
+    const startYear = 2024;
     console.log('startYear, currentYear', startYear, currentYear)
 
     for (let year = startYear; year <= currentYear; year++) {
@@ -463,60 +227,6 @@
     }
     $select.val(currentYear);
   })
-  function handleScrollreglblcl () {
-      console.log('scroll')
-      console.log(currentPageblregl, loadingblregl)
-
-      const container = $('.listaddreglblholder')[0]; // Get the native DOM element
-
-      const lastRow = document.querySelector('.blreglrow:last-child');
-      let clientid=lastRow.getAttribute('clientid')
-      let nonregllist=lastRow.classList.contains('nr')?1:0
-      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
-
-      const containerBottom = container.scrollTop + container.clientHeight;
-
-      if (containerBottom+900 >= lastRowOffset && !loadingblregl) {
-          currentPageblregl++;
-          loadMoreRecordsreglblcl(clientid, nonregllist);
-      }
-    };
-
-  $('[name="addreglementclientsbl"]').on('change', function(){
-        currentPageblregl=1
-        loadingblregl = false;
-        $('.listaddreglblholder').on('scroll', handleScrollreglblcl)
-        if ($(this).val()==""){
-            // disable the divholder of the multiselects
-            // disable the button
-            $('.submitaddreglemntclientbtn').addClass('disabled')
-            return
-        }
-        $('.submitaddreglemntclientbtn').removeClass('disabled')
-        $('.reglementbonsholder').removeClass('d-none')
-        clientid=$(this).val()
-        $('.loadingscreen').removeClass('d-none')
-        $.post('/products/getclientbonsforfacture', {
-            clientid:clientid,
-            target:'{{target}}',
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-            }, function(data){
-                console.log(data)
-                $('.loadingscreen').addClass('d-none')
-                $('.reglementclientbonholder').html(data.trs)
-                $('.totalbonsbl').text(data.total)
-                $('.soldblregl').text((data.soldbl).toFixed(2))
-                // $('.select2').select2()
-            // populate bons multiselect
-        })
-        // enable the divholder of the multiselects
-        // get client bons
-        //populate bons multiselect
-        // get client facture
-        // populate facture multiselect
-    })
-
-
   function makefacturecompta(event, factureid){
     tr=$(event.target).parent().parent()
     $.get('/products/comptable', {
@@ -544,27 +254,27 @@
     )
   }
   function exportfc(event){
-    startdatelistfc=$('.startdatelistfc').val()
-    enddatelistfc=$('.enddatelistfc').val()
-    let year=$('.populateyears').val()
-    if (startdatelistfc==''||enddatelistfc==''){
+    let startdate=$('.fcexportdatefrom').val()
+    let enddate=$('.fcexportdateto').val()
+    let rep=$('.fcrepexport').val()
+    let regionfcexport=$('.regionfcexport').val()
+    if (startdate!='' || enddate!=''){
+      let url = `/products/exportfc?rep=${rep}&startdate=${startdate}&enddate=${enddate}&region=${regionfcexport}`;
+
+      // Create a hidden iframe to trigger the file download
+      var iframe = $('<iframe>', {
+          id: 'download-frame',
+          src: url,
+          style: 'display: none;',
+      }).appendTo('body');
+
+      // Remove the iframe after download
+      iframe.on('load', function () {
+          iframe.remove();
+      });
+    }else{
       alertify.error('Date')
-      return
     }
-    console.log('date', startdatelistfc, enddatelistfc)
-    let url = `/products/exportfc?year=${year}&target={{target}}&startdate=${startdatelistfc}&enddate=${enddatelistfc}`;
-
-    // Create a hidden iframe to trigger the file download
-    var iframe = $('<iframe>', {
-        id: 'download-frame',
-        src: url,
-        style: 'display: none;',
-    }).appendTo('body');
-
-    // Remove the iframe after download
-    iframe.on('load', function () {
-        iframe.remove();
-    });
   }
   function yeardatafc(){
     let year=$('select[name="yearsfc"]').val()
@@ -572,18 +282,17 @@
     currentPagelistfc=1
     loadinglistfc = false;
     $('.listfcholder').on('scroll', handleScrolllistfc);
-    $.get('/products/yeardatafc?target={{target}}', {year:year}, (data)=>{
+    $.get('/products/yeardatafc', {year:year}, (data)=>{
       $('.listfcbody').html(data.trs)
       $('.totalbonsfc').text(data.total)
     })
   }
   // let currentPagelistfc=1
   // let loadinglistfc = false;
-  function loadMorelistfc (year, startdate, enddate, term, comptable, mode)  {
+  function loadMorelistfc (year, startdate, enddate, term, comptable)  {
     console.log('term and page ubr', term, currentPagelistfc)
     loadinglistfc = true;
-    waiting=$('.searchinputlistfactures').attr('waiting')
-    $.get(`/products/loadlistfc/?target={{target}}&page=${currentPagelistfc}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}&comptable=${comptable}&mode=${waiting}&target={{target}}`, (data)=>{
+    $.get(`/products/loadlistfc/?facture={%if facturesection%}1{% endif %}&page=${currentPagelistfc}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}&comptable=${comptable}`, (data)=>{
 
       const tbody = $('.listfctable tbody');
       tbody.append(data.trs);
@@ -608,18 +317,17 @@
 
       const lastRow = document.querySelector('.fc-row:last-child');
       const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+      let year=$('[name="yearsfc"]').val()
       // let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
-      let year=$('.populateyears').val()
-      let mode=lastRow.getAttribute('mode')
       let startdate=$('.startdatelistfc').val()==""?0:$('.startdatelistfc').val()
       let enddate=$('.enddatelistfc').val()==""?0:$('.enddatelistfc').val()
-      let term=$('.searchinputlistfactures').val()
+      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
       let comptable=lastRow.getAttribute('comptable')?lastRow.getAttribute('comptable'):0
       const containerBottom = container.scrollTop + container.clientHeight;
       if (containerBottom+900 >= lastRowOffset && !loadinglistfc) {
 
           currentPagelistfc++;
-          loadMorelistfc(year, startdate, enddate, term, comptable, mode);
+          loadMorelistfc(year, startdate, enddate, term, comptable);
       }
     };
 
@@ -642,48 +350,6 @@
       tbody.html(data.html)
     })
   }
-  $('.facturemultiple').on('click', function(event){
-        event.preventDefault()
-        let parentdiv=$(this).parent().parent()
-        // if ((selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
-        //     return this.value;
-        // }).get()).length == 0){
-        //     alertify.error('Veuillez selectionner au moins un bon')
-        //     return
-        // }
-        selectedValues = parentdiv.find("input[name='bonstopay']:checked").map(function() {
-            return this.value;
-        }).get()
-
-        clientid=$('[name="clientoffacture"]').val()
-
-        date=$(".dateoffacture").val()
-        facture_no=$(".facture_no").val()
-
-
-        if (selectedValues.length==0 || clientid==null){
-          alertify.error('Champs vide')
-          return
-        }
-        $(this).addClass('disabled')
-
-        console.log(clientid, date, selectedValues)
-        $.get('/products/facturemultiple?target={{target}}', {
-          'clientid':clientid,
-          'facture_no':facture_no,
-          'bons':JSON.stringify(selectedValues),
-          'date':date
-        }, (data)=>{
-          if (data.success){
-            ajaxpage('add', '+ Article', '/products/listfactures?target={{target}}')
-          }else{
-            alertify.error(data.error)
-            $(this).removeClass('disabled')
-
-          }
-        })
-    })
-
 $('.filterfcdate').on('click', function(){
     currentPagelistfc=1
     loadinglistfc = false;
@@ -697,12 +363,11 @@ $('.filterfcdate').on('click', function(){
       alertify.error('Date')
       return
     }
-    waiting=$('.searchinputlistfactures').attr('waiting')
-    $.get('/products/filterfcdate', {startdate:startdate, enddate:enddate, 'target':'{{target}}', 'waiting':waiting},(data)=>{
+    $.get('/products/filterfcdate?facture={% if facturesection %}1{%endif%}', {startdate:startdate, enddate:enddate},(data)=>{
       console.log(data)
       parentdiv.find('tbody').html(data.trs)
-      $('.totalfc').text(data.total)
-      $('.totalfctva').text(data.totaltva)
+      parentdiv.find('.totalfc').text(data.total)
+      parentdiv.find('.totalfctva').text(data.totaltva)
     })
   })
 $('.searchinputlistfactures').on("change", function() {
@@ -713,13 +378,8 @@ $('.searchinputlistfactures').on("change", function() {
     let year=$('select[name="yearsfc"]').val()?$('select[name="yearsfc"]').val():0
 
     // Split the filter value into individual terms based on the '&' sign
-    if (filterValue==""){
-      forceupdatetab('addlistfactures', '/products/listfactures')
-
-    }
-    else{
-    waiting=$('.searchinputlistfactures').attr('waiting')
-    $.get('/products/searchforlistfc', {'term':filterValue.trim(), 'year':year, 'startdate':$('.startdatelistfc').val(), 'enddate':$('.enddatelistfc').val(), 'target':'{{target}}', 'waiting':waiting}, (data)=>{
+    //if (filterValue!=""){
+    $.get('/products/searchforlistfc?facture={%if facturesection%}1{% endif %}', {'term':filterValue.trim(), 'year':year, 'startdate':$('.startdatelistfc').val(), 'enddate':$('.enddatelistfc').val()}, (data)=>{
       $(".facturestable tbody").html('')
       $(".facturestable tbody").html(data.trs)
       $('.totalfc').text(data.total)
@@ -731,7 +391,11 @@ $('.searchinputlistfactures').on("change", function() {
 
     currentPagelistfc=1
     loadinglistfc = false;
-  }
+  // }else{
+  //   forceupdatetab('addlistfactures',  `/products/listfactures?year=${year}&facture={%if facturesection%}1{% endif %}`)
+  //   console.log('>> year eee', year)
+  //   $('select[name="yearsfc"]').val(year);
+  // }
 });
 
 

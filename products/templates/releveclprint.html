@@ -33,14 +33,14 @@
     <script src="/static/js/jquery.min.js"></script>
     <link href="/static/css/minified.css" rel="stylesheet" />
 </head>
-<body>
+<body style="font-family:sans-serif;">
 {% for i in releve %}
     {% if forloop.counter == releve|length %}
     <!-- last iteration -->
     <div class="d-flex flex-column postion-relative livraison{{order.id}}holder px-5" style="min-height: 29.7cm;width: 21cm;border:1px solid;">
       <!-- header -->
       <div class="px-2">
-        <img src="" alt="" style="width: 40%;" class="relvlogo mb-2 invisible">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="relvlogo mb-2 invisible">
 
 
         <div style="margin-top:60px;" class="d-flex align-items-center">
@@ -52,7 +52,7 @@
                 padding: 5px;
                 background: #c7c7c78a;">
                 <strong >
-                    {{title}}
+                    Situation Client
                 </strong>
             </div>
         </div>
@@ -107,7 +107,7 @@
                   <td style="padding-left: 5px;">
                       {% for v in i %}
                       {% if v.1 == 'Bonlivraison' %}
-                      {{v.0.bon_no}}{% if not forloop.counter == i|length %}<br>{% endif %}
+                      {{v.0.bon_no}}{% if v.0.iscontre %}(contre){%endif%}{% if not forloop.counter == i|length %}<br>{% endif %}
                       {% elif v.1 == 'PaymentClientbl' %}
                           {% if v.0.mode == espece %}
                           Espece{% if not forloop.counter == i|length %}<br>{% endif %}
@@ -204,7 +204,7 @@
     <div class="d-flex flex-column postion-relative livraison{{order.id}}holder px-5" style="min-height: 29.7cm;width: 21cm;border:1px solid;">
       <!-- header -->
       <div class="px-2">
-        <img src="" alt="" style="width: 40%;" class="relvlogo mb-2 invisible">
+        <img src="/media/logos/logo2.jpg" alt="" style="width: 40%;" class="relvlogo mb-2 invisible">
 
 
         <div style="margin-top:60px;" class="d-flex align-items-center">
@@ -216,7 +216,7 @@
                 padding: 5px;
                 background: #c7c7c78a;">
                 <strong >
-                    {{title}}
+                    Situation Client
                 </strong>
             </div>
         </div>
@@ -271,7 +271,7 @@
                   <td style="padding-left: 5px;">
                       {% for v in i %}
                       {% if v.1 == 'Bonlivraison' %}
-                      {{v.0.bon_no}}{% if not forloop.counter == i|length %}<br>{% endif %}
+                      {{v.0.bon_no}}{% if v.0.iscontre %}(contre){%endif%}{% if not forloop.counter == i|length %}<br>{% endif %}
                       {% elif v.1 == 'PaymentClientbl' %}
                           {% if v.0.mode == espece %}
                           Espece{% if not forloop.counter == i|length %}<br>{% endif %}

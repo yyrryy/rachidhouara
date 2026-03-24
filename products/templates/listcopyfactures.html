@@ -1,0 +1,399 @@
+{% load global_tags %}
+
+<div class="exportfcholder position-absolute rounded shadow bg-white d-flex p-2 justify-content-between" style="z-index: 9999; top: -10vh; left: 13%; width: 80vw; height: 10vh; transition: top .7s ease;" >
+  <div class="d-flex">
+
+    <div class="me-2">
+      Du <br>
+      <input type="date" class="fcexportdatefrom" value="{{today|date:'Y-m-d'}}">
+      <!-- <input type="date" class="fcexportdatefrom" value="{{today|date:'Y-m-d'}}"> -->
+    </div>
+    <div>
+      Au <br>
+      <input type="date" class="fcexportdateto" value="{{today|date:'Y-m-d'}}">
+    </div>
+  </div>
+
+  <div class="ms-3">
+    <label for="fcrep">rep</label> <br>
+    <select class="fcrepexport" style="width: 12em;">
+      <option value="">---</option>
+      {% for i in reps %}
+      <option value="{{i.id}}">{{i.name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="ms-3">
+    <label>Region</label> <br>
+    <input type="text" class="regionfcexport">
+  </div>
+  <!-- <button class="btn btn-sm btn-success" onclick="exportfc(event)">
+    Export
+  </button> -->
+  <!-- <button class="btn btn-danger" onclick="$('.exportfcholder').css('top', '-10vh')"></button> -->
+
+</div>
+<div class="bg-white shadow rounded p-2 rounded">
+  <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
+    <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab('addlistfactures')">x</button>
+    <div>
+      {{title}}
+    </div>
+    <button class="btn bg-orange"
+    style="border:1px solid var(--orange);" onclick="forceupdatetab('addlistfactures',  `/products/listcopyfactures?facture={%if facturesection%}1{% endif %}`)">↻</button>
+  </div>
+  <div class="bg-orange text-white p-2">
+    <div class="d-flex justify-content-between">
+      <div>
+        <div class="d-flex">
+          <div class="me-2">
+            <!-- <input type="date" name="" id="" class="startdatelistfccopy" value="{{today|date:'Y-m-d'}}"> -->
+            <input type="date" name="" id="" class="startdatelistfccopy">
+          </div>
+          <div>
+            <input type="date" name="" id="" class="enddatelistfccopy">
+          </div>
+          <div>
+            <button class="btn btn-sm bg-dark text-white filterfccopydate">Filtrer</button>
+          </div>
+
+        </div>
+      <input style="width:20em; border-radius: 10px;" type="text" name="" id="" placeholder="Recherche" class="searchinputlistfacturescopy mt-2">
+
+      </div>
+
+      <div class="d-flex flex-column">
+        <!-- {% if not facturesection %}<button class="btn btn-success" onclick="getcompatbilse()">
+          Comptabilisé
+        </button>{% endif %} -->
+        <select name="yearsfccopy" class="populateyears" onchange="yeardatafccopy()">
+
+
+        </select>
+      </div>
+      {% if not facturesection %}
+      <!-- <div style="color: red; cursor: pointer; padding: 7px; border-radius: 12px; height: 2.5em; width: 4em;" title="BON 3 MOIS" class="bg-white text-center" onclick="getnotpaidfc(event)">
+        {{depasserfc}}
+      </div> -->
+      {% endif %}
+      <div class="d-flex flex-column">
+        <!-- <button class="btn btn-success" style="border-radius: 10px;" onclick="createtab('addfacture', '+ Facture', '/products/facture')">
+          + Facture
+        </button> -->
+        <!-- <button class="btn bi bi-download bg-white mt-2" style="border-radius: 10px;" onclick="$('.exportfcholder').css('top', '10vh')"></button> -->
+      </div>
+
+    </div>
+    <div class="d-flex">
+    </div>
+  </div>
+
+    <div class="listfccopyholder" style="height:70vh;overflow: scroll;">
+      <table class="table table-bordered table-hover facturescopytable listfccopytable" style="font-size: 12px;" id="">
+        <thead style="background: rgb(231, 231, 231); position: sticky;top: 0;">
+
+          <tr>
+            <td style="width: 8%;" onclick="sorttable(event)">N°</td>
+            <td style="width: 8%;" onclick="sorttable(event)">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <button class="btn btn-sm" style="font-size: 6px; background: #f06623; color: white;" onclick="sortupfc(event)">↑</button>  -->
+                <div>Date</div>
+                <!-- <button class="btn btn-sm" style="font-size: 6px; background: #f06623; color: white;" onclick="sortdownfc(event)">↓</button>  -->
+              </div>
+            </td>
+            <td style="width: 5%;" onclick="sorttable(event)">Total</td>
+            <!-- <td style="width: 5%;" onclick="sorttable(event)">TVA</td> -->
+            <td style="width: 12%;" onclick="sorttable(event)">Client</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Code client</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Region</td>
+            <td style="width: 5%;" onclick="sorttable(event)">Ville</td>
+            <!-- <td style="width: 5%;" onclick="sorttable(event)">Solde fc cl.</td> -->
+            <td style="width: 5%;" onclick="sorttable(event)">Repr</td>
+            <!-- <td style="width: 5%;" onclick="sorttable(event)">Reglé</td> -->
+            <td style="width: 5%;" onclick="sorttable(event)">Notes</td>
+            <!-- <td style="width: 3%;" onclick="sorttable(event)">Reglements</td> -->
+            {%if not facturesection%}
+            <!-- <td style="width: 5%;" onclick="sorttable(event)">N° Bon livr.</td> -->
+            {% endif %}
+            <!-- <td style="width: 5%;" onclick="sorttable(event)">Comptablisé</td> -->
+          </tr>
+        </thead>
+        <tbody class="listfccopybody">
+          {% for order in bons %}
+            <tr class="ord {% if order.ispaid %}text-danger{% endif %} fccopy-row" orderid="{{order.code}}" ondblclick="createtab('bl{{order.id}}', 'Bl {{order.facture_no}}', '/products/facturedetailscopy/{{order.id}}')"
+              style="{% if order.bon %} color: blue; {% endif %}{% if order.isaccount %}background:yellowgreen;{% endif %}"
+            >
+              <td>{{ order.copynumber }}</td>
+              <td>{{ order.date|date:'d/m/Y' }}</td>
+              <td>{{ order.total|floatformat:2|intspace}}</td>
+              <!-- <td>{{ order.tva|floatformat:2|intspace}}</td> -->
+              <td>{{ order.client.name }}</td>
+              <td>{{ order.client.code }}</td>
+              <td>{{ order.client.region }}</td>
+              <td>{{ order.client.city }}</td>
+              <!-- <td>{{ order.client.soldfacture|floatformat:2|intspace }}</td> -->
+              <td>{{ order.salseman }}</td>
+              {% if order.ispaid %}
+              <!-- <td class="d-flex justify-content-between">
+                <div>
+                R0
+                <div style="width:15px; height:15px; border-radius:50%; background:green;" ></div>
+                </div>
+                <button class="btn"></button>
+              </td> -->
+              {% else %}
+
+              <!-- <td class="d-flex justify-content-between">
+                <div style="width:15px; height:15px; border-radius:50%; background:orange;" ></div>
+                <button title="Facture Comptabilisé" class="btn border border-success" onclick="makefacturecompta(event, '{{order.id}}')"></button>
+              </td> -->
+
+              {% endif %}
+              <td>
+                {{order.note}}
+              </td>
+              <!-- <td style="white-space:nowrap;">
+                {{order.getreglement|slice:'16' }}
+              </td> -->
+              {%if not facturesection%}
+                <!-- <td>{{ order.bon.bon_no }}</td> -->
+              {% endif %}
+                <!-- <td class="d-flex">
+                  {% if order.isaccount %}
+                  <i class="bi bi-check h3"></i>c
+                  {% endif %}
+                  <button title="Imprimer" class="btn btn-sm bi bi-download" onclick="printfacture('{{order.id}}')"></button>
+                </td> -->
+            </tr>
+          {% endfor %}
+        </tbody>
+        <thead style="background: rgb(231, 231, 231); position: sticky;bottom: 0;">
+
+          <tr>
+            <td style="width: 8%;"></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 5%; background: yellowgreen;" class="totalfccopy">{{total|floatformat:2|intspace}}</td>
+            <!-- <td style="width: 5%;" class="totalfccopytva">{{totaltva|floatformat:2|intspace}}</td> -->
+            <td style="width: 12%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+            <td style="width: 5%;"></td>
+          </tr>
+        </thead>
+        <!-- <tfoot>
+          <tr>
+            <td>N° bon</td>
+            <td>Date</td>
+            <td>Client</td>
+            <td>Code client</td>
+            <td>Total</td>
+            <td>Region</td>
+            <td>Ville</td>
+            <td>Solde cl.</td>
+            <td>Repr</td>
+            <td>N° bon</td>
+            <td>Facturé</td>
+            <td>Transport</td>
+          </tr>
+        </tfoot> -->
+      </table>
+    </div>
+    <!-- <div class="totalfccopy"></div> -->
+</div>
+
+
+
+
+<script>
+  $(document).ready(function () {
+    // popukate years starting from 2024
+    console.log('>> populating years')
+    const $select = $('.populateyears');
+    const currentYear = new Date().getFullYear();
+    const startYear = 2024;
+    console.log('startYear, currentYear', startYear, currentYear)
+
+    for (let year = startYear; year <= currentYear; year++) {
+        $select.prepend($('<option>', {
+            value: year,
+            text: year
+        }));
+    }
+    $select.val(currentYear);
+  })
+  function makefacturecompta(event, factureid){
+    tr=$(event.target).parent().parent()
+    $.get('/products/comptable', {
+      'factureid':factureid
+    }, (data)=>{
+      tr.find('td')[13].append('✔')
+    })
+  }
+  function getcompatbilse() {
+    console.log('>>>>>>>ss');
+    var year = $('[name="yearsfccopy"]').val();  // Get the value of the year input field
+    $.get('/products/getcompatbilse', { year: year }, function(data) {
+        $('.listfccopybody').html(data.trs);
+        $('.totalbonsfccopy').text(data.total);
+    });
+  }
+  function getnotpaidfc(event) {
+    let parentdiv=$(event.target).parent().parent().parent()
+    $.get(
+      'products/getnotpaidfc',
+      (data)=>
+{        $('.listfccopybody').html(data.html)
+        $('.totalfccopy').text(data.total)
+      }
+    )
+  }
+  function exportfc(event){
+    let startdate=$('.fcexportdatefrom').val()
+    let enddate=$('.fcexportdateto').val()
+    let rep=$('.fcrepexport').val()
+    let regionfcexport=$('.regionfcexport').val()
+    if (startdate!='' || enddate!=''){
+      let url = `/products/exportfc?rep=${rep}&startdate=${startdate}&enddate=${enddate}&region=${regionfcexport}`;
+
+      // Create a hidden iframe to trigger the file download
+      var iframe = $('<iframe>', {
+          id: 'download-frame',
+          src: url,
+          style: 'display: none;',
+      }).appendTo('body');
+
+      // Remove the iframe after download
+      iframe.on('load', function () {
+          iframe.remove();
+      });
+    }else{
+      alertify.error('Date')
+    }
+  }
+  function yeardatafccopy(){
+    let year=$('select[name="yearsfccopy"]').val()
+    if (year==''){return}
+    currentPagelistfc=1
+    loadinglistfc = false;
+    $('.listfccopyholder').on('scroll', handleScrolllistfccopy);
+    $.get('/products/yeardatafccopy', {year:year}, (data)=>{
+      $('.listfccopybody').html(data.trs)
+      $('.totalbonsfccopy').text(data.total)
+    })
+  }
+  // let currentPagelistfc=1
+  // let loadinglistfc = false;
+  function loadMorelistfccopy(year, startdate, enddate, term, comptable)  {
+    console.log('term and page ubr', term, currentPagelistfc)
+    loadinglistfc = true;
+    $.get(`/products/loadlistfccopy/?facture={%if facturesection%}1{% endif %}&page=${currentPagelistfc}&year=${year}&startdate=${startdate}&enddate=${enddate}&term=${term}&comptable=${comptable}`, (data)=>{
+
+      const tbody = $('.listfccopytable tbody');
+      tbody.append(data.trs);
+
+      console.log('products loaded')
+      loadinglistfc = false;
+
+
+          if (!data.has_more) {
+
+              // Remove the scroll event listener when there are no more records
+              $('.listfccopyholder').off('scroll', handleScrolllistfccopy);
+          }
+        })
+
+
+        // Append the new records to your table or update the DOM as needed
+    };
+
+    function handleScrolllistfccopy () {
+      const container = $('.listfccopyholder')[0]; // Get the native DOM element
+
+      const lastRow = document.querySelector('.fccopy-row:last-child');
+      const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+      let year=$('[name="yearsfccopy"]').val()
+      // let year=lastRow.getAttribute('year')?lastRow.getAttribute('year'):0
+      let startdate=$('.startdatelistfccopy').val()==""?0:$('.startdatelistfccopy').val()
+      let enddate=$('.enddatelistfccopy').val()==""?0:$('.enddatelistfccopy').val()
+      let term=lastRow.getAttribute('term')?lastRow.getAttribute('term'):0
+      let comptable=lastRow.getAttribute('comptable')?lastRow.getAttribute('comptable'):0
+      const containerBottom = container.scrollTop + container.clientHeight;
+      if (containerBottom+900 >= lastRowOffset && !loadinglistfc) {
+
+          currentPagelistfc++;
+          loadMorelistfccopy(year, startdate, enddate, term, comptable);
+      }
+    };
+
+    // Attach the scroll event listener
+    $('.listfccopyholder').on('scroll', handleScrolllistfccopy)
+
+
+
+  function sortupfc(event){
+    let parentdiv=$(event.target).parent().parent().parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get('/products/sortupfc', (data)=>{
+      tbody.html(data.html)
+    })
+  }
+  function sortdownfc(event){
+    let parentdiv=$(event.target).parent().parent().parent().parent().parent()
+    let tbody=parentdiv.find('tbody')
+    $.get('/products/sortdownfc', (data)=>{
+      tbody.html(data.html)
+    })
+  }
+$('.filterfccopydate').on('click', function(){
+    currentPagelistfc=1
+    loadinglistfc = false;
+    $('.listfccopyholder').on('scroll', handleScrolllistfccopy)
+
+    let parentdiv= $(this).parent().parent().parent().parent().parent().parent()
+    console.log(parentdiv)
+    startdate=parentdiv.find('.startdatelistfccopy').val()
+    enddate=parentdiv.find('.enddatelistfccopy').val()
+    if (startdate=='' || enddate==''){
+      alertify.error('Date')
+      return
+    }
+    $.get('/products/filterfccopydate?facture={% if facturesection %}1{%endif%}', {startdate:startdate, enddate:enddate},(data)=>{
+      console.log(data)
+      parentdiv.find('tbody').html(data.trs)
+      parentdiv.find('.totalfccopy').text(data.total)
+      parentdiv.find('.totalfccopytva').text(data.totaltva)
+    })
+  })
+$('.searchinputlistfacturescopy').on("change", function() {
+
+
+    // Get the values from all filter input fields
+    var filterValue = $(this).val().toLowerCase();
+    let year=$('select[name="yearsfccopy"]').val()?$('select[name="yearsfccopy"]').val():0
+
+    // Split the filter value into individual terms based on the '&' sign
+    //if (filterValue!=""){
+    $.get('/products/searchforlistfccopy?facture={%if facturesection%}1{% endif %}', {'term':filterValue.trim(), 'year':year, 'startdate':$('.startdatelistfccopy').val(), 'enddate':$('.enddatelistfccopy').val()}, (data)=>{
+      $(".facturescopytable tbody").html('')
+      $(".facturescopytable tbody").html(data.trs)
+      $('.totalfccopy').text(data.total)
+      $('.totalfccopytva').text(data.totalfccopytva)
+    // Iterate through the table rows
+
+    })
+    $('.listfccopyholder').on('scroll', handleScrolllistfccopy)
+
+    currentPagelistfc=1
+    loadinglistfc = false;
+  // }else{
+  //   forceupdatetab('addlistfactures',  `/products/listfactures?year=${year}&facture={%if facturesection%}1{% endif %}`)
+  //   console.log('>> year eee', year)
+  //   $('select[name="yearsfccopy"]').val(year);
+  // }
+});
+
+
+
+</script>

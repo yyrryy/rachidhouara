@@ -1,41 +1,4 @@
 {% load global_tags %}
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Example</title>
-    <style>
-      @media print {
-         .livraison-holder {
-             height: 27.5cm; /* Slightly less than the maximum printable height */
-             width: 21cm; /* Full width of A4 */
-             border: 1px solid black; /* For debugging and visibility */
-             page-break-after: always; /* Ensures each div starts on a new page */
-             box-sizing: border-box; /* Include padding and border in the element's total width and height */
-         }
-
-         /* Reset margins and paddings for printing */
-         body {
-             margin: 0;
-             padding: 0;
-         }
-         td > div{
-           margin:4px;
-         }
-
-         /* Optional: If you need to adjust margins more precisely */
-         @page {
-             margin: 0; /* Remove any default margins */
-         }
-     }
-    </style>
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/jquerySpellingNumber.js"></script>
-    <link href="/static/css/minified.css" rel="stylesheet" />
-</head>
-<body>
 <style>
     /* The switch - the box around the slider */
 .switch {
@@ -127,11 +90,7 @@
                                     Cout Moyen
                                 </td>
                                 <td>
-                                    {% if target == "f" %}
-                                    {{product.frcoutmoyen|floatformat:2}}
-                                    {% else %}
                                     {{product.coutmoyen|floatformat:2}}
-                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
@@ -139,63 +98,10 @@
                                     Prix Achat
                                 </td>
                                 <td>
-                                    {% if target == "f" %}
-                                    {{product.frbuyprice|floatformat:2}}
-                                    {% else %}
                                     {{product.buyprice|floatformat:2}}
-                                    {% endif %}
-                                    
                                 </td>
                             </tr>
                             <tr>
-                                <td>Remise 1</td>
-                                <td>
-                                    {% if target == "f" %}
-                                    {{product.frremise1}}
-                                    {% else %}
-                                    {{product.remise1}}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Remise 2</td>
-                                <td>
-                                    {% if target == "f" %}
-                                    {{product.frremise2}}
-                                    {% else %}
-                                    {{product.remise2}}
-                                    {% endif %}
-                                </td>
-                            </tr><tr>
-                                <td>Remise 3</td>
-                                <td>
-                                    {% if target == "f" %}
-                                    {{product.frremise3}}
-                                    {% else %}
-                                    {{product.remise3}}
-                                    {% endif %}
-                                </td>
-                            </tr><tr>
-                                <td>Remise 4</td>
-                                <td>
-                                    {% if target == "f" %}
-                                    {{product.frremise4}}
-                                    {% else %}
-                                    {{product.remise4}}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Prix achat net</td>
-                                <td>
-                                    {% if target == "f" %}
-                                    {{product.frnetbuyprice|floatformat:2}}
-                                    {% else %}
-                                    {{product.netbuyprice|floatformat:2}}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <!-- <tr>
 
                                 <td>
                                     Prix Vente net
@@ -203,48 +109,49 @@
                                 <td>
                                     {{product.prixnet|floatformat:2}}
                                 </td>
-                            </tr> -->
-                            <tr>
-                                {% if target == "f" %}
-                                <!-- <td>
-                                    Stock Farah
-                                </td>
-                                <td class="stocktotal{{product.id}} d-flex">
-                                    
-                                    {{product.stocktotalfarah}}
-                                    
-                                </td> -->
-                                {% elif target == 'o' %}
-                                <td>
-                                    Stock Orgh
-                                </td>
-                                <td class="stocktotal{{product.id}} d-flex">
-                                    
-                                    {{product.stocktotalorgh}}
-                                    
-                                </td>
-                                {% else %}
-                                <!-- <td>
-                                    Stock farah
-                                </td>
-                                <td class="stocktotal{{product.id}} d-flex">
-                                    
-                                    {{product.stocktotalfarah}}
-                                    
-                                </td> -->
-                                <td>
-                                    Stock orgh
-                                </td>
-                                <td class="stocktotal{{product.id}} d-flex">
-                                    
-                                    {{product.stocktotalorgh}}
-                                    
-                                </td>
-                                {% endif %}
-
                             </tr>
-                            <!-- <
-                             -->
+                            <tr>
+                                <td>
+                                    Stock
+                                </td>
+                                <td class="stocktotal{{product.id}} d-flex">
+                                    {{product.stocktotal}}
+                                    <!-- <div class="accordion" id="accordionpdct{{product.id}}">
+                                        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseupdatestock{{product.id}}" aria-expanded="true" aria-controls="collapseupdatestock{{product.id}}">
+
+
+                                        </button>
+
+                                        <div id="collapseupdatestock{{product.id}}" class="collapse row" aria-labelledby="headingOne" data-parent="#accordionpdct{{product.id}}">
+                                            <input class="col-9" type="number">
+                                            <button class="btn btn-success col-3" onclick="updateproductstock(event, '{{product.id}}')"></button>
+
+
+                                        </div>
+                                      </div> -->
+                                </td>
+                            </tr>
+                            <tr style="background: #ffaa76;">
+                                <td>
+                                    Stock facture
+                                </td>
+                                <td class="d-flex">
+                                    {{product.stockfacture}}
+                                    <!-- <div class="accordion" id="accordionpdctstockfc{{product.id}}">
+                                        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseupdatestockfc{{product.id}}" aria-expanded="true" aria-controls="collapseupdatestockfc{{product.id}}">
+
+
+                                        </button>
+
+                                        <div id="collapseupdatestockfc{{product.id}}" class="collapse row" aria-labelledby="headingOne" data-parent="#accordionpdctstockfc{{product.id}}">
+                                            <input class="col-9" type="number">
+                                            <button class="btn btn-success col-3" onclick="updateproductstockfc(event, '{{product.id}}')"></button>
+
+
+                                        </div>
+                                      </div> -->
+                                </td>
+                            </tr>
                             <!-- <tr style="background: #ffaa76;">
                                 <td>
                                     Stock bon
@@ -255,13 +162,13 @@
                             </tr> -->
 
                         </table>
-                        <!-- <div class="mb-2 d-flex">
+                        <div class="mb-2 d-flex">
                             <div>
                                 Status:
                             </div>
                             {{product.isactive}}
                             <div style="width: 15px; height: 15px;" class="status{{product.id}}  rounded bg-{% if product.isactive %}success{% else %}danger{% endif %}"></div>
-                        </div> -->
+                        </div>
                         <!-- {% if product.isactive %}
                         <button class="mb-2 w-100 btn btn-danger" onclick="desactiverproduct({{product.id}})">
                             Desactiver
@@ -271,40 +178,13 @@
                             Activer
                         </button>
                         {% endif %} -->
-                        <!-- <button class="mb-2 w-100 btn btn-success" onclick="activerproduct({{product.id}})">
+                        <button class="mb-2 w-100 btn btn-success" onclick="activerproduct({{product.id}})">
                             Activer
                         </button>
                         <button class="mb-2 w-100 btn btn-danger" onclick="desactiverproduct({{product.id}})">
                             Desactiver
-                        </button> -->
+                        </button>
                         <hr>
-                        <!-- duplicate -->
-                        <div class="text-center p-2 bg-dark text-white">duplicate</div>
-                        <div class="border p-2">
-                            <strong>reference* :</strong>
-                            <input type="text" class="form-control ref">
-                            <strong>marque* :</strong>
-                            <select name="" id="" class="form-control mark">
-                                <option value="">--</option>
-                                {% for i in marques %}
-                                <option value="{{i.id}}">{{i.name.upper}}</option>
-                                {% endfor %}
-                            </select>
-                            <strong>min. stock:</strong>
-                            <input type="text" class="form-control stock">
-                            <button class="btn btn-success mt-2 w-100" onclick="duplicate(event, '{{product.id}}')">Creer</button>
-                        </div>
-
-
-                        <!-- replace -->
-                        {% if not target == "s" %}
-                         <div class="mt-3 border p-2">
-                            <strong>Le reference correct:</strong>
-                            <select class="form-control ref refreplace"></select>
-
-                            <button class="w-100" onclick="replaceproduct()">Remplacer</button>
-                         </div>
-                        {% endif %}
                         <!-- <div class="damagedpdctsholder">
                           <strong>
                             Les produits Damagés
@@ -348,21 +228,17 @@
                                     <input type="text" class="form-control mb-3" name="diametre" value="{%if product.diametre%}{{product.diametre}}{%endif%}">
                                 </div>
                                 <div class="col-3">
-                                    <small>Min. stock</small>
-                                    <input type="text" class="form-control mb-3" name="minstock" value="{%if product.minstock%}{{product.minstock}}{%endif%}">
-                                </div>
-                                <!-- <div class="col-3">
                                     <small for="name">Voiture logo. </small> <br>
-                                    <select name="updatepdctlogo" id="" class="select2" style="width:100%;">
-                                        <option value="{{product.carlogos.id}}">
-                                            {{product.carlogos.name.upper}}
-                                        </option>
+                                    <select multiple name="updatepdctlogo" id="" class="select2" style="width:100%;">
+                                        
                                         {% for i in carlogos %}
-                                        <option value="{{i.id}}">{{i.name.upper}}</option>
+                                            <option value="{{ i.id }}" {% if i in product.carlogos.all %}selected{% endif %}>
+                                                {{ i.name.upper }}
+                                            </option>
                                         {% endfor %}
                                     </select>
 
-                                </div> -->
+                                </div>
                             </div>
 
 
@@ -389,12 +265,12 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <!-- <div class="col-3">
+                                <div class="col-3">
                                     <small>
-                                        Representant price
+                                        Min stock
                                     </small>
                                     <div class="col-12">
-                                        <input style="background: #ffa600bc;" type="number" name="updaterepprice" value="{{product.representprice}}" class="form-control">
+                                        <input style="background: #ffa600bc;" type="number" name="updateminstock" value="{{product.minstock}}" class="form-control">
                                     </div>
                                 </div>
 
@@ -405,7 +281,12 @@
                                     <div class="col-12">
                                         <input style="background: #ffa600bc;" type="number" name="updaterepremise" value="{{product.representremise}}" class="form-control">
                                     </div>
-                                </div> -->
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
 
                                 <div class="col-3">
                                     <small>
@@ -416,22 +297,13 @@
                                     </div>
                                 </div>
                                 <div class="col-3">
-                                    <small>Quantité jeux</small>
-                                    <input type="text" class="form-control mb-3" name="qtyjeu" value="{%if product.qtyjeu%}{{product.qtyjeu}}{%endif%}">
-                                </div>
-                            </div>
-
-                            <div class="row">
-
-                                
-                                <div class="col-3">
                                     <small>Remise</small>
-                                    <input type="text" class="form-control mb-3" name="remise" value="{%if isfarah%}{{product.frremisesell}}{%else%}{{product.remisesell}}{%endif%}">
+                                    <input type="text" class="form-control mb-3" name="remise" value="{{product.remise}}">
                                 </div>
 
                                 <div class="col-3">
                                     <small for="name">Prix vente brut</small>
-                                    <input type="text" class="form-control mb-3"name="sellprice" value="{%if isfarah%}{{product.frsellprice}}{%else%}{{product.sellprice}}{%endif%}">
+                                    <input type="text" class="form-control mb-3"name="sellprice" value="{{product.sellprice}}">
                                 </div>
                                 <div class="col-3">
                                     <small for="name">block</small>
@@ -447,7 +319,7 @@
 
                                 </div>
 
-                                <!-- <div class="d-flex col-6">
+                                <div class="d-flex col-6">
                                     <div>
                                         R1
                                         <input type="text" class="col-6" style="background: greenyellow;" name="refeq1" value="{% if product.refeq1 %}{{product.refeq1}}{% endif %}">
@@ -464,7 +336,7 @@
                                         R4
                                         <input type="text" class="col-6" style="background: greenyellow;" name="refeq4" value="{% if product.refeq4 %}{{product.refeq4}}{% endif %}">
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
 
 
@@ -475,12 +347,12 @@
                                 <div class="col-3">
                                     <div class="accordion w-100" id="accordionreps" style="right: 0;">
 
-                  <!-- <button class="btn w-100" type="button" data-toggle="collapse" data-target="#collapsreps" aria-expanded="true" aria-controls="collapsreps">
+                  <button class="btn w-100" type="button" data-toggle="collapse" data-target="#collapsreps" aria-expanded="true" aria-controls="collapsreps">
                     <div>
                       Representants
                     </div>
 
-                  </button> -->
+                  </button>
 
                 <div id="collapsreps" class="collapse" aria-labelledby="headingOne" data-parent="#accordionreps">
                   <select name="updatereps" class="form-select updatereps" multiple="multiple" >
@@ -501,7 +373,7 @@
                                         {% endfor %}
                                     </select>-->
                                 </div>
-                                <!-- <div class="col-4">
+                                <div class="col-4">
                                     <label for="switch">new:</label>
                                     {% if product.isnew %}
                                     <input type="radio" name="switch" value="on" checked> On
@@ -512,7 +384,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-4">
-                                    <label for="nearswitch">Arrivage:</label>
+                                    <label for="nearswitch">Promotion:</label>
                                     {% if product.near %}
                                     <input type="radio" name="nearswitch" value="on" checked> On
                                     <input type="radio" name="nearswitch" value="off"> Off
@@ -528,35 +400,26 @@
                                     <div class="col-12">
                                         <input type="text" name="updatecoderef" value="{{product.coderef}}" class="form-control">
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
-                            <!-- <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between">
                                 <div>
                                     <small>Designations</small>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <button class="btn btn-success" onclick="addcarsinput(event)">+</button>
-                                </div>
-                            </div> -->
+                                </div> -->
+                            </div>
 
-                            <!-- <div class="carsholder">
-                                {% for i in cars %}
-                                <div class="d-flex mb-3">
-                                    <input type="text" class="form-control" name="cars" value="{{i}}" style="background: greenyellow;">
-                                    <button class="btn btn-danger" onclick="deletecarinput(event)">-</button>
-                                </div>
-                                {% endfor %}
-                            </div> -->
+                            <small for="name">Voitures.</small>
+                            <textarea type="text" class="form-control mb-3" name="cars" value="" style="height: 15em">{%if product.cars%}{{product.cars}}{%endif%}</textarea>
+                            
                             <small for="name">Ref equiv.</small>
                             <textarea type="text" class="form-control mb-3" name="equivalent" value="" style="height: 15em">{{product.equivalent}}</textarea>
-                            <small for="name">Voitures.</small>
-                            <textarea type="text" class="form-control mb-3" name="cars" value="" style="height: 15em">{{product.cars}}</textarea>
-                            {% if not target == 's' %}
                             <button class="border btn btn-success mt-2 w-100" style="    position: sticky;
                             bottom: 0;" onclick="updateproductdata(event, '{{product.id}}')">
                                 Enregistrer
                             </button>
-                            {% endif %}
                         </form>
 
 
@@ -626,25 +489,27 @@
                             </tr>
                         </thead>
                         <tbody class="pdctsinbody{{product.id}}">
-                          <!-- <tr>
-                            <td>01/01/2024</td>
-                            <td>inventaire 2023</td>
-                            <td>stock inital</td>
-                            <td>{%if isfarah%}{{product.frstockinitial}}{%else%}{{product.stockinitial}}{%endif%}</td>
-                            <td>{%if isfarah%}{{product.frpriceinitial|floatformat:2}}{%else%}{{product.priceinitial|floatformat:2}}{%endif%}</td>
-                          </tr> -->
-                          {% for entry in product.stockin_set.all %}
-                          {% endfor %}
-                          <!-- 
-                            {% if not entry.isinventaire %} onclick="ajaxpage('bonachat{{entry.nbon.id}}', 'Bon achat {{entry.nbon.nbon}}', '/products/bonachatdetails/{{entry.nbon.id}}')" {%endif%}
-                          -->
+                            <!-- {% for i in  stockininventaire%}
+                          <tr>
+                            <td>{{i.date}}</td>
+                            <td>inventaire</td>
+                            <td>inventaire</td>
+                            <td>{{i.quantity}}</td>
+                            <td>{{i.price}}</td>
+                            <td>{{i.total}}</td>
+                          </tr>
+                            {% endfor %} -->
                             {% for entry in entries %}
-                            <tr >
+                            <tr {% if not entry.isinventaire %} onclick="createtab('bonachat{{entry.nbon.id}}', 'Bon achat {{entry.nbon.nbon}}', '/products/bonachatdetails/{{entry.nbon.id}}')" {%endif%}>
                                 <td>
                                     {{entry.date|date:"d/m/Y"}}
                                 </td>
                                 <td>
-                                    {% if entry.isfacture %}FC - {{entry.facture.facture_no}}{% else %}BL - {{entry.nbon.nbon}}{% endif %}
+                                    {% if entry.nbon %}
+                                    {% if entry.nbon.isfacture %}FC - {% else %}BL - {% endif %}{{entry.nbon.nbon}}
+                                    {% else %}
+                                    Inventaire
+                                    {% endif %}
                                 </td>
                                 <td>
                                     {{entry.supplier.name}}
@@ -672,7 +537,7 @@
                                     {{i.avoir.client.name}}
                                 </td>
                                 <td>
-                                    {{i.quantity}}
+                                    {{i.qty}}
                                 </td>
                                 <td>
                                     {{i.price}}
@@ -808,7 +673,7 @@
             </div>
         </div>
 
-        <!-- <div class="card mb-2" id="mouvement">
+        <div class="card mb-2" id="mouvement">
             <div class="card-header d-flex">
                 <div class="col-6">
                     <strong>
@@ -848,109 +713,16 @@
               </table>
 
             </div>
-        </div> -->
+        </div>
 
     </div>
 </div>
 
-<script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
-    <script src="{% static 'js/select2.min.js'%}"></script>
-    <script src="{% static 'js/type.min.js'%}"></script>
-    <script src="{% static 'js/number.js'%}"></script>
-    <script src="{% static 'js/main.js'%}"></script>
-    <script src="{% static 'js/alertify.min.js'%}"></script>
+
+
+{% block js %}
 <script>
-    function duplicate(event, productid){
-        var parent=$(event.target).parent();
-        ref=parent.find('.ref').val();
-        mark=parent.find('.mark').val();
-        minstock=parent.find('.minstock').val();
-        if (ref=='' || mark==''){
-          alertify.error('Veuillez remplir tous les champs');
-          return;
-        }
-        $.get('/products/duplicate', {'productid':productid, 'ref':ref, 'mark':mark, 'minstock':minstock}, function(data){
-          if(data.success){
-            alertify.success('Produit dupliqué');
-            parent.find('.ref').val('');
-            parent.find('.mark').val('');
-            parent.find('.minstock').val('');
-          }else{
-            alertify.error(data.message);
-          }
-        })
-      }
-      
-    function replaceproduct(){
-        productid=$('.refreplace').val().split('§')[5]
-        if (productid==null){
-            alertify.error('No product selected')
-            return
-        }
-        alertify.prompt( 'Confirmer', 'Mot de pass', '****', function(evt, value) { 
-          if (value=='ORGHAD'){
-            $.get('/products/replaceproduct', {'replacewith':productid, 'producttoreplace':'{{product.id}}', 'target':'{{target}}'}, (data)=>{
-                // close the current window
-                if (data.success){
-                  alertify.success('Produit remplacé')
-                    window.close()
-                }else{
-                    alertify.error(data.message)
-                }
 
-                //ajaxpage('addpdct2', 'Produit zzg', '/products/viewoneproduct/'+productid+'?target={{target}}')
-            })
-          }else{
-            alertify.error('Mot de passe')
-          } }
-          , function() { alertify.error('Cancel') 
-
-        });
-        
-    }
-    $('.refreplace').select2({
-
-
-        ajax: {
-        type:'get',
-        dataType: 'json',
-        url: '/products/searchproduct?target={{target}}',
-        data: function (params) {
-            var query = {
-            term: params.term,
-            }
-            // Query parameters will be ?search=[term]&type=public
-            return query;
-        },
-        proccessresults: function (data) {
-            return {
-                results:data.results
-            }
-        },
-        cache:true
-        },
-        minimumInputLength: 2,
-        placeholder:'Chercher Produits',
-        templateResult: formatRepo,
-        templateSelection: formatRepoSelection,
-        });
-        function formatRepo (repo) {
-        if (repo.loading) {
-            return repo.text;
-        }
-
-        console.log('>>> repo', repo)
-        var $container = $(
-            `<strong>${repo.text}</strong> `
-            );
-
-
-            return $container;
-        }
-
-        function formatRepoSelection (repo) {
-        return repo.text;
-        }
 
     function updateproductdata(event, id){
         event.preventDefault()
@@ -966,7 +738,6 @@
         ref.removeClass('border-danger')
         var formData = new FormData($(`#updatepdct${id}`)[0]);
         formData.append('stock', `stocktotal${id}`);
-        formData.append('target', '{{target}}');
         console.log(formData)
         $.ajax({
             type: 'POST',
@@ -976,10 +747,10 @@
             contentType: false,
             success:((data)=>{
                 if(data.success){
-                    window.close()
-                    alertify.success('Modifier');
+                    alertify.success('Modifier dans le server');
 
-                    ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
+                    deletetab('addpdct{{product.id}}')
+                    createtab('addpducts', 'Articles', '/products/stock')
                 }else{
                     alertify.error(data.error)
                 }
@@ -989,4 +760,4 @@
     }
 
 </script>
-</body>
+{% endblock %}

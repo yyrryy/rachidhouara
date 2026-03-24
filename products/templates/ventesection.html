@@ -96,7 +96,7 @@
     margin-bottom: 9px;" placeholder="TRODO" onchange="window.open(`https://www.trodo.fr/catalogsearch/result?q=${$(this).val()}&searchby=name`, '_blank')">
     </div>
     <div>
-      <select name="yearsbl" onchange="yeardatabl()" hidden class="populateyears disabled" hidden>
+      <select name="yearsbl" onchange="yeardatabl()" class="populateyears">
 
       </select>
     </div>
@@ -241,7 +241,7 @@
             </td>
             <td class="d-flex">
               <button class="btn btn-sm btn-info" onclick="makedelivered('{{order.id}}', event)"></button>
-              <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}', '{{target}}')"></button>
+              <button class="btn btn-sm bi bi-download" onclick="printlivraison('{{order.id}}')"></button>
             </td>
           </tr>
         {% endfor %}
@@ -308,6 +308,32 @@
     $('.itemsforlistblresult > tr').not($el).hide();
     //$btns.removeClass('active');
     //$(this).addClass('active');
+  }
+  function getitemsforlistbl(event){
+    let term=$('.searchitemsforlistbl').val()
+    if (term.length>=2){
+      $('.itemsforlistblresult').html('<tr><td>searching....</td></tr>')
+      $.get('/products/getitemsforlistbl', {'term':term}, (data)=>{
+        console.log(data)
+        $('.brands').html('')
+        $('.categoriesfilter').html('')
+        for (i of data.brands){
+          $('.brands').append(`
+            <img class="tag-badge tag-badge--hot" id='${i.id}' onclick="filtersearch(event)" src='${i.image}'>
+          `)
+        }
+        for (i of data.categories){
+          $('.categoriesfilter').append(`
+            <div class="tag-badge tag-badge--hot" id='cat${i.id}' onclick="filtercategories(event)" style="font-size:15px;">${i.name}</div>
+          `)
+        }
+        $('.itemsforlistblresult').html(data.trs)
+      })
+    }else{
+      $('.itemsforlistblresult').html('<tr><td>....</td></tr>')
+    }
+
+
   }
   function makedelivered(orderid, event){
     $.get('/products/makebondelivered', {'id': orderid}, (data)=>{

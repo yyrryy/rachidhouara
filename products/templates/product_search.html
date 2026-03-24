@@ -1,33 +1,69 @@
 {% for i in products %}
-                <!--
-                -->
-                <!-- style="background:{% if not i.isactive %}#f3d6d694;{% endif %}" -->
-                <tr 
-                ondblclick="openwindow('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}?target={{target}}')"
-                data-product-id="{{ i.id }}" class="product-row productscategorycat{{i.category.id}}">
+
+<tr ondblclick="createtab('addpdct{{i.id}}', 'Produit {{i.ref}}', '/products/viewoneproduct/{{i.id}}')"
+                style="background:{% if not i.isactive %}#f3d6d694;{% endif %}" {{loadmore}} {% if loadmore %}class="product-row"{% endif %}>
                     <td style="padding: 5px; font-weight: bold;" class="pe-2">
-                        <img src="{% if i.image %}{{i.image.url}}{% endif %}" style="width: 55%;" alt="">
+                        {{i.ref.upper}}
                     </td>
                     <td style="padding: 5px; font-weight: bold;">
-                      {{i.ref.upper}}
+                        {{i.name}}
+                    </td>
+
+                    <td style="padding: 5px; font-weight: bold;" class="text-center prachat">
+                       {% if i.buyprice %} -- {% else %} 0 {% endif %}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center">
+                       {% if i.sellprice %} {{i.sellprice|floatformat:2}} {% else %} 0 {% endif %}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center">
+                        {{i.remise}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center">
+                        {{i.prixnet|floatformat:2}}
+                    </td>
+                    <td {% if facture %}hidden{% endif %} style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
+                        {{i.stocktotal}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-center stockfacture" style="color: blue;">
+                      <span class="stockfacture {% if not facture %}invisible{% endif %}">
+                        <!-- {{i.stockfacture}} -->
+                        {% if facturesection %}{{i.stocktotal}}{% else %}{{i.stockfacture}}{% endif %}
+                      </span>
+                  </td>
+
+                    <td style="padding: 5px; font-weight: bold;">
+                      {{i.diametre}}
+                  </td>
+                    <td style="padding: 5px; font-weight: bold;" class="text-success">
+                      {{i.block}}
                   </td>
                   <td style="padding: 5px; font-weight: bold;">
-                    {{i.name.upper}} <br>
-                    diametre: {{i.diametre}} <br>
-                    block: {{i.block}}
+                    {{i.coderef}}
+                  </td>
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                    {%if i.coutmoyen%}{{i.coutmoyen}}{%endif%}
+
                 </td>
-                <td style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
-                  {{i.stocktotalfarah}} ({{i.frsellprice}}DH)
-              </td>
-                <td style="padding: 5px; font-weight: bold;" class="text-center text-danger stock">
-                  {{i.stocktotalorgh}} ({{i.sellprice}}DH)
-              </td>
-                
-                    
-                    
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.0}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.1}}
+                    </td>
+                    <td style="padding: 5px; font-weight: bold;">
+                        {{i.getequivalent.2}}
+                    </td>
                     <td style="padding: 5px; font-weight: bold;">
                       {{i.mark.name}}
                   </td>
-                  
+                  <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                    {{i.code}}
+                </td>
+                <td style="padding: 5px; font-weight: bold;" class="text-danger">
+                  <span class="percentage invisible">
+                    {{i.getpercentage|floatformat:2}}
+                  </span>
+                </td>
                 </tr>
-              {% endfor %}
+
+{% endfor %}

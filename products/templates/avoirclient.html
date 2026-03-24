@@ -24,21 +24,26 @@
 <div class="text-white rounded h3 d-flex align-items-center justify-content-between bg-darkblue">
   <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="deletetab()">x</button>
   <div>
-    {{title}} {{target}}
+    {{title}}
   </div>
   <button class="btn bg-orange" style="border:1px solid var(--orange);" onclick="forceupdatetab()">↻</button>
 </div>
   <div class="">
          <div class="bg-white rounded shadow p-2 mb-3 dataavoircl d-flex justify-content-between">
             <div class="col-5">
-              <div class="mb-2" hidden>
+              <div class="mb-2">
+                <small>Mode</small>
                 <select name="mode" id="" style="width:100%;" class="form-select notemptylivraison modeselectav">
                   <option value="bl">BL</option>
                   <option value="facture">Facture</option>
                 </select>
               </div>
-                
-                <div hidden class="mb-2">
+                <div class="mb-2">
+                    <select name="client" id="" style="width:100%;" class="select2 clientselectavoir form-select notemptylivraison">
+
+                    </select>
+                </div>
+                <div class="mb-2">
 
                     <select name="representant" id="" style="width:100%;" class="select2 repsavclselects form-select notemptylivraison">
                         <option value="">Representant</option>
@@ -47,16 +52,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="row">
-                  <div class="mb-2 col-6">
+                <div class="mb-2">
                     <input type="date" class="form-control datebon" name="datebon" placeholder="Date bon">
-                </div>
-                  <div class="mb-2 col-6">
-                    <select name="client" id="" style="width:100%;" class="select2 clientselectavoir form-select notemptylivraison">
-
-                    </select>
-                </div>
-                  
                 </div>
                 <!--<div class="mb-2">
                     <input type="text" class="form-control orderno" name="orderno" value="{{receipt_no}}">
@@ -74,13 +71,14 @@
               <div class="col-3">
                 <input type="number" class="form-control" placeholder="Quantité" name="addqty">
                 <div class="addstock text-danger"></div>
+                <div class="addsource text-danger"></div>
               </div>
               <div class="col-3">
-                <input readonly type="number" class="form-control" placeholder="Prix" name="addprice">
+                <input type="number" class="form-control" placeholder="Prix" name="addprice">
                 <div class="addclientprice text-danger"></div>
               </div>
               <div class="col-3">
-                <input type="number" class="form-control" placeholder="Remise" name="addremise" value="0">
+                <input type="number" class="form-control" placeholder="Remise" name="addremise">
               </div>
               <div class="col-3">
                 <button class="btn" onclick="addrowavoircli(event)" style="border: 4px solid;
@@ -90,14 +88,9 @@
                 text-align: center;
                 background: #00800024;">Valider</button>
               </div>
-              <div class="col-12 tabeldata" style="height: 11em;
-              overflow: scroll;">
-                
-              </div>
               <div class="col-12">
                 <input hidden readonly type="text" name="addname" class="form-control">
               </div>
-              <input type="text" hidden name="addbonid">
 
             </div>
 
@@ -129,9 +122,9 @@
                   <tr>
                       <td style="padding: 2px 0; font-size: 13px; width: 9%;">REF</td>
                       <td style="padding: 2px 0; font-size: 13px;">Article</td>
-                      <!-- <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr.</td> -->
-                      <!-- <td style="padding: 2px 0; font-size: 13px;">Stock</td> -->
-                      <!-- <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td> -->
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Source</td>
+                      <td style="padding: 2px 0; font-size: 13px;">Stock</td>
+                      <td style="padding: 2px 0; font-size: 13px; width: 9%;">Dernier Pr. cli</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Quantité</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 6%;" >Prix unit.</td>
                       <td style="padding: 2px 0; font-size: 13px;width: 3%;" >Remise</td>
@@ -160,91 +153,17 @@
             </table>
             <div class="d-flex justify-content-between">
                 <button class="btn btn-success submitavcl" style="border-radius: 10px;">
-                  Valider
-                </button>
-                <button class="btn btn-danger" onclick="annulerbon('avoircl{{target}}', '/products/listavoirclient?target={{target}}')">
-                  Annuler
+                      Valider
                 </button>
                 <b class="totalbon text-danger">
                   0.00
                 </b>
             </div>
           </div>
-          <div>
-            <b>
-              Reglements
-            </b>
-            <br>
-            <div class="reglementbonsholder border position-relative">
-
-              <div class="inputsholder">
-                  <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button>
-                  <strong class="totalreglblfields">0.00</strong>
-                      <div class="d-flex align-items-center justify-content-between">
-                            <div class="">
-                                <small>Mantant:</small> <br>
-
-                            </div>
-                            <div class="">
-                                <small>N° piece:</small> <br>
-
-                            </div>
-                            <div class="">
-                                <small>Mode Paiment:</small> <br>
-
-                            </div>
-                            <div class="">
-                              <small>Echeance:</small> <br>
-
-                          </div>
-                          <div class="">
-                            <small>Bank:</small> <br>
-
-                        </div>
-                        </div>
-                      <div class="reglements">
-                        <div class="d-flex justify-content-between align-items-center mt-2"><div class=""> <input type="number" name="mantantreglementclient" onkeyup="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant"></div><div class=""> <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece"></div><div class=""> <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)"><option value="cheque">Cheque</option><option value="effet">effet</option><option value="espece">espece</option><option value="avoir">avoir</option></select></div><div> <input type="date" name="echeance" class="w-100 notempty" value="${currentDate}"></div><div class="d-flex"><div><input type="text" name="bank" class="w-100" placeholder="Nom bank"></div>
-                        </div></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
       </div>
   </div>
 
   <script>
-    readingqrcode=false
-
-    $(document).ready(function(){
-      // get products from localstorage
-      // pdcts=JSON.parse(localStorage.getItem('avoircl{{target}}')) || []
-      // total=localStorage.getItem('totalavoircl{{target}}') || 0
-      // parentdiv=$('.bonlivraisonbody')
-      // for (let i=0; i<pdcts.length; i++){
-      //   item=pdcts[i]
-      //   // <td style="paddingpx 0; font-size: 13px;" class="dp">${item.dp}</td>
-      //   // <td style="padding: 2px 0; font-size: 13px;" class="stock">${item.stock}</td>
-      //   // <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${item.clientprice}</td>
-      //   let tr = `
-      //   <tr class="itemrow ${item.stock<=0? "text-danger":"" }" id=${item.id}>
-      //       <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="removelinebl(event, ${item.id})">${item.ref}</td>
-      //       <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${item.name}</td>
-      //       <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonlivraison', ${item.id})" name="qty" value="${item.qty}" style="height:23px; width:100%;"></td>
-      //       <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event); updateinlocalstorage(event, 'bonlivraison', ${item.id})" name="price" value="${item.price}" step=0.01 style="height:23px; width:100%;"></td>
-      //       <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${item.remise}" class="calculate remise" onkeyup="calculate(event); updateinlocalstorage(event, 'bonlivraison', ${item.id})" name="remise" style="height:23px; width:100%;"></td>
-      //       <td style="padding: 2px 0; font-size: 13px;" class="netprice">${item.netprice}</td>
-      //       <td style="padding: 2px 0; font-size: 13px;" class="total">${item.total}</td>
-      //       <input type="hidden" name="productid" value="${item.id}">
-
-      //   </tr>
-      //   `
-      //   parentdiv.prepend(tr)
-      // }
-      // $('.totalbon').text(total)
-      
-      console.log(pdcts)
-
-    })
     $(function(){
       $('.avoirclproducts').select2({
         minimumInputLength: 1,
@@ -252,7 +171,7 @@
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproduct?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -272,7 +191,7 @@
         minimumInputLength:1,
         placeholder: 'Select un client',
         ajax: {
-          url: "/products/searchclient?target={{target}}",
+          url: "{% url 'products:searchclient' %}",
           type: 'GET',
           dataType: 'json',
           data: function (params) {
@@ -298,26 +217,27 @@
         // $('.avoirclproducts ').val('').trigger('change')
         // ids of products in bon stored in localstorage
         let bonachatbody = parentdiv.find('.bonlivraisonbody')
+        let addsource = parentdiv.find('.addsource')
         let addname=parentdiv.find('[name="addname"]')
         let addqty=parentdiv.find('[name="addqty"]')
         let addprice=parentdiv.find('[name="addprice"]')
-        let addbonid=parentdiv.find('[name="addbonid"]')
         let addremise=parentdiv.find('[name="addremise"]')
         let priceclient=parentdiv.find('.addclientprice ').text()
         // >>> in avoir it's ok if empty
-        if (addqty.val()=='' || addprice.val()=='' || addremise.val()=='' || addqty.val()==0 || addprice.val()==0){
+        if (addqty.val()=='' || addprice.val()=='' || addremise.val()==''){
           alertify.error('Veuillez remplir tous les champs')
           return
         }
         var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = addname.attr('data').split('§');
         console.log(ref, name, dp, stock, id, sellprice, remise, netprice, representprice)
-        pdcts=JSON.parse(localStorage.getItem('pdctsinavoircl{{target}}')) || []
+        pdcts=JSON.parse(localStorage.getItem('pdctsinavoircl')) || []
         console.log(id, pdcts, pdcts.includes(id))
         if (pdcts.includes(id)){
           addqty.val('')
           addname.val('')
           addremise.val('')
           addprice.val('')
+          addsource.text('')
           alertify.error('Ce produit est deja dans le bon')
           $('.avoirclproducts ').select2('open')
 
@@ -325,7 +245,7 @@
         }
 
         pdcts.push(id)
-        localStorage.setItem('pdctsinavoircl{{target}}', JSON.stringify(pdcts))
+        localStorage.setItem('pdctsinavoircl', JSON.stringify(pdcts))
         if (addremise.val()==""){
           remise=0
         }
@@ -334,52 +254,36 @@
         }
         let net=(parseFloat(addprice.val())-(parseFloat(addprice.val())*parseFloat(remise)/100))
         let addtotal=(parseFloat(addqty.val())*parseFloat(net)).toFixed(2)
-        // <td style="paddingpx 0; font-size: 13px;">${dp}</td>
-        // <td style="padding: 2px 0; font-size: 13px;">${stock}</td>
         let tr = `
         <tr class="itemrow ${stock<=0? "text-danger":"" }">: 2
             <td style="padding: 2px 0; font-size: 13px;" class="ref" onclick="checkConsecutiveClicks(event)">${ref}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="name text-start">${name}</td>
-            
+            <td style="paddingpx 0; font-size: 13px;" class="source">${addsource.text()}</td>
+            <td style="padding: 2px 0; font-size: 13px;">${stock}</td>
+            <td style="padding: 2px 0; font-size: 13px;" class="clientprice">${priceclient}</td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate qty notemptylivraison" onkeyup="calculate(event)" name="qty" value="${addqty.val()}" style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" class="calculate price notemptylivraison" onkeyup="calculate(event)" name="price" value="${addprice.val()}" step=0.01 style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;"><input type="number" value="${addremise.val()}" class="calculate remise" onkeyup="calculate(event)" name="remise" style="height:23px; width:100%;"></td>
             <td style="padding: 2px 0; font-size: 13px;">${netprice}</td>
             <td style="padding: 2px 0; font-size: 13px;" class="total">${addtotal}</td>
             <input type="hidden" name="productid" value="${id}">
-            <input type="hidden" name="bonid" value="${addbonid.val()}">
 
         </tr>
         `
-        item={
-          'ref': ref,
-          'name': name,
-          'dp': dp,
-          'stock': stock,
-          'stockfacture': stockfacture,
-          'id': id,
-          'sellprice': sellprice,
-          'remise': remise,
-          'netprice': netprice,
-          'representprice': representprice,
-          'qty': addqty.val(),
-          'price': addprice.val(),
-          'total': addtotal,
-          'bonid':addbonid.val()
-        }
+
         bonachatbody.prepend(tr)
         // delete selected option
         addqty.val('')
         addname.val('')
         addremise.val('')
         addprice.val('')
+        addsource.text('')
         totals=parentdiv.find('.total')
         totalbon=parentdiv.find('.totalbon')
         var totalSum = 0;
         totals.each(function() {
             totalSum += parseFloat($(this).text());
         });
-        savetolocalstorage(item, totalSum, 'avoircl{{target}}')
         totalbon.text(totalSum.toFixed(2))
         $('.avoirclproducts ').select2('open')
 
@@ -441,7 +345,7 @@
         return
       }
       // get client rep
-      $.get('products/getclientrep/'+$(this).val(), function(data){
+      $.get('/products/getclientrep/'+$(this).val(), function(data){
         $('.repsavclselects').val(data.id).trigger('change')
       })
     })
@@ -487,7 +391,7 @@
     //   //   ajax: {
     //   //     type:'get',
     //   //     dataType: 'json',
-    //   //     url: '/products/searchproduct?target={{target}}',
+    //   //     url: '/products/searchproduct',
     //   //     data: function (params) {
     //   //       var query = {
     //   //         term: params.term,
@@ -506,7 +410,8 @@
 
     // })
 
-    
+    localStorage.removeItem('pdctsinavoircl')
+    localStorage.setItem('pdctsinavoircl', '[]')
     $(document).ready(function(){
       $('.clientselectavoir').select2('open')
     })
@@ -537,12 +442,14 @@
           }
           console.log($(this).val())
           var [ref, name, dp, stock, stockfacture, id, sellprice, remise, netprice, representprice] = $(this).val().split('§');
+          let addsource=parentdiv.find('.addsource')
+          console.log('>> source', addsource)
           let addname=$(this).parent().parent().find('input[name="addname"]')
           let addprice=$(this).parent().parent().find('input[name="addprice"]')
           let addremise=$(this).parent().parent().find('input[name="addremise"]')
           let addqty=$(this).parent().parent().find('input[name="addqty"]')
           console.log('qty of change',addqty)
-          //$(this).parent().parent().find('.addstock').html(`<span>Stocktotal:${stock}</span>`)
+          $(this).parent().parent().find('.addstock').html(`<span>Stocktotal:${stock}</span><br><span>StockFac:${stockfacture}</span>`)
           addqty.val('')
           addname.val(`${ref} - ${name}`).attr('data', `${ref}§${name}§${dp}§${stock}§${stockfacture}§${id}§${sellprice}§${remise}§${netprice}§${representprice}`)
           // we are getting ere list of reps that have price
@@ -554,25 +461,22 @@
               type: 'POST',
               data: {
                   'id': id,
-                  'target': '{{target}}',
                   'clientid': $('.clientselectavoir').val(),
-                  'mode':$('.modeselectav').val(),
-                  'csrfmiddlewaretoken': '{{csrf_token}}',
-                  'inavoir': true
+                  'target':$('.modeselectav').val(),
+                  'csrfmiddlewaretoken': '{{csrf_token}}'
               },
               success: function(data){
                 console.log(data.price)
-                // if (data.price==0){
+                if (data.price==0){
 
-                //   alertify.error('Prix de client n\'est pas encore défini')
-                //   addprice.val(0)
-                //   addremise.val(0)
-                // }else{
-                  
-                $('addclientprice').val(data.price)
+                  alertify.error('Prix de client n\'est pas encore défini')
+                  addprice.val(0)
+                  addremise.val(0)
+                }else{
+                  addsource.text(data.source)
+                  addprice.val(data.price)
                   addremise.val(data.remise)
-                  $('.tabeldata').html(data.table)
-                // }
+                }
               }
             })
 
@@ -582,26 +486,8 @@
       })
 
       $('.submitavcl').on('click', (e)=>{
-        if (parseFloat($('.totalreglblfields').text())>0 && parseFloat($('.totalreglblfields').text())!=parseFloat($('.totalbon').text())){
-          alertify.error('Total payement doit etre egale au total bon')
-          return
-        }
-        var isAnyEmpty = $('.reglnotempty').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
-            if (isAnyEmpty){
-              console.log('empties found')
-                let emptyInputs = $('.reglnotempty').filter(function() {
-                    return !this.value.trim();
-                });
-
-                // Add a red border to all empty input elements
-                alertify.error('Veuillez remplir tous les champs obligatoires')
-                emptyInputs.css('border', '1px solid red');
-                $('notempty').not(emptyInputs).css('border', '');
-                $(this).attr('disabled', false)
-                return 
-            }
         parentdiv=$(e.target).parent().parent().parent().parent()
-        if (parentdiv.find('.clientselectavoir').val()==null || parentdiv.find('.datebon').val()=='' ){
+        if (parentdiv.find('.clientselectavoir').val()=='' || parentdiv.find('.modeselectav').val()=='' || parentdiv.find('.repsavclselects').val()==''){
             $('.dataavoircl').addClass('border border-danger')
             console.log('clientselectavoir', parentdiv.find('.clientselectavoir').val(), 'modeselectav', parentdiv.find('.modeselectav').val(), 'repsavclselects', parentdiv.find('.repsavclselects').val())
             return
@@ -613,20 +499,20 @@
             return
         }
         parentdiv.find('.tableholder').removeClass('border border-danger')
-          // var isAnyEmpty = parentdiv.find('.notemptylivraison').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
-          //   if (isAnyEmpty){
-          //       let emptyInputs = parentdiv.find('notemptylivraison').filter(function() {
-          //           return !this.value.trim();
-          //       });
+          var isAnyEmpty = parentdiv.find('.notemptylivraison').filter(function() { return $(this).val() == '' || $(this).val()==0; }).length > 0;
+            if (isAnyEmpty){
+                let emptyInputs = parentdiv.find('notemptylivraison').filter(function() {
+                    return !this.value.trim();
+                });
 
-          //       // Add a red border to all empty input elements
-          //       alertify.error('Veuillez remplir tous les champs obligatoires')
-          //       emptyInputs.css('border', '1px solid red');
-          //       parentdiv.find('input.notemptylivraison').not(emptyInputs).css('border', '');
-          //       $(this).attr('disabled', false)
-          //       return
-          //   }
-          localStorage.removeItem('pdctsinavoircl{{target}}')
+                // Add a red border to all empty input elements
+                alertify.error('Veuillez remplir tous les champs obligatoires')
+                emptyInputs.css('border', '1px solid red');
+                parentdiv.find('input.notemptylivraison').not(emptyInputs).css('border', '');
+                $(this).attr('disabled', false)
+                return
+            }
+          localStorage.removeItem('pdctsinavoircl')
           parentdiv.find('.submitavcl').addClass('disabled')
           trs=parentdiv.find('.bonlivraisonbody tr')
           let products = []
@@ -635,21 +521,21 @@
               let qty = tr.find('.qty').val()
               let name = tr.find('.name').text()
               let ref = tr.find('.ref').text()
+              let source = tr.find('.source').text()
               let price = tr.find('.price').val()
               let remise = tr.find('.remise').val()
               let total = tr.find('.total').text()
               let clientprice= tr.find('.clientprice').text()
               let productid = tr.find('input[name="productid"]').val()
-              let bonid = tr.find('input[name="bonid"]').val()
               let product = {
                   'qty': qty,
                   'name': name,
                   'ref': ref,
+                  'source': source,
                   'price': price,
                   'remise': remise,
                   'total': total,
                   'productid': productid,
-                  'bonid': bonid,
                   'clientprice':clientprice
               }
               products.push(product)
@@ -661,24 +547,10 @@
           let transport = parentdiv.find('.transport').val()
           let orderno = parentdiv.find('.orderno').val()
           let totalbon=parseFloat(parentdiv.find('.totalbon').text())
-          mantant=parentdiv.find('[name="mantantreglementclient"]').map(function() {
-              return parseFloat(this.value);
-          }).get();
-          mode=parentdiv.find('[name="modereglementclient"]').map(function() {
-              return this.value;
-          }).get();
-          npiece=parentdiv.find('[name="npiece"]').map(function() {
-              return this.value;
-          }).get();
-          bank=parentdiv.find('[name="bank"]').map(function() {
-              return this.value;
-          }).get();
-          echeance=parentdiv.find('[name="echeance"]').map(function() {
-              return this.value;
-          }).get();
           console.log(products)
           console.log(totalbon)
           console.log('sending')
+          localStorage.setItem('pdctsinbonlivraison', '[]')
           data={
               'totalbon': totalbon,
               'clientid': clientid,
@@ -690,57 +562,26 @@
               'products': JSON.stringify(products),
               'csrfmiddlewaretoken': '{{csrf_token}}'
           },
-          console.log(data)
-          console.log(products)
           $('.loadingscreen').removeClass('d-none')
-          console.log({
-                'mantant':JSON.stringify(mantant),
-                'mode':JSON.stringify(mode),
-                'npiece':JSON.stringify(npiece),
-                'echeance':JSON.stringify(echeance),
-                'bank':JSON.stringify(bank),
-                'target': '{{target}}',
-                'totalbon': totalbon,
-                'clientid': clientid,
-                'repid':repid,
-                'transport':transport,
-                'datebon': datebon,
-                // 'mode': mode,
-                'orderno': orderno,
-                'products': JSON.stringify(products),
-                'csrfmiddlewaretoken': '{{csrf_token}}'
-              })
           $.ajax({
               url: "{% url 'products:addavoirclient' %}",
               type: 'POST',
               data:{
-                'mantant':JSON.stringify(mantant),
-                'mode':JSON.stringify(mode),
-                'npiece':JSON.stringify(npiece),
-                'echeance':JSON.stringify(echeance),
-                'bank':JSON.stringify(bank),
-                'target': '{{target}}',
                 'totalbon': totalbon,
                 'clientid': clientid,
                 'repid':repid,
                 'transport':transport,
                 'datebon': datebon,
-                // 'mode': mode,
+                'mode': mode,
                 'orderno': orderno,
                 'products': JSON.stringify(products),
                 'csrfmiddlewaretoken': '{{csrf_token}}'
               },
               success: function(data){
                 $('.loadingscreen').addClass('d-none')
-                if (data.success){
-                  localStorage.removeItem('avoircl{{target}}')
-                  localStorage.removeItem('pdctsinavoircl{{target}}')
-                  localStorage.removeItem('totalavoircl{{target}}')
                   alertify.success('Bon avoir creé')
-                  ajaxpage('avoircl', 'AvoirCL', '/products/listavoirclient?target={{target}}')
-                }else{
-                  alertify.error(data.error)
-                }
+                  deletetab('addavoir')
+                  createtab('avoircl', 'AvoirCL', '/products/listavoirclient')
                   // remove list in localstorage
                   // $('#addavoir').html('')
                   // $('#addavoir').html(data.html)

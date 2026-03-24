@@ -70,13 +70,12 @@
               </div>
               {% endif %}
             <div class="mb-2">
-              <!-- if devi means we are generatingn devi not command -->
-              <small>Client Bon {%if devi%}Devi{%else%}commande{%endif%}: {{order.client.name}}{{command.client.name}}</small> <br>
+              <small>Client Bon commande: {{order.client.name}}</small> <br>
               <select name="clientsgenlivraison{{order.id}}" id="" style="width:100%;" class="clientsgenlivraison{{order.id}}">
 
               </select>
             </div>
-            <div class="mb-2" hidden>
+            <div class="mb-2">
               <small>Representant Bon commande: {{order.salseman.name}}</small> <br>
               <select name="repgenlivraison{{order.id}}" class="select2" style="width: 100%;">
                 <option value="{{order.salseman.id}}">{{order.salseman.name}}</option>
@@ -94,8 +93,7 @@
                 <!--<div class="mb-2">
                     <input type="text" class="form-control orderno" name="ordernono" value="{{receipt_no}}">
                 </div>-->
-                <input class="devid" type="text" hidden readonly value="{{order.id}}">
-                <input class="cmndid" type="text" hidden readonly value="{{command.id}}">
+                <input class="orderid" type="text" hidden readonly value="{{order.id}}">
                 <div class="mb-2">
                   <small>Transport</small>
                   <input type="text" class="form-control transport" placeholder="Transport">
@@ -140,6 +138,27 @@
               </div>
               <div class="col-3">
                 <button class="btn btn-secondary" onclick="addrowgenbonlivraison(event, '{{order.id}}')">Ajouter</button>
+              </div>
+              Reliquat:
+              <div style="height:8em;overflow:scroll;">
+                <table class="table table-bordered">
+                {% for i in reliquas %}
+                  <tr>
+                    <td>
+                      {{i.order.date|date:'d/m/Y'}}
+                    </td>
+                    <td>
+                      {{i.product.ref}}
+                    </td>
+                    <td>
+                      {{i.product.name}}
+                    </td>
+                    <td>
+                      {{i.qty}}
+                    </td>
+                  </tr>
+                {% endfor %}
+                </table>
               </div>
               <div class="col-12">
                 <input hidden readonly type="text" name="addname" class="form-control">
@@ -202,12 +221,12 @@
                     <tr class="itemrow {% if i.product.stocktotal < i.qty %}bg-warning{%endif%}">
                         <td class="ref" onclick="removelinegenbl(event, '{{i.product.id}}')">{{i.product.ref}}</td>
                         <td class="name">{{i.product.name}}</td>
-                        <td>{{i.product.buyprice}}</td>
+                        <td>--</td>
                         <td>{{i.product.stocktotal}}</td>
                         <!-- <td>{{i.product.sellprice}}</td> -->
                         <td><input type="number" class="calculate qty " onkeyup="calculate(event)" name="qty" value="{{i.qty}}"></td>
                         <td><input type="number" class="calculate price " onkeyup="calculate(event)" name="price" value="{{i.price}}"></td>
-                        <td><input type="number" class="calculate remise " onkeyup="calculate(event)" name="remise" value="{{i.remise}}"></td>
+                        <td><input type="number" class="calculate remise " onkeyup="calculate(event)" name="remise" value="0"></td>
                         <td class="total">{{i.total}}</td>
                         <input type="hidden" name="productid" value="{{i.product.id}}">
                     </tr>
@@ -220,57 +239,10 @@
                       Valider
                 </button>
                 <b class="totalbon totalgenbl{{order.id}} text-danger">
-                  {{order.total}}{{command.total}}
+                  {{order.total}}
                 </b>
             </div>
           </div>
-          <div class="reglementbonsholder mt-3 border position-relative">
-
-            <div class="inputsholder">
-                <!-- <button style="background: #f06623;" class="btn btn-sm text-white" onclick="addfieldsreglement(event)">+</button> -->
-                <!-- <strong class="totalreglblfields">0.00</strong> -->
-                    <div class="row align-items-center">
-                          <div class="col-3">
-                              <small>Mantant:</small> <br>
-
-                          </div>
-                          <div class="col-3">
-                              <small>N° piece:</small> <br>
-
-                          </div>
-                          <div class="col-3">
-                              <small>Mode Paiment:</small> <br>
-
-                          </div>
-                          <div class="col-3">
-                              <small>Echeance:</small> <br>
-
-                          </div>
-                      </div>
-                    <div class="reglements">
-                        <div class="row align-items-center mt-2">
-                            <div class="col-3">
-                                <input type="number" name="mantantreglementclient" oninput="totalreglementbl(event)" class="w-100 notempty" placeholder="Mantant">
-                            </div>
-                            <div class="col-3">
-                                <input type="text" name="npiece" class="w-100 notempty" placeholder="N° piece">
-                            </div>
-                            <div class="col-3">
-                                <select name="modereglementclient" class="w-100 notempty" onchange="checkmodereglement(event)">
-                                    <option value="cheque">Cheque</option>
-                                    <option value="effet">effet</option>
-                                    <option value="espece">espece</option>
-                                    <option value="verement">verement</option>
-                                    <option value="versement">versement</option>
-                                </select>
-                            </div>
-                            <div class="col-3">
-                                <input type="date" name="echeance" class="w-100 notempty echeancereglbl" value="{{today|date:'Y-m-d'}}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
       </div>
   </div>
   {% endif %}
@@ -281,7 +253,7 @@
         minimumInputLength:1,
         placeholder: 'Select un client',
         ajax: {
-          url: '/products/searchclient?target={{target}}',
+          url: "{% url 'products:searchclient' %}",
           type: 'GET',
           dataType: 'json',
           data: function (params) {
@@ -303,7 +275,7 @@
         ajax: {
           type:'get',
           dataType: 'json',
-          url: '/products/searchproduct?target={{target}}',
+          url: '/products/searchproduct',
           data: function (params) {
             var query = {
               term: params.term,
@@ -417,7 +389,7 @@
     //     ajax: {
     //       type:'get',
     //       dataType: 'json',
-    //       url: '/products/searchproduct?target={{target}}',
+    //       url: '/products/searchproduct',
     //       data: function (params) {
     //         var query = {
     //           term: params.term,
@@ -576,11 +548,11 @@
 
     $('.submitgen{{order.id}}').on('click', (e)=>{
         parentdiv=$(e.target).parent().parent().parent().parent()
-        // if (parentdiv.find('[name="repgenlivraison{{order.id}}"]').val()==''){
-        //     parentdiv.find('.data').addClass('border border-danger')
-        //     return
-        // }
-        // parentdiv.find('.data').removeClass('border border-danger')
+        if (parentdiv.find('[name="repgenlivraison{{order.id}}"]').val()==''){
+            parentdiv.find('.data').addClass('border border-danger')
+            return
+        }
+        parentdiv.find('.data').removeClass('border border-danger')
         // check if .itemrow is exist
         // if (parentdiv.find('.itemrow').length==0){
         //     parentdiv.find('.tableholder').addClass('border border-danger')
@@ -624,16 +596,11 @@
               }
               products.push(product)
           })
-          let clientid = parentdiv.find('[name="clientsgenlivraison{{order.id}}"]').val()?parentdiv.find('[name="clientsgenlivraison{{order.id}}"]').val():'{{order.client.id}}{{command.client.id}}'
+          let clientid = parentdiv.find('[name="clientsgenlivraison{{order.id}}"]').val()?parentdiv.find('[name="clientsgenlivraison{{order.id}}"]').val():'{{order.client.id}}'
           let repid = parentdiv.find('[name="repgenlivraison{{order.id}}"]').val()
           let datebon = parentdiv.find('.datebon').val()
           let transport = parentdiv.find('.transport').val()
-          let devid = parentdiv.find('.devid').val()
-          mantant=$('[name="mantantreglementclient"]').val()
-          mode=$('[name="modereglementclient"]').val()
-          npiece=$('[name="npiece"]').val()
-          echeance=$('[name="echeance"]').val()
-          let cmndid = parentdiv.find('.cmndid').val()
+          let orderid = parentdiv.find('.orderid').val()
           let orderno = parentdiv.find('.orderno').val()
           let totalbon=parseFloat(parentdiv.find('.totalbon').text())
           console.log(products)
@@ -645,18 +612,12 @@
               url: "{% url 'products:addbonlivraison' %}",
               type: 'POST',
               data: {
-                  'target':'{{target}}',
                   'totalbon': totalbon,
                   'clientid': clientid,
+                  'orderid': orderid,
                   'repid':repid,
                   'transport':transport,
                   'datebon': datebon,
-                  'devid': devid,
-                  'mantant': mantant,
-                  'mode': mode,
-                  'npiece': npiece,
-                  'echeance': echeance,
-                  'cmndid': cmndid,
                   'orderno': orderno,
                   'products': JSON.stringify(products),
                   'csrfmiddlewaretoken': '{{csrf_token}}'
@@ -667,7 +628,7 @@
                   $(e.target).addClass('disabled')
                   localStorage.removeItem('pdctsingenbonlivraison{{order.id}}')
                   deletetab('addgenererbonlivraison{{order.id}}')
-                  ajaxpage('addlistbonlivraison', 'list bl', '/products/listbonlivraison?target={{target}}')
+                  createtab('addlistbonlivraison', 'list bl', '/products/listbonlivraison')
                   // $('#addbonlivraison').html('')
                   // $('#addbonlivraison').html(data.html)
                   // $('.select2').select2()

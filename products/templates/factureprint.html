@@ -36,89 +36,73 @@
 </head>
 <body>
 
-<div id="printfc{{facture.id}}" class="px-2" style="position:relative;">
+<div id="printfc{{facture.id}}" style="position:relative;">
   {% for i in orderitems %}
   {% if forloop.counter == orderitems|length %}
   <!-- last iteration -->
-  <div class="postion-relative facture{{facture.id}}holder p-3" style="min-height: 29.7cm;width: 21cm; border:1px solid;">
+  <div class="postion-relative px-5 facture{{facture.id}}holder p-3" style="min-height: 29.7cm;width: 21cm; border:1px solid;">
 
 
     <!-- facture header -->
-    <div class="">
-      {% if not isfarah %}
-      <img src="/media/factureheader.jpg" style="width: 100%;" alt="" class="factureheader">
-      {% endif %}
-      <div class="d-flex justify-content-between">
-        <div style="border: 1px solid; padding: 5px; border-radius: 10px;">
-          Date: <strong>{{facture.date|date:"d/m/Y"}}</strong><br>
-          Facture N°:<strong>{{facture.facture_no}}</strong><br>
-        
-          page: {{forloop.counter}}/{{orderitems|length}}<br>
-        
-      </div>
-        <div style="width: 60%; border: 1px solid; padding: 5px; border-radius: 10px;">
-        
-          Code: <strong>
-            {{facture.client.code}}
-          </strong>
-          
-          <br>
-          Client: 
-          <strong>{{facture.client.name.upper}}</strong><br>
-          ICE: <strong>
-             {% if facture.client.ice %}{{facture.client.ice}} {% endif %}
-          </strong><br>
-          Address: <strong>{{client.address}} {{facture.client.city}}</strong><br>
-          Note: <strong>{{facture.note.upper}}</strong>
-      </div>
-      
-      </div>
-        <div class="d-flex justify-content-between">
-          
-          
-        </div>
+    <div class="d-flex justify-content-between">
+      <div>
+        <img src="{% if setting.logoheadfacture%}{{setting.logoheadfacture.url}}{%endif%}" alt="" class="factureheader">
+        <hr>
+        <table>
+          <tr>
+            <td>Date</td>
+            <td ><strong>{{facture.date|date:"d/m/Y"}}</strong></td>
+          </tr>
+          <tr>
+            <td>Facture N°</td>
+            <td ><strong>{{facture.facture_no}}</strong></td>
+          </tr>
+          <tr>
+            <td>Mode de paiement</td>
+            <td ><strong>{{facture.payment_method}}</strong></td>
+          </tr>
 
-
+        </table>
+      </div>
+      <div>
+        Client: <br><strong>{{facture.client.name.upper}}</strong><br>
+        <strong>{{facture.client.address.upper}}</strong><br>
+        ICE: <strong>{{facture.client.ice.upper}}</strong><br>
+      </div>
+        
     </div>
 
     <!-- facture items -->
     <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
-      {% if not isfarah %}
-      <img width="1000em" class="bgfacture" src="/media/facturebody.jpg" style="
-      position: absolute !important;
-      right: 4.3em;
-      opacity: 0.04;
-      top: 3em;
-      width: 81%;  
+      <img width="1000em" class="bgfacture" src="/media/logos/dd.png" style="
+    position: absolute !important;
+    right: 9.3em;
+    opacity: 0.08;
+    top: 5em;
     ">
-    {% endif %}
       <table class="table table-bordered fcitems" style="border-color: black;font-family: serif; font-size:13px;">
-        <thead style="background: #c9c9c9; font-size: 10px;
+        <thead style="background: #26147b;color:white; font-size: 10px;
         font-weight: 800;" class="text-center">
           <tr>
-            <td>Ref</td>
-            <td>Designation</td>
-            <td>Qté</td>
-            <td>P.U</td>
-            <td>Rem</td>
-            <td>Mantant</td>
+            <td style="width: 21%;">Ref</td>
+            <td style="width: 35%;">Designation</td>
+            <td style="width: 9%;">Qté</td>
+            <td style="width: 14%;">P.U</td>
+            <td style="width: 5%;">Rem</td>
+            <td style="width: 16%">Mantant</td>
           </tr>
         </thead>
         <tbody>
                 <tr>
-                    <td style="height: 135mm;padding-left:3px">
+                    <td style="height: 150mm;padding-left:3px">
                       {% for v in i %}
-                      {{v.product.ref.upper}}
+                      {{v.ref.upper}} {{i.id}}
                       {% if not forloop.counter == i|length %}<br>{% endif %}
                       {% endfor %}
                     </td>
                   <td style="white-space: nowrap;padding-left:3px">
                       {% for v in i %}
-                        {% if names %}
-                        {{v.product.name.upper|slice:"30"}}
-                        {% else %}
-                        {{v.product.category.name.upper}}
-                        {% endif %}
+                        {{v.name.upper|slice:"50"}}
                         {% if not forloop.counter == i|length %}<br>{% endif %}
                       {% endfor %}
                   </td>
@@ -136,7 +120,7 @@
                   </td>
                   <td class="text-center">
                     {% for v in i %}
-                    {% if v.remise %}{{v.remise}}%{% endif %}
+                    {{v.remise}}%
                     {% if not forloop.counter == i|length %}<br>{% endif %}
                     {% endfor %}
                   </td>
@@ -156,169 +140,108 @@
 
     </div>
 
-    
-      <div class="d-flex">
-        <div class="col-8">
-          Arreter la presente facture à la somme de: <br> <span class="totalfactureprint" style="font-size:9px ;"></span>
-          <div style="border:1px solid; height: 6em; width: 60%; border-radius: 6px;">
-            <span>
-              Cachet et signature
-            </span>
-          </div>
-        </div>
-        <div class="col-4">
-          <table style="border-color: black;" class="table table-bordered text-start" >
+    <div class="row">
+      <div class="col-4">
+        Taux TVA: 20%
+      </div>
+      <div class="col-4"></div>
+      <div class="col-4">
+        <table class="table table-bordered w-100">
           <tr>
-            <td>
-              <strong style="font-size: 13px" >
-                Total H.T
-              </strong>
-            </td>
-            <td>
-              <strong class="htfc{{facture.id}}" style="font-size: 13px">
-                {{ht|floatformat:2|intspace}}
-              </strong>
-            </td>
+            <td>Total HT</td>
+            <td class="htfc{{facture.id}}">{{ht|floatformat:2|intspace}}</td>
           </tr>
           <tr>
-            <td>
-              <strong style="font-size: 13px">
-                TVA
-              </strong>
-            </td>
-            <td>
-              <strong class="tvafc{{facture.id}}" style="font-size: 13px">
-                {{tva|floatformat:2|intspace}}
-              </strong>
-            </td>
+            <td>TVA</td>
+            <td class="tvafc{{facture.id}}">{{tva|floatformat:2|intspace}}</td>
           </tr>
           <tr>
-            <td>
-              <strong style="font-size: 13px">
-                Total TTC
-              </strong>
-            </td>
-            <td>
-              <strong class="ttcgc{{facture.id}}" style="font-size: 15px">
-                {{ttc|floatformat:2|intspace}}
-              </strong>
-            </td>
+            <td>Total TTC</td>
+            <td class="ttcgc{{facture.id}}">{{ttc|floatformat:2|intspace}}</td>
           </tr>
-            {% if hasespece %}
-            <tr>
-            <td>
-              <strong style="font-size: 13px">
-                Droit de timbre 0,25%
-              </strong>
-            </td>
-            <td>
-              <strong class="ttcgc{{facture.id}}" style="font-size: 15px">
-                {{dr|floatformat:2|intspace}}
-              </strong>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong style="font-size: 13px">
-                Net a payé
-              </strong>
-            </td>
-            
-            <td>
-              <strong class="ttcgc{{facture.id}}" style="font-size: 15px">
-                {{netapy|floatformat:2|intspace}}
-              </strong>
-            </td>
-          </tr>
-            {% endif %}
         </table>
-        </div>
-        
       </div>
-      {% if not isfarah %}
-      <div class="text-center" style="font-size:11px; margin-top: 5px;">
-        <strong style="font-size: 14px;">
-          Siege: Lot Dounia II N°118 Bd. Rabia OULED TEIMA Code Postal 83350 Patente: 49901722 ICE: 002394334000087 RC: 6513 CNSS: 1858196 IF: 39498717 Email: orghpieceauto@gmail.com Fix: 0528521331
-        </strong>
+    </div>
+    <div class="text-center">
+      <div style="font-size: 15px; text-align: start;">
+          Arreter la presente facture à la somme en Dirham: <br>
+        <span class="totalfactureprint" style="font-size:18px ;"></span>
       </div>
-    {% endif %}
+      <hr>
+      <div style="font-size:11px">
+        {{setting.name}}     Siege  Social : {{setting.address}}  <br>
+        RC: {{setting.rc}} IF: {{setting.idfiscal}} PATENTE: {{setting.pt}} ICE: {{setting.ice}}   <br>
+        Fix : {{setting.fix}}         GSM: {{setting.phone}}
+      </div>
+    </div>
+    <small>
+      page: {{forloop.counter}}/{{orderitems|length}}
+    </small>
   </div>
   {% else %}
-  <div class="postion-relative facture{{facture.id}}holder p-3" style="min-height: 29.7cm;width: 21cm; border:1px solid;">
+  <div class="postion-relative px-5 facture{{facture.id}}holder p-3" style="min-height: 29.7cm;width: 21cm; border:1px solid;">
 
 
-    <!-- facture header -->
-    <div class="">
-      {% if not isfarah %}
-      <img src="/media/factureheader.jpg" style="width: 100%;" alt="" class="factureheader">
-      {% endif %}
-      <div class="d-flex justify-content-between">
-        <div style="border: 1px solid; padding: 5px; border-radius: 10px;">
-          Date: <strong>{{facture.date|date:"d/m/Y"}}</strong><br>
-          Facture N°:<strong>{{facture.facture_no}}</strong><br>
-        
-          page: {{forloop.counter}}/{{orderitems|length}}<br>
-        
+     <!-- facture header -->
+    <div class="d-flex justify-content-between">
+      <div>
+        <img src="{% if setting.logoheadfacture%}{{setting.logoheadfacture.url}}{%endif%}" alt="" class="factureheader">
+        <hr>
+        <table>
+          <tr>
+            <td>Date</td>
+            <td ><strong>{{facture.date|date:"d/m/Y"}}</strong></td>
+          </tr>
+          <tr>
+            <td>Facture N°</td>
+            <td ><strong>{{facture.facture_no}}</strong></td>
+          </tr>
+          <tr>
+            <td>Mode de paiement</td>
+            <td ><strong>{{facture.payment_method}}</strong></td>
+          </tr>
+
+        </table>
       </div>
-      <div style="width: 60%; border: 1px solid; padding: 5px; border-radius: 10px;">
-        
-        Code: <strong>
-          {{facture.client.code}}
-        </strong>
-        
-        <br>
-        Client: 
-        <strong>{{facture.client.name.upper}}</strong><br>
-        ICE: <strong>
-           {% if facture.client.ice %}{{facture.client.ice}} {% endif %}
-        </strong><br>
-        Address: <strong>{{client.address}} {{facture.client.city}}</strong><br>
-        Note: <strong>{{facture.note.upper}}</strong>
-    </div>
-      
+      <div>
+        Client: <br><strong>{{facture.client.name.upper}}</strong><br>
+        <strong>{{facture.client.address.upper}}</strong><br>
+        ICE: <strong>{{facture.client.ice.upper}}</strong><br>
       </div>
-
-
+        
     </div>
 
     <!-- facture items -->
     <div class="orderitems mt-3 bg-white rounded p-2 position-relative">
-      {% if not isfarah %}
-      <img width="1000em" class="bgfacture" src="/media/facturebody.jpg" style="
-      position: absolute !important;
-      right: 4.3em;
-      opacity: 0.04;
-      top: 3em;
-      width: 81%;
+      <img width="1000em" class="bgfacture" src="/media/logos/dd.png" style="
+    position: absolute !important;
+    right: 9.3em;
+    opacity: 0.08;
+    top: 2em;
     ">
-    {% endif %}
       <table class="table table-bordered fcitems" style="border-color: black;font-family: serif; font-size:13px;">
-        <thead style="background: #c9c9c9; font-size: 10px;
+        <thead style="background: #26147b;color:white; font-size: 10px;
         font-weight: 800;" class="text-center">
           <tr>
-            <td>Ref</td>
-            <td>Designation</td>
-            <td>Qté</td>
-            <td>P.U</td>
-            <td>Rem</td>
-            <td>Mantant</td>
+            <td style="width: 21%;">Ref</td>
+            <td style="width: 35%;">Designation</td>
+            <td style="width: 9%;">Qté</td>
+            <td style="width: 14%;">P.U</td>
+            <td style="width: 5%;">Rem</td>
+            <td style="width: 16%">Mantant</td>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="height: 135mm; padding-left:3px">
+            <td style="height: 180mm; padding-left:3px">
               {% for v in i %}
-              {{v.product.ref.upper}}
+              {{v.ref.upper}}
               {% if not forloop.counter == i|length %}<br>{% endif %}
               {% endfor %}
             </td>
             <td style="white-space: nowrap; padding-left:3px">
               {% for v in i %}
-                {% if names %}
-                {{v.product.name.upper|slice:"30"}}
-                {% else %}
-                {{v.product.category.name.upper}}
-                {% endif %}
+                {{v.name.upper|slice:"50"}}
                 {% if not forloop.counter == i|length %}<br>{% endif %}
               {% endfor %}
           </td>
@@ -336,7 +259,7 @@
           </td>
           <td class="text-center">
             {% for v in i %}
-            {% if v.remise %}{{v.remise}}%{% endif %}
+            {{v.remise}}%
             {% if not forloop.counter == i|length %}<br>{% endif %}
             {% endfor %}
           </td>
@@ -353,15 +276,16 @@
     </div>
 
     <!-- facture footer -->
-    {% if not isfarah %}
-      <div class="text-center" style="font-size:11px; margin-top: 5px;">
-        <strong style="font-size: 14px;">
-          Siege: Lot Dounia II N°118 Bd. Rabia OULED TEIMA Code Postal 83350 Patente: 49901722 ICE: 002394334000087 RC: 6513 CNSS: 1858196 IF: 39498717 Email: orghpieceauto@gmail.com Fix: 0528521331
-        </strong>
-      </div>
-    {% endif %}
-    
-    
+
+    <!-- <div class="text-center" style="font-size:11px">
+
+      LOT ARGANA N° B25 - AIT MELLOUL <br>
+      IF: 15251205 - Patente: 49815086 - CNSS: 5921079 - ICE: 001667720000027 <br>
+      Fixe: +212 528 24 35 17 - Tel: 06 66 03 72 81
+    </div> -->
+    <small>
+      page: {{forloop.counter}}/{{orderitems|length}}
+    </small>
   </div>
   {% endif %}
   {% endfor %}
@@ -374,9 +298,9 @@
     function entete(){
       if ($('.factureheader').hasClass('show')) {
         $('.factureheader').removeClass('show')
-        //$('.factureheader').css('visibility', 'hidden')
+        $('.factureheader').css('visibility', 'hidden')
         $('.bgfacture').removeClass('show')
-        //$('.bgfacture').css('visibility', 'hidden')
+        $('.bgfacture').css('visibility', 'hidden')
         localStorage.setItem('showentete', false)
       }
       else{
@@ -397,9 +321,9 @@
     }
     else{
       $('.factureheader').removeClass('show')
-      //$('.factureheader').css('visibility', 'hidden')
+      $('.factureheader').css('visibility', 'hidden')
       $('.bgfacture').removeClass('show')
-      //$('.bgfacture').css('visibility', 'hidden')
+      $('.bgfacture').css('visibility', 'hidden')
     }
     function separateThousands(number) {
       console.log(number)
@@ -417,7 +341,7 @@
     /*$('.ttcgc{{facture.id}}').text(separateThousands('{{facture.total|floatformat:2|intspace}}'))
     $('.tvafc{{facture.id}}').text(separateThousands({{tva|floatformat:2|intspace}}))
     $('.htfc{{facture.id}}').text(separateThousands({{ht|floatformat:2|intspace}}))*/
-     $('.totalfactureprint').text($.spellingNumber('{{netapy|floatformat:2}}', {
+     $('.totalfactureprint').text($.spellingNumber('{{ttc|floatformat:2}}', {
       lang:'fr',
       wholesUnit:"Dirhams",
       fractionUnit:"Centimes",

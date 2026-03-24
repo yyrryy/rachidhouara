@@ -59,9 +59,13 @@
                 <input type="text" class="form-control" name="nameinadd">
             </div>
             <div class="col-2">
+                <small>Block</small>
+                <input type="text" class="form-control" name="blockinadd">
+            </div>
+            <!-- <div class="col-2">
                 <small>Quantité jeux</small>
                 <input type="number" class="form-control" name="qtyjeuinadd" required>
-            </div>
+            </div> -->
             <div class="col-2">
                 <small>Min.stock</small>
                 <input type="number" class="form-control" name="minstockinadd" required>
@@ -97,10 +101,7 @@
                 <small>Remise</small>
                 <input type="number" step="0.01" name="remiseinadd" class="form-control">
             </div>
-            <div class="col-2">
-                <small>Block</small>
-                <input type="text" class="form-control" name="blockinadd">
-            </div>
+            
             <div class="col-3">
                 <small>Unité</small>
                 <input name="unite" id="" class="form-control">
@@ -238,7 +239,8 @@
                     
                     alertify.success('Produit ajouté avec success');
                     // resetform
-                    $('.addoneproductform').trigger('reset');
+                    location.reload()
+                    //$('.addoneproductform').trigger('reset');
 
                     //ajaxpage('addpducts', 'Articles', '/products/stock?target={{target}}')
                     // we dont want to reload the page !important
