@@ -5045,10 +5045,11 @@ def excelpdcts(request):
             # buyprice=buyprice,
             # cars=cars
         )
-        if img:
-            product.image.name=img
-            product.save()
-        Stockin.objects.create(isinventaire=True, product=product, price=buyprice, quantity=qty, date=timezone.now(), total=total)
+        # if img:
+        #     product.image.name=img
+        #     product.save()
+        # stock initial is passed here
+        # Stockin.objects.create(isinventaire=True, product=product, price=buyprice, quantity=qty, date=timezone.now(), total=total)
 
     print('>>>', entries)
     return JsonResponse({
