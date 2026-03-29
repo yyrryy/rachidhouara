@@ -5000,17 +5000,17 @@ def excelpdcts(request):
         #reps=json.dumps(d.rep)
         name = d.name
         mark = None if pd.isna(d.mark) else d.mark
-        order = None if pd.isna(d.order) else d.order
-        minstock = 0 if pd.isna(d.minstock) else d.minstock
-        refeq = '' if pd.isna(d.refeq) else d.refeq
-        diam = '' if pd.isna(d.diam) else d.diam
-        qty = 0 if pd.isna(d.qty) else d.qty
-        buyprice = 0 if pd.isna(d.buyprice) else d.buyprice
-        cars = None if pd.isna(d.cars) else d.cars
-        sellprice = 0 if pd.isna(d.sellprice) else d.sellprice
+        #order = None if pd.isna(d.order) else d.order
+        #minstock = 0 if pd.isna(d.minstock) else d.minstock
+        #refeq = '' if pd.isna(d.refeq) else d.refeq
+        #diam = '' if pd.isna(d.diam) else d.diam
+        #qty = 0 if pd.isna(d.qty) else d.qty
+        #buyprice = 0 if pd.isna(d.buyprice) else d.buyprice
+        #cars = None if pd.isna(d.cars) else d.cars
+        #sellprice = 0 if pd.isna(d.sellprice) else d.sellprice
         ctg = None if pd.isna(d.ctg) else d.ctg
-        img = None if pd.isna(d.img) else d.img
-        total=qty*buyprice
+        # img = None if pd.isna(d.img) else d.img
+        # total=qty*buyprice
         #prixnet=0 if pd.isna(d.prixnet) else d.prixnet
         # try:
         #     print('entering', ref)
@@ -5029,21 +5029,21 @@ def excelpdcts(request):
         uniqcode=f'pdct{lastid+1}'
         product=Produit.objects.create(
             uniqcode=uniqcode,
-            minstock=minstock,
+            # minstock=minstock,
             ref=ref,
-            equivalent=refeq,
-            refeq1=refeq,
+            # equivalent=refeq,
+            # refeq1=refeq,
             isactive=True,
             name=name,
             mark_id=mark,
-            code=order,
-            sellprice=sellprice,
+            # code=order,
+            # sellprice=sellprice,
             category_id=ctg,
-            stocktotal=qty,
+            # stocktotal=qty,
             #stockfacture=qty,
-            diametre=diam,
-            buyprice=buyprice,
-            cars=cars
+            # diametre=diam,
+            # buyprice=buyprice,
+            # cars=cars
         )
         if img:
             product.image.name=img
