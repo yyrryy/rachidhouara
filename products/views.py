@@ -4998,7 +4998,7 @@ def excelpdcts(request):
         except:
             ref=d.ref
         #reps=json.dumps(d.rep)
-        print('==', ref)
+        print('==', ref) 
         name = d.name
         mark = None if pd.isna(d.mark) else d.mark
         # order = None if pd.isna(d.order) else d.order
