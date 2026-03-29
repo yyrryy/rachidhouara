@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Database settings
-set DATABASE_NAME=orghdata
+set DATABASE_NAME=mydb
 set USER=postgres
 set BACKUP_DIR=C:\backups
 set EXTERNAL_SSD_DRIVE=D:
