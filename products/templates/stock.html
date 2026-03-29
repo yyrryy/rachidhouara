@@ -336,8 +336,8 @@
       // Make an AJAX request to send the file data
         $('.loadingscreen').removeClass('d-none')
         $.ajax({
-          //url: '/products/excelpdcts', // to get products to databese
-          url: '/products/updatestockinv', // Replace with your server endpoint
+          url: '/products/excelpdcts', // to get products to databese
+          // url: '/products/updatestockinv', // Replace with your server endpoint
           type: 'POST', // Use POST or other HTTP method as needed
           data: formData,
           processData: false,
