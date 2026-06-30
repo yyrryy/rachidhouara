@@ -157,7 +157,7 @@ def createcategory(request):
     #     'image':category.image.url.replace('/media/', '') if category.image else ''
     # })
     return JsonResponse({
-        'html':render(request, 'categories.html', ctx).content.decode('utf-8')
+        'success':True
     })
 
 def updatecategory(request):
