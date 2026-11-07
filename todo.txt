@@ -1,5 +1,3 @@
-users and permissions
-login required each time
-point vente devis
-Modifer devis
-recherch in categoruside when doing serach
+open new window in viewproduct
+recherch in up of the page
+alert stock
