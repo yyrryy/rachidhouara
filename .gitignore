@@ -5,3 +5,4 @@ __pycache__/
 migrations/
 questions.txt
 media_root/
+logs.*

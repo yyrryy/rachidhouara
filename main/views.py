@@ -396,7 +396,7 @@ def products(request, id):
 def productscategories(request, id):
     # get the products from the db
     c=Category.objects.get(pk=id)
-    products=Produit.objects.filter(category_id=id, isactive=True).order_by('code')
+    products=Produit.objects.filter(category_id=id, isactive=True).order_by('name')
     return render(request, 'products.html', {'products':products, 'title':'Produits de '+str(c), 'category':c})
 
 @user_passes_test(isadmin, login_url='loginpage')
