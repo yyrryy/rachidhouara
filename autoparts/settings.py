@@ -87,24 +87,24 @@ else:
 
 
 # logs
-LOGS_DIR = os.path.join(BASE_DIR, 'autoparts')
-LOG_FILE = os.path.join(LOGS_DIR, 'logs.txt')
+# LOGS_DIR = os.path.join(BASE_DIR, 'autoparts')
+# LOG_FILE = os.path.join(LOGS_DIR, 'logs.txt')
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': LOG_FILE,
-        },
-    },
-    'root': {
-        'handlers': ['file'],
-        'level': 'ERROR',
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'ERROR',
+#             'class': 'logging.FileHandler',
+#             'filename': LOG_FILE,
+#         },
+#     },
+#     'root': {
+#         'handlers': ['file'],
+#         'level': 'ERROR',
+#     },
+# }
 # Application definition
 
 INSTALLED_APPS = [

@@ -1059,8 +1059,8 @@ a .uil {
               <div class="tabsholder expended" style="width: 100%;">
                 <!-- tabs s -->
                 <div id="tabs-container">
-                  <div class="d-flex position-relative">
-                    <ul class="nav nav-tabs bg-darkblue" id="myTabs" role="tablist" style="width: 100%; overflow-y: hidden;">
+                  <div class="d-flex position-relative bg-darkblue justify-content-start align-items-center" style="width: 100%; overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
+                    <ul class="nav nav-tabs" id="myTabs" role="tablist" style="width: 100%; overflow-y: hidden;">
 
                       <li class="nav-item">
                       
@@ -1196,7 +1196,55 @@ a .uil {
                       <a class="nav-link" href="/catalog" target="_blank">CATALOGUE</a>
 
                     </ul>
+                    <div class="my-auto">
+    
+    <input style="
+    width: 19em;
+    
+    border-radius: 11px;
+    margin-bottom: 9px;
+    " type="text" placeholder="Cherche Article" class="searchitemsforlistbl"
+    onfocus="$('.itemssearchresultslistbl').removeClass('d-none')"
+    onchange="getitemsforlistbl(event, '{{target}}')">
+    <div style="
+    position: absolute;
+    right:0;
+    height: 80vh;
+    width: 70vw;
+    overflow-x: scroll;
+    z-index: 99;
+    background: white;
+    padding: 10px;" class="itemssearchresultslistbl d-none">
+      <div class="sticky-top bg-white">
+        <button class="w-100 btn btn-danger" onclick="$('.itemssearchresultslistbl').addClass('d-none')">X</button>
+        <div class="suggestions__group-title brands d-flex" >
 
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3 categoriesfilter"></div>
+        <div class="col-9">
+          <table class="table table-bordered">
+            <thead>
+              <tr class="text-center bg-darkblue text-white">
+                <td>IMAGE</td>
+                <td>REF.</td>
+                <td>ARTICLE</td>
+                <td>STOCK</td>
+                <td>PR. BRUT</td>
+                <td>REMISE</td>
+                <td>PR. NET</td>
+                <td>DIAMETRE</td>
+              </tr>
+            </thead>
+            <tbody class="itemsforlistblresult">
+    
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
                     <!-- <button class="nav-btn next-btn">&gt;</button>
                     <button class="nav-btn prev-btn">&lt;</button> -->
                   </div>
